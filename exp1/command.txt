@@ -1,0 +1,10 @@
+python exp1/run_exp1_llava.py
+python exp1/run_exp1_qwen.py
+
+python3 position_embedding_viz/visualize_llava_1d_abs_pe_tsne.py
+
+
+python exp1/visualize_qwen_direction_vectors_pca.py \
+  --source-dataset "" \
+  --object-token-source mask \
+  --pca-normalization zscore

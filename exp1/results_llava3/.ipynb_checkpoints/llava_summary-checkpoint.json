@@ -1,0 +1,163 @@
+{
+  "model_name": "llava",
+  "num_records": 614,
+  "overall": {
+    "rel_acc": 0.247557003257329,
+    "mean_target_iou": 0.36682874738513005,
+    "mean_reference_iou": 0.42246939126116656,
+    "target_parse_success_rate": 1.0,
+    "reference_parse_success_rate": 1.0,
+    "relation_parse_success_rate": 1.0,
+    "relative_order_acc": 0.995114006514658
+  },
+  "dependency_tables": {
+    "iou_0.5": [
+      {
+        "loc_t": "correct",
+        "loc_r": "correct",
+        "count": 24,
+        "rel_acc": 0.125,
+        "mean_target_iou": 0.5730854077129253,
+        "mean_reference_iou": 0.5987400582448524,
+        "relative_order_acc": 1.0
+      },
+      {
+        "loc_t": "correct",
+        "loc_r": "wrong",
+        "count": 145,
+        "rel_acc": 0.2482758620689655,
+        "mean_target_iou": 0.5957083883840724,
+        "mean_reference_iou": 0.2815466163501688,
+        "relative_order_acc": 1.0
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "correct",
+        "count": 192,
+        "rel_acc": 0.234375,
+        "mean_target_iou": 0.1937242375041701,
+        "mean_reference_iou": 0.6613136000459087,
+        "relative_order_acc": 0.9895833333333334
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "wrong",
+        "count": 253,
+        "rel_acc": 0.26877470355731226,
+        "mean_target_iou": 0.3474546687465157,
+        "mean_reference_iou": 0.30525681524462805,
+        "relative_order_acc": 0.9960474308300395
+      }
+    ],
+    "iou_0.7": [
+      {
+        "loc_t": "correct",
+        "loc_r": "correct",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "correct",
+        "loc_r": "wrong",
+        "count": 18,
+        "rel_acc": 0.16666666666666666,
+        "mean_target_iou": 0.7327620668258835,
+        "mean_reference_iou": 0.3064622229292345,
+        "relative_order_acc": 1.0
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "correct",
+        "count": 56,
+        "rel_acc": 0.14285714285714285,
+        "mean_target_iou": 0.16491739202308303,
+        "mean_reference_iou": 0.7328246749832144,
+        "relative_order_acc": 0.9821428571428571
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "wrong",
+        "count": 540,
+        "rel_acc": 0.2611111111111111,
+        "mean_target_iou": 0.3755699254413172,
+        "mean_reference_iou": 0.39415130448624086,
+        "relative_order_acc": 0.9962962962962963
+      }
+    ],
+    "iou_0.9": [
+      {
+        "loc_t": "correct",
+        "loc_r": "correct",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "correct",
+        "loc_r": "wrong",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "correct",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "wrong",
+        "count": 614,
+        "rel_acc": 0.247557003257329,
+        "mean_target_iou": 0.36682874738513005,
+        "mean_reference_iou": 0.42246939126116656,
+        "relative_order_acc": 0.995114006514658
+      }
+    ]
+  },
+  "relation_breakdown": [
+    {
+      "relation": "behind",
+      "count": 102,
+      "rel_acc": 0.28431372549019607,
+      "mean_target_iou": 0.45369159462316105,
+      "mean_reference_iou": 0.42658130601572325,
+      "relative_order_acc": 1.0
+    },
+    {
+      "relation": "in_front_of",
+      "count": 102,
+      "rel_acc": 0.21568627450980393,
+      "mean_target_iou": 0.5619576192875714,
+      "mean_reference_iou": 0.29640334502312005,
+      "relative_order_acc": 1.0
+    },
+    {
+      "relation": "left_of",
+      "count": 205,
+      "rel_acc": 0.25365853658536586,
+      "mean_target_iou": 0.3318771842284469,
+      "mean_reference_iou": 0.44273543629188933,
+      "relative_order_acc": 0.9951219512195122
+    },
+    {
+      "relation": "right_of",
+      "count": 205,
+      "rel_acc": 0.23902439024390243,
+      "mean_target_iou": 0.2614722356524073,
+      "mean_reference_iou": 0.46288296287100955,
+      "relative_order_acc": 0.9902439024390244
+    }
+  ]
+}

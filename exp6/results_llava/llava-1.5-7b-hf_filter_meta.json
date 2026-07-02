@@ -1,0 +1,8 @@
+{
+  "model": "llava-1.5-7b-hf",
+  "num_behavior_records": 408,
+  "num_curated": 50,
+  "curated_size_requested": 50,
+  "seed": 20260616,
+  "min_base_source_ppl_gap": 0.0
+}

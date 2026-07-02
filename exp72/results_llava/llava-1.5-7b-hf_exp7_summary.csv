@@ -1,0 +1,329 @@
+accuracy,auc,fraction_pruned,head_group,head_group_label,iou_at_0_5,iou_at_0_7,iou_at_0_9,localization_accuracy,mean_target_iou,num_ablated_heads,num_samples,relation_accuracy,task
+0.2,0.001866666666666667,0.0,localization_critical,Loc. Important,0.52,0.08,0.0,0.2,0.5009545966608294,0,50,,localization
+0.013333333333333332,0.001866666666666667,0.01,localization_critical,Loc. Important,0.04,0.0,0.0,0.013333333333333332,0.12706350412210948,11,50,,localization
+0.02,0.001866666666666667,0.02,localization_critical,Loc. Important,0.04,0.02,0.0,0.02,0.1518526582993516,21,50,,localization
+0.013333333333333332,0.001866666666666667,0.03,localization_critical,Loc. Important,0.04,0.0,0.0,0.013333333333333332,0.1307080703304164,31,50,,localization
+0.006666666666666666,0.001866666666666667,0.04,localization_critical,Loc. Important,0.02,0.0,0.0,0.006666666666666666,0.09107979883709123,41,50,,localization
+0.006666666666666666,0.001866666666666667,0.05,localization_critical,Loc. Important,0.02,0.0,0.0,0.006666666666666666,0.07005476348271128,52,50,,localization
+0.006666666666666666,0.001866666666666667,0.06,localization_critical,Loc. Important,0.02,0.0,0.0,0.006666666666666666,0.07837006002109285,62,50,,localization
+0.0,0.001866666666666667,0.07,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.024396798515703547,72,50,,localization
+0.0,0.001866666666666667,0.08,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.023019352150001404,82,50,,localization
+0.0,0.001866666666666667,0.09,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.04398406058289663,93,50,,localization
+0.0,0.001866666666666667,0.1,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0259594439745901,103,50,,localization
+0.0,0.001866666666666667,0.11,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0438406765784662,113,50,,localization
+0.0,0.001866666666666667,0.12,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.04284467681605617,123,50,,localization
+0.013333333333333332,0.001866666666666667,0.13,localization_critical,Loc. Important,0.04,0.0,0.0,0.013333333333333332,0.09200091993493072,134,50,,localization
+0.0,0.001866666666666667,0.14,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.05045015146712107,144,50,,localization
+0.0,0.001866666666666667,0.15,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.06340137964228092,154,50,,localization
+0.0,0.001866666666666667,0.16,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.04426749590835079,164,50,,localization
+0.0,0.001866666666666667,0.17,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0690363422796164,175,50,,localization
+0.006666666666666666,0.001866666666666667,0.18,localization_critical,Loc. Important,0.02,0.0,0.0,0.006666666666666666,0.0885650977439866,185,50,,localization
+0.0,0.001866666666666667,0.19,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,195,50,,localization
+0.0,0.001866666666666667,0.2,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,205,50,,localization
+0.0,0.001866666666666667,0.21,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,216,50,,localization
+0.0,0.001866666666666667,0.22,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,226,50,,localization
+0.0,0.001866666666666667,0.23,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,236,50,,localization
+0.0,0.001866666666666667,0.24,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,246,50,,localization
+0.0,0.001866666666666667,0.25,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,256,50,,localization
+0.0,0.001866666666666667,0.26,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,267,50,,localization
+0.0,0.001866666666666667,0.27,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,277,50,,localization
+0.0,0.001866666666666667,0.28,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,287,50,,localization
+0.0,0.001866666666666667,0.29,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,297,50,,localization
+0.0,0.001866666666666667,0.3,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,308,50,,localization
+0.0,0.001866666666666667,0.31,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,318,50,,localization
+0.0,0.001866666666666667,0.32,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,328,50,,localization
+0.0,0.001866666666666667,0.33,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,338,50,,localization
+0.0,0.001866666666666667,0.34,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,349,50,,localization
+0.0,0.001866666666666667,0.35,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,359,50,,localization
+0.0,0.001866666666666667,0.36,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,369,50,,localization
+0.0,0.001866666666666667,0.37,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,,379,50,,localization
+0.0,0.001866666666666667,0.38,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,390,50,,localization
+0.0,0.001866666666666667,0.39,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.017521548678818707,400,50,,localization
+0.0,0.001866666666666667,0.4,localization_critical,Loc. Important,0.0,0.0,0.0,0.0,0.0,410,50,,localization
+0.2,0.06400000000000002,0.0,low_importance,Low Importance,0.52,0.08,0.0,0.2,0.5009545966608294,0,50,,localization
+0.19333333333333333,0.06400000000000002,0.01,low_importance,Low Importance,0.54,0.04,0.0,0.19333333333333333,0.48449723537966016,11,50,,localization
+0.19333333333333333,0.06400000000000002,0.02,low_importance,Low Importance,0.58,0.0,0.0,0.19333333333333333,0.493618362055608,21,50,,localization
+0.16,0.06400000000000002,0.03,low_importance,Low Importance,0.48,0.0,0.0,0.16,0.4770229651164556,31,50,,localization
+0.16,0.06400000000000002,0.04,low_importance,Low Importance,0.48,0.0,0.0,0.16,0.4872513093413336,41,50,,localization
+0.19333333333333333,0.06400000000000002,0.05,low_importance,Low Importance,0.54,0.04,0.0,0.19333333333333333,0.503320867464843,52,50,,localization
+0.2,0.06400000000000002,0.06,low_importance,Low Importance,0.54,0.06,0.0,0.2,0.5085871737691153,62,50,,localization
+0.24,0.06400000000000002,0.07,low_importance,Low Importance,0.64,0.08,0.0,0.24,0.5277166840776204,72,50,,localization
+0.2,0.06400000000000002,0.08,low_importance,Low Importance,0.56,0.04,0.0,0.2,0.5071038487842554,82,50,,localization
+0.20666666666666664,0.06400000000000002,0.09,low_importance,Low Importance,0.58,0.04,0.0,0.20666666666666664,0.5111529419173576,93,50,,localization
+0.22666666666666666,0.06400000000000002,0.1,low_importance,Low Importance,0.62,0.06,0.0,0.22666666666666666,0.5172324790836327,103,50,,localization
+0.24,0.06400000000000002,0.11,low_importance,Low Importance,0.64,0.08,0.0,0.24,0.5221495649546817,113,50,,localization
+0.2,0.06400000000000002,0.12,low_importance,Low Importance,0.56,0.04,0.0,0.2,0.49052311460518877,123,50,,localization
+0.2,0.06400000000000002,0.13,low_importance,Low Importance,0.54,0.06,0.0,0.2,0.4976334033838349,134,50,,localization
+0.1733333333333333,0.06400000000000002,0.14,low_importance,Low Importance,0.48,0.04,0.0,0.1733333333333333,0.48504938049597746,144,50,,localization
+0.16666666666666663,0.06400000000000002,0.15,low_importance,Low Importance,0.5,0.0,0.0,0.16666666666666663,0.48183069855518396,154,50,,localization
+0.18666666666666665,0.06400000000000002,0.16,low_importance,Low Importance,0.54,0.02,0.0,0.18666666666666665,0.4813763457628405,164,50,,localization
+0.18666666666666665,0.06400000000000002,0.17,low_importance,Low Importance,0.54,0.02,0.0,0.18666666666666665,0.49318943920512454,175,50,,localization
+0.18666666666666665,0.06400000000000002,0.18,low_importance,Low Importance,0.52,0.04,0.0,0.18666666666666665,0.48173802514767233,185,50,,localization
+0.15333333333333332,0.06400000000000002,0.19,low_importance,Low Importance,0.44,0.02,0.0,0.15333333333333332,0.45630298530158697,195,50,,localization
+0.15333333333333332,0.06400000000000002,0.2,low_importance,Low Importance,0.44,0.02,0.0,0.15333333333333332,0.45716116022089553,205,50,,localization
+0.15333333333333332,0.06400000000000002,0.21,low_importance,Low Importance,0.44,0.02,0.0,0.15333333333333332,0.4495882290298686,216,50,,localization
+0.16,0.06400000000000002,0.22,low_importance,Low Importance,0.44,0.04,0.0,0.16,0.4653069143207362,226,50,,localization
+0.16,0.06400000000000002,0.23,low_importance,Low Importance,0.48,0.0,0.0,0.16,0.4556647389148857,236,50,,localization
+0.16,0.06400000000000002,0.24,low_importance,Low Importance,0.48,0.0,0.0,0.16,0.45300044214415813,246,50,,localization
+0.16666666666666663,0.06400000000000002,0.25,low_importance,Low Importance,0.5,0.0,0.0,0.16666666666666663,0.45128074926956235,256,50,,localization
+0.16,0.06400000000000002,0.26,low_importance,Low Importance,0.48,0.0,0.0,0.16,0.44939107554561303,267,50,,localization
+0.14666666666666667,0.06400000000000002,0.27,low_importance,Low Importance,0.44,0.0,0.0,0.14666666666666667,0.4458180493235407,277,50,,localization
+0.1733333333333333,0.06400000000000002,0.28,low_importance,Low Importance,0.44,0.08,0.0,0.1733333333333333,0.4514163301206873,287,50,,localization
+0.08,0.06400000000000002,0.29,low_importance,Low Importance,0.24,0.0,0.0,0.08,0.38295621823866244,297,50,,localization
+0.16,0.06400000000000002,0.3,low_importance,Low Importance,0.42,0.06,0.0,0.16,0.4355751860385172,308,50,,localization
+0.12,0.06400000000000002,0.31,low_importance,Low Importance,0.3,0.06,0.0,0.12,0.3987030865995317,318,50,,localization
+0.12666666666666665,0.06400000000000002,0.32,low_importance,Low Importance,0.32,0.06,0.0,0.12666666666666665,0.4155967692971981,328,50,,localization
+0.13333333333333333,0.06400000000000002,0.33,low_importance,Low Importance,0.32,0.08,0.0,0.13333333333333333,0.4184833210449293,338,50,,localization
+0.14,0.06400000000000002,0.34,low_importance,Low Importance,0.34,0.08,0.0,0.14,0.42357175797184354,349,50,,localization
+0.13333333333333333,0.06400000000000002,0.35,low_importance,Low Importance,0.34,0.06,0.0,0.13333333333333333,0.41496935787366396,359,50,,localization
+0.14,0.06400000000000002,0.36,low_importance,Low Importance,0.38,0.04,0.0,0.14,0.42523567148451774,369,50,,localization
+0.06,0.06400000000000002,0.37,low_importance,Low Importance,0.16,0.02,0.0,0.06,0.30110175798669636,379,50,,localization
+0.06,0.06400000000000002,0.38,low_importance,Low Importance,0.16,0.02,0.0,0.06,0.22067373137732582,390,50,,localization
+0.04,0.06400000000000002,0.39,low_importance,Low Importance,0.12,0.0,0.0,0.04,0.19706085209480276,400,50,,localization
+0.013333333333333332,0.06400000000000002,0.4,low_importance,Low Importance,0.04,0.0,0.0,0.013333333333333332,0.1535766239174398,410,50,,localization
+0.2,0.0483,0.0,negative,Negative,0.52,0.08,0.0,0.2,0.5009545966608294,0,50,,localization
+0.14666666666666667,0.0483,0.01,negative,Negative,0.44,0.0,0.0,0.14666666666666667,0.4288016933054633,11,50,,localization
+0.13333333333333333,0.0483,0.02,negative,Negative,0.38,0.02,0.0,0.13333333333333333,0.42931584465012607,21,50,,localization
+0.12666666666666665,0.0483,0.03,negative,Negative,0.38,0.0,0.0,0.12666666666666665,0.4382189840580788,31,50,,localization
+0.14666666666666667,0.0483,0.04,negative,Negative,0.34,0.1,0.0,0.14666666666666667,0.41899936170775187,41,50,,localization
+0.11333333333333333,0.0483,0.05,negative,Negative,0.26,0.08,0.0,0.11333333333333333,0.35575171712478265,52,50,,localization
+0.13333333333333333,0.0483,0.06,negative,Negative,0.32,0.08,0.0,0.13333333333333333,0.3743536580277182,62,50,,localization
+0.11333333333333333,0.0483,0.07,negative,Negative,0.26,0.08,0.0,0.11333333333333333,0.35515778166872464,72,50,,localization
+0.11333333333333333,0.0483,0.08,negative,Negative,0.28,0.06,0.0,0.11333333333333333,0.3580484596313572,82,50,,localization
+0.08,0.0483,0.09,negative,Negative,0.2,0.04,0.0,0.08,0.3071634714786995,93,50,,localization
+0.15333333333333332,0.0483,0.1,negative,Negative,0.36,0.08,0.02,0.15333333333333332,0.4476420678585985,103,50,,localization
+0.16,0.0483,0.11,negative,Negative,0.4,0.08,0.0,0.16,0.46041157613457445,113,50,,localization
+0.12666666666666665,0.0483,0.12,negative,Negative,0.3,0.08,0.0,0.12666666666666665,0.4457878140918665,123,50,,localization
+0.13333333333333333,0.0483,0.13,negative,Negative,0.28,0.12,0.0,0.13333333333333333,0.4278804047707845,134,50,,localization
+0.13333333333333333,0.0483,0.14,negative,Negative,0.38,0.02,0.0,0.13333333333333333,0.43507537450825207,144,50,,localization
+0.10666666666666666,0.0483,0.15,negative,Negative,0.3,0.02,0.0,0.10666666666666666,0.41877473787290276,154,50,,localization
+0.10666666666666666,0.0483,0.16,negative,Negative,0.3,0.02,0.0,0.10666666666666666,0.34156300119944566,164,50,,localization
+0.09333333333333332,0.0483,0.17,negative,Negative,0.26,0.02,0.0,0.09333333333333332,0.34657582133437004,175,50,,localization
+0.12666666666666665,0.0483,0.18,negative,Negative,0.34,0.04,0.0,0.12666666666666665,0.41828451638936875,185,50,,localization
+0.12666666666666665,0.0483,0.19,negative,Negative,0.36,0.02,0.0,0.12666666666666665,0.4201224824448253,195,50,,localization
+0.14,0.0483,0.2,negative,Negative,0.36,0.06,0.0,0.14,0.43140993883328976,205,50,,localization
+0.15333333333333332,0.0483,0.21,negative,Negative,0.4,0.06,0.0,0.15333333333333332,0.4307152923649251,216,50,,localization
+0.14666666666666667,0.0483,0.22,negative,Negative,0.4,0.04,0.0,0.14666666666666667,0.42979373472383103,226,50,,localization
+0.14,0.0483,0.23,negative,Negative,0.38,0.04,0.0,0.14,0.42595062710296544,236,50,,localization
+0.13333333333333333,0.0483,0.24,negative,Negative,0.34,0.06,0.0,0.13333333333333333,0.4302456295815898,246,50,,localization
+0.14,0.0483,0.25,negative,Negative,0.38,0.04,0.0,0.14,0.43315477789328916,256,50,,localization
+0.15333333333333332,0.0483,0.26,negative,Negative,0.4,0.06,0.0,0.15333333333333332,0.4611099222539375,267,50,,localization
+0.1,0.0483,0.27,negative,Negative,0.26,0.04,0.0,0.1,0.41309670568970264,277,50,,localization
+0.1,0.0483,0.28,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.29,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.3,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.31,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.32,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.33,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.34,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.35,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.36,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.37,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.38,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.39,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.1,0.0483,0.4,negative,Negative,0.26,0.04,0.0,0.1,0.40911014678501023,284,50,,localization
+0.2,0.008199999999999995,0.0,relation_critical,Rel. Important,0.52,0.08,0.0,0.2,0.5009545966608294,0,50,,localization
+0.19333333333333333,0.008199999999999995,0.01,relation_critical,Rel. Important,0.52,0.06,0.0,0.19333333333333333,0.46211280721206405,11,50,,localization
+0.12,0.008199999999999995,0.02,relation_critical,Rel. Important,0.34,0.02,0.0,0.12,0.32572108637018976,21,50,,localization
+0.11333333333333333,0.008199999999999995,0.03,relation_critical,Rel. Important,0.34,0.0,0.0,0.11333333333333333,0.31297301566867963,31,50,,localization
+0.04666666666666666,0.008199999999999995,0.04,relation_critical,Rel. Important,0.14,0.0,0.0,0.04666666666666666,0.18615926819039874,41,50,,localization
+0.07333333333333333,0.008199999999999995,0.05,relation_critical,Rel. Important,0.22,0.0,0.0,0.07333333333333333,0.2426214635538452,52,50,,localization
+0.03333333333333333,0.008199999999999995,0.06,relation_critical,Rel. Important,0.1,0.0,0.0,0.03333333333333333,0.12647747216558122,62,50,,localization
+0.02,0.008199999999999995,0.07,relation_critical,Rel. Important,0.06,0.0,0.0,0.02,0.11172153107793764,72,50,,localization
+0.026666666666666665,0.008199999999999995,0.08,relation_critical,Rel. Important,0.08,0.0,0.0,0.026666666666666665,0.14668865598889294,82,50,,localization
+0.013333333333333332,0.008199999999999995,0.09,relation_critical,Rel. Important,0.04,0.0,0.0,0.013333333333333332,0.15755837910494278,93,50,,localization
+0.013333333333333332,0.008199999999999995,0.1,relation_critical,Rel. Important,0.04,0.0,0.0,0.013333333333333332,0.15671325576659875,103,50,,localization
+0.026666666666666665,0.008199999999999995,0.11,relation_critical,Rel. Important,0.08,0.0,0.0,0.026666666666666665,0.18376273561482873,113,50,,localization
+0.006666666666666666,0.008199999999999995,0.12,relation_critical,Rel. Important,0.02,0.0,0.0,0.006666666666666666,0.13381501414766117,123,50,,localization
+0.006666666666666666,0.008199999999999995,0.13,relation_critical,Rel. Important,0.02,0.0,0.0,0.006666666666666666,0.12111420159426263,134,50,,localization
+0.006666666666666666,0.008199999999999995,0.14,relation_critical,Rel. Important,0.02,0.0,0.0,0.006666666666666666,0.0915976927248686,144,50,,localization
+0.006666666666666666,0.008199999999999995,0.15,relation_critical,Rel. Important,0.02,0.0,0.0,0.006666666666666666,0.07322483902122184,154,50,,localization
+0.006666666666666666,0.008199999999999995,0.16,relation_critical,Rel. Important,0.02,0.0,0.0,0.006666666666666666,0.0913055341332052,164,50,,localization
+0.006666666666666666,0.008199999999999995,0.17,relation_critical,Rel. Important,0.02,0.0,0.0,0.006666666666666666,0.09160274517827201,175,50,,localization
+0.0,0.008199999999999995,0.18,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.06745192779516303,185,50,,localization
+0.0,0.008199999999999995,0.19,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.11645070628290209,195,50,,localization
+0.0,0.008199999999999995,0.2,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.14040598126487794,205,50,,localization
+0.0,0.008199999999999995,0.21,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.0989164663959252,216,50,,localization
+0.0,0.008199999999999995,0.22,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.09372556871991357,226,50,,localization
+0.0,0.008199999999999995,0.23,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.1106717509910475,236,50,,localization
+0.0,0.008199999999999995,0.24,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.12204595907024425,246,50,,localization
+0.0,0.008199999999999995,0.25,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.0,256,50,,localization
+0.0,0.008199999999999995,0.26,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.04901169122541285,267,50,,localization
+0.0,0.008199999999999995,0.27,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.11846558634990044,277,50,,localization
+0.0,0.008199999999999995,0.28,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.11857059156363141,287,50,,localization
+0.0,0.008199999999999995,0.29,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.04908619223520496,297,50,,localization
+0.0,0.008199999999999995,0.3,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.0688623719126037,308,50,,localization
+0.0,0.008199999999999995,0.31,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.0,318,50,,localization
+0.0,0.008199999999999995,0.32,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.0,328,50,,localization
+0.0,0.008199999999999995,0.33,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,,338,50,,localization
+0.0,0.008199999999999995,0.34,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.09416478837966441,349,50,,localization
+0.0,0.008199999999999995,0.35,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.0,359,50,,localization
+0.0,0.008199999999999995,0.36,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.04369596719673889,369,50,,localization
+0.0,0.008199999999999995,0.37,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.0,379,50,,localization
+0.0,0.008199999999999995,0.38,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.0,390,50,,localization
+0.0,0.008199999999999995,0.39,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.0,400,50,,localization
+0.0,0.008199999999999995,0.4,relation_critical,Rel. Important,0.0,0.0,0.0,0.0,0.03212890625,410,50,,localization
+1.0,0.29869999999999997,0.0,localization_critical,Loc. Important,,,,,,0,50,1.0,relation
+0.56,0.29869999999999997,0.01,localization_critical,Loc. Important,,,,,,11,50,0.56,relation
+0.76,0.29869999999999997,0.02,localization_critical,Loc. Important,,,,,,21,50,0.76,relation
+0.66,0.29869999999999997,0.03,localization_critical,Loc. Important,,,,,,31,50,0.66,relation
+1.0,0.29869999999999997,0.04,localization_critical,Loc. Important,,,,,,41,50,1.0,relation
+1.0,0.29869999999999997,0.05,localization_critical,Loc. Important,,,,,,52,50,1.0,relation
+1.0,0.29869999999999997,0.06,localization_critical,Loc. Important,,,,,,62,50,1.0,relation
+1.0,0.29869999999999997,0.07,localization_critical,Loc. Important,,,,,,72,50,1.0,relation
+1.0,0.29869999999999997,0.08,localization_critical,Loc. Important,,,,,,82,50,1.0,relation
+1.0,0.29869999999999997,0.09,localization_critical,Loc. Important,,,,,,93,50,1.0,relation
+1.0,0.29869999999999997,0.1,localization_critical,Loc. Important,,,,,,103,50,1.0,relation
+0.98,0.29869999999999997,0.11,localization_critical,Loc. Important,,,,,,113,50,0.98,relation
+1.0,0.29869999999999997,0.12,localization_critical,Loc. Important,,,,,,123,50,1.0,relation
+1.0,0.29869999999999997,0.13,localization_critical,Loc. Important,,,,,,134,50,1.0,relation
+1.0,0.29869999999999997,0.14,localization_critical,Loc. Important,,,,,,144,50,1.0,relation
+1.0,0.29869999999999997,0.15,localization_critical,Loc. Important,,,,,,154,50,1.0,relation
+0.78,0.29869999999999997,0.16,localization_critical,Loc. Important,,,,,,164,50,0.78,relation
+0.88,0.29869999999999997,0.17,localization_critical,Loc. Important,,,,,,175,50,0.88,relation
+0.84,0.29869999999999997,0.18,localization_critical,Loc. Important,,,,,,185,50,0.84,relation
+1.0,0.29869999999999997,0.19,localization_critical,Loc. Important,,,,,,195,50,1.0,relation
+1.0,0.29869999999999997,0.2,localization_critical,Loc. Important,,,,,,205,50,1.0,relation
+1.0,0.29869999999999997,0.21,localization_critical,Loc. Important,,,,,,216,50,1.0,relation
+1.0,0.29869999999999997,0.22,localization_critical,Loc. Important,,,,,,226,50,1.0,relation
+1.0,0.29869999999999997,0.23,localization_critical,Loc. Important,,,,,,236,50,1.0,relation
+1.0,0.29869999999999997,0.24,localization_critical,Loc. Important,,,,,,246,50,1.0,relation
+1.0,0.29869999999999997,0.25,localization_critical,Loc. Important,,,,,,256,50,1.0,relation
+1.0,0.29869999999999997,0.26,localization_critical,Loc. Important,,,,,,267,50,1.0,relation
+0.98,0.29869999999999997,0.27,localization_critical,Loc. Important,,,,,,277,50,0.98,relation
+0.96,0.29869999999999997,0.28,localization_critical,Loc. Important,,,,,,287,50,0.96,relation
+0.96,0.29869999999999997,0.29,localization_critical,Loc. Important,,,,,,297,50,0.96,relation
+0.64,0.29869999999999997,0.3,localization_critical,Loc. Important,,,,,,308,50,0.64,relation
+0.46,0.29869999999999997,0.31,localization_critical,Loc. Important,,,,,,318,50,0.46,relation
+0.24,0.29869999999999997,0.32,localization_critical,Loc. Important,,,,,,328,50,0.24,relation
+0.06,0.29869999999999997,0.33,localization_critical,Loc. Important,,,,,,338,50,0.06,relation
+0.18,0.29869999999999997,0.34,localization_critical,Loc. Important,,,,,,349,50,0.18,relation
+0.06,0.29869999999999997,0.35,localization_critical,Loc. Important,,,,,,359,50,0.06,relation
+0.08,0.29869999999999997,0.36,localization_critical,Loc. Important,,,,,,369,50,0.08,relation
+0.1,0.29869999999999997,0.37,localization_critical,Loc. Important,,,,,,379,50,0.1,relation
+0.06,0.29869999999999997,0.38,localization_critical,Loc. Important,,,,,,390,50,0.06,relation
+0.1,0.29869999999999997,0.39,localization_critical,Loc. Important,,,,,,400,50,0.1,relation
+0.06,0.29869999999999997,0.4,localization_critical,Loc. Important,,,,,,410,50,0.06,relation
+1.0,0.3981000000000001,0.0,low_importance,Low Importance,,,,,,0,50,1.0,relation
+1.0,0.3981000000000001,0.01,low_importance,Low Importance,,,,,,11,50,1.0,relation
+1.0,0.3981000000000001,0.02,low_importance,Low Importance,,,,,,21,50,1.0,relation
+1.0,0.3981000000000001,0.03,low_importance,Low Importance,,,,,,31,50,1.0,relation
+1.0,0.3981000000000001,0.04,low_importance,Low Importance,,,,,,41,50,1.0,relation
+1.0,0.3981000000000001,0.05,low_importance,Low Importance,,,,,,52,50,1.0,relation
+1.0,0.3981000000000001,0.06,low_importance,Low Importance,,,,,,62,50,1.0,relation
+1.0,0.3981000000000001,0.07,low_importance,Low Importance,,,,,,72,50,1.0,relation
+1.0,0.3981000000000001,0.08,low_importance,Low Importance,,,,,,82,50,1.0,relation
+1.0,0.3981000000000001,0.09,low_importance,Low Importance,,,,,,93,50,1.0,relation
+1.0,0.3981000000000001,0.1,low_importance,Low Importance,,,,,,103,50,1.0,relation
+1.0,0.3981000000000001,0.11,low_importance,Low Importance,,,,,,113,50,1.0,relation
+1.0,0.3981000000000001,0.12,low_importance,Low Importance,,,,,,123,50,1.0,relation
+1.0,0.3981000000000001,0.13,low_importance,Low Importance,,,,,,134,50,1.0,relation
+1.0,0.3981000000000001,0.14,low_importance,Low Importance,,,,,,144,50,1.0,relation
+1.0,0.3981000000000001,0.15,low_importance,Low Importance,,,,,,154,50,1.0,relation
+1.0,0.3981000000000001,0.16,low_importance,Low Importance,,,,,,164,50,1.0,relation
+1.0,0.3981000000000001,0.17,low_importance,Low Importance,,,,,,175,50,1.0,relation
+1.0,0.3981000000000001,0.18,low_importance,Low Importance,,,,,,185,50,1.0,relation
+1.0,0.3981000000000001,0.19,low_importance,Low Importance,,,,,,195,50,1.0,relation
+1.0,0.3981000000000001,0.2,low_importance,Low Importance,,,,,,205,50,1.0,relation
+1.0,0.3981000000000001,0.21,low_importance,Low Importance,,,,,,216,50,1.0,relation
+1.0,0.3981000000000001,0.22,low_importance,Low Importance,,,,,,226,50,1.0,relation
+1.0,0.3981000000000001,0.23,low_importance,Low Importance,,,,,,236,50,1.0,relation
+1.0,0.3981000000000001,0.24,low_importance,Low Importance,,,,,,246,50,1.0,relation
+1.0,0.3981000000000001,0.25,low_importance,Low Importance,,,,,,256,50,1.0,relation
+1.0,0.3981000000000001,0.26,low_importance,Low Importance,,,,,,267,50,1.0,relation
+1.0,0.3981000000000001,0.27,low_importance,Low Importance,,,,,,277,50,1.0,relation
+1.0,0.3981000000000001,0.28,low_importance,Low Importance,,,,,,287,50,1.0,relation
+1.0,0.3981000000000001,0.29,low_importance,Low Importance,,,,,,297,50,1.0,relation
+0.98,0.3981000000000001,0.3,low_importance,Low Importance,,,,,,308,50,0.98,relation
+0.98,0.3981000000000001,0.31,low_importance,Low Importance,,,,,,318,50,0.98,relation
+0.98,0.3981000000000001,0.32,low_importance,Low Importance,,,,,,328,50,0.98,relation
+0.98,0.3981000000000001,0.33,low_importance,Low Importance,,,,,,338,50,0.98,relation
+0.98,0.3981000000000001,0.34,low_importance,Low Importance,,,,,,349,50,0.98,relation
+0.94,0.3981000000000001,0.35,low_importance,Low Importance,,,,,,359,50,0.94,relation
+0.98,0.3981000000000001,0.36,low_importance,Low Importance,,,,,,369,50,0.98,relation
+1.0,0.3981000000000001,0.37,low_importance,Low Importance,,,,,,379,50,1.0,relation
+1.0,0.3981000000000001,0.38,low_importance,Low Importance,,,,,,390,50,1.0,relation
+1.0,0.3981000000000001,0.39,low_importance,Low Importance,,,,,,400,50,1.0,relation
+0.98,0.3981000000000001,0.4,low_importance,Low Importance,,,,,,410,50,0.98,relation
+1.0,0.4,0.0,negative,Negative,,,,,,0,50,1.0,relation
+1.0,0.4,0.01,negative,Negative,,,,,,11,50,1.0,relation
+1.0,0.4,0.02,negative,Negative,,,,,,21,50,1.0,relation
+1.0,0.4,0.03,negative,Negative,,,,,,31,50,1.0,relation
+1.0,0.4,0.04,negative,Negative,,,,,,41,50,1.0,relation
+1.0,0.4,0.05,negative,Negative,,,,,,52,50,1.0,relation
+1.0,0.4,0.06,negative,Negative,,,,,,62,50,1.0,relation
+1.0,0.4,0.07,negative,Negative,,,,,,72,50,1.0,relation
+1.0,0.4,0.08,negative,Negative,,,,,,82,50,1.0,relation
+1.0,0.4,0.09,negative,Negative,,,,,,93,50,1.0,relation
+1.0,0.4,0.1,negative,Negative,,,,,,103,50,1.0,relation
+1.0,0.4,0.11,negative,Negative,,,,,,113,50,1.0,relation
+1.0,0.4,0.12,negative,Negative,,,,,,123,50,1.0,relation
+1.0,0.4,0.13,negative,Negative,,,,,,134,50,1.0,relation
+1.0,0.4,0.14,negative,Negative,,,,,,144,50,1.0,relation
+1.0,0.4,0.15,negative,Negative,,,,,,154,50,1.0,relation
+1.0,0.4,0.16,negative,Negative,,,,,,164,50,1.0,relation
+1.0,0.4,0.17,negative,Negative,,,,,,175,50,1.0,relation
+1.0,0.4,0.18,negative,Negative,,,,,,185,50,1.0,relation
+1.0,0.4,0.19,negative,Negative,,,,,,195,50,1.0,relation
+1.0,0.4,0.2,negative,Negative,,,,,,205,50,1.0,relation
+1.0,0.4,0.21,negative,Negative,,,,,,216,50,1.0,relation
+1.0,0.4,0.22,negative,Negative,,,,,,226,50,1.0,relation
+1.0,0.4,0.23,negative,Negative,,,,,,236,50,1.0,relation
+1.0,0.4,0.24,negative,Negative,,,,,,246,50,1.0,relation
+1.0,0.4,0.25,negative,Negative,,,,,,256,50,1.0,relation
+1.0,0.4,0.26,negative,Negative,,,,,,267,50,1.0,relation
+1.0,0.4,0.27,negative,Negative,,,,,,277,50,1.0,relation
+1.0,0.4,0.28,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.29,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.3,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.31,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.32,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.33,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.34,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.35,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.36,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.37,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.38,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.39,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.4,0.4,negative,Negative,,,,,,284,50,1.0,relation
+1.0,0.255,0.0,relation_critical,Rel. Important,,,,,,0,50,1.0,relation
+0.96,0.255,0.01,relation_critical,Rel. Important,,,,,,11,50,0.96,relation
+1.0,0.255,0.02,relation_critical,Rel. Important,,,,,,21,50,1.0,relation
+1.0,0.255,0.03,relation_critical,Rel. Important,,,,,,31,50,1.0,relation
+1.0,0.255,0.04,relation_critical,Rel. Important,,,,,,41,50,1.0,relation
+1.0,0.255,0.05,relation_critical,Rel. Important,,,,,,52,50,1.0,relation
+1.0,0.255,0.06,relation_critical,Rel. Important,,,,,,62,50,1.0,relation
+1.0,0.255,0.07,relation_critical,Rel. Important,,,,,,72,50,1.0,relation
+1.0,0.255,0.08,relation_critical,Rel. Important,,,,,,82,50,1.0,relation
+1.0,0.255,0.09,relation_critical,Rel. Important,,,,,,93,50,1.0,relation
+1.0,0.255,0.1,relation_critical,Rel. Important,,,,,,103,50,1.0,relation
+1.0,0.255,0.11,relation_critical,Rel. Important,,,,,,113,50,1.0,relation
+1.0,0.255,0.12,relation_critical,Rel. Important,,,,,,123,50,1.0,relation
+1.0,0.255,0.13,relation_critical,Rel. Important,,,,,,134,50,1.0,relation
+1.0,0.255,0.14,relation_critical,Rel. Important,,,,,,144,50,1.0,relation
+1.0,0.255,0.15,relation_critical,Rel. Important,,,,,,154,50,1.0,relation
+1.0,0.255,0.16,relation_critical,Rel. Important,,,,,,164,50,1.0,relation
+1.0,0.255,0.17,relation_critical,Rel. Important,,,,,,175,50,1.0,relation
+1.0,0.255,0.18,relation_critical,Rel. Important,,,,,,185,50,1.0,relation
+0.94,0.255,0.19,relation_critical,Rel. Important,,,,,,195,50,0.94,relation
+0.6,0.255,0.2,relation_critical,Rel. Important,,,,,,205,50,0.6,relation
+0.88,0.255,0.21,relation_critical,Rel. Important,,,,,,216,50,0.88,relation
+0.86,0.255,0.22,relation_critical,Rel. Important,,,,,,226,50,0.86,relation
+0.8,0.255,0.23,relation_critical,Rel. Important,,,,,,236,50,0.8,relation
+0.26,0.255,0.24,relation_critical,Rel. Important,,,,,,246,50,0.26,relation
+0.0,0.255,0.25,relation_critical,Rel. Important,,,,,,256,50,0.0,relation
+0.7,0.255,0.26,relation_critical,Rel. Important,,,,,,267,50,0.7,relation
+0.94,0.255,0.27,relation_critical,Rel. Important,,,,,,277,50,0.94,relation
+0.56,0.255,0.28,relation_critical,Rel. Important,,,,,,287,50,0.56,relation
+0.24,0.255,0.29,relation_critical,Rel. Important,,,,,,297,50,0.24,relation
+0.08,0.255,0.3,relation_critical,Rel. Important,,,,,,308,50,0.08,relation
+0.08,0.255,0.31,relation_critical,Rel. Important,,,,,,318,50,0.08,relation
+0.04,0.255,0.32,relation_critical,Rel. Important,,,,,,328,50,0.04,relation
+0.0,0.255,0.33,relation_critical,Rel. Important,,,,,,338,50,0.0,relation
+0.0,0.255,0.34,relation_critical,Rel. Important,,,,,,349,50,0.0,relation
+0.0,0.255,0.35,relation_critical,Rel. Important,,,,,,359,50,0.0,relation
+0.0,0.255,0.36,relation_critical,Rel. Important,,,,,,369,50,0.0,relation
+0.0,0.255,0.37,relation_critical,Rel. Important,,,,,,379,50,0.0,relation
+0.0,0.255,0.38,relation_critical,Rel. Important,,,,,,390,50,0.0,relation
+0.0,0.255,0.39,relation_critical,Rel. Important,,,,,,400,50,0.0,relation
+0.12,0.255,0.4,relation_critical,Rel. Important,,,,,,410,50,0.12,relation

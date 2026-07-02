@@ -1,0 +1,13 @@
+{
+  "input_jsonl": "exp5/results_qwen/qwen_exp5_results.jsonl",
+  "safe_jsonl": "exp5/results_qwen_leftpad_resume/qwen_exp5_results.jsonl",
+  "risky_jsonl": "exp5/results_qwen_leftpad_resume/qwen_exp5_risky_old_rightpad.jsonl",
+  "total_rows": 21602,
+  "safe_rows": 20262,
+  "risky_rows": 1340,
+  "cutoff_index_0_based": 20262,
+  "cutoff_included_in_safe": false,
+  "cutoff_record_key": "whatsup_A_000001::target_object::group4_16_19",
+  "cutoff_layer_group": "group4_16_19",
+  "cutoff_condition": "target_object"
+}

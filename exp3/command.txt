@@ -1,0 +1,7 @@
+python exp3/run_exp3_qwen.py --save-probes --max-position-images 1000
+
+python exp3/run_exp3_llava.py --save-probes --max-position-images 1000
+
+python exp3/run_exp3_qwen.py --skip-position-probe --output-dir exp3/results_qwen_logitlens
+
+python exp3/run_exp3_llava.py --skip-position-probe --output-dir exp3/results_llava_logitlens

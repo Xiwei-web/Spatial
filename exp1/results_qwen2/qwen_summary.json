@@ -1,0 +1,130 @@
+{
+  "model_name": "qwen",
+  "num_records": 0,
+  "overall": {
+    "rel_acc": null,
+    "mean_target_iou": null,
+    "mean_reference_iou": null,
+    "target_parse_success_rate": null,
+    "reference_parse_success_rate": null,
+    "relation_parse_success_rate": null,
+    "relative_order_acc": null
+  },
+  "dependency_tables": {
+    "iou_0.5": [
+      {
+        "loc_t": "correct",
+        "loc_r": "correct",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "correct",
+        "loc_r": "wrong",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "correct",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "wrong",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      }
+    ],
+    "iou_0.7": [
+      {
+        "loc_t": "correct",
+        "loc_r": "correct",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "correct",
+        "loc_r": "wrong",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "correct",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "wrong",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      }
+    ],
+    "iou_0.9": [
+      {
+        "loc_t": "correct",
+        "loc_r": "correct",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "correct",
+        "loc_r": "wrong",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "correct",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      },
+      {
+        "loc_t": "wrong",
+        "loc_r": "wrong",
+        "count": 0,
+        "rel_acc": null,
+        "mean_target_iou": null,
+        "mean_reference_iou": null,
+        "relative_order_acc": null
+      }
+    ]
+  },
+  "relation_breakdown": []
+}
