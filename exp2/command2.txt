@@ -1,6 +1,0 @@
-python exp2/run_exp2_llava.py
-
-python exp2/run_exp2_llava.py --skip-random
-
-python exp2/run_exp2_qwen.py --skip-random
-
