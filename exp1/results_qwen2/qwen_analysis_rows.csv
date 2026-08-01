@@ -1,1 +1,0 @@
-sample_id,source_dataset,gt_relation,rel_correct,target_iou,reference_iou,loc_t_iou_0_5,loc_r_iou_0_5,loc_t_iou_0_7,loc_r_iou_0_7,loc_t_iou_0_9,loc_r_iou_0_9,relative_order_correct,target_area_ratio,reference_area_ratio,object_center_distance_norm,pred_option,gt_answer
