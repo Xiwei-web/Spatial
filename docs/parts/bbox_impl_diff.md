@@ -1,30 +1,44 @@
 # 框预测：sdpa 与修复后 eager 的大差异样本
 
 脚本 `scripts/bbox_impl_diff_cases.py`（CPU，只读已保存的结果）。筛选口径：两边都能解析出四个数，原始输出数字的最大绝对差 ≥ 50；第一组 9 个模型、每个 40 条框提示，共 5 条。
-没有计算正确率。参照框是 What's Up 标注 auto_v2 的检测框（自动标注，经模型辅助预审和部分人工复核）；5 条涉及的 4 张图在审核表里都是 `ok`，来源都是 `ai_prereview_thumbnail_only`（未经用户逐张检查），都不在 v3 改动的 34 张里。
+没有计算正确率。参照框是 What's Up 标注 auto_v3 的检测框（自动标注，经模型辅助预审和部分人工复核）；5 条涉及的 4 张图在审核表里都是 `ok`，来源都是 `ai_prereview_thumbnail_only`（未经用户逐张检查），v3 没有改动它们的框。
 
 ## 1. 五条样本
 
-| # | 模型 | 图像 | 问的物体 | eager（float32 打分，bf16）输出 | sdpa（bf16）输出 | 最大差 | 首个不同的 token 位置 | 坐标约定 |
-|---|---|---|---|---|---|---|---|---|
-| 1 | InternVL3-8B | whatsup_a / pan_left_of_chair | target：pan | `[2, 775, 362, 1000]` | `[228, 766, 372, 876]` | 226 | 6 | 官方，0–1000 |
-| 2 | InternVL3-8B | whatsup_a / pillow_left_of_armchair | target：pillow | `[54, 700, 262, 921]` | `[54, 760, 265, 949]` | 60 | 11 | 官方，0–1000 |
-| 3 | SenseNova-SI-1.2 | whatsup_b / bowl_in-front_of_headphones | target：bowl | `[0.338, 546, 0.68, 0.877]` | `[0.34, 0.55, 0.67, 0.876]` | 545.45 | 4 | 无官方约定（画图假设 0–1） |
-| 4 | SenseNova-SI-1.3 | whatsup_a / sunglasses_under_table | target：sunglasses | `[414, 801, 494, 852]` | `[475, 801, 545, 852]` | 61 | 8 | 无官方约定（画图假设 0–1000） |
-| 5 | VST-7B-RL | whatsup_b / bowl_in-front_of_headphones | target：bowl | `[165, 431, 903, 832]` | `[185, 431, 809, 825]` | 94 | 2 | 无官方约定（两种假设都画了） |
+<!-- CASES_BEGIN -->
+| # | 模型 | 图像 | 真值物体（角色） | eager 原始输出 | sdpa 原始输出 | 最大差 | 换算约定 | eager 框（原图像素） | sdpa 框（原图像素） | 两框 IoU | 标注框 v3（原图像素） |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | InternVL3-8B | whatsup_a / pan_left_of_chair | pan（target） | `[2, 775, 362, 1000]` | `[228, 766, 372, 876]` | 226 | 0–1000 归一化（官方） | [3, 744, 463, 960] | [292, 735, 476, 841] | 0.16 | [285, 741, 492, 838] |
+| 2 | InternVL3-8B | whatsup_a / pillow_left_of_armchair | pillow（target） | `[54, 700, 262, 921]` | `[54, 760, 265, 949]` | 60 | 0–1000 归一化（官方） | [69, 672, 335, 884] | [69, 730, 339, 911] | 0.64 | [60, 735, 425, 895] |
+| 3 | SenseNova-SI-1.2-InternVL3-8B | whatsup_b / bowl_in-front_of_headphones | bowl（target） | `[0.338, 546, 0.68, 0.877]` | `[0.34, 0.55, 0.67, 0.876]` | 545.45 | 0–1 归一化（假设，无官方约定） | 无效（第二个数超出图像） | [435, 528, 858, 841] | — | [435, 530, 869, 839] |
+| 4 | SenseNova-SI-1.3-InternVL3-8B | whatsup_a / sunglasses_under_table | sunglasses（target） | `[414, 801, 494, 852]` | `[475, 801, 545, 852]` | 61 | 0–1000 归一化（假设，无官方约定） | [530, 769, 632, 818] | [608, 769, 698, 818] | 0.15 | [610, 765, 699, 826] |
+| 5 | VST-7B-RL | whatsup_b / bowl_in-front_of_headphones | bowl（target） | `[165, 431, 903, 832]` | `[185, 431, 809, 825]` | 94 | 模型图像像素（假设，无官方约定） | [184, 493, 1007, 951] | [206, 493, 902, 943] | 0.83 | [435, 530, 869, 839] |
+|  |  |  |  |  |  |  | 0–1000 归一化（假设，无官方约定） | [211, 414, 1156, 799] | [237, 414, 1036, 792] | 0.83 | [435, 530, 869, 839] |
 
-换算到原图像素（1280×960）后：
+图例：绿 = 标注 auto_v3 检测框，红 = eager（float32 打分，bf16），蓝虚线 = sdpa（bf16）。第 5 条两种换算假设各一幅。
 
-| # | eager | sdpa | 标注 auto_v2 检测框 | 两个输出之间的 IoU |
-|---|---|---|---|---|
-| 1 | [3, 744, 463, 960] | [292, 735, 476, 841] | [285, 741, 492, 838] | 0.16 |
-| 2 | [69, 672, 335, 884] | [69, 730, 339, 911] | [60, 735, 425, 895] | 0.64 |
-| 3 | [433, 524160, 870, 842]（第二个数无效） | [435, 528, 858, 841] | [435, 530, 869, 839] | 无意义 |
-| 4（假设） | [530, 769, 632, 818] | [608, 769, 698, 818] | [610, 765, 699, 826] | 0.15 |
-| 5（假设：模型图像像素） | [184, 493, 1007, 951] | [206, 493, 902, 943] | [435, 530, 869, 839] | 0.83 |
-| 5（假设：0–1000） | [211, 414, 1156, 799] | [237, 414, 1036, 792] | 同上 | 0.83 |
+**#1 InternVL3-8B：pan_left_of_chair / pan**
 
-对照图（绿 = 标注，红 = eager，蓝虚线 = sdpa）与完整记录：`outputs/diagnostics/bbox_impl_diff/`。
+![case1](figs/bbox_impl_diff/case1_InternVL3-8B_pan_left_of_chair_target.jpg)
+
+**#2 InternVL3-8B：pillow_left_of_armchair / pillow**
+
+![case2](figs/bbox_impl_diff/case2_InternVL3-8B_pillow_left_of_armchair_target.jpg)
+
+**#3 SenseNova-SI-1.2-InternVL3-8B：bowl_in-front_of_headphones / bowl**
+
+![case3](figs/bbox_impl_diff/case3_SenseNova-SI-1.2-InternVL3-8B_bowl_in-front_of_headphones_target.jpg)
+
+**#4 SenseNova-SI-1.3-InternVL3-8B：sunglasses_under_table / sunglasses**
+
+![case4](figs/bbox_impl_diff/case4_SenseNova-SI-1.3-InternVL3-8B_sunglasses_under_table_target.jpg)
+
+**#5 VST-7B-RL：bowl_in-front_of_headphones / bowl**
+
+![case5](figs/bbox_impl_diff/case5_VST-7B-RL_bowl_in-front_of_headphones_target.jpg)
+<!-- CASES_END -->
+
+完整记录（提示词、原始文本、首个不同的 token 位置）：`outputs/diagnostics/bbox_impl_diff/cases.json`。
 
 ## 2. 看图后的判断
 
