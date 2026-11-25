@@ -40,3 +40,23 @@ def test_hidden_states_and_attention_shapes(adapter_and_prep):
 def test_greedy_generation_is_deterministic(adapter_and_prep):
     ad, prep = adapter_and_prep
     assert checks.check_determinism(ad, prep, 8)["pass"]
+
+
+def test_eager_fp32_patch_matches_reference_in_float32():
+    """float32 模型上，“打分放到 float32 计算”的 eager 注意力与原实现应数值一致（同一算式）。"""
+    import torch
+    from transformers import Qwen2Config, Qwen2ForCausalLM
+
+    from src.models.adapter import patch_eager_fp32
+    torch.manual_seed(0)
+    cfg = Qwen2Config(vocab_size=128, hidden_size=64, intermediate_size=128, num_hidden_layers=2, num_attention_heads=4,
+                      num_key_value_heads=2, max_position_embeddings=64, attn_implementation="eager")
+    m = Qwen2ForCausalLM(cfg).eval()
+    ids = torch.arange(3, 23).unsqueeze(0)
+    with torch.no_grad():
+        ref = m(input_ids=ids, output_attentions=True)
+        rep = patch_eager_fp32(m.model.layers)
+        assert rep["applied"], rep
+        new = m(input_ids=ids, output_attentions=True)
+    assert torch.allclose(ref.logits, new.logits, atol=1e-5)
+    assert torch.allclose(ref.attentions[0], new.attentions[0], atol=1e-6)

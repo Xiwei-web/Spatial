@@ -105,7 +105,7 @@ def main(name: str) -> int:
         torch.cuda.reset_peak_memory_stats()
         ad = load_adapter(name)
         summary["tests"]["1_load"] = {"pass": True, "load_seconds": round(ad.load_seconds, 1), "gpu_mem_after_load_gb": gpu_mem_gb(),
-                                      "lm_layers_path": ad.lm_layers_path, "n_lm_layers": len(ad.lm_layers),
+                                      "lm_layers_path": ad.lm_layers_path, "eager_fp32_scoring": ad.eager_fp32, "n_lm_layers": len(ad.lm_layers),
                                       "device_map": sorted({str(v) for v in getattr(ad.model, "hf_device_map", {"": 0}).values()})}
     except Exception as e:
         summary["tests"]["1_load"] = {"pass": False, "error": f"{type(e).__name__}: {e}", "traceback": traceback.format_exc()[-3000:]}

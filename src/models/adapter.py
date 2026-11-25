@@ -74,6 +74,48 @@ class Prepared:
         return [x0 + c * cw, y0 + r * ch, x0 + (c + 1) * cw, y0 + (r + 1) * ch]
 
 
+def patch_eager_fp32(lm_layers) -> dict:
+    """让语言模型的 eager 注意力在 float32 里计算 q·k 打分和 softmax（权重、value 仍是模型精度）。
+
+    原因（见 docs/PREP_REPORT.md 冒烟部分与 outputs/diagnostics/eager_localize_*.json）：transformers 的
+    eager_attention_forward 在 bf16 里做 matmul(q, k)*scaling，Qwen2.5-7B 系语言模型在这条路径下生成明显变差
+    （RoboBrain2.0 框输出 15/40 可解析，sdpa 为 40/40）；把打分放到 float32 后恢复为 40/40，且仍能取注意力权重。
+    只在注意力模块所在的 python 模块同时提供 eager_attention_forward 和 repeat_kv、且这些层确实走该函数时生效；
+    视觉塔等其它模块保持原实现。返回是否生效及原因，写进冒烟 summary。"""
+    attn = None
+    for layer in lm_layers:
+        attn = getattr(layer, "self_attn", None)
+        if attn is not None:
+            break
+    if attn is None:
+        return {"applied": False, "why": "没有 self_attn 模块"}
+    mod = sys.modules[type(attn).__module__]
+    orig = getattr(mod, "eager_attention_forward", None)
+    if orig is None or not hasattr(mod, "repeat_kv"):
+        return {"applied": False, "why": f"{mod.__name__} 没有 eager_attention_forward/repeat_kv（实现不同，未改动）"}
+    if getattr(orig, "_interp_fp32", False):
+        return {"applied": True, "module": mod.__name__, "note": "already patched"}
+    ids = {id(l.self_attn) for l in lm_layers if getattr(l, "self_attn", None) is not None}
+
+    def eager_fp32(module, query, key, value, attention_mask, scaling, dropout=0.0, **kwargs):
+        if id(module) not in ids:
+            return orig(module, query, key, value, attention_mask, scaling, dropout, **kwargs)
+        g = module.num_key_value_groups
+        k = mod.repeat_kv(key, g).float()
+        v = mod.repeat_kv(value, g)
+        w = torch.matmul(query.float(), k.transpose(2, 3)) * scaling
+        if attention_mask is not None:
+            w = w + attention_mask.float()
+        w = nn.functional.softmax(w, dim=-1).to(query.dtype)
+        w = nn.functional.dropout(w, p=dropout, training=module.training)
+        out = torch.matmul(w, v).transpose(1, 2).contiguous()
+        return out, w
+
+    eager_fp32._interp_fp32 = True
+    mod.eager_attention_forward = eager_fp32
+    return {"applied": True, "module": mod.__name__, "n_lm_attn_modules": len(ids)}
+
+
 def find_lm_layers(model: nn.Module, num_layers: int) -> tuple[str, nn.ModuleList]:
     """找语言模型的 decoder 层列表：长度等于 num_layers、路径不含视觉/音频塔的 ModuleList。"""
     cands = []
@@ -115,6 +157,7 @@ class BaseAdapter:
         self.lm_layers_path, self.lm_layers = find_lm_layers(self.model, n)
         self.layer_mixers = self.facts["language_model"]["layer_mixers"]
         self.n_heads = self.facts["language_model"]["num_attention_heads"]
+        self.eager_fp32 = patch_eager_fp32(self.lm_layers) if self.spec.get("eager_fp32", True) else {"applied": False, "why": "disabled in adapters.yaml"}
 
     def attn_layers(self) -> list[int]:
         """有 softmax 注意力权重的层（full / sliding）。"""

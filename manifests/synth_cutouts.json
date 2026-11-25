@@ -1,0 +1,470 @@
+{
+ "task": "F4 synth cutout library",
+ "config": "configs/synth/trial_v0.yaml",
+ "thresholds": {
+  "seed": 20261125,
+  "max_side": 256,
+  "max_per_category": 30,
+  "min_per_category": 4,
+  "min_mask_area_px": 9216,
+  "min_mask_area_frac": 0.01,
+  "border_margin_px": 2,
+  "min_largest_component_frac": 0.95,
+  "min_fill": 0.4,
+  "max_other_overlap": 0.1,
+  "whatsup_annotation": "whatsup_annotations/auto_v1/annotations.jsonl"
+ },
+ "limit_images": null,
+ "library": {
+  "paths_key": "data",
+  "relative": "synth/cutouts/library.jsonl",
+  "sha256": "b545938e1d6e67c3bd09cf5585205e8cdfdc5616f0c716fa6c53d26564b44367",
+  "bytes": 861762,
+  "n_cutouts": 1333,
+  "png_total_bytes": 95445848
+ },
+ "sources": {
+  "coco_val2017": {
+   "included": true,
+   "funnel": {
+    "instances_total": 29390,
+    "small_area": 21698,
+    "pass": 2265,
+    "touches_border": 2780,
+    "iscrowd": 331,
+    "instances_in_excluded_holdout_images": 7391,
+    "overlapped": 1543,
+    "low_fill": 477,
+    "fragmented": 296
+   },
+   "holdout_exclusion_applied": true,
+   "holdout_sha256": "d78618e6139f659b03c6da23866ac1ea9eeed75f21e31dfb67ae3f4b2cd91f4b",
+   "n_holdout_images": 1000,
+   "coco_pairs_split_present": true,
+   "coco_pairs_split_sha256": "f581a8afa2f3f0d611551a66670eaf980d001ec25f31d98d5a73a0f4da02f5c3"
+  },
+  "whatsup_auto_v1": {
+   "included": false,
+   "human_verified": false,
+   "reason": "构建时 <data>/whatsup_annotations/auto_v1/annotations.jsonl 不存在"
+  }
+ },
+ "cap": {
+  "n_candidates": 2265,
+  "n_after_cap": 1349,
+  "n_kept": 1333,
+  "dropped_categories_too_few": {
+   "fork": 1,
+   "handbag": 1,
+   "knife": 2,
+   "remote": 1,
+   "snowboard": 2,
+   "spoon": 1,
+   "sports ball": 2,
+   "tennis racket": 1,
+   "toaster": 2,
+   "wine glass": 3
+  }
+ },
+ "n_categories": 63,
+ "n_by_source": {
+  "coco_val2017": 1333
+ },
+ "n_by_split": {
+  "dev": 656,
+  "test": 677
+ },
+ "n_by_source_split": {
+  "coco_val2017:dev": 656,
+  "coco_val2017:test": 677,
+  "whatsup_auto_v1:dev": 0,
+  "whatsup_auto_v1:test": 0
+ },
+ "coco_membership_counts": {
+  "in_coco_pairs": 472,
+  "in_coco_spatial_one": 659,
+  "in_coco_spatial_two": 177
+ },
+ "coco_n_source_images": 1119,
+ "per_category": {
+  "airplane": {
+   "dev": 4,
+   "test": 4,
+   "coco_val2017": 8,
+   "whatsup_auto_v1": 0
+  },
+  "apple": {
+   "dev": 5,
+   "test": 5,
+   "coco_val2017": 10,
+   "whatsup_auto_v1": 0
+  },
+  "backpack": {
+   "dev": 2,
+   "test": 2,
+   "coco_val2017": 4,
+   "whatsup_auto_v1": 0
+  },
+  "banana": {
+   "dev": 5,
+   "test": 5,
+   "coco_val2017": 10,
+   "whatsup_auto_v1": 0
+  },
+  "bear": {
+   "dev": 14,
+   "test": 14,
+   "coco_val2017": 28,
+   "whatsup_auto_v1": 0
+  },
+  "bed": {
+   "dev": 11,
+   "test": 12,
+   "coco_val2017": 23,
+   "whatsup_auto_v1": 0
+  },
+  "bench": {
+   "dev": 13,
+   "test": 14,
+   "coco_val2017": 27,
+   "whatsup_auto_v1": 0
+  },
+  "bicycle": {
+   "dev": 8,
+   "test": 8,
+   "coco_val2017": 16,
+   "whatsup_auto_v1": 0
+  },
+  "bird": {
+   "dev": 8,
+   "test": 9,
+   "coco_val2017": 17,
+   "whatsup_auto_v1": 0
+  },
+  "boat": {
+   "dev": 12,
+   "test": 13,
+   "coco_val2017": 25,
+   "whatsup_auto_v1": 0
+  },
+  "book": {
+   "dev": 5,
+   "test": 5,
+   "coco_val2017": 10,
+   "whatsup_auto_v1": 0
+  },
+  "bottle": {
+   "dev": 4,
+   "test": 5,
+   "coco_val2017": 9,
+   "whatsup_auto_v1": 0
+  },
+  "bowl": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "broccoli": {
+   "dev": 7,
+   "test": 8,
+   "coco_val2017": 15,
+   "whatsup_auto_v1": 0
+  },
+  "bus": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "cake": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "car": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "carrot": {
+   "dev": 5,
+   "test": 5,
+   "coco_val2017": 10,
+   "whatsup_auto_v1": 0
+  },
+  "cat": {
+   "dev": 9,
+   "test": 9,
+   "coco_val2017": 18,
+   "whatsup_auto_v1": 0
+  },
+  "cell phone": {
+   "dev": 4,
+   "test": 4,
+   "coco_val2017": 8,
+   "whatsup_auto_v1": 0
+  },
+  "chair": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "clock": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "couch": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "cow": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "cup": {
+   "dev": 12,
+   "test": 12,
+   "coco_val2017": 24,
+   "whatsup_auto_v1": 0
+  },
+  "dining table": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "dog": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "donut": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "elephant": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "fire hydrant": {
+   "dev": 13,
+   "test": 14,
+   "coco_val2017": 27,
+   "whatsup_auto_v1": 0
+  },
+  "frisbee": {
+   "dev": 2,
+   "test": 2,
+   "coco_val2017": 4,
+   "whatsup_auto_v1": 0
+  },
+  "giraffe": {
+   "dev": 6,
+   "test": 7,
+   "coco_val2017": 13,
+   "whatsup_auto_v1": 0
+  },
+  "horse": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "hot dog": {
+   "dev": 4,
+   "test": 5,
+   "coco_val2017": 9,
+   "whatsup_auto_v1": 0
+  },
+  "keyboard": {
+   "dev": 9,
+   "test": 10,
+   "coco_val2017": 19,
+   "whatsup_auto_v1": 0
+  },
+  "kite": {
+   "dev": 5,
+   "test": 6,
+   "coco_val2017": 11,
+   "whatsup_auto_v1": 0
+  },
+  "laptop": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "microwave": {
+   "dev": 3,
+   "test": 4,
+   "coco_val2017": 7,
+   "whatsup_auto_v1": 0
+  },
+  "motorcycle": {
+   "dev": 12,
+   "test": 12,
+   "coco_val2017": 24,
+   "whatsup_auto_v1": 0
+  },
+  "mouse": {
+   "dev": 2,
+   "test": 2,
+   "coco_val2017": 4,
+   "whatsup_auto_v1": 0
+  },
+  "orange": {
+   "dev": 8,
+   "test": 9,
+   "coco_val2017": 17,
+   "whatsup_auto_v1": 0
+  },
+  "oven": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "parking meter": {
+   "dev": 10,
+   "test": 10,
+   "coco_val2017": 20,
+   "whatsup_auto_v1": 0
+  },
+  "person": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "pizza": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "potted plant": {
+   "dev": 7,
+   "test": 7,
+   "coco_val2017": 14,
+   "whatsup_auto_v1": 0
+  },
+  "refrigerator": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "sandwich": {
+   "dev": 14,
+   "test": 15,
+   "coco_val2017": 29,
+   "whatsup_auto_v1": 0
+  },
+  "sheep": {
+   "dev": 10,
+   "test": 11,
+   "coco_val2017": 21,
+   "whatsup_auto_v1": 0
+  },
+  "sink": {
+   "dev": 12,
+   "test": 13,
+   "coco_val2017": 25,
+   "whatsup_auto_v1": 0
+  },
+  "skateboard": {
+   "dev": 2,
+   "test": 2,
+   "coco_val2017": 4,
+   "whatsup_auto_v1": 0
+  },
+  "stop sign": {
+   "dev": 9,
+   "test": 10,
+   "coco_val2017": 19,
+   "whatsup_auto_v1": 0
+  },
+  "suitcase": {
+   "dev": 11,
+   "test": 12,
+   "coco_val2017": 23,
+   "whatsup_auto_v1": 0
+  },
+  "surfboard": {
+   "dev": 5,
+   "test": 6,
+   "coco_val2017": 11,
+   "whatsup_auto_v1": 0
+  },
+  "teddy bear": {
+   "dev": 11,
+   "test": 12,
+   "coco_val2017": 23,
+   "whatsup_auto_v1": 0
+  },
+  "toilet": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "traffic light": {
+   "dev": 6,
+   "test": 6,
+   "coco_val2017": 12,
+   "whatsup_auto_v1": 0
+  },
+  "train": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "truck": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "tv": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  },
+  "umbrella": {
+   "dev": 13,
+   "test": 13,
+   "coco_val2017": 26,
+   "whatsup_auto_v1": 0
+  },
+  "vase": {
+   "dev": 9,
+   "test": 10,
+   "coco_val2017": 19,
+   "whatsup_auto_v1": 0
+  },
+  "zebra": {
+   "dev": 15,
+   "test": 15,
+   "coco_val2017": 30,
+   "whatsup_auto_v1": 0
+  }
+ },
+ "build_seconds": 46.3
+}
