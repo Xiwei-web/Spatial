@@ -1,0 +1,4 @@
+order_v2,dataset,sample_id,relation,target_centroid_x,reference_centroid_x,v3_status,usable,review_final_verdict_v2,review_source,user_decision
+1,whatsup_a,can_right_of_armchair,right,640,640,pending_user_confirmation,False,wrong_object,human_confirmed,
+67,whatsup_a,pillow_left_of_chair,left,999,655,pending_label_decision,False,unusable,human_confirmed,
+68,whatsup_a,pillow_right_of_chair,right,300,655,pending_label_decision,False,unusable,human_confirmed,

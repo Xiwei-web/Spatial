@@ -1,0 +1,35 @@
+order_v2,dataset,sample_id,change,detail,review_final_verdict,review_source,basis,review_note
+1,whatsup_a,can_right_of_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：6 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+2,whatsup_a,can_under_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：4 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+3,whatsup_a,pan_under_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：5 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+4,whatsup_a,scarf_under_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：6 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+5,whatsup_a,sunglasses_under_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：6 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+6,whatsup_b,bowl_in-front_of_can,改选候选并重新分割,reference: 候选 1 → 2，重新分割,wrong_object,ai_prereview_with_human_rules,审核表给出的候选编号（3.1 节，用户指定无需再确认）,target碗正确(T1)；reference当前R1框的是碗，罐子是R2
+7,whatsup_b,cap_in-front_of_can,改选候选并重新分割,reference: 候选 1 → 2，重新分割,wrong_object,ai_prereview_with_human_rules,审核表给出的候选编号（3.1 节，用户指定无需再确认）,target帽子正确(T1)；reference当前R1框的是帽子，罐子是R2
+8,whatsup_b,mug_in-front_of_can,改选候选并重新分割,reference: 候选 1 → 2，重新分割,wrong_object,ai_prereview_with_human_rules,审核表给出的候选编号（3.1 节，用户指定无需再确认）,target马克杯正确(T1)；reference当前R1框的是马克杯，罐子是R2
+9,whatsup_a,can_left_of_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：5 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+10,whatsup_a,can_on_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：6 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+11,whatsup_a,can_on_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：6 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+12,whatsup_a,pan_on_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：6 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+13,whatsup_b,mug_right_of_cup,改选候选并重新分割,target: 候选 2 → 1，重新分割；reference: 候选 1 → 2，重新分割,wrong_object,ai_prereview_with_human_rules,审核表给出的候选编号（3.1 节，用户指定无需再确认）,"当前两者对调：target应为T1(马克杯,0.80)，reference应为R2(红色杯子,0.57)"
+14,whatsup_a,glass_under_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[no_target_candidate]：3 个候选；建议 {'target': 'C1'}（排除与 reference 重合/覆盖的框后分数最高的候选）,wrong_object,human_confirmed,人工确认,target无可用候选，需重新检测
+21,whatsup_b,cup_in-front_of_can,改选候选并重新分割,target: 候选 2 → 1，重新分割；reference: 候选 1 → 2，重新分割,wrong_object,ai_prereview_with_human_rules,审核表给出的候选编号（3.1 节，用户指定无需再确认）,"规则(a)造成的错误：target应为T1(杯子,0.79)，reference应为R2(罐子,0.21)；与agent判断一致"
+25,whatsup_b,mug_left_of_cup,改选候选并重新分割,target: 候选 2 → 1，重新分割；reference: 候选 1 → 2，重新分割,wrong_object,ai_prereview_with_human_rules,审核表给出的候选编号（3.1 节，用户指定无需再确认）,"规则(a)造成的错误：target应为T1(马克杯,0.80)，reference应为R2(红色杯子,0.54)"
+30,whatsup_a,bread_under_armchair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[bread_body]：6 个候选；建议 {'target': 'C1'}（与当前框（面包袋尾部）不重合的最高分候选）,box_bad,human_confirmed,人工确认,只框到面包袋尾部，需重新检测面包本体
+66,whatsup_a,photograph_under_chair,改选候选并重新分割,target: 候选 1 → 2，重新分割,box_bad,ai_prereview_with_human_rules,审核表给出的候选编号（3.1 节，用户指定无需再确认）,按口径：白边计入。当前T1只框中心画面，应改选T2(含白边)
+67,whatsup_a,pillow_left_of_chair,标注未改；标记为待定（usable=false）,框正确，图像中左右位置与文件名/标签相反,unusable,human_confirmed,人工确认 + 原始数据核对（官方 JSON、文件名、压缩包内文件一致，问题在原始数据）,框正确，但标签与图像左右相反；待核对原始数据后决定改标签或剔除
+68,whatsup_a,pillow_right_of_chair,标注未改；标记为待定（usable=false）,框正确，图像中左右位置与文件名/标签相反,unusable,human_confirmed,人工确认 + 原始数据核对（官方 JSON、文件名、压缩包内文件一致，问题在原始数据）,框正确，但标签与图像左右相反；待核对原始数据后决定改标签或剔除
+80,whatsup_a,shoes_left_of_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[shoes_pair]：5 个候选；建议 {'target': 'C1'}（并集框（符合口径：两只鞋））,mask_partial,human_confirmed,人工确认,只框住左边一只鞋，应包含两只
+81,whatsup_a,shoes_on_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[shoes_pair]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：两只鞋））,mask_partial,human_confirmed,人工确认,只框住左边一只鞋，应包含两只
+82,whatsup_a,shoes_right_of_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[shoes_pair]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：两只鞋））,mask_partial,human_confirmed,人工确认,只框住左边一只鞋，应包含两只
+83,whatsup_a,shoes_under_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[shoes_pair]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：两只鞋））,mask_partial,human_confirmed,人工确认,只框住左边一只鞋，应包含两只
+322,whatsup_a,photograph_on_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[photograph_with_mat]：6 个候选；建议 {'target': 'C1'}（包含当前框且略大的最小候选（口径：包含白色衬纸））,box_bad,human_confirmed,人工确认,口径：白边计入；当前框偏小
+333,whatsup_a,plant_left_of_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[plant_with_pot]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：包含花盆））,mask_partial,human_confirmed,人工确认,口径：花盆计入；需重新标注
+334,whatsup_a,plant_left_of_table,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[plant_with_pot]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：包含花盆））,mask_partial,ai_prereview_with_human_rules,口径规则,按口径：花盆计入。当前框和mask只含叶片，花盆在框外，需重新标注
+335,whatsup_a,plant_on_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[plant_with_pot]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：包含花盆））,mask_partial,human_confirmed,人工确认,口径：花盆计入；需重新标注
+336,whatsup_a,plant_on_table,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[plant_with_pot]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：包含花盆））,mask_partial,ai_prereview_with_human_rules,口径规则,按口径：花盆计入。当前框和mask只含叶片，花盆在框外，需重新标注
+337,whatsup_a,plant_right_of_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[plant_with_pot]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：包含花盆））,mask_partial,ai_prereview_with_human_rules,口径规则,按口径：花盆计入。当前框和mask只含叶片，花盆在框外，需重新标注
+338,whatsup_a,plant_right_of_table,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[plant_with_pot]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：包含花盆））,mask_partial,ai_prereview_with_human_rules,口径规则,按口径：花盆计入。当前框和mask只含叶片，花盆在框外，需重新标注
+339,whatsup_a,plant_under_chair,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[plant_with_pot]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：包含花盆））,mask_partial,human_confirmed,人工确认,口径：花盆计入；需重新标注
+340,whatsup_a,plant_under_table,待用户确认（v3 中 usable=false，暂保留 v2 的值）,重新检测[plant_with_pot]：6 个候选；建议 {'target': 'C1'}（并集框（符合口径：包含花盆））,mask_partial,human_confirmed,人工确认,口径：花盆计入；需重新标注
+682,whatsup_b,mug_in-front_of_cup,待用户确认（v3 中 usable=false，暂保留 v2 的值）,"重新检测[swapped_boxes]：5 个候选；建议 {'target': 'T1', 'reference': 'R2'}（修正后的规则 (a)：两者最高分候选重合，target 分数高 → target 保留 T1，reference 改用 R2）",wrong_object,human_confirmed,人工确认,target与reference的框对调
