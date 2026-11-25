@@ -13,7 +13,7 @@ models:
   Qwen3.5-9B:             {kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}}
   Qwen3.6-27B:            {kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}, n_gpus: 3}
   Qwen3.8-27B:            {kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}, n_gpus: 3}
-  Qwen3.6-35B-A3B:        {kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}, n_gpus: 4}
+  Qwen3.6-35B-A3B:        {kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}, n_gpus: 3}
   GLM-4.6V-Flash:         {kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}}
   gemma-4-31B-it:         {kind: hf_chat, grid: gemma_pool, chat_kwargs: {enable_thinking: false}, n_gpus: 3}
   LLaVA-OneVision-7B:     {kind: hf_chat, grid: llava_ov, max_image_side: 768, n_gpus: 2}   # 原图 1280x960 默认 anyres 产生 7309 个视觉 token，eager 注意力在 40GB 上 OOM；输入先等比缩到长边 768
