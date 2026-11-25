@@ -1,0 +1,53 @@
+# 合成场景 trial_v1（用户 2026-11-25）。完全由「本文件 + 抠图库 library_v1 + 场景序号」决定。生成器 src/synth/generator_v1.py。
+version: trial_v1
+cutout_split_name: synth_library_v1      # splits/synth_library_v1.json；场景继承抠图所在的一侧，一个场景内所有抠图同侧
+global_seed: 20261125
+canvas: 896
+n_scenes: 500
+factors:
+  gap_px: [0, 4, 8, 16, 32, 64, 128, 256]                          # 主网格：两个 mask 在关系轴上投影区间的空隙，不重叠
+  occlusion_tiers: [[0.005, 0.10], [0.10, 0.30], [0.30, 0.50]]      # 重叠子集：下层物体被遮挡的比例（第一档下限 0.5%，保证确有重叠）
+  size_frac: [0.08, 0.12, 0.18]                                    # sqrt(mask 面积) / 画布宽 → 72 / 108 / 161 px
+  axis: [horizontal, vertical]
+  n_distractors: [0, 2, 4, 6]
+  background: [solid, linear_gradient, radial_gradient, noise]
+jitter: {max_frac_of_distance: 0.25, max_px: 32}                    # 垂直于关系轴的质心差，|jit| <= floor(min(frac * 质心沿轴距离, max))
+placement:
+  canvas_margin_px: 16             # 所有物体（含孪生图和干扰物）的 mask 框离画布边至少这么远
+  distractor_gap_px: 8
+  max_distractor_tries: 200
+  max_attempts: 600
+  max_swap_candidates: 60          # 身份互换时最多试多少个替换抠图
+max_upscale: 1.5
+identity_swap: {max_centroid_dev_px: 2.0}
+overlap: {min_axis_over_perp: 2.0} # 重叠子集里质心沿轴距离至少是垂直距离的这么多倍，保证关系明确
+alpha_threshold: 128
+png_compress_level: 6
+token_cell_px:                     # 896x896 画布上一个视觉 token 对应的像素边长（由各模型处理器实算，见 scripts/generate_synth_v1.py --check-cells）
+  Qwen2.5-VL / RoboBrain / VST / GLM-4.6V: 28
+  Qwen3-VL / Qwen3.5: 32
+  LLaVA-1.5: 37.3333
+  InternVL3 / 3.5 / SenseNova (448 single view): 56
+
+# 名称不同但容易混淆的类别；同一组里的类别在一个场景里最多出现一个（主物体、替换物体、干扰物都算）
+confusable_groups:
+  - [cup, mug, glass, wine glass, wineglass]
+  - [bottle, beer bottle, water bottle, bottle of mustard, bottle of orange juice, vase]
+  - [can, soda can]
+  - [hat, cap, helmet]
+  - [chair, armchair, couch, bench]
+  - [glasses, sunglasses]
+  - [yarn, ball of yarn, sports ball, orange, apple, lemon]
+  - [phone, cell phone, remote]
+  - [plant, potted plant, flower, rose, toy cactus]
+  - [table, dining table]
+  - [pot, pan, bowl, plate, frisbee]
+  - [book, notepad, laptop]
+  - [painting, photograph, tv]
+  - [car, truck, bus]
+  - [cow, sheep, horse, dog, cat, bear, zebra, giraffe, elephant]
+  - [motorcycle, bicycle]
+  - [knife, fork, spoon, spatula, scissors]
+  - [suitcase, backpack, handbag, box]
+  - [sandwich, hot dog, bread, cake, donut, pizza]
+  - [skateboard, surfboard, snowboard, skis]
