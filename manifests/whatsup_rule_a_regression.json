@@ -1,0 +1,126 @@
+{
+ "stats": {
+  "n": 820,
+  "v2_rule_reproduced": 820,
+  "new_differs": 7,
+  "agree": 6,
+  "disagree": 0,
+  "not_comparable": 1,
+  "new_reason": {
+   "top_score": 752,
+   "target_moved": 52,
+   "no_alternative_for_target": 9,
+   "reference_moved": 7
+  },
+  "review_picks_not_reproduced_by_new_rule": 1
+ },
+ "rows": [
+  [
+   "6",
+   "whatsup_b",
+   "bowl_in-front_of_can",
+   "T1/R1",
+   "T1/R2",
+   "reference_moved",
+   "0.92",
+   "0.26",
+   "wrong_object",
+   "ai_prereview_with_human_rules",
+   "审核改选 T1/R2",
+   "一致"
+  ],
+  [
+   "7",
+   "whatsup_b",
+   "cap_in-front_of_can",
+   "T1/R1",
+   "T1/R2",
+   "reference_moved",
+   "0.85",
+   "0.29",
+   "wrong_object",
+   "ai_prereview_with_human_rules",
+   "审核改选 T1/R2",
+   "一致"
+  ],
+  [
+   "8",
+   "whatsup_b",
+   "mug_in-front_of_can",
+   "T1/R1",
+   "T1/R2",
+   "reference_moved",
+   "0.88",
+   "0.27",
+   "wrong_object",
+   "ai_prereview_with_human_rules",
+   "审核改选 T1/R2",
+   "一致"
+  ],
+  [
+   "13",
+   "whatsup_b",
+   "mug_right_of_cup",
+   "T2/R1",
+   "T1/R2",
+   "reference_moved",
+   "0.80",
+   "0.59",
+   "wrong_object",
+   "ai_prereview_with_human_rules",
+   "审核改选 T1/R2",
+   "一致"
+  ],
+  [
+   "21",
+   "whatsup_b",
+   "cup_in-front_of_can",
+   "T2/R1",
+   "T1/R2",
+   "reference_moved",
+   "0.79",
+   "0.30",
+   "wrong_object",
+   "ai_prereview_with_human_rules",
+   "审核改选 T1/R2",
+   "一致"
+  ],
+  [
+   "25",
+   "whatsup_b",
+   "mug_left_of_cup",
+   "T2/R1",
+   "T1/R2",
+   "reference_moved",
+   "0.80",
+   "0.61",
+   "wrong_object",
+   "ai_prereview_with_human_rules",
+   "审核改选 T1/R2",
+   "一致"
+  ],
+  [
+   "682",
+   "whatsup_b",
+   "mug_in-front_of_cup",
+   "T2/R1",
+   "T1/R2",
+   "reference_moved",
+   "0.79",
+   "0.62",
+   "wrong_object",
+   "human_confirmed",
+   "审核未给出可比较的编号（T='' R=''，wrong_object）",
+   "无法比较"
+  ]
+ ],
+ "missed": [
+  [
+   "66",
+   "photograph_under_chair",
+   "审核 T2/R1",
+   "新规则 T1/R1",
+   "按口径：白边计入。当前T1只框中心画面，应改选T2(含白边)"
+  ]
+ ]
+}

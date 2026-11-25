@@ -1,0 +1,45 @@
+# What's Up 标注 v3 = v2 + 审核结论（annotations/whatsup/review_final_v2.csv）。v1、v2 保留不动。
+# 状态表述：自动标注，经模型辅助预审和部分人工复核（见 configs/annotation/object_conventions.yaml）。
+version: auto_v3
+base_version: auto_v2
+review_table: annotations/whatsup/review_final_v2.csv
+detector: {name: groundingdino, variant: swinb, candidate_floor: 0.10, dedup_iou: 0.8}
+segmenter: {name: sam2.1-hiera-large, multimask_output: false}
+selection: {rule: select_v3, coincide_iou: 0.8}    # 修正后的规则 (a)，见 src/annotate/selection.py；v3 本身只按审核结论改动，不用它重选全量
+boxes: {default_truth_box: null}                    # 仍未确定用检测框还是 mask 外接框
+qc:                                                 # 与 v2 相同
+  low_score: 0.35
+  ambiguous_margin: 0.10
+  min_area_frac: {whatsup_a: 0.0002, whatsup_b: 0.002}
+  max_area_frac: 0.60
+  max_pair_mask_iou: 0.5
+  geometry: {left: "target 质心 x < reference 质心 x", right: "target 质心 x > reference 质心 x",
+             on: "target 质心 y < reference 检测框下边缘 y", under: "target 质心 y > reference 质心 y"}
+  min_mask_box_iou: 0.8
+review: {allowed_human_verdicts: [ok, wrong_object, box_bad, mask_partial, mask_overflow, unusable]}
+# ---- 审核后的处理清单（order 指 review_final_v2.csv 的 order 列）----
+direct_picks: [6, 7, 8, 13, 21, 25, 66]          # 3.1：按审核表的候选编号直接改选并重新分割，不需再确认
+label_check: [67, 68]                              # 3.3：框正确、标签与图像左右相反（原始数据问题），待用户决定更正或剔除
+redetect:                                          # 3.2：重新检测后出候选图，待用户确认；确认前在 v3 中标记为不可用
+  floor: 0.05                                      # 重新检测时的候选下限（原为 0.10）
+  exclude_reference_iou: 0.5                       # 排除与 reference 框 IoU 超过该值的候选
+  exclude_covering_reference: 0.6                  # 排除覆盖了 reference 框面积该比例以上的候选（家具被当成小物体）
+  max_candidates: 6
+  cases:
+    no_target_candidate: {orders: [1, 2, 3, 4, 5, 9, 10, 11, 12, 14]}
+    bread_body: {orders: [30]}
+    shoes_pair: {orders: [80, 81, 82, 83]}
+    plant_with_pot: {orders: [333, 334, 335, 336, 337, 338, 339, 340]}
+    photograph_with_mat: {orders: [322]}
+    swapped_boxes: {orders: [682]}
+  # “更具体的提示词”：每个物体名称依次尝试这些短语（第一项是原名称）。这是为重新检测人工拟定的同义/具体化短语，记录在候选的 prompt 字段里。
+  prompts:
+    can: [can, soda can, tin can, beverage can]
+    pan: [pan, frying pan, skillet]
+    scarf: [scarf, piece of cloth, folded scarf]
+    sunglasses: [sunglasses, glasses, eyeglasses]
+    glass: [glass, drinking glass, glass cup]
+    bread: [bread, loaf of bread, bread in a plastic bag]
+    shoes: [shoe, shoes, pair of shoes]
+    plant: [potted plant, plant in a pot, plant, flower pot, pot]
+    photograph: [photograph, photograph with white border, picture, photo print, framed picture]

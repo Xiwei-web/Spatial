@@ -1,0 +1,16 @@
+# What's Up 物体的标注口径（用户 2026-11-25 审核 v2 时确定；适用于所有后续标注）。
+# 框和 mask 都按这里的范围标注。
+conventions:
+  plant: "包含花盆"
+  photograph: "包含白色衬纸"
+  shoes: "包含两只鞋"
+  microphone: "不含线缆"
+  rose: "不含花茎"
+  flower: "不含花茎"
+  bread: "不含面包袋的透明尾部"
+# 审核方式的如实表述（任何文档提到这份标注时都必须用这个说法）
+annotation_status_wording: "自动标注，经模型辅助预审和部分人工复核"
+review_provenance:        # 来自 annotations/whatsup/review_final_v2.csv 的 review_source 列
+  human_confirmed: "用户本人逐张确认（41 张）"
+  ai_prereview_with_human_rules: "按用户定的口径规则由模型预审判定（83 张）"
+  ai_prereview_thumbnail_only: "只在缩略图上做了模型预审，未经用户逐张检查（696 张）"
