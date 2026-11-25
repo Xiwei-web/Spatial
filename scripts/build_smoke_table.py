@@ -51,4 +51,11 @@ out = ["# 冒烟测试结果（SMOKE_RESULTS）", "",
        "| 模型 | 环境 | " + " | ".join(HEAD) + " | 显存 GB | 秒/样本 | commit |", "|---|---|" + "---|" * 11] + rows
 out += ["", "## 失败项与说明", ""] + (notes or ["（无）"])
 (paths.REPO_ROOT / "docs" / "SMOKE_RESULTS.md").write_text("\n".join(out) + "\n")
+rep = paths.REPO_ROOT / "docs" / "PREP_REPORT.md"
+if rep.is_file():   # 刷新报告里的冒烟结果表（两个标记之间的内容）
+    t = rep.read_text()
+    a, b = "<!-- SMOKE_TABLE_BEGIN -->", "<!-- SMOKE_TABLE_END -->"
+    if a in t and b in t:
+        block = "\n".join(out[6:])
+        rep.write_text(t[: t.index(a) + len(a)] + "\n" + block + "\n" + t[t.index(b):])
 print("\n".join(rows))
