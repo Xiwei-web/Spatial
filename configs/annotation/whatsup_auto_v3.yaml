@@ -6,7 +6,7 @@ review_table: annotations/whatsup/review_final_v2.csv
 detector: {name: groundingdino, variant: swinb, candidate_floor: 0.10, dedup_iou: 0.8}
 segmenter: {name: sam2.1-hiera-large, multimask_output: false}
 selection: {rule: select_v3, coincide_iou: 0.8}    # 修正后的规则 (a)，见 src/annotate/selection.py；v3 本身只按审核结论改动，不用它重选全量
-boxes: {default_truth_box: null}                    # 仍未确定用检测框还是 mask 外接框
+boxes: {default_truth_box: box_gt_xyxy}             # 用户 2026-11-25：原始 mask（减去 target 之前）的外接框；box_det_xyxy 只作对照
 qc:                                                 # 与 v2 相同
   low_score: 0.35
   ambiguous_margin: 0.10

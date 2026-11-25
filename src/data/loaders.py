@@ -99,19 +99,24 @@ def _coco_index():
     by_img: dict[int, dict[str, list]] = {}
     for a in d["annotations"]:
         by_img.setdefault(a["image_id"], {}).setdefault(cats[a["category_id"]], []).append(a)
-    return by_img
+    sizes = {im["id"]: (im["height"], im["width"]) for im in d["images"]}
+    return by_img, sizes
 
 
 def _coco_box_mask(image_id: int, name: str | None):
-    """该类别在图中恰好只有一个非 crowd 实例时才给框和 mask，否则返回 None（不猜）。"""
+    """该类别在图中恰好只有一个非 crowd 实例时才给框和 mask，否则返回 None（不猜）。
+    返回 (真值框 = mask 外接框, mask, COCO 自带的框)；真值框的规定见 configs/annotation/object_conventions.yaml。"""
     idx = _coco_index()
     if idx is None or name is None:
-        return None, None
-    anns = [a for a in idx.get(image_id, {}).get(name, []) if not a.get("iscrowd", 0)]
+        return None, None, None
+    by_img, sizes = idx
+    anns = [a for a in by_img.get(image_id, {}).get(name, []) if not a.get("iscrowd", 0)]
     if len(anns) != 1:
-        return None, None
+        return None, None, None
+    from src.annotate.masks import coco_segmentation_bbox
     x, y, w, h = anns[0]["bbox"]
-    return [x, y, x + w, y + h], anns[0]["segmentation"]
+    seg = anns[0]["segmentation"]
+    return coco_segmentation_bbox(seg, *sizes[image_id]), seg, [x, y, x + w, y + h]
 
 
 def _qa(name: str, ann: str, image_fmt, coco: bool) -> list[Sample]:
@@ -122,8 +127,8 @@ def _qa(name: str, ann: str, image_fmt, coco: bool) -> list[Sample]:
         sid = f"{i:05d}_{img_id}"
         extra = {}
         if coco:
-            bt, mt = _coco_box_mask(int(img_id), t)
-            br, mr = _coco_box_mask(int(img_id), ref)
+            bt, mt, extra["coco_bbox_target"] = _coco_box_mask(int(img_id), t)
+            br, mr, extra["coco_bbox_reference"] = _coco_box_mask(int(img_id), ref)
         else:
             # GQA-spatial：框来自 GQA scene graph 的名称匹配（scripts/build_gqa_boxes.py 预先算好）。
             # 只有唯一匹配才有框；其余样本保留、框为 None，原因写在 extra['box_status']。没有 mask。

@@ -472,5 +472,6 @@
   "geometry_inconsistent": 2,
   "mask_box_mismatch": 1
  },
- "annotations_sha256": "83d9221db782aa1d99ec5eb0931bf3e1b6b1e06c544d60ae84cccda1edb9996c"
+ "annotations_sha256": "71e83fa8d3b5a46e5c4915f5493530ee258d8bdb9e471f0a796e9a47b0582ca3",
+ "default_truth_box": "box_gt_xyxy = 原始 mask（减去 target 之前）的外接框"
 }

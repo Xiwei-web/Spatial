@@ -34,3 +34,26 @@ def subtract_target_from_reference(rec: dict) -> dict | None:
     R.update({k: new[k] for k in ("mask_rle", "mask_area", "mask_centroid_xy")})
     return {"inter": inter, "raw_area": raw["mask_area"], "new_area": new["mask_area"], "remaining": new["mask_area"] / raw["mask_area"],
             "inter_over_target": inter / T["mask_area"], "bbox_would_change": new["mask_bbox_xyxy"] != raw["mask_bbox_xyxy"]}
+
+
+def rle_bbox(rle) -> list[float]:
+    """mask 的外接框 [x1, y1, x2, y2]（右下为开区间，与 mask_fields 的 mask_bbox_xyxy 同一约定）。"""
+    x, y, w, h = (float(v) for v in mu.toBbox(rle))
+    return [x, y, x + w, y + h]
+
+
+def coco_segmentation_bbox(segmentation, height: int, width: int) -> list[float]:
+    """COCO segmentation（polygon 列表 / 未压缩 RLE / 压缩 RLE）的 mask 外接框。"""
+    if isinstance(segmentation, list):
+        rle = mu.merge(mu.frPyObjects(segmentation, height, width))
+    elif isinstance(segmentation["counts"], list):
+        rle = mu.frPyObjects(segmentation, height, width)
+    else:
+        rle = segmentation
+    return rle_bbox(rle)
+
+
+def add_gt_box(rec: dict) -> None:
+    """默认真值框（用户 2026-11-25）：原始 mask（减去 target 之前）的外接框，存为 box_gt_xyxy。检测框 box_det_xyxy 保留作对照。"""
+    for o in rec["objects"].values():
+        o["box_gt_xyxy"] = rle_bbox((o.get("mask_reference_raw") or o)["mask_rle"])

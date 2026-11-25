@@ -18,6 +18,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from src import paths
+from src.annotate.masks import rle_bbox
 from src.data.loaders import Sample
 
 REVISION = "01b38d2c7aa805223518c061f2a7602ad8f491ef"
@@ -114,8 +115,13 @@ def depth_relation(category: str, answer: str) -> tuple[str | None, str]:
 _REL_TEXT = {"front": "in front of", "behind": "behind"}
 
 
-def depth_samples() -> list[Sample]:
-    """front_predicate / behind_predicate → 统一 Sample。
+def depth_samples(include_same_class: bool = False) -> list[Sample]:
+    """front_predicate / behind_predicate → 统一 Sample。深度检验只用本数据集（What's Up B 的 front/behind 与垂直位置完全混淆）。
+
+    用户 2026-11-25 的规则：
+    - 真值框 = mask 外接框（bbox_*）；数据集自带的框在 extra["provided_bbox_target" / "provided_bbox_reference"]，只作对照；
+    - 两个区域类名相同的 14 条跳过（include_same_class=True 时才返回）；
+    - 标准答案只有 “No.” 一类、真实关系靠“否定即相反”推出的 34 条保留，extra["relation_inferred_from_bare_no"]=True，必须单独报告。
 
     target = Region [0] 的类名，reference = Region [1] 的类名（两类模板里主语都是 Region [0]，参照物都是 Region [1]）；
     relation ∈ {front, behind} 由 depth_relation 给出；bbox / mask 按区域下标取。
@@ -129,14 +135,19 @@ def depth_samples() -> list[Sample]:
         if rel is None or r.n_regions != 2:
             continue
         t, ref = r.region_class(0), r.region_class(1)
+        same = t.strip().lower() == ref.strip().lower()
+        if same and not include_same_class:
+            continue
         cap = lambda x: f"Region [0] is {_REL_TEXT[x]} Region [1]"   # noqa: E731
         out.append(Sample(
             dataset="spatialrgpt_depth", sample_id=r.id, image_path=r.image_path, target=t, reference=ref, relation=rel,
             caption_true=cap(rel), caption_options=[cap(rel), cap(_OPPOSITE[rel])],
-            bbox_target=r.bboxes[0], bbox_reference=r.bboxes[1], mask_target=r.rles[0], mask_reference=r.rles[1],
+            bbox_target=rle_bbox(r.rles[0]), bbox_reference=rle_bbox(r.rles[1]), mask_target=r.rles[0], mask_reference=r.rles[1],
             extra={"category": r.category, "question_mask": r.question_mask, "question_region": r.question_region,
                    "answer": r.answer, "gold_yes_no": parse_yes_no(r.answer), "relation_source": src,
-                   "image_source": r.image_source, "same_class": t.strip().lower() == ref.strip().lower()},
+                   "relation_inferred_from_bare_no": src == "answer_no_implied_opposite",
+                   "provided_bbox_target": r.bboxes[0], "provided_bbox_reference": r.bboxes[1],
+                   "image_source": r.image_source, "same_class": same},
         ))
     return out
 
@@ -257,7 +268,8 @@ def stats() -> dict:
     recs = load_records()
     per_cat = collections.Counter(r.category for r in recs)
     ok_counts = sum(len(r.bboxes) == len(r.rles) == r.n_regions == r.question_mask.count("<mask>") for r in recs)
-    depth = depth_samples()
+    depth = depth_samples(include_same_class=True)
+    used = depth_samples()
     by_cat_rel = collections.Counter((s.extra["category"], s.extra["gold_yes_no"], s.relation, s.extra["relation_source"]) for s in depth)
     rw = collections.Counter()
     rw_pos = collections.Counter()
@@ -288,6 +300,12 @@ def stats() -> dict:
             "relation_source": dict(collections.Counter(s.extra["relation_source"] for s in depth)),
             "image_source": dict(collections.Counter(s.extra["image_source"] for s in depth)),
             "same_class": sum(s.extra["same_class"] for s in depth),
+            "used_after_skipping_same_class": {
+                "n": len(used), "by_true_relation": dict(collections.Counter(s.relation for s in used)),
+                "n_inferred_from_bare_no": sum(s.extra["relation_inferred_from_bare_no"] for s in used),
+                "n_explicit": sum(not s.extra["relation_inferred_from_bare_no"] for s in used),
+                "explicit_by_relation": dict(collections.Counter(s.relation for s in used if not s.extra["relation_inferred_from_bare_no"])),
+                "inferred_by_relation": dict(collections.Counter(s.relation for s in used if s.extra["relation_inferred_from_bare_no"]))},
             "same_class_by_category": dict(collections.Counter(s.extra["category"] for s in depth if s.extra["same_class"])),
             "n_with_both_bbox": sum(s.bbox_target is not None and s.bbox_reference is not None for s in depth),
             "n_with_both_mask": sum(s.mask_target is not None and s.mask_reference is not None for s in depth),

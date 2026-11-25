@@ -19,6 +19,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from src import paths
+from src.annotate.masks import coco_segmentation_bbox
 
 from .loaders import Sample
 
@@ -229,13 +230,22 @@ def record_to_sample(r: dict, anns: dict | None = None) -> Sample:
         extra[f"{side}_area_decoded"] = o["area_decoded"]
         extra[f"{side}_area_frac"] = o["area_frac"]
         extra[f"{side}_centroid"] = o["centroid"]
+    # 真值框 = mask 外接框（用户 2026-11-25）；记录里的 bbox 是 COCO 自带的框，几何量（间距、IoU 等）是按它算的，保留在 extra
+    extra["coco_bbox_target"], extra["coco_bbox_reference"] = list(t["bbox"]), list(ref["bbox"])
+    gt = {}
+    for side, o in (("target", t), ("reference", ref)):
+        if anns is None:
+            gt[side] = None
+        else:
+            im = load_coco_instances()["images"][r["image_id"]]
+            gt[side] = coco_segmentation_bbox(anns[o["ann_id"]]["segmentation"], im["height"], im["width"])
     cap_true = make_caption(t["category"], ref["category"], r["relation"])
     cap_false = make_caption(t["category"], ref["category"], OPPOSITE[r["relation"]])
     return Sample(
         dataset=DATASET, sample_id=r["pair_id"], image_path=str(coco_image_path(r["file_name"])),
         target=t["category"], reference=ref["category"], relation=r["relation"],
         caption_true=cap_true, caption_options=[cap_true, cap_false],
-        bbox_target=list(t["bbox"]), bbox_reference=list(ref["bbox"]),
+        bbox_target=gt["target"], bbox_reference=gt["reference"],
         mask_target=None if anns is None else anns[t["ann_id"]]["segmentation"],
         mask_reference=None if anns is None else anns[ref["ann_id"]]["segmentation"],
         extra=extra,

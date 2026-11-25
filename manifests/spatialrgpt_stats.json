@@ -35,6 +35,23 @@
   "same_class_by_category": {
    "behind_predicate": 5,
    "front_predicate": 9
+  },
+  "used_after_skipping_same_class": {
+   "by_true_relation": {
+    "behind": 44,
+    "front": 52
+   },
+   "explicit_by_relation": {
+    "behind": 32,
+    "front": 35
+   },
+   "inferred_by_relation": {
+    "behind": 12,
+    "front": 17
+   },
+   "n": 96,
+   "n_explicit": 67,
+   "n_inferred_from_bare_no": 29
   }
  },
  "image_source_all": {

@@ -8,8 +8,12 @@ conventions:
   rose: "不含花茎"
   flower: "不含花茎"
   bread: "不含面包袋的透明尾部"
+  glasses: "包含镜片，整副填实"
+  sunglasses: "包含镜片，整副填实"
 # mask 的通用口径（用户 2026-11-25；实现见 src/annotate/masks.py: subtract_target_from_reference）
 mask_visibility_rule: "每个 mask 只包含该物体可见的像素；当 target 放在或挡在 reference 上时，reference 的 mask 不含被 target 覆盖的部分。"
+# 真值框（用户 2026-11-25；What's Up、SpatialRGPT、COCO 统一）
+truth_box_rule: "真值框 = 原始 mask（减去 target 之前）的外接框；What's Up 存为 box_gt_xyxy。检测框 / 数据集自带框只作对照。"
 # 审核方式的如实表述（任何文档提到这份标注时都必须用这个说法）
 annotation_status_wording: "自动标注，经模型辅助预审和部分人工复核"
 review_provenance:        # 来自 annotations/whatsup/review_final_v2.csv 的 review_source 列

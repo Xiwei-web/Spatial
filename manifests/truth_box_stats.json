@@ -1,0 +1,447 @@
+{
+ "coco_spatial_one": {
+  "n_objects": 2247,
+  "min": 0.94,
+  "p1": 0.98,
+  "p5": 0.987,
+  "p50": 0.994,
+  "n_lt_0.5": 0,
+  "n_lt_0.8": 0,
+  "n_lt_0.9": 0,
+  "n_lt_0.95": 1,
+  "iou_lt_0.8": []
+ },
+ "coco_spatial_two": {
+  "n_objects": 880,
+  "min": 0.975,
+  "p1": 0.981,
+  "p5": 0.986,
+  "p50": 0.994,
+  "n_lt_0.5": 0,
+  "n_lt_0.8": 0,
+  "n_lt_0.9": 0,
+  "n_lt_0.95": 0,
+  "iou_lt_0.8": []
+ },
+ "coco_pairs(unique objects)": {
+  "n_objects": 3101,
+  "min": 0.88,
+  "p1": 0.974,
+  "p5": 0.982,
+  "p50": 0.994,
+  "n_lt_0.5": 0,
+  "n_lt_0.8": 0,
+  "n_lt_0.9": 1,
+  "n_lt_0.95": 5,
+  "iou_lt_0.8": []
+ },
+ "spatialrgpt_depth(used)": {
+  "n_objects": 192,
+  "min": 0.329,
+  "p1": 0.407,
+  "p5": 0.556,
+  "p50": 0.795,
+  "n_lt_0.5": 3,
+  "n_lt_0.8": 99,
+  "n_lt_0.9": 159,
+  "n_lt_0.95": 180,
+  "iou_lt_0.8": [
+   {
+    "id": "qualitative_gTR3O1nDxz:reference",
+    "iou": 0.329
+   },
+   {
+    "id": "qualitative_Mbfutq82tX:target",
+    "iou": 0.334
+   },
+   {
+    "id": "qualitative_1Qfxu8OnAP:target",
+    "iou": 0.414
+   },
+   {
+    "id": "qualitative_pnrfaUk9lf:reference",
+    "iou": 0.502
+   },
+   {
+    "id": "qualitative_b8hZFil44E:target",
+    "iou": 0.526
+   },
+   {
+    "id": "qualitative_sBfp6ADRId:target",
+    "iou": 0.534
+   },
+   {
+    "id": "qualitative_VeI9YjLe6d:target",
+    "iou": 0.548
+   },
+   {
+    "id": "qualitative_PpcxD27m3i:target",
+    "iou": 0.548
+   },
+   {
+    "id": "qualitative_hy3kyCRKze:target",
+    "iou": 0.551
+   },
+   {
+    "id": "qualitative_Dpv5s8ioRF:target",
+    "iou": 0.551
+   },
+   {
+    "id": "qualitative_PiltzQIm7a:reference",
+    "iou": 0.56
+   },
+   {
+    "id": "qualitative_qIjl6Y4Zja:reference",
+    "iou": 0.574
+   },
+   {
+    "id": "qualitative_iwxK9EjtZu:reference",
+    "iou": 0.588
+   },
+   {
+    "id": "qualitative_aHaj4T6mzl:target",
+    "iou": 0.595
+   },
+   {
+    "id": "qualitative_quSYsapnHe:target",
+    "iou": 0.595
+   },
+   {
+    "id": "qualitative_CdAUCg5Jjp:target",
+    "iou": 0.599
+   },
+   {
+    "id": "qualitative_RNuy7Qxczs:target",
+    "iou": 0.609
+   },
+   {
+    "id": "qualitative_sBfp6ADRId:reference",
+    "iou": 0.627
+   },
+   {
+    "id": "qualitative_iwxK9EjtZu:target",
+    "iou": 0.632
+   },
+   {
+    "id": "qualitative_PpcxD27m3i:reference",
+    "iou": 0.636
+   },
+   {
+    "id": "qualitative_12bRISq0qW:reference",
+    "iou": 0.641
+   },
+   {
+    "id": "qualitative_UbZvu8MoCt:target",
+    "iou": 0.641
+   },
+   {
+    "id": "qualitative_hyvV0qnSJ6:reference",
+    "iou": 0.644
+   },
+   {
+    "id": "qualitative_LZuOwBUhAZ:target",
+    "iou": 0.645
+   },
+   {
+    "id": "qualitative_Pd1DYbNNcV:target",
+    "iou": 0.645
+   },
+   {
+    "id": "qualitative_QOYsoL680F:target",
+    "iou": 0.645
+   },
+   {
+    "id": "qualitative_LprC6pv9aY:reference",
+    "iou": 0.647
+   },
+   {
+    "id": "qualitative_kEpqR5CAga:reference",
+    "iou": 0.647
+   },
+   {
+    "id": "qualitative_4IAqvrkjIi:target",
+    "iou": 0.658
+   },
+   {
+    "id": "qualitative_nznNRM0o1z:target",
+    "iou": 0.658
+   },
+   {
+    "id": "qualitative_JEMR9nx4cI:reference",
+    "iou": 0.658
+   },
+   {
+    "id": "qualitative_yXIU6Mpphu:target",
+    "iou": 0.661
+   },
+   {
+    "id": "qualitative_VeI9YjLe6d:reference",
+    "iou": 0.662
+   },
+   {
+    "id": "qualitative_ky64a578Ov:target",
+    "iou": 0.664
+   },
+   {
+    "id": "qualitative_Dpv5s8ioRF:reference",
+    "iou": 0.67
+   },
+   {
+    "id": "qualitative_CrNXK9bj1d:target",
+    "iou": 0.672
+   },
+   {
+    "id": "qualitative_3asuP4XLLB:target",
+    "iou": 0.673
+   },
+   {
+    "id": "qualitative_lcL10PCiKo:target",
+    "iou": 0.676
+   },
+   {
+    "id": "qualitative_sYBxTzGhnX:reference",
+    "iou": 0.676
+   },
+   {
+    "id": "qualitative_MkDVKzfFtM:target",
+    "iou": 0.682
+   },
+   {
+    "id": "qualitative_1Qfxu8OnAP:reference",
+    "iou": 0.684
+   },
+   {
+    "id": "qualitative_tGPxrsiA33:target",
+    "iou": 0.686
+   },
+   {
+    "id": "qualitative_hy3kyCRKze:reference",
+    "iou": 0.694
+   },
+   {
+    "id": "qualitative_t0lzpdtMAq:target",
+    "iou": 0.695
+   },
+   {
+    "id": "qualitative_z88YOZpvgD:reference",
+    "iou": 0.7
+   },
+   {
+    "id": "qualitative_aHaj4T6mzl:reference",
+    "iou": 0.701
+   },
+   {
+    "id": "qualitative_7m7C2elAGK:target",
+    "iou": 0.704
+   },
+   {
+    "id": "qualitative_TKUyLRwmtS:reference",
+    "iou": 0.705
+   },
+   {
+    "id": "qualitative_z88YOZpvgD:target",
+    "iou": 0.711
+   },
+   {
+    "id": "qualitative_3ujyyTh2EW:target",
+    "iou": 0.714
+   },
+   {
+    "id": "qualitative_JEMR9nx4cI:target",
+    "iou": 0.714
+   },
+   {
+    "id": "qualitative_c3642YpOWJ:reference",
+    "iou": 0.716
+   },
+   {
+    "id": "qualitative_quSYsapnHe:reference",
+    "iou": 0.717
+   },
+   {
+    "id": "qualitative_Mbfutq82tX:reference",
+    "iou": 0.718
+   },
+   {
+    "id": "qualitative_nVTmvCxgYs:target",
+    "iou": 0.718
+   },
+   {
+    "id": "qualitative_CrNXK9bj1d:reference",
+    "iou": 0.722
+   },
+   {
+    "id": "qualitative_UbZvu8MoCt:reference",
+    "iou": 0.723
+   },
+   {
+    "id": "qualitative_ou5n5ZAZsq:reference",
+    "iou": 0.733
+   },
+   {
+    "id": "qualitative_sYBxTzGhnX:target",
+    "iou": 0.733
+   },
+   {
+    "id": "qualitative_MuKRgMJlTV:reference",
+    "iou": 0.738
+   },
+   {
+    "id": "qualitative_KaFBPC2T6E:reference",
+    "iou": 0.74
+   },
+   {
+    "id": "qualitative_KRFYnVhZso:reference",
+    "iou": 0.74
+   },
+   {
+    "id": "qualitative_dgFVdRtXbs:reference",
+    "iou": 0.744
+   },
+   {
+    "id": "qualitative_J7vJdrurhh:reference",
+    "iou": 0.745
+   },
+   {
+    "id": "qualitative_1VqgJ2oVfM:target",
+    "iou": 0.747
+   },
+   {
+    "id": "qualitative_Q166R5L08v:target",
+    "iou": 0.751
+   },
+   {
+    "id": "qualitative_4IAqvrkjIi:reference",
+    "iou": 0.753
+   },
+   {
+    "id": "qualitative_HjqmqxcrCk:reference",
+    "iou": 0.756
+   },
+   {
+    "id": "qualitative_WsE659atq5:target",
+    "iou": 0.757
+   },
+   {
+    "id": "qualitative_I2MKgwts9m:target",
+    "iou": 0.759
+   },
+   {
+    "id": "qualitative_zvr1343S0D:reference",
+    "iou": 0.759
+   },
+   {
+    "id": "qualitative_auABNiw9iM:target",
+    "iou": 0.759
+   },
+   {
+    "id": "qualitative_IrjSU3PHaM:target",
+    "iou": 0.763
+   },
+   {
+    "id": "qualitative_t8U7Ev4JCd:target",
+    "iou": 0.764
+   },
+   {
+    "id": "qualitative_CdAUCg5Jjp:reference",
+    "iou": 0.764
+   },
+   {
+    "id": "qualitative_owIPR7rMKZ:target",
+    "iou": 0.766
+   },
+   {
+    "id": "qualitative_uF25qbA0vm:reference",
+    "iou": 0.766
+   },
+   {
+    "id": "qualitative_MX6dmwK4Zg:reference",
+    "iou": 0.773
+   },
+   {
+    "id": "qualitative_zvr1343S0D:target",
+    "iou": 0.774
+   },
+   {
+    "id": "qualitative_thUD5pm7Zs:target",
+    "iou": 0.775
+   },
+   {
+    "id": "qualitative_n6ieLIWnsR:reference",
+    "iou": 0.777
+   },
+   {
+    "id": "qualitative_5Hs3Py43ba:reference",
+    "iou": 0.781
+   },
+   {
+    "id": "qualitative_nVTmvCxgYs:reference",
+    "iou": 0.781
+   },
+   {
+    "id": "qualitative_KaFBPC2T6E:target",
+    "iou": 0.783
+   },
+   {
+    "id": "qualitative_tGPxrsiA33:reference",
+    "iou": 0.784
+   },
+   {
+    "id": "qualitative_RNuy7Qxczs:reference",
+    "iou": 0.784
+   },
+   {
+    "id": "qualitative_VMSEdoylVv:reference",
+    "iou": 0.785
+   },
+   {
+    "id": "qualitative_QP84X9CdZW:target",
+    "iou": 0.786
+   },
+   {
+    "id": "qualitative_0SUy6PrhBB:target",
+    "iou": 0.786
+   },
+   {
+    "id": "qualitative_t1jorbMZTM:target",
+    "iou": 0.788
+   },
+   {
+    "id": "qualitative_ZdCJXuA2wR:reference",
+    "iou": 0.788
+   },
+   {
+    "id": "qualitative_gue0wWjlXz:target",
+    "iou": 0.79
+   },
+   {
+    "id": "qualitative_KRFYnVhZso:target",
+    "iou": 0.79
+   },
+   {
+    "id": "qualitative_rpJNvQVul5:reference",
+    "iou": 0.794
+   },
+   {
+    "id": "qualitative_YTpj3e60Mi:target",
+    "iou": 0.794
+   },
+   {
+    "id": "qualitative_Pd1DYbNNcV:reference",
+    "iou": 0.794
+   },
+   {
+    "id": "qualitative_HjqmqxcrCk:target",
+    "iou": 0.795
+   },
+   {
+    "id": "qualitative_I1IiyR7ja5:target",
+    "iou": 0.795
+   },
+   {
+    "id": "qualitative_owIPR7rMKZ:reference",
+    "iou": 0.799
+   }
+  ]
+ }
+}

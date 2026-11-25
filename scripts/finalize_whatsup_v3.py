@@ -27,7 +27,7 @@ from pycocotools import mask as mu
 from scripts.whatsup_qc import qc_one
 from src import paths
 from src.annotate import sam
-from src.annotate.masks import subtract_target_from_reference
+from src.annotate.masks import add_gt_box, subtract_target_from_reference
 from src.data import load_dataset
 
 CFG = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "annotation" / "whatsup_auto_v3.yaml"))
@@ -133,6 +133,7 @@ def main():
         if st:
             sub.append({"order_v2": rec["review_order_v2"], "dataset": rec["dataset"], "sample_id": rec["sample_id"], "relation": rec["relation"],
                         "usable": rec["usable"], **st})
+        add_gt_box(rec)
     # ---- 减之后：最终质检与几何 ----
     geom = []
     for rec in draft:
