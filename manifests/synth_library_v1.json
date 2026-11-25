@@ -1,0 +1,1070 @@
+{
+ "config": {
+  "version": "library_v1",
+  "background_gray": 128,
+  "margin_frac": 0.1,
+  "clip": {
+   "model": "CLIP-ViT-L-14-laion2B",
+   "prompt": "a photo of {article} {name}.",
+   "min_prob": 0.5
+  },
+  "min_long_side_px": 128,
+  "max_upscale": 1.5,
+  "max_sqrt_area_px": 161,
+  "max_aspect": 3.0,
+  "min_per_side": 3
+ },
+ "source_library_sha256": "b545938e1d6e67c3bd09cf5585205e8cdfdc5616f0c716fa6c53d26564b44367",
+ "library_sha256": "a10940fe576d1e3d6acb4d411024e2aa1b9a8d477b8bf5985a1d0cc50d458c8d",
+ "clip_texts_example": [
+  "a photo of a person.",
+  "a photo of a bicycle.",
+  "a photo of a car."
+ ],
+ "n_before": 1333,
+ "n_fail_each_check": {
+  "long_side": 32,
+  "upscale": 170,
+  "aspect": 89,
+  "clip": 187
+ },
+ "n_pass_geometry": 1088,
+ "n_pass_all": 962,
+ "n_final": 923,
+ "n_final_by_side": {
+  "dev": 456,
+  "test": 467
+ },
+ "n_categories_before": 63,
+ "n_categories_usable": 53,
+ "categories_excluded": {
+  "airplane": {
+   "dev": 1,
+   "test": 1
+  },
+  "backpack": {
+   "dev": 2,
+   "test": 1
+  },
+  "book": {
+   "dev": 0,
+   "test": 7
+  },
+  "bottle": {
+   "dev": 2,
+   "test": 4
+  },
+  "frisbee": {
+   "dev": 2,
+   "test": 2
+  },
+  "microwave": {
+   "dev": 2,
+   "test": 2
+  },
+  "mouse": {
+   "dev": 1,
+   "test": 2
+  },
+  "potted plant": {
+   "dev": 0,
+   "test": 5
+  },
+  "skateboard": {
+   "dev": 0,
+   "test": 2
+  },
+  "surfboard": {
+   "dev": 2,
+   "test": 1
+  }
+ },
+ "per_category": {
+  "airplane": {
+   "before": {
+    "dev": 3,
+    "test": 5
+   },
+   "after_geometry": {
+    "dev": 1,
+    "test": 1
+   },
+   "after_all": {
+    "dev": 1,
+    "test": 1
+   }
+  },
+  "apple": {
+   "before": {
+    "dev": 6,
+    "test": 4
+   },
+   "after_geometry": {
+    "dev": 6,
+    "test": 4
+   },
+   "after_all": {
+    "dev": 5,
+    "test": 4
+   }
+  },
+  "backpack": {
+   "before": {
+    "dev": 2,
+    "test": 2
+   },
+   "after_geometry": {
+    "dev": 2,
+    "test": 1
+   },
+   "after_all": {
+    "dev": 2,
+    "test": 1
+   }
+  },
+  "banana": {
+   "before": {
+    "dev": 4,
+    "test": 6
+   },
+   "after_geometry": {
+    "dev": 4,
+    "test": 5
+   },
+   "after_all": {
+    "dev": 4,
+    "test": 5
+   }
+  },
+  "bear": {
+   "before": {
+    "dev": 13,
+    "test": 15
+   },
+   "after_geometry": {
+    "dev": 13,
+    "test": 15
+   },
+   "after_all": {
+    "dev": 13,
+    "test": 14
+   }
+  },
+  "bed": {
+   "before": {
+    "dev": 9,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 8,
+    "test": 14
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 13
+   }
+  },
+  "bench": {
+   "before": {
+    "dev": 11,
+    "test": 16
+   },
+   "after_geometry": {
+    "dev": 8,
+    "test": 14
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 9
+   }
+  },
+  "bicycle": {
+   "before": {
+    "dev": 7,
+    "test": 9
+   },
+   "after_geometry": {
+    "dev": 7,
+    "test": 5
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 5
+   }
+  },
+  "bird": {
+   "before": {
+    "dev": 9,
+    "test": 8
+   },
+   "after_geometry": {
+    "dev": 7,
+    "test": 7
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 7
+   }
+  },
+  "boat": {
+   "before": {
+    "dev": 11,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 8,
+    "test": 9
+   },
+   "after_all": {
+    "dev": 8,
+    "test": 9
+   }
+  },
+  "book": {
+   "before": {
+    "dev": 0,
+    "test": 10
+   },
+   "after_geometry": {
+    "dev": 0,
+    "test": 7
+   },
+   "after_all": {
+    "dev": 0,
+    "test": 7
+   }
+  },
+  "bottle": {
+   "before": {
+    "dev": 5,
+    "test": 4
+   },
+   "after_geometry": {
+    "dev": 2,
+    "test": 4
+   },
+   "after_all": {
+    "dev": 2,
+    "test": 4
+   }
+  },
+  "bowl": {
+   "before": {
+    "dev": 12,
+    "test": 18
+   },
+   "after_geometry": {
+    "dev": 10,
+    "test": 15
+   },
+   "after_all": {
+    "dev": 9,
+    "test": 10
+   }
+  },
+  "broccoli": {
+   "before": {
+    "dev": 9,
+    "test": 6
+   },
+   "after_geometry": {
+    "dev": 6,
+    "test": 5
+   },
+   "after_all": {
+    "dev": 5,
+    "test": 5
+   }
+  },
+  "bus": {
+   "before": {
+    "dev": 14,
+    "test": 16
+   },
+   "after_geometry": {
+    "dev": 13,
+    "test": 15
+   },
+   "after_all": {
+    "dev": 13,
+    "test": 14
+   }
+  },
+  "cake": {
+   "before": {
+    "dev": 15,
+    "test": 15
+   },
+   "after_geometry": {
+    "dev": 14,
+    "test": 14
+   },
+   "after_all": {
+    "dev": 10,
+    "test": 14
+   }
+  },
+  "car": {
+   "before": {
+    "dev": 15,
+    "test": 15
+   },
+   "after_geometry": {
+    "dev": 11,
+    "test": 11
+   },
+   "after_all": {
+    "dev": 11,
+    "test": 10
+   }
+  },
+  "carrot": {
+   "before": {
+    "dev": 4,
+    "test": 6
+   },
+   "after_geometry": {
+    "dev": 4,
+    "test": 4
+   },
+   "after_all": {
+    "dev": 3,
+    "test": 4
+   }
+  },
+  "cat": {
+   "before": {
+    "dev": 8,
+    "test": 10
+   },
+   "after_geometry": {
+    "dev": 8,
+    "test": 9
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 8
+   }
+  },
+  "cell phone": {
+   "before": {
+    "dev": 4,
+    "test": 4
+   },
+   "after_geometry": {
+    "dev": 4,
+    "test": 4
+   },
+   "after_all": {
+    "dev": 4,
+    "test": 4
+   }
+  },
+  "chair": {
+   "before": {
+    "dev": 16,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 13,
+    "test": 8
+   },
+   "after_all": {
+    "dev": 10,
+    "test": 7
+   }
+  },
+  "clock": {
+   "before": {
+    "dev": 16,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 13,
+    "test": 9
+   },
+   "after_all": {
+    "dev": 11,
+    "test": 9
+   }
+  },
+  "couch": {
+   "before": {
+    "dev": 19,
+    "test": 11
+   },
+   "after_geometry": {
+    "dev": 17,
+    "test": 8
+   },
+   "after_all": {
+    "dev": 13,
+    "test": 8
+   }
+  },
+  "cow": {
+   "before": {
+    "dev": 15,
+    "test": 15
+   },
+   "after_geometry": {
+    "dev": 13,
+    "test": 13
+   },
+   "after_all": {
+    "dev": 12,
+    "test": 11
+   }
+  },
+  "cup": {
+   "before": {
+    "dev": 12,
+    "test": 12
+   },
+   "after_geometry": {
+    "dev": 10,
+    "test": 8
+   },
+   "after_all": {
+    "dev": 9,
+    "test": 5
+   }
+  },
+  "dining table": {
+   "before": {
+    "dev": 16,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 12,
+    "test": 9
+   },
+   "after_all": {
+    "dev": 6,
+    "test": 7
+   }
+  },
+  "dog": {
+   "before": {
+    "dev": 11,
+    "test": 19
+   },
+   "after_geometry": {
+    "dev": 10,
+    "test": 15
+   },
+   "after_all": {
+    "dev": 9,
+    "test": 14
+   }
+  },
+  "donut": {
+   "before": {
+    "dev": 14,
+    "test": 16
+   },
+   "after_geometry": {
+    "dev": 9,
+    "test": 14
+   },
+   "after_all": {
+    "dev": 9,
+    "test": 14
+   }
+  },
+  "elephant": {
+   "before": {
+    "dev": 17,
+    "test": 13
+   },
+   "after_geometry": {
+    "dev": 15,
+    "test": 12
+   },
+   "after_all": {
+    "dev": 15,
+    "test": 12
+   }
+  },
+  "fire hydrant": {
+   "before": {
+    "dev": 12,
+    "test": 15
+   },
+   "after_geometry": {
+    "dev": 10,
+    "test": 12
+   },
+   "after_all": {
+    "dev": 10,
+    "test": 12
+   }
+  },
+  "frisbee": {
+   "before": {
+    "dev": 2,
+    "test": 2
+   },
+   "after_geometry": {
+    "dev": 2,
+    "test": 2
+   },
+   "after_all": {
+    "dev": 2,
+    "test": 2
+   }
+  },
+  "giraffe": {
+   "before": {
+    "dev": 5,
+    "test": 8
+   },
+   "after_geometry": {
+    "dev": 4,
+    "test": 7
+   },
+   "after_all": {
+    "dev": 4,
+    "test": 7
+   }
+  },
+  "horse": {
+   "before": {
+    "dev": 16,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 15,
+    "test": 13
+   },
+   "after_all": {
+    "dev": 15,
+    "test": 13
+   }
+  },
+  "hot dog": {
+   "before": {
+    "dev": 3,
+    "test": 6
+   },
+   "after_geometry": {
+    "dev": 3,
+    "test": 6
+   },
+   "after_all": {
+    "dev": 3,
+    "test": 3
+   }
+  },
+  "keyboard": {
+   "before": {
+    "dev": 9,
+    "test": 10
+   },
+   "after_geometry": {
+    "dev": 5,
+    "test": 3
+   },
+   "after_all": {
+    "dev": 5,
+    "test": 3
+   }
+  },
+  "kite": {
+   "before": {
+    "dev": 6,
+    "test": 5
+   },
+   "after_geometry": {
+    "dev": 5,
+    "test": 5
+   },
+   "after_all": {
+    "dev": 4,
+    "test": 4
+   }
+  },
+  "laptop": {
+   "before": {
+    "dev": 16,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 14,
+    "test": 12
+   },
+   "after_all": {
+    "dev": 14,
+    "test": 11
+   }
+  },
+  "microwave": {
+   "before": {
+    "dev": 4,
+    "test": 3
+   },
+   "after_geometry": {
+    "dev": 2,
+    "test": 2
+   },
+   "after_all": {
+    "dev": 2,
+    "test": 2
+   }
+  },
+  "motorcycle": {
+   "before": {
+    "dev": 16,
+    "test": 8
+   },
+   "after_geometry": {
+    "dev": 14,
+    "test": 8
+   },
+   "after_all": {
+    "dev": 14,
+    "test": 8
+   }
+  },
+  "mouse": {
+   "before": {
+    "dev": 2,
+    "test": 2
+   },
+   "after_geometry": {
+    "dev": 2,
+    "test": 2
+   },
+   "after_all": {
+    "dev": 1,
+    "test": 2
+   }
+  },
+  "orange": {
+   "before": {
+    "dev": 11,
+    "test": 6
+   },
+   "after_geometry": {
+    "dev": 9,
+    "test": 5
+   },
+   "after_all": {
+    "dev": 8,
+    "test": 5
+   }
+  },
+  "oven": {
+   "before": {
+    "dev": 20,
+    "test": 10
+   },
+   "after_geometry": {
+    "dev": 17,
+    "test": 8
+   },
+   "after_all": {
+    "dev": 11,
+    "test": 6
+   }
+  },
+  "parking meter": {
+   "before": {
+    "dev": 13,
+    "test": 7
+   },
+   "after_geometry": {
+    "dev": 11,
+    "test": 4
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 3
+   }
+  },
+  "person": {
+   "before": {
+    "dev": 16,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 11,
+    "test": 13
+   },
+   "after_all": {
+    "dev": 8,
+    "test": 11
+   }
+  },
+  "pizza": {
+   "before": {
+    "dev": 16,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 14,
+    "test": 13
+   },
+   "after_all": {
+    "dev": 13,
+    "test": 11
+   }
+  },
+  "potted plant": {
+   "before": {
+    "dev": 6,
+    "test": 8
+   },
+   "after_geometry": {
+    "dev": 2,
+    "test": 8
+   },
+   "after_all": {
+    "dev": 0,
+    "test": 5
+   }
+  },
+  "refrigerator": {
+   "before": {
+    "dev": 17,
+    "test": 13
+   },
+   "after_geometry": {
+    "dev": 11,
+    "test": 8
+   },
+   "after_all": {
+    "dev": 10,
+    "test": 8
+   }
+  },
+  "sandwich": {
+   "before": {
+    "dev": 11,
+    "test": 18
+   },
+   "after_geometry": {
+    "dev": 6,
+    "test": 17
+   },
+   "after_all": {
+    "dev": 5,
+    "test": 13
+   }
+  },
+  "sheep": {
+   "before": {
+    "dev": 9,
+    "test": 12
+   },
+   "after_geometry": {
+    "dev": 8,
+    "test": 12
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 10
+   }
+  },
+  "sink": {
+   "before": {
+    "dev": 12,
+    "test": 13
+   },
+   "after_geometry": {
+    "dev": 9,
+    "test": 9
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 7
+   }
+  },
+  "skateboard": {
+   "before": {
+    "dev": 1,
+    "test": 3
+   },
+   "after_geometry": {
+    "dev": 0,
+    "test": 3
+   },
+   "after_all": {
+    "dev": 0,
+    "test": 2
+   }
+  },
+  "stop sign": {
+   "before": {
+    "dev": 13,
+    "test": 6
+   },
+   "after_geometry": {
+    "dev": 12,
+    "test": 6
+   },
+   "after_all": {
+    "dev": 12,
+    "test": 6
+   }
+  },
+  "suitcase": {
+   "before": {
+    "dev": 11,
+    "test": 12
+   },
+   "after_geometry": {
+    "dev": 11,
+    "test": 9
+   },
+   "after_all": {
+    "dev": 10,
+    "test": 7
+   }
+  },
+  "surfboard": {
+   "before": {
+    "dev": 5,
+    "test": 6
+   },
+   "after_geometry": {
+    "dev": 2,
+    "test": 3
+   },
+   "after_all": {
+    "dev": 2,
+    "test": 1
+   }
+  },
+  "teddy bear": {
+   "before": {
+    "dev": 7,
+    "test": 16
+   },
+   "after_geometry": {
+    "dev": 7,
+    "test": 16
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 16
+   }
+  },
+  "toilet": {
+   "before": {
+    "dev": 13,
+    "test": 17
+   },
+   "after_geometry": {
+    "dev": 9,
+    "test": 16
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 16
+   }
+  },
+  "traffic light": {
+   "before": {
+    "dev": 3,
+    "test": 9
+   },
+   "after_geometry": {
+    "dev": 3,
+    "test": 4
+   },
+   "after_all": {
+    "dev": 3,
+    "test": 4
+   }
+  },
+  "train": {
+   "before": {
+    "dev": 16,
+    "test": 14
+   },
+   "after_geometry": {
+    "dev": 12,
+    "test": 11
+   },
+   "after_all": {
+    "dev": 12,
+    "test": 10
+   }
+  },
+  "truck": {
+   "before": {
+    "dev": 15,
+    "test": 15
+   },
+   "after_geometry": {
+    "dev": 12,
+    "test": 11
+   },
+   "after_all": {
+    "dev": 11,
+    "test": 8
+   }
+  },
+  "tv": {
+   "before": {
+    "dev": 13,
+    "test": 17
+   },
+   "after_geometry": {
+    "dev": 12,
+    "test": 15
+   },
+   "after_all": {
+    "dev": 7,
+    "test": 10
+   }
+  },
+  "umbrella": {
+   "before": {
+    "dev": 15,
+    "test": 11
+   },
+   "after_geometry": {
+    "dev": 11,
+    "test": 9
+   },
+   "after_all": {
+    "dev": 9,
+    "test": 8
+   }
+  },
+  "vase": {
+   "before": {
+    "dev": 7,
+    "test": 12
+   },
+   "after_geometry": {
+    "dev": 6,
+    "test": 11
+   },
+   "after_all": {
+    "dev": 6,
+    "test": 11
+   }
+  },
+  "zebra": {
+   "before": {
+    "dev": 15,
+    "test": 15
+   },
+   "after_geometry": {
+    "dev": 13,
+    "test": 14
+   },
+   "after_all": {
+    "dev": 13,
+    "test": 14
+   }
+  }
+ },
+ "clip_confusions_top": [
+  [
+   "tv -> laptop",
+   9
+  ],
+  [
+   "potted plant -> vase",
+   8
+  ],
+  [
+   "truck -> car",
+   4
+  ],
+  [
+   "cup -> vase",
+   4
+  ],
+  [
+   "oven -> refrigerator",
+   3
+  ],
+  [
+   "umbrella -> kite",
+   3
+  ],
+  [
+   "chair -> couch",
+   2
+  ],
+  [
+   "sink -> bowl",
+   2
+  ],
+  [
+   "sink -> boat",
+   2
+  ],
+  [
+   "person -> snowboard",
+   2
+  ],
+  [
+   "bench -> couch",
+   2
+  ],
+  [
+   "surfboard -> kite",
+   2
+  ],
+  [
+   "bowl -> cup",
+   2
+  ],
+  [
+   "hot dog -> donut",
+   2
+  ],
+  [
+   "clock -> frisbee",
+   2
+  ],
+  [
+   "cake -> donut",
+   2
+  ],
+  [
+   "oven -> tv",
+   2
+  ],
+  [
+   "sandwich -> pizza",
+   2
+  ],
+  [
+   "sandwich -> knife",
+   2
+  ],
+  [
+   "refrigerator -> tv",
+   2
+  ],
+  [
+   "cow -> horse",
+   2
+  ],
+  [
+   "chair -> tv",
+   1
+  ],
+  [
+   "apple -> orange",
+   1
+  ],
+  [
+   "orange -> apple",
+   1
+  ],
+  [
+   "broccoli -> person",
+   1
+  ]
+ ],
+ "max_upscale_final": 1.4981,
+ "max_aspect_final": 3.0
+}

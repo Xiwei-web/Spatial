@@ -1,0 +1,1332 @@
+{
+ "config": {
+  "version": "trial_v1",
+  "cutout_split_name": "synth_library_v1",
+  "global_seed": 20261125,
+  "canvas": 896,
+  "n_scenes": 500,
+  "factors": {
+   "gap_px": [
+    0,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256
+   ],
+   "occlusion_tiers": [
+    [
+     0.005,
+     0.1
+    ],
+    [
+     0.1,
+     0.3
+    ],
+    [
+     0.3,
+     0.5
+    ]
+   ],
+   "size_frac": [
+    0.08,
+    0.12,
+    0.18
+   ],
+   "axis": [
+    "horizontal",
+    "vertical"
+   ],
+   "n_distractors": [
+    0,
+    2,
+    4,
+    6
+   ],
+   "background": [
+    "solid",
+    "linear_gradient",
+    "radial_gradient",
+    "noise"
+   ]
+  },
+  "jitter": {
+   "max_frac_of_distance": 0.25,
+   "max_px": 32
+  },
+  "placement": {
+   "canvas_margin_px": 16,
+   "distractor_gap_px": 8,
+   "max_distractor_tries": 200,
+   "max_attempts": 600,
+   "max_swap_candidates": 60
+  },
+  "max_upscale": 1.5,
+  "identity_swap": {
+   "max_centroid_dev_px": 2.0
+  },
+  "overlap": {
+   "min_axis_over_perp": 2.0
+  },
+  "alpha_threshold": 128,
+  "png_compress_level": 6,
+  "token_cell_px": {
+   "Qwen2.5-VL / RoboBrain / VST / GLM-4.6V": 28,
+   "Qwen3-VL / Qwen3.5": 32,
+   "LLaVA-1.5": 37.3333,
+   "InternVL3 / 3.5 / SenseNova (448 single view)": 56
+  },
+  "confusable_groups": [
+   [
+    "cup",
+    "mug",
+    "glass",
+    "wine glass",
+    "wineglass"
+   ],
+   [
+    "bottle",
+    "beer bottle",
+    "water bottle",
+    "bottle of mustard",
+    "bottle of orange juice",
+    "vase"
+   ],
+   [
+    "can",
+    "soda can"
+   ],
+   [
+    "hat",
+    "cap",
+    "helmet"
+   ],
+   [
+    "chair",
+    "armchair",
+    "couch",
+    "bench"
+   ],
+   [
+    "glasses",
+    "sunglasses"
+   ],
+   [
+    "yarn",
+    "ball of yarn",
+    "sports ball",
+    "orange",
+    "apple",
+    "lemon"
+   ],
+   [
+    "phone",
+    "cell phone",
+    "remote"
+   ],
+   [
+    "plant",
+    "potted plant",
+    "flower",
+    "rose",
+    "toy cactus"
+   ],
+   [
+    "table",
+    "dining table"
+   ],
+   [
+    "pot",
+    "pan",
+    "bowl",
+    "plate",
+    "frisbee"
+   ],
+   [
+    "book",
+    "notepad",
+    "laptop"
+   ],
+   [
+    "painting",
+    "photograph",
+    "tv"
+   ],
+   [
+    "car",
+    "truck",
+    "bus"
+   ],
+   [
+    "cow",
+    "sheep",
+    "horse",
+    "dog",
+    "cat",
+    "bear",
+    "zebra",
+    "giraffe",
+    "elephant"
+   ],
+   [
+    "motorcycle",
+    "bicycle"
+   ],
+   [
+    "knife",
+    "fork",
+    "spoon",
+    "spatula",
+    "scissors"
+   ],
+   [
+    "suitcase",
+    "backpack",
+    "handbag",
+    "box"
+   ],
+   [
+    "sandwich",
+    "hot dog",
+    "bread",
+    "cake",
+    "donut",
+    "pizza"
+   ],
+   [
+    "skateboard",
+    "surfboard",
+    "snowboard",
+    "skis"
+   ]
+  ]
+ },
+ "library_sha256": "a10940fe576d1e3d6acb4d411024e2aa1b9a8d477b8bf5985a1d0cc50d458c8d",
+ "metadata_sha256": "93584fcefb3d1dd838b401443a15bcc48063c7ce5a3418303362dfe31e06d18f",
+ "determinism_identical_images": "60/60",
+ "wall_seconds": 30.3,
+ "workers": 8,
+ "png_bytes_total": 331147308,
+ "n_base": 500,
+ "n_images": 1500,
+ "by_level": {
+  "gap0": {
+   "n": 46,
+   "side=dev": 23,
+   "side=test": 23,
+   "axis=horizontal": 23,
+   "axis=vertical": 23,
+   "size_frac=0.08": 16,
+   "size_frac=0.12": 15,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 12,
+   "n_distractors=2": 11,
+   "n_distractors=4": 11,
+   "n_distractors=6": 12,
+   "center_along_px_median": 132.0,
+   "identity_twin_projection_gap": {
+    "n": 46,
+    "min": 0.0,
+    "p5": 0.75,
+    "median": 13.5,
+    "p95": 45.5,
+    "max": 69.0
+   },
+   "min_distance_px_base": {
+    "n": 46,
+    "min": 0.0,
+    "p5": 0.0,
+    "median": 3.2361,
+    "p95": 17.8598,
+    "max": 24.4558
+   }
+  },
+  "gap4": {
+   "n": 46,
+   "side=dev": 23,
+   "side=test": 23,
+   "axis=horizontal": 23,
+   "axis=vertical": 23,
+   "size_frac=0.08": 15,
+   "size_frac=0.12": 16,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 12,
+   "n_distractors=2": 12,
+   "n_distractors=4": 11,
+   "n_distractors=6": 11,
+   "center_along_px_median": 146.3,
+   "identity_twin_projection_gap": {
+    "n": 46,
+    "min": 0.0,
+    "p5": 1.25,
+    "median": 11.0,
+    "p95": 55.5,
+    "max": 85.0
+   },
+   "min_distance_px_base": {
+    "n": 46,
+    "min": 4.0,
+    "p5": 4.0,
+    "median": 6.9051,
+    "p95": 15.7721,
+    "max": 24.9615
+   }
+  },
+  "gap8": {
+   "n": 46,
+   "side=dev": 23,
+   "side=test": 23,
+   "axis=horizontal": 24,
+   "axis=vertical": 22,
+   "size_frac=0.08": 15,
+   "size_frac=0.12": 15,
+   "size_frac=0.18": 16,
+   "n_distractors=0": 11,
+   "n_distractors=2": 12,
+   "n_distractors=4": 12,
+   "n_distractors=6": 11,
+   "center_along_px_median": 149.9,
+   "identity_twin_projection_gap": {
+    "n": 46,
+    "min": 0.0,
+    "p5": 0.0,
+    "median": 19.0,
+    "p95": 55.75,
+    "max": 62.0
+   },
+   "min_distance_px_base": {
+    "n": 46,
+    "min": 8.0,
+    "p5": 8.0,
+    "median": 10.8524,
+    "p95": 28.5,
+    "max": 47.3735
+   }
+  },
+  "gap16": {
+   "n": 46,
+   "side=dev": 23,
+   "side=test": 23,
+   "axis=horizontal": 23,
+   "axis=vertical": 23,
+   "size_frac=0.08": 16,
+   "size_frac=0.12": 15,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 11,
+   "n_distractors=2": 11,
+   "n_distractors=4": 12,
+   "n_distractors=6": 12,
+   "center_along_px_median": 150.2,
+   "identity_twin_projection_gap": {
+    "n": 46,
+    "min": 0.0,
+    "p5": 4.0,
+    "median": 20.5,
+    "p95": 53.75,
+    "max": 96.0
+   },
+   "min_distance_px_base": {
+    "n": 46,
+    "min": 16.0,
+    "p5": 16.0,
+    "median": 18.5801,
+    "p95": 31.2715,
+    "max": 37.0
+   }
+  },
+  "gap32": {
+   "n": 46,
+   "side=dev": 23,
+   "side=test": 23,
+   "axis=horizontal": 23,
+   "axis=vertical": 23,
+   "size_frac=0.08": 15,
+   "size_frac=0.12": 16,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 12,
+   "n_distractors=2": 11,
+   "n_distractors=4": 11,
+   "n_distractors=6": 12,
+   "center_along_px_median": 159.7,
+   "identity_twin_projection_gap": {
+    "n": 46,
+    "min": 1.0,
+    "p5": 8.5,
+    "median": 27.5,
+    "p95": 73.0,
+    "max": 110.0
+   },
+   "min_distance_px_base": {
+    "n": 46,
+    "min": 32.0,
+    "p5": 32.0,
+    "median": 35.1107,
+    "p95": 59.9373,
+    "max": 62.5689
+   }
+  },
+  "gap64": {
+   "n": 45,
+   "side=dev": 22,
+   "side=test": 23,
+   "axis=horizontal": 23,
+   "axis=vertical": 22,
+   "size_frac=0.08": 15,
+   "size_frac=0.12": 15,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 11,
+   "n_distractors=2": 12,
+   "n_distractors=4": 11,
+   "n_distractors=6": 11,
+   "center_along_px_median": 188.6,
+   "identity_twin_projection_gap": {
+    "n": 45,
+    "min": 21.0,
+    "p5": 23.6,
+    "median": 56.0,
+    "p95": 117.8,
+    "max": 154.0
+   },
+   "min_distance_px_base": {
+    "n": 45,
+    "min": 64.0,
+    "p5": 64.0,
+    "median": 66.0,
+    "p95": 79.2997,
+    "max": 90.0
+   }
+  },
+  "gap128": {
+   "n": 45,
+   "side=dev": 22,
+   "side=test": 23,
+   "axis=horizontal": 22,
+   "axis=vertical": 23,
+   "size_frac=0.08": 15,
+   "size_frac=0.12": 15,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 11,
+   "n_distractors=2": 11,
+   "n_distractors=4": 12,
+   "n_distractors=6": 11,
+   "center_along_px_median": 263.6,
+   "identity_twin_projection_gap": {
+    "n": 45,
+    "min": 69.0,
+    "p5": 75.2,
+    "median": 117.0,
+    "p95": 181.0,
+    "max": 194.0
+   },
+   "min_distance_px_base": {
+    "n": 45,
+    "min": 128.0,
+    "p5": 128.0,
+    "median": 129.8625,
+    "p95": 142.6031,
+    "max": 148.8933
+   }
+  },
+  "gap256": {
+   "n": 45,
+   "side=dev": 23,
+   "side=test": 22,
+   "axis=horizontal": 23,
+   "axis=vertical": 22,
+   "size_frac=0.08": 15,
+   "size_frac=0.12": 15,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 11,
+   "n_distractors=2": 11,
+   "n_distractors=4": 11,
+   "n_distractors=6": 12,
+   "center_along_px_median": 395.7,
+   "identity_twin_projection_gap": {
+    "n": 45,
+    "min": 183.0,
+    "p5": 190.0,
+    "median": 265.0,
+    "p95": 314.0,
+    "max": 328.0
+   },
+   "min_distance_px_base": {
+    "n": 45,
+    "min": 256.0,
+    "p5": 256.0,
+    "median": 257.2344,
+    "p95": 266.7407,
+    "max": 268.7647
+   }
+  },
+  "occ10": {
+   "n": 45,
+   "side=dev": 23,
+   "side=test": 22,
+   "axis=horizontal": 23,
+   "axis=vertical": 22,
+   "size_frac=0.08": 15,
+   "size_frac=0.12": 15,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 12,
+   "n_distractors=2": 11,
+   "n_distractors=4": 11,
+   "n_distractors=6": 11,
+   "center_along_px_median": 113.1,
+   "occluded_fraction": {
+    "base": {
+     "n": 45,
+     "min": 0.0062,
+     "p5": 0.0079,
+     "median": 0.0452,
+     "p95": 0.09,
+     "max": 0.0969
+    },
+    "position_swap": {
+     "n": 45,
+     "min": 0.0052,
+     "p5": 0.0058,
+     "median": 0.0317,
+     "p95": 0.0972,
+     "max": 0.0997
+    },
+    "identity_swap": {
+     "n": 45,
+     "min": 0.0064,
+     "p5": 0.0101,
+     "median": 0.0399,
+     "p95": 0.0882,
+     "max": 0.0977
+    }
+   }
+  },
+  "occ30": {
+   "n": 45,
+   "side=dev": 22,
+   "side=test": 23,
+   "axis=horizontal": 22,
+   "axis=vertical": 23,
+   "size_frac=0.08": 15,
+   "size_frac=0.12": 15,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 11,
+   "n_distractors=2": 12,
+   "n_distractors=4": 11,
+   "n_distractors=6": 11,
+   "center_along_px_median": 83.3,
+   "occluded_fraction": {
+    "base": {
+     "n": 45,
+     "min": 0.1167,
+     "p5": 0.128,
+     "median": 0.2204,
+     "p95": 0.2735,
+     "max": 0.2928
+    },
+    "position_swap": {
+     "n": 45,
+     "min": 0.1019,
+     "p5": 0.1114,
+     "median": 0.2179,
+     "p95": 0.2966,
+     "max": 0.2976
+    },
+    "identity_swap": {
+     "n": 45,
+     "min": 0.1059,
+     "p5": 0.1138,
+     "median": 0.2099,
+     "p95": 0.2814,
+     "max": 0.2887
+    }
+   }
+  },
+  "occ50": {
+   "n": 45,
+   "side=dev": 23,
+   "side=test": 22,
+   "axis=horizontal": 23,
+   "axis=vertical": 22,
+   "size_frac=0.08": 15,
+   "size_frac=0.12": 15,
+   "size_frac=0.18": 15,
+   "n_distractors=0": 11,
+   "n_distractors=2": 11,
+   "n_distractors=4": 12,
+   "n_distractors=6": 11,
+   "center_along_px_median": 52.2,
+   "occluded_fraction": {
+    "base": {
+     "n": 45,
+     "min": 0.3125,
+     "p5": 0.3169,
+     "median": 0.3868,
+     "p95": 0.4866,
+     "max": 0.4903
+    },
+    "position_swap": {
+     "n": 45,
+     "min": 0.3007,
+     "p5": 0.3025,
+     "median": 0.3739,
+     "p95": 0.4816,
+     "max": 0.4963
+    },
+    "identity_swap": {
+     "n": 45,
+     "min": 0.3175,
+     "p5": 0.3208,
+     "median": 0.3718,
+     "p95": 0.4931,
+     "max": 0.4976
+    }
+   }
+  }
+ },
+ "by_side": {
+  "dev": 250,
+  "test": 250
+ },
+ "relation": {
+  "left": 126,
+  "right": 126,
+  "below": 124,
+  "above": 124
+ },
+ "identity_swap": {
+  "centroid_deviation_px": {
+   "n": 500,
+   "min": 0.0272,
+   "p5": 0.125,
+   "median": 0.4083,
+   "p95": 0.598,
+   "max": 0.6971
+  },
+  "area_ratio": {
+   "n": 500,
+   "min": 0.9845,
+   "p5": 0.9922,
+   "median": 0.9998,
+   "p95": 1.0081,
+   "max": 1.0139
+  },
+  "sqrt_area_ratio": {
+   "n": 500,
+   "min": 0.9922,
+   "p5": 0.9961,
+   "median": 0.9999,
+   "p95": 1.004,
+   "max": 1.0069
+  }
+ },
+ "position_swap_centroid_shift_px": {
+  "main": {
+   "n": 365,
+   "min": 0.1496,
+   "p5": 1.4592,
+   "median": 17.0137,
+   "p95": 54.4988,
+   "max": 113.1318
+  },
+  "overlap": {
+   "n": 135,
+   "min": 0.0495,
+   "p5": 0.1544,
+   "median": 0.4132,
+   "p95": 0.5997,
+   "max": 0.6398
+  }
+ },
+ "sqrt_area_error_px": {
+  "n": 3000,
+  "min": -0.5012,
+  "p5": -0.2457,
+  "median": 0.0248,
+  "p95": 0.2983,
+  "max": 0.5121
+ },
+ "upscale": {
+  "n": 7500,
+  "min": 0.1259,
+  "p5": 0.27,
+  "median": 0.6069,
+  "p95": 1.3308,
+  "max": 1.4959
+ },
+ "n_upscale_gt_1.5": 0,
+ "min_margin_px": 16,
+ "attempts": {
+  "0": 494,
+  "1": 6
+ },
+ "attempt_by_level_median": {
+  "gap0": 0.0,
+  "gap4": 0.0,
+  "gap8": 0.0,
+  "gap16": 0.0,
+  "gap32": 0.0,
+  "gap64": 0,
+  "gap128": 0,
+  "gap256": 0,
+  "occ10": 0,
+  "occ30": 0,
+  "occ50": 0
+ },
+ "rejections": {
+  "distractor_no_room": 3,
+  "no_overlap_offset": 3
+ },
+ "aspect_along_axis_by_level": {
+  "gap0": 1.079,
+  "gap4": 1.062,
+  "gap8": 1.024,
+  "gap16": 1.014,
+  "gap32": 0.914,
+  "gap64": 1.049,
+  "gap128": 0.972,
+  "gap256": 0.926,
+  "occ10": 0.956,
+  "occ30": 1.03,
+  "occ50": 1.008
+ },
+ "per_category": {
+  "apple": {
+   "dev": {
+    "library": 5,
+    "used_as_main": 5,
+    "main_appearances": 29
+   },
+   "test": {
+    "library": 4,
+    "used_as_main": 4,
+    "main_appearances": 32
+   }
+  },
+  "banana": {
+   "dev": {
+    "library": 4,
+    "used_as_main": 4,
+    "main_appearances": 25
+   },
+   "test": {
+    "library": 5,
+    "used_as_main": 3,
+    "main_appearances": 11
+   }
+  },
+  "bear": {
+   "dev": {
+    "library": 13,
+    "used_as_main": 10,
+    "main_appearances": 28
+   },
+   "test": {
+    "library": 14,
+    "used_as_main": 9,
+    "main_appearances": 22
+   }
+  },
+  "bed": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 6,
+    "main_appearances": 26
+   },
+   "test": {
+    "library": 13,
+    "used_as_main": 10,
+    "main_appearances": 25
+   }
+  },
+  "bench": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 7,
+    "main_appearances": 32
+   },
+   "test": {
+    "library": 9,
+    "used_as_main": 7,
+    "main_appearances": 25
+   }
+  },
+  "bicycle": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 5,
+    "main_appearances": 19
+   },
+   "test": {
+    "library": 5,
+    "used_as_main": 5,
+    "main_appearances": 22
+   }
+  },
+  "bird": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 6,
+    "main_appearances": 16
+   },
+   "test": {
+    "library": 7,
+    "used_as_main": 7,
+    "main_appearances": 24
+   }
+  },
+  "boat": {
+   "dev": {
+    "library": 8,
+    "used_as_main": 7,
+    "main_appearances": 19
+   },
+   "test": {
+    "library": 9,
+    "used_as_main": 8,
+    "main_appearances": 22
+   }
+  },
+  "bowl": {
+   "dev": {
+    "library": 9,
+    "used_as_main": 8,
+    "main_appearances": 30
+   },
+   "test": {
+    "library": 10,
+    "used_as_main": 10,
+    "main_appearances": 38
+   }
+  },
+  "broccoli": {
+   "dev": {
+    "library": 5,
+    "used_as_main": 4,
+    "main_appearances": 15
+   },
+   "test": {
+    "library": 5,
+    "used_as_main": 5,
+    "main_appearances": 33
+   }
+  },
+  "bus": {
+   "dev": {
+    "library": 13,
+    "used_as_main": 10,
+    "main_appearances": 44
+   },
+   "test": {
+    "library": 14,
+    "used_as_main": 10,
+    "main_appearances": 27
+   }
+  },
+  "cake": {
+   "dev": {
+    "library": 10,
+    "used_as_main": 8,
+    "main_appearances": 30
+   },
+   "test": {
+    "library": 14,
+    "used_as_main": 7,
+    "main_appearances": 22
+   }
+  },
+  "car": {
+   "dev": {
+    "library": 11,
+    "used_as_main": 9,
+    "main_appearances": 26
+   },
+   "test": {
+    "library": 10,
+    "used_as_main": 7,
+    "main_appearances": 40
+   }
+  },
+  "carrot": {
+   "dev": {
+    "library": 3,
+    "used_as_main": 3,
+    "main_appearances": 19
+   },
+   "test": {
+    "library": 4,
+    "used_as_main": 4,
+    "main_appearances": 32
+   }
+  },
+  "cat": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 3,
+    "main_appearances": 8
+   },
+   "test": {
+    "library": 8,
+    "used_as_main": 3,
+    "main_appearances": 14
+   }
+  },
+  "cell phone": {
+   "dev": {
+    "library": 4,
+    "used_as_main": 4,
+    "main_appearances": 29
+   },
+   "test": {
+    "library": 4,
+    "used_as_main": 4,
+    "main_appearances": 27
+   }
+  },
+  "chair": {
+   "dev": {
+    "library": 10,
+    "used_as_main": 8,
+    "main_appearances": 37
+   },
+   "test": {
+    "library": 7,
+    "used_as_main": 7,
+    "main_appearances": 33
+   }
+  },
+  "clock": {
+   "dev": {
+    "library": 11,
+    "used_as_main": 10,
+    "main_appearances": 22
+   },
+   "test": {
+    "library": 9,
+    "used_as_main": 8,
+    "main_appearances": 37
+   }
+  },
+  "couch": {
+   "dev": {
+    "library": 13,
+    "used_as_main": 6,
+    "main_appearances": 22
+   },
+   "test": {
+    "library": 8,
+    "used_as_main": 7,
+    "main_appearances": 28
+   }
+  },
+  "cow": {
+   "dev": {
+    "library": 12,
+    "used_as_main": 9,
+    "main_appearances": 32
+   },
+   "test": {
+    "library": 11,
+    "used_as_main": 8,
+    "main_appearances": 22
+   }
+  },
+  "cup": {
+   "dev": {
+    "library": 9,
+    "used_as_main": 8,
+    "main_appearances": 32
+   },
+   "test": {
+    "library": 5,
+    "used_as_main": 4,
+    "main_appearances": 14
+   }
+  },
+  "dining table": {
+   "dev": {
+    "library": 6,
+    "used_as_main": 6,
+    "main_appearances": 44
+   },
+   "test": {
+    "library": 7,
+    "used_as_main": 6,
+    "main_appearances": 41
+   }
+  },
+  "dog": {
+   "dev": {
+    "library": 9,
+    "used_as_main": 6,
+    "main_appearances": 31
+   },
+   "test": {
+    "library": 14,
+    "used_as_main": 11,
+    "main_appearances": 36
+   }
+  },
+  "donut": {
+   "dev": {
+    "library": 9,
+    "used_as_main": 9,
+    "main_appearances": 31
+   },
+   "test": {
+    "library": 14,
+    "used_as_main": 10,
+    "main_appearances": 26
+   }
+  },
+  "elephant": {
+   "dev": {
+    "library": 15,
+    "used_as_main": 8,
+    "main_appearances": 20
+   },
+   "test": {
+    "library": 12,
+    "used_as_main": 7,
+    "main_appearances": 20
+   }
+  },
+  "fire hydrant": {
+   "dev": {
+    "library": 10,
+    "used_as_main": 7,
+    "main_appearances": 25
+   },
+   "test": {
+    "library": 12,
+    "used_as_main": 12,
+    "main_appearances": 37
+   }
+  },
+  "giraffe": {
+   "dev": {
+    "library": 4,
+    "used_as_main": 3,
+    "main_appearances": 22
+   },
+   "test": {
+    "library": 7,
+    "used_as_main": 5,
+    "main_appearances": 22
+   }
+  },
+  "horse": {
+   "dev": {
+    "library": 15,
+    "used_as_main": 10,
+    "main_appearances": 31
+   },
+   "test": {
+    "library": 13,
+    "used_as_main": 9,
+    "main_appearances": 39
+   }
+  },
+  "hot dog": {
+   "dev": {
+    "library": 3,
+    "used_as_main": 3,
+    "main_appearances": 46
+   },
+   "test": {
+    "library": 3,
+    "used_as_main": 3,
+    "main_appearances": 19
+   }
+  },
+  "keyboard": {
+   "dev": {
+    "library": 5,
+    "used_as_main": 5,
+    "main_appearances": 40
+   },
+   "test": {
+    "library": 3,
+    "used_as_main": 3,
+    "main_appearances": 36
+   }
+  },
+  "kite": {
+   "dev": {
+    "library": 4,
+    "used_as_main": 4,
+    "main_appearances": 22
+   },
+   "test": {
+    "library": 4,
+    "used_as_main": 3,
+    "main_appearances": 20
+   }
+  },
+  "laptop": {
+   "dev": {
+    "library": 14,
+    "used_as_main": 12,
+    "main_appearances": 31
+   },
+   "test": {
+    "library": 11,
+    "used_as_main": 9,
+    "main_appearances": 27
+   }
+  },
+  "motorcycle": {
+   "dev": {
+    "library": 14,
+    "used_as_main": 7,
+    "main_appearances": 28
+   },
+   "test": {
+    "library": 8,
+    "used_as_main": 8,
+    "main_appearances": 24
+   }
+  },
+  "orange": {
+   "dev": {
+    "library": 8,
+    "used_as_main": 4,
+    "main_appearances": 16
+   },
+   "test": {
+    "library": 5,
+    "used_as_main": 4,
+    "main_appearances": 26
+   }
+  },
+  "oven": {
+   "dev": {
+    "library": 11,
+    "used_as_main": 9,
+    "main_appearances": 24
+   },
+   "test": {
+    "library": 6,
+    "used_as_main": 5,
+    "main_appearances": 20
+   }
+  },
+  "parking meter": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 7,
+    "main_appearances": 46
+   },
+   "test": {
+    "library": 3,
+    "used_as_main": 3,
+    "main_appearances": 13
+   }
+  },
+  "person": {
+   "dev": {
+    "library": 8,
+    "used_as_main": 8,
+    "main_appearances": 38
+   },
+   "test": {
+    "library": 11,
+    "used_as_main": 11,
+    "main_appearances": 50
+   }
+  },
+  "pizza": {
+   "dev": {
+    "library": 13,
+    "used_as_main": 7,
+    "main_appearances": 22
+   },
+   "test": {
+    "library": 11,
+    "used_as_main": 7,
+    "main_appearances": 27
+   }
+  },
+  "refrigerator": {
+   "dev": {
+    "library": 10,
+    "used_as_main": 9,
+    "main_appearances": 39
+   },
+   "test": {
+    "library": 8,
+    "used_as_main": 8,
+    "main_appearances": 34
+   }
+  },
+  "sandwich": {
+   "dev": {
+    "library": 5,
+    "used_as_main": 5,
+    "main_appearances": 26
+   },
+   "test": {
+    "library": 13,
+    "used_as_main": 12,
+    "main_appearances": 62
+   }
+  },
+  "sheep": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 6,
+    "main_appearances": 22
+   },
+   "test": {
+    "library": 10,
+    "used_as_main": 5,
+    "main_appearances": 12
+   }
+  },
+  "sink": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 7,
+    "main_appearances": 42
+   },
+   "test": {
+    "library": 7,
+    "used_as_main": 6,
+    "main_appearances": 24
+   }
+  },
+  "stop sign": {
+   "dev": {
+    "library": 12,
+    "used_as_main": 8,
+    "main_appearances": 43
+   },
+   "test": {
+    "library": 6,
+    "used_as_main": 5,
+    "main_appearances": 16
+   }
+  },
+  "suitcase": {
+   "dev": {
+    "library": 10,
+    "used_as_main": 9,
+    "main_appearances": 38
+   },
+   "test": {
+    "library": 7,
+    "used_as_main": 6,
+    "main_appearances": 36
+   }
+  },
+  "teddy bear": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 6,
+    "main_appearances": 30
+   },
+   "test": {
+    "library": 16,
+    "used_as_main": 12,
+    "main_appearances": 37
+   }
+  },
+  "toilet": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 6,
+    "main_appearances": 29
+   },
+   "test": {
+    "library": 16,
+    "used_as_main": 14,
+    "main_appearances": 44
+   }
+  },
+  "traffic light": {
+   "dev": {
+    "library": 3,
+    "used_as_main": 3,
+    "main_appearances": 19
+   },
+   "test": {
+    "library": 4,
+    "used_as_main": 3,
+    "main_appearances": 32
+   }
+  },
+  "train": {
+   "dev": {
+    "library": 12,
+    "used_as_main": 10,
+    "main_appearances": 27
+   },
+   "test": {
+    "library": 10,
+    "used_as_main": 7,
+    "main_appearances": 30
+   }
+  },
+  "truck": {
+   "dev": {
+    "library": 11,
+    "used_as_main": 7,
+    "main_appearances": 28
+   },
+   "test": {
+    "library": 8,
+    "used_as_main": 5,
+    "main_appearances": 18
+   }
+  },
+  "tv": {
+   "dev": {
+    "library": 7,
+    "used_as_main": 7,
+    "main_appearances": 34
+   },
+   "test": {
+    "library": 10,
+    "used_as_main": 9,
+    "main_appearances": 25
+   }
+  },
+  "umbrella": {
+   "dev": {
+    "library": 9,
+    "used_as_main": 8,
+    "main_appearances": 24
+   },
+   "test": {
+    "library": 8,
+    "used_as_main": 7,
+    "main_appearances": 37
+   }
+  },
+  "vase": {
+   "dev": {
+    "library": 6,
+    "used_as_main": 5,
+    "main_appearances": 22
+   },
+   "test": {
+    "library": 11,
+    "used_as_main": 7,
+    "main_appearances": 35
+   }
+  },
+  "zebra": {
+   "dev": {
+    "library": 13,
+    "used_as_main": 6,
+    "main_appearances": 20
+   },
+   "test": {
+    "library": 14,
+    "used_as_main": 8,
+    "main_appearances": 25
+   }
+  }
+ },
+ "n_categories_used": 53
+}

@@ -1451,113 +1451,113 @@
   "GLM-4.6V-Flash": {
    "max_pixels/2": {
     "grid_hw": [
-     15,
-     20
+     21,
+     29
     ],
-    "n_visual_tokens": 300,
+    "n_visual_tokens": 609,
     "cell_px_in_original": [
-     64.0,
-     64.0
+     44.1,
+     45.7
     ],
     "notes": [
-     "size.longest_edge=501760（该处理器不接受 max_pixels）"
+     "size.longest_edge=1003520（该处理器不接受 max_pixels，按 2 帧计像素，等于单图 501760 像素）"
     ],
     "all": {
      "n": 818,
      "target_tokens_any_overlap": {
-      "p5": 3.0,
-      "median": 12.0,
-      "p95": 37.0
+      "p5": 4.0,
+      "median": 19.0,
+      "p95": 68.0
      },
      "target_tokens_ge50pct": {
       "p5": 0.0,
-      "median": 4.0,
-      "p95": 24.0
+      "median": 9.0,
+      "p95": 50.0
      },
      "reference_tokens_any_overlap": {
-      "p5": 6.0,
-      "median": 40.0,
-      "p95": 60.0
+      "p5": 9.0,
+      "median": 60.0,
+      "p95": 117.0
      },
      "reference_tokens_ge50pct": {
-      "p5": 0.0,
-      "median": 10.0,
-      "p95": 44.0
-     },
-     "centroid_distance_tokens": {
-      "p5": 0.5,
-      "median": 5.2,
-      "p95": 7.6
-     },
-     "tokens_overlapping_both_objects": {
-      "p5": 0.0,
-      "median": 0.0,
-      "p95": 6.0
-     },
-     "share_images_where_every_target_token_also_overlaps_reference": 0.098,
-     "share_target_with_zero_ge50pct_tokens": 0.219
-    },
-    "A": {
-     "n": 410,
-     "target_tokens_any_overlap": {
       "p5": 2.0,
-      "median": 5.0,
-      "p95": 14.5
-     },
-     "target_tokens_ge50pct": {
-      "p5": 0.0,
-      "median": 1.0,
-      "p95": 6.5
-     },
-     "reference_tokens_any_overlap": {
-      "p5": 40.0,
-      "median": 57.0,
-      "p95": 62.0
-     },
-     "reference_tokens_ge50pct": {
-      "p5": 7.0,
       "median": 31.0,
-      "p95": 44.0
+      "p95": 88.0
      },
      "centroid_distance_tokens": {
-      "p5": 0.3,
-      "median": 5.0,
-      "p95": 7.6
+      "p5": 0.7,
+      "median": 7.4,
+      "p95": 11.1
      },
      "tokens_overlapping_both_objects": {
       "p5": 0.0,
       "median": 0.0,
       "p95": 8.0
      },
-     "share_images_where_every_target_token_also_overlaps_reference": 0.195,
-     "share_target_with_zero_ge50pct_tokens": 0.437
+     "share_images_where_every_target_token_also_overlaps_reference": 0.075,
+     "share_target_with_zero_ge50pct_tokens": 0.099
+    },
+    "A": {
+     "n": 410,
+     "target_tokens_any_overlap": {
+      "p5": 3.0,
+      "median": 8.0,
+      "p95": 25.0
+     },
+     "target_tokens_ge50pct": {
+      "p5": 0.0,
+      "median": 2.0,
+      "p95": 14.5
+     },
+     "reference_tokens_any_overlap": {
+      "p5": 59.0,
+      "median": 94.0,
+      "p95": 117.0
+     },
+     "reference_tokens_ge50pct": {
+      "p5": 30.0,
+      "median": 58.0,
+      "p95": 88.0
+     },
+     "centroid_distance_tokens": {
+      "p5": 0.4,
+      "median": 7.1,
+      "p95": 10.9
+     },
+     "tokens_overlapping_both_objects": {
+      "p5": 0.0,
+      "median": 0.0,
+      "p95": 11.0
+     },
+     "share_images_where_every_target_token_also_overlaps_reference": 0.149,
+     "share_target_with_zero_ge50pct_tokens": 0.198
     },
     "B": {
      "n": 408,
      "target_tokens_any_overlap": {
-      "p5": 9.0,
-      "median": 21.0,
-      "p95": 40.0
+      "p5": 15.0,
+      "median": 36.0,
+      "p95": 73.0
      },
      "target_tokens_ge50pct": {
-      "p5": 3.0,
-      "median": 11.0,
-      "p95": 27.0
+      "p5": 7.0,
+      "median": 24.0,
+      "p95": 52.0
      },
      "reference_tokens_any_overlap": {
-      "p5": 5.0,
-      "median": 11.0,
-      "p95": 35.0
+      "p5": 8.0,
+      "median": 18.0,
+      "p95": 63.6
      },
      "reference_tokens_ge50pct": {
-      "p5": 0.0,
-      "median": 4.0,
-      "p95": 22.6
+      "p5": 2.0,
+      "median": 8.0,
+      "p95": 48.0
      },
      "centroid_distance_tokens": {
-      "p5": 3.7,
-      "median": 5.4,
-      "p95": 7.7
+      "p5": 5.1,
+      "median": 7.7,
+      "p95": 11.1
      },
      "tokens_overlapping_both_objects": {
       "p5": 0.0,
@@ -1568,7 +1568,7 @@
      "share_target_with_zero_ge50pct_tokens": 0.0
     }
    },
-   "max_pixels*2": {
+   "smoke(max_pixels=1003520)": {
     "grid_hw": [
      30,
      41
@@ -1579,7 +1579,8 @@
      32.0
     ],
     "notes": [
-     "size.longest_edge=2007040（该处理器不接受 max_pixels）"
+     "size.longest_edge=2007040（该处理器不接受 max_pixels，按 2 帧计像素，等于单图 1003520 像素）",
+     "冒烟记录网格 [30, 41]，一致"
     ],
     "all": {
      "n": 818,
@@ -1687,7 +1688,7 @@
      "share_target_with_zero_ge50pct_tokens": 0.0
     }
    },
-   "smoke_actual(default resolution)": {
+   "max_pixels*2": {
     "grid_hw": [
      34,
      46
@@ -1698,8 +1699,7 @@
      28.2
     ],
     "notes": [
-     "处理器默认 size；冒烟实际使用的设置",
-     "冒烟记录网格 [34, 46]，一致"
+     "size.longest_edge=4014080（该处理器不接受 max_pixels，按 2 帧计像素，等于单图 2007040 像素）"
     ],
     "all": {
      "n": 818,
@@ -1807,121 +1807,120 @@
      "share_target_with_zero_ge50pct_tokens": 0.0
     }
    },
-   "smoke(max_pixels=1003520)": {
+   "old_default_resolution": {
     "grid_hw": [
-     21,
-     29
+     34,
+     46
     ],
-    "n_visual_tokens": 609,
+    "n_visual_tokens": 1564,
     "cell_px_in_original": [
-     44.1,
-     45.7
+     27.8,
+     28.2
     ],
     "notes": [
-     "size.longest_edge=1003520（该处理器不接受 max_pixels）",
-     "注意：这是把像素上限设为 1003520 时的网格，冒烟里并未生效"
+     "处理器默认 size；限制分辨率之前的冒烟所用，现已不用"
     ],
     "all": {
      "n": 818,
      "target_tokens_any_overlap": {
-      "p5": 4.0,
-      "median": 19.0,
-      "p95": 68.0
+      "p5": 6.0,
+      "median": 39.0,
+      "p95": 156.0
      },
      "target_tokens_ge50pct": {
-      "p5": 0.0,
-      "median": 9.0,
-      "p95": 50.0
+      "p5": 2.0,
+      "median": 26.0,
+      "p95": 127.0
      },
      "reference_tokens_any_overlap": {
-      "p5": 9.0,
-      "median": 60.0,
-      "p95": 117.0
+      "p5": 16.0,
+      "median": 139.0,
+      "p95": 266.0
      },
      "reference_tokens_ge50pct": {
-      "p5": 2.0,
-      "median": 31.0,
-      "p95": 88.0
+      "p5": 7.0,
+      "median": 81.0,
+      "p95": 225.0
      },
      "centroid_distance_tokens": {
-      "p5": 0.7,
-      "median": 7.4,
-      "p95": 11.1
+      "p5": 1.1,
+      "median": 11.8,
+      "p95": 17.6
      },
      "tokens_overlapping_both_objects": {
       "p5": 0.0,
       "median": 0.0,
-      "p95": 8.0
+      "p95": 12.0
      },
-     "share_images_where_every_target_token_also_overlaps_reference": 0.075,
-     "share_target_with_zero_ge50pct_tokens": 0.099
+     "share_images_where_every_target_token_also_overlaps_reference": 0.04,
+     "share_target_with_zero_ge50pct_tokens": 0.004
     },
     "A": {
      "n": 410,
      "target_tokens_any_overlap": {
-      "p5": 3.0,
-      "median": 8.0,
-      "p95": 25.0
+      "p5": 6.0,
+      "median": 13.0,
+      "p95": 53.5
      },
      "target_tokens_ge50pct": {
-      "p5": 0.0,
-      "median": 2.0,
-      "p95": 14.5
+      "p5": 1.0,
+      "median": 5.5,
+      "p95": 37.1
      },
      "reference_tokens_any_overlap": {
-      "p5": 59.0,
-      "median": 94.0,
-      "p95": 117.0
+      "p5": 138.0,
+      "median": 217.0,
+      "p95": 266.0
      },
      "reference_tokens_ge50pct": {
-      "p5": 30.0,
-      "median": 58.0,
-      "p95": 88.0
+      "p5": 78.0,
+      "median": 147.0,
+      "p95": 226.0
      },
      "centroid_distance_tokens": {
-      "p5": 0.4,
-      "median": 7.1,
-      "p95": 10.9
+      "p5": 0.6,
+      "median": 11.4,
+      "p95": 17.3
      },
      "tokens_overlapping_both_objects": {
       "p5": 0.0,
       "median": 0.0,
-      "p95": 11.0
+      "p95": 15.0
      },
-     "share_images_where_every_target_token_also_overlaps_reference": 0.149,
-     "share_target_with_zero_ge50pct_tokens": 0.198
+     "share_images_where_every_target_token_also_overlaps_reference": 0.08,
+     "share_target_with_zero_ge50pct_tokens": 0.007
     },
     "B": {
      "n": 408,
      "target_tokens_any_overlap": {
-      "p5": 15.0,
-      "median": 36.0,
-      "p95": 73.0
+      "p5": 30.4,
+      "median": 83.0,
+      "p95": 167.6
      },
      "target_tokens_ge50pct": {
-      "p5": 7.0,
-      "median": 24.0,
-      "p95": 52.0
+      "p5": 17.0,
+      "median": 62.0,
+      "p95": 137.3
      },
      "reference_tokens_any_overlap": {
-      "p5": 8.0,
-      "median": 18.0,
-      "p95": 63.6
+      "p5": 14.0,
+      "median": 36.0,
+      "p95": 148.2
      },
      "reference_tokens_ge50pct": {
-      "p5": 2.0,
-      "median": 8.0,
-      "p95": 48.0
+      "p5": 5.0,
+      "median": 21.0,
+      "p95": 119.9
      },
      "centroid_distance_tokens": {
-      "p5": 5.1,
-      "median": 7.7,
-      "p95": 11.1
+      "p5": 8.3,
+      "median": 12.3,
+      "p95": 17.6
      },
      "tokens_overlapping_both_objects": {
       "p5": 0.0,
       "median": 0.0,
-      "p95": 2.0
+      "p95": 1.6
      },
      "share_images_where_every_target_token_also_overlaps_reference": 0.0,
      "share_target_with_zero_ge50pct_tokens": 0.0
