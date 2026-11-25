@@ -37,15 +37,15 @@ for p in R:                        # 互检：枚举路径与一次前向路径�
             mass = arr(p, im, h, "mass_tree")
             res["checks"][f"{p}/{im}/{h}"] = {"n": int(ok.sum()), "lp_tree_vs_lp_digits_median": float(np.median(d)), "lp_tree_vs_lp_digits_max": float(d.max()),
                                               "mass_min": float(mass.min()), "mass_median": float(np.median(mass))}
-lines = ["| 读出量 | lm_head | 比较 | 中位数 | 95% 分位 | 最大 |", "|---|---|---|---|---|---|"]
+lines = ["| 读出量 | lm_head | 比较 | n | 均值 | 中位数 | 95% 分位 | 最大 |", "|" + "---|" * 8]
 for m, lab in MET.items():
     for head in ("native", "headfp32"):
         for pl, a, b in PAIRS:
             if head == "headfp32" and a[0] == b[0] == "fp32":
                 continue           # float32 模型下两种 lm_head 相同
             d = np.abs(arr(*a, head, m) - arr(*b, head, m))
-            res["diffs"][f"{m}/{head}/{pl}"] = {"median": float(np.median(d)), "p95": float(np.percentile(d, 95)), "max": float(d.max()), "n_gt_5": int((d > 5).sum()), "n_gt_50": int((d > 50).sum())}
-            lines.append(f"| {lab} | {'模型自带' if head == 'native' else 'float32'} | {pl} | {np.median(d):.3g} | {np.percentile(d, 95):.3g} | {d.max():.3g} |")
+            res["diffs"][f"{m}/{head}/{pl}"] = {"n": int(d.size), "n_nan": int(np.isnan(d).sum()), "mean": float(d.mean()), "median": float(np.median(d)), "p95": float(np.percentile(d, 95)), "max": float(d.max()), "n_gt_5": int((d > 5).sum()), "n_gt_50": int((d > 50).sum())}
+            lines.append(f"| {lab} | {'模型自带' if head == 'native' else 'float32'} | {pl} | {d.size} | {d.mean():.3g} | {np.median(d):.3g} | {np.percentile(d, 95):.3g} | {d.max():.3g} |")
 for k, key in enumerate(keys):
     res["per_sample"]["/".join(key)] = {"truth1000": R["bf16"]["runs"]["eager"][k]["truth1000"],
         **{f"{p}/{im}": {m: [round(v, 4) for v in R[p]["runs"][im][k]["readout"]["native"][m]] for m in MET} for p in R for im in ("eager", "sdpa")}}
