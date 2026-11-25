@@ -49,14 +49,14 @@ def impl():
 def coverage():
     d = json.load(open(paths.REPO_ROOT / "manifests" / "whatsup_token_coverage.json"))
     f = lambda v: f"{v['median']:g} ({v['p5']:g}–{v['p95']:g})"
-    out = [f"标注：{d['annotation']}；下表用全部 {d['n_images_with_both_masks']} 张（质检通过子集、A / B 分开的数字在 JSON 里）。格式：中位数（5%–95% 分位）。", "",
-           "| 模型 | 设置 | 网格 | 视觉 token 数 | target 覆盖（有重叠） | target 覆盖（≥50% 面积） | reference 覆盖（有重叠） | reference 覆盖（≥50% 面积） | 两质心距离（token） | target 没有任何 ≥50% token 的比例 |",
-           "|" + "---|" * 10]
+    out = [f"标注：{d['annotation']}；下表用全部 {d['n_images_with_both_masks']} 张（A / B 分开的数字在 JSON 里）。格式：中位数（5%–95% 分位）。", "",
+           "| 模型 | 设置 | 网格 | 视觉 token 数 | target 覆盖（有重叠） | target 覆盖（≥50% 面积） | reference 覆盖（有重叠） | reference 覆盖（≥50% 面积） | 同时与两个物体重叠 | 两质心距离（token） | target 没有任何 ≥50% token 的比例 |",
+           "|" + "---|" * 11]
     for m, st in d["models"].items():
         for k, v in sorted(st.items(), key=lambda kv: kv[1]["n_visual_tokens"]):
             a = v["all"]
             out.append(f"| {m} | {k} | {v['grid_hw'][0]}×{v['grid_hw'][1]} | {v['n_visual_tokens']} | {f(a['target_tokens_any_overlap'])} | {f(a['target_tokens_ge50pct'])} | "
-                       f"{f(a['reference_tokens_any_overlap'])} | {f(a['reference_tokens_ge50pct'])} | {f(a['centroid_distance_tokens'])} | {a['share_target_with_zero_ge50pct_tokens']:.1%} |")
+                       f"{f(a['reference_tokens_any_overlap'])} | {f(a['reference_tokens_ge50pct'])} | {f(a['tokens_overlapping_both_objects'])} | {f(a['centroid_distance_tokens'])} | {a['share_target_with_zero_ge50pct_tokens']:.1%} |")
     return "\n".join(out)
 
 

@@ -1,0 +1,46 @@
+{
+ "annotation": "auto_v3 定稿（自动标注，经模型辅助预审和部分人工复核）",
+ "n_front_behind_total": 204,
+ "subsets": {
+  "all_front_behind": {
+   "n": 204,
+   "n_front": 102,
+   "n_behind": 102,
+   "n_object_pairs": 102,
+   "majority_baseline": 0.5,
+   "feature_stats": {
+    "dy_front_mean": 0.2829299871864148,
+    "dy_behind_mean": -0.29797976980948215,
+    "log_area_ratio_front_mean": 2.1223488297669295,
+    "log_area_ratio_behind_mean": -0.19372750232423017,
+    "share_front_with_target_lower_in_image(dy>0)": 1.0,
+    "share_behind_with_target_higher_in_image(dy<0)": 1.0
+   },
+   "cv_accuracy": {
+    "dy_only": {
+     "stratified_5fold_x20_mean": 1.0,
+     "std_over_folds": 0.0,
+     "group_5fold_by_object_pair_mean": 1.0,
+     "group_fold_min": 1.0,
+     "group_fold_max": 1.0
+    },
+    "log_area_ratio_only": {
+     "stratified_5fold_x20_mean": 0.8977804878048778,
+     "std_over_folds": 0.038129752802509596,
+     "group_5fold_by_object_pair_mean": 0.8883333333333333,
+     "group_fold_min": 0.8095238095238095,
+     "group_fold_max": 0.975
+    },
+    "dy+log_area_ratio": {
+     "stratified_5fold_x20_mean": 1.0,
+     "std_over_folds": 0.0,
+     "group_5fold_by_object_pair_mean": 1.0,
+     "group_fold_min": 1.0,
+     "group_fold_max": 1.0
+    }
+   },
+   "rule_dy_gt_0_is_front_accuracy": 1.0,
+   "rule_exceptions": []
+  }
+ }
+}

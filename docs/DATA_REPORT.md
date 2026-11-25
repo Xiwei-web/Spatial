@@ -2,11 +2,11 @@
 
 日期：2026-11-25。范围：冒烟测试收尾（第 1 节）和数据构建 F1–F7。**本阶段没有在任何数据上计算模型正确率，没有调整任何提示词，没有生成合成集全量，没有对 COCO-Pairs 下采样，没有生成 LaMa 抹除图。**
 
-**What's Up 的框和 mask 是“自动标注”（GroundingDINO + SAM 2.1），未经人工验证。** 在你填完 `review.csv` 之前，凡是依赖它的结果（F4 抠图库的 What's Up 部分、F6 两项分析）都建立在自动标注上。
+**What's Up 的框和 mask 已定稿为 v3，状态是“自动标注，经模型辅助预审和部分人工复核”，不是全部人工验证。** 第 7 节两项分析基于 v3。第 8 节只列还需要你决定的事项。
 
-各部分的详细文档在 `docs/parts/`：`F2_gqa_boxes.md`、`F3_coco_pairs.md`、`F4_synth.md`、`F5_coco_holdout.md`、`F7_spatialrgpt.md`。
+各部分的详细文档在 `docs/parts/`：`F2_gqa_boxes.md`、`F3_coco_pairs.md`、`F4_synth.md`、`F5_coco_holdout.md`、`F7_spatialrgpt.md`、`rule_a_regression.md`（选框规则 (a) 修正的回归）、`bbox_impl_diff.md`（两种注意力实现的框差异与 float32 对照）。
 
-你对上一份报告第 6 节的决定已落实：未下载 Gemma-3；只下载了 SpatialRGPT-Bench 完整数据；没有使用任何 ImageNet 副本；下载了 `sam2.1-hiera-large`（1.80 GB）和 `big-lama`（0.38 GB），GroundingDINO 只读使用你的本地权重和代码；LLaVA-1.5 改为先补成正方形；Cambrian-S 已从候选中去掉；没有删除任何文件。
+你对上一份报告第 6 节的决定已落实：未下载 Gemma-3；只下载了 SpatialRGPT-Bench 完整数据；没有使用任何 ImageNet 副本；下载了 `sam2.1-hiera-large`（1.80 GB）和 `big-lama`（0.38 GB），GroundingDINO 只读使用你的本地权重和代码；LLaVA-1.5 改为先补成正方形；Cambrian-S 已从候选中去掉；合成场景抠图库只用 COCO；没有删除任何文件。
 
 ---
 
@@ -28,12 +28,12 @@
 
 - 定位：问题在**语言模型**的 eager 注意力（transformers 的 `eager_attention_forward` 在 bf16 里做 `matmul(q, k) * scaling`），与视觉塔无关。
 - 修复：加载后把语言模型 eager 注意力的打分和 softmax 放到 float32 里计算，权重和 value 仍是 bf16（`src/models/adapter.py: patch_eager_fp32`）。注意力权重仍可取出，hook 不受影响。float32 模型上新旧实现数值一致（单元测试 `test_eager_fp32_patch_matches_reference_in_float32`）。
-- 修复后与全 sdpa 的差异：末位置 logits 最大差 0.30～0.63（旧设置为 6.9），40 条输出里 22～23 条与全 sdpa 逐字相同（bf16 下两种实现本来就不是逐位相同的）。
+- 修复后与全 sdpa 的差异（RoboBrain）：末位置 logits 最大差 0.30～0.63（旧设置为 6.9），40 条输出里 22～23 条与全 sdpa 逐字相同（bf16 下两种实现本来就不是逐位相同的）。
 - 我没有查明 bf16 下 eager 为什么会坏、sdpa 为什么不会（两者算式相同，只是缩放的位置不同）；上表是经验定位，不是机理解释。
 - 这个补丁只在注意力模块所在的源码文件提供 `eager_attention_forward` 时生效；每个模型是否生效记录在冒烟 `summary.json` 的 `eager_fp32_scoring` 字段里。
 - 证据文件：`outputs/diagnostics/attn_dtype_RoboBrain2.0-7B.json`、`eager_localize_RoboBrain2.0-7B.json`。只在 RoboBrain 上做了定位；其它模型是通过“修复后重跑冒烟”间接验证的（见 1.2）。
 
-**所有模型都在修复后的设置下重跑了冒烟**，下表是重跑结果。
+**除四个 27B 以上模型（未做）和 Cambrian-S（已去掉）外，所有模型都在修复后的设置下重跑了冒烟**，补丁在这 18 个模型上全部生效（`eager_fp32_scoring.applied = true`）。下表是重跑结果。
 
 ### 1.2 冒烟最终表
 
@@ -91,6 +91,7 @@
 说明：
 - 四个 27B 以上模型（Qwen3.6-27B、Qwen3.8-27B、Qwen3.6-35B-A3B、gemma-4-31B-it）：未做，让位给数据作业（用户取消 435213）。
 - 第二组与 LLaVA-OneVision、MiniCPM 于 2026-11-25 19:39–19:53 在修复后的设置下重跑。前一次提交（435556）在 gpu-05 上 9 个模型全部 rc=1，之后避开该节点重新提交。
+- LLaVA-OneVision-7B 的第 7 项失败只在注意力屏蔽一步，原因是单卡 40 GB 显存不足（输入长边已限到 768）；没有在 2 张卡上重试。
 - GLM-4.6V-Flash 在冒烟里没有被限制分辨率：它的图像处理器不接受 `max_pixels`，代码退回默认设置，实际看到 1288×952、1,564 个视觉 token（34×46）。显存和耗时与其它模型不可直接比较。
 
 ### 1.3 三个问题的原因
@@ -174,47 +175,78 @@
 
 ---
 
-## 2. F1：What's Up Subset A / B 的自动标注
+## 2. F1：What's Up Subset A / B 的标注（v3 定稿）
 
-- 方法：GroundingDINO（SwinB，你的本地权重，只读）用数据集标注解析出的物体名称给候选框，取分数最高的；SAM 2.1（hiera-large）用该框做提示生成 mask。物体名称没有手改。配置 `configs/annotation/whatsup_auto.yaml`，脚本 `scripts/annotate_whatsup.py`（1 张卡，585 秒）与 `scripts/whatsup_qc.py`（CPU）。
-- 你的 GroundingDINO 仓库没有编译 CUDA 算子；我在自己的包装代码里把可变形注意力固定到仓库自带的纯 PyTorch 实现，没有在你的仓库或权重目录里写任何文件。
-- 标注：`data/whatsup_annotations/auto_v1/annotations.jsonl`（每张图：两个物体的框、mask RLE、检测分数、候选框数量、前 5 个候选、质检标记）。
+**状态：自动标注，经模型辅助预审和部分人工复核。** 任何文档引用这份标注都用这个说法（固定在 `configs/annotation/object_conventions.yaml`）。
 
-### 2.1 质检统计
+### 2.1 做法与版本
 
-| | 总数 | 自动质检通过 | 待审 |
-|---|---|---|---|
-| Subset A | 412 | 238（57.8%） | 174 |
-| Subset B | 408 | 371（90.9%） | 37 |
-| 合计 | 820 | 609（74.3%） | **211** |
+- 自动标注：GroundingDINO（SwinB，你的本地权重，只读）用数据集标注解析出的物体名称给候选框；SAM 2.1（hiera-large）用框提示生成 mask。物体名称没有手改。可变形注意力用你仓库自带的纯 PyTorch 实现，没有在你的仓库或权重目录里写任何文件。
 
-| 标记（一张图可有多个） | A | B | 合计 |
-|---|---|---|---|
-| 某个物体没检测到 | 0 | 0 | 0 |
-| 多个分数接近的候选（第二个不重合候选与第一名相差 < 0.10） | 62 | 30 | 92 |
-| 检测分数 < 0.35 | 29 | 24 | 53 |
-| mask 面积 < 0.2% 或 > 60% | 81 | 0 | 81 |
-| target 与 reference 的 mask IoU > 0.5 | 60 | 8 | 68 |
-| 几何顺序与标签不一致（left/right/on/under） | 60 | 2 | 62 |
+| 版本 | 内容 | 自动质检通过 / 待审 |
+|---|---|---|
+| v1 | 每个物体取最高分候选 | 609 / 211 |
+| v2 | 按你的规则 (a)–(f)：target 与 reference 重合时换候选、放宽 Subset A 面积下限、改 on/under 几何检查、新增 mask–框一致性检查等 | 718 / 102 |
+| **v3（定稿）** | v2 + 审核结论：改选 7 张、重新检测并经你确认 25 张（其中盆栽 8 张的 mask 为叶片框 mask ∪ 花盆框 mask）、剔除 2 张；reference 的 mask 减去 target 的 mask | — |
 
-- 分数阈值 0.35 的依据：GroundingDINO 官方示例的默认 `box_threshold`；在本数据上约为 target 分数的 5% 分位（p5 = 0.358）。分数分布没有明显双峰（target 分数按 0.1 分箱：0, 1, 19, 62, 86, 103, 113, 119, 256, 61）。
-- 待审按关系：left 43、right 52、on 53、under 44、front 7、behind 12。
-- 统计文件：`manifests/whatsup_auto_qc_summary.json`。
+- v1、v2 保留不动。v3：`data/whatsup_annotations/auto_v3/annotations.jsonl`（sha256 记录在 `manifests/whatsup_auto_v3_summary.json`）；同目录的 `annotations_draft.jsonl`（初版）和 `annotations_pending_plants.jsonl`（你看盆栽叠加图时的版本）仅作留档。
+- 重新生成：`annotate_whatsup.py` → `whatsup_qc.py` → `build_whatsup_v3.py` → `finalize_whatsup_v3.py --plants-confirmed`；人工输入在 `annotations/whatsup/`（`review_final_v2.csv`、`confirm_v3.csv`、`corrections.yaml`）。
+- 下游统一用 `src/data/whatsup_annotations.py` 读取：只返回可用样本，未定稿或哈希不符会报错，取框时必须指明用检测框还是 mask 外接框。
 
-### 2.2 审核材料
+### 2.2 审核是怎么做的
 
-- 联系表：`/nfs-stor/xiwei.liu/interpretability/outputs/annotation_review/sheet_001.png` … `sheet_041.png`（每页 20 张；红 = target，蓝 = reference；标题含物体名、关系、标记）。待审的 211 张排在最前（第 1–11 页），标记多的更靠前。
-- 审核表：同目录 `review.csv`，每行一张图，`human_verdict` 与 `note` 两列为空。重跑质检脚本时，如果该表已有填写内容，新表会写到 `review.NEW.csv`，不会覆盖你填的内容。
-- **需要你审的最少是 211 张；通过的 609 张我只抽看了一页（第 20 页，20 张都对），建议你也抽查。**
+- v2 的 820 张全部经过模型辅助预审：41 张由你逐张确认，83 张按你定的口径规则由预审判定，**696 张只在缩略图上预审，未经你逐张检查**。
+- v3 重新检测的 25 张：按模型预填的确认表、经你确认后执行；其中 order 12、30 与脚本建议不同。盆栽 8 张的 mask 由你看叠加图确认（定稿与你看过的版本逐像素相同）。
 
-### 2.3 我认为最可能出错的情况
+| v3 状态 | 张数 | 可用 |
+|---|---|---|
+| 沿用 v2（审核 ok） | 786 | 是 |
+| 按审核表改选候选 | 7 | 是 |
+| 按你的确认更新 | 25 | 是 |
+| 剔除（pillow 两张） | 2 | 否 |
 
-1. **Subset A 里 target 的框落到家具上**：68 张图 target 框与 reference 框 IoU > 0.8（把 armchair / table / chair 当成了小物体）。全部被质检抓到。其中 56 张的候选列表里另有一个不与家具重合的候选。
-2. **质检的误报**（标注本身可能是对的）：
-   - 面积 < 0.2%：Subset A 的小物体（apple、banana、phone 等）本来就这么小；只带这一个标记的有 52 张，我看到的几张都是对的。
-   - “on” 的几何检查：物体放在椅子座面上时，其质心低于椅子整体质心（椅背把质心抬高），会被判为不一致（on 30 张、under 15 张被标，其中一部分是这种情况，一部分是第 1 类真错误）。
-   - Subset B 的可乐罐分数普遍只有 0.28～0.33，但我看到的框是准的。
-3. **质检抓不到的错误**（通过的图里也可能有）：mask 只覆盖物体的一部分（例如盆栽只分割出叶子，没包括花盆）；桌子的 mask 可能把桌腿之间的空隙也算进去。这两种我是在联系表里看到了迹象，没有统计数量。
+可用 **818** 张：Subset A 410、Subset B 408。逐张改动、原因和依据见 `manifests/whatsup_auto_v3_changelog.csv`。
+
+### 2.3 标注口径
+
+口径文件 `configs/annotation/object_conventions.yaml`：plant 包含花盆；photograph 包含白色衬纸；shoes 包含两只鞋；microphone 不含线缆；rose、flower 不含花茎；bread 不含面包袋的透明尾部。
+通用规则：**每个 mask 只包含该物体可见的像素；当 target 放在或挡在 reference 上时，reference 的 mask 不含被 target 覆盖的部分。**
+
+两种框都存：`box_det_xyxy`（检测框）和 `box_mask_xyxy`（mask 外接框）。**默认真值框用哪个尚未确定**（第 8 节）。
+
+### 2.4 从 reference 的 mask 里减去 target
+
+- 规则：有交集就减，所有关系类型；只改 reference 的 mask（及其面积、质心），target 的 mask 和两者的框都不变。原 mask 在 reference 的 `mask_reference_raw`。
+- 实际改动 **109** 张，全部在 Subset A（on 83、under 26）。其中交集超过 target 面积 1% 的 50 张，其余 59 张只有少量边缘像素。Subset B 为 0。
+- 减完后 reference 面积不足原来 50% 的：**0** 张。面积减少最多的 10 张：
+
+| order | 样本 | 原面积 | 新面积 | 减少 | 剩余比例 |
+|---|---|---|---|---|---|
+| 16 | scarf_on_chair | 67,679 | 39,807 | 27,872 | 58.8% |
+| 12 | pan_on_armchair | 172,969 | 166,854 | 6,115 | 96.5% |
+| 266 | laptop_on_armchair | 170,000 | 165,570 | 4,430 | 97.4% |
+| 44 | headphones_on_armchair | 177,305 | 173,305 | 4,000 | 97.7% |
+| 197 | cap_under_armchair | 181,983 | 178,198 | 3,785 | 97.9% |
+| 28 | banjo_on_armchair | 166,989 | 163,860 | 3,129 | 98.1% |
+| 14 | glass_under_armchair | 179,785 | 176,672 | 3,113 | 98.3% |
+| 423 | water-bottle_under_armchair | 179,638 | 176,820 | 2,818 | 98.4% |
+| 161 | bottle_on_armchair | 173,074 | 170,696 | 2,378 | 98.6% |
+| 271 | laptop_under_chair | 67,329 | 65,052 | 2,277 | 96.6% |
+
+- 有 4 张减完后 mask 的外接框会变；按规则 reference 的 `box_mask_xyxy` 仍保留原 mask 的外接框，所以这 4 张的框与新 mask 不严格贴合。全部 109 张的清单：`manifests/whatsup_auto_v3_subtraction.csv`。
+
+### 2.5 质检
+
+- 新增并默认执行的一条：target 与 reference 的 mask 交集占 target 面积超过 1% 就标记（`target_covered_by_reference`）。减之前标记 50 张，减之后 0 张。原来的重叠检查用 IoU > 0.5，target 很小时抓不到。
+- 定稿后剩余的标记（不影响可用性，仅供参考）：检测分数 < 0.35 的 74 张，多个分数接近的候选 45 张，target 无可换候选 3 张（order 6、7、8，是 v2 选框时留下的记录，审核已改选），几何不一致 2 张（已剔除的 pillow），mask 与检测框不一致 1 张。
+- 几何顺序（left/right/on/under）与标签不一致的只有两张已剔除的 pillow（`manifests/whatsup_auto_v3_geometry.csv`）。front/behind 没有对应的检查。
+
+### 2.6 剔除的两张与已知不足
+
+- `pillow_left_of_chair`、`pillow_right_of_chair`：原始数据左右与标签相反（不是下载、解压或加载造成的）。按你的决定剔除、不改标签；更正表 `annotations/whatsup/corrections.yaml`，由 `load_split` 过滤，划分文件不变。两张都在 test，Subset A 因此 dev 204 / test 206。
+- 眼镜类：`glasses_on_armchair` 的 target mask 较粗（镜片中间有空洞，镜腿间的沙发面被包进来一点），减完后镜片空洞处留在扶手椅的 mask 里。口径表里没有眼镜是否含镜片的规定；其它眼镜类没有逐张看。
+- 盆栽的藤蔓末端含少量叶片间的地面，order 340 有一片叶子与主体断开（你已确认不用修）。
+- 通过缩略图预审的 696 张里可能仍有未发现的错误。
 
 ---
 
@@ -303,70 +335,86 @@
 
 ## 7. F6：两项数据分析
 
-### 7.1 What's Up B 的深度线索（`manifests/whatsup_b_depth_cues.json`）
+### 7.1 What's Up B 的深度线索（v3；`manifests/whatsup_b_depth_cues_v3.json`）
 
-只用两个特征预测 front / behind：dy =（target 质心 y − reference 质心 y）/ 图像高度；ln(target 面积 / reference 面积)。标准化 + 逻辑回归。
+只用两个特征预测 front / behind：dy =（target 质心 y − reference 质心 y）/ 图像高度；ln(target 面积 / reference 面积)。标准化 + 逻辑回归。样本是全部 204 张（front 102 / behind 102，102 个物体组合，均可用），多数类基线 0.50。
 
-| 样本 | 特征 | 分层 5 折 × 20 次 | 按物体组合分组 5 折 |
+| 特征 | 分层 5 折 × 20 次 | 按物体组合分组 5 折 | v1 标注上的旧结果（分层 / 分组） |
 |---|---|---|---|
-| 全部 204 张（front 102 / behind 102，102 个物体组合） | 仅 dy | 0.995 | 0.995 |
-| | 仅面积比 | 0.856 | 0.859 |
-| | dy + 面积比 | 0.982 | 0.975 |
-| 仅自动质检通过的 185 张（front 95 / behind 90） | 仅 dy | 1.000 | 1.000 |
-| | 仅面积比 | 0.887 | 0.886 |
-| | dy + 面积比 | 1.000 | 1.000 |
+| 仅 dy | 1.000 | 1.000 | 0.995 / 0.995 |
+| 仅面积比 | 0.898 | 0.888 | 0.856 / 0.859 |
+| dy + 面积比 | 1.000 | 1.000 | 0.982 / 0.975 |
 
-- 多数类基线 0.50（全部）/ 0.51（通过）。
-- 最简单的规则“target 质心在图像中更低就判 front”：全部 204 张 98.5%，质检通过的 185 张 100%。
-- front 样本的 dy 均值 +0.27，behind 为 −0.30（图像高度的比例）。
-- **含义：在 What's Up B 上，front / behind 几乎完全可以由垂直位置决定，答对不能说明用了深度信息。** 这建立在自动标注上；那 3 张不符合规则的图是否是标注错误，要等人工审核。
+- 规则“target 质心在图像中更低就判 front”：**204 / 204**。v1 上有 3 张例外（98.5%），v3 中没有例外。
+- front 样本的 dy 均值 +0.28，behind 为 −0.30。
+- **含义：在 What's Up B 上，front / behind 完全可以由垂直位置决定，答对不能说明用了深度信息。**
+- 注意：v3 修正的框里有 5 张是 front 样本（order 6、7、8、21、682），修正依据是物体身份（哪个是杯子、哪个是罐子），不是这条规则。
 
 ### 7.2 物体覆盖的视觉 token 数
 
-**暂定版：基于 v1 自动标注。** 最终版要等 v3 确认后重算。GLM 另列冒烟实际使用的默认分辨率。 注意：GLM 的 `size.longest_edge` 与 Qwen 的 `max_pixels` 数值相同时含义不同：同为 1003520 时，GLM 是 609 个 token，Qwen2.5-VL 是 1,230 个；GLM 设成 2007040 才得到 1,230 个。
+**最终版：基于 v3 定稿（818 张）**，reference 的 mask 已减去 target。v1 上的暂定结果保留在 `manifests/whatsup_token_coverage_v1.json`。GLM 另列冒烟实际使用的默认分辨率。注意：GLM 的 `size.longest_edge` 与 Qwen 的 `max_pixels` 数值相同时含义不同：同为 1003520 时，GLM 是 609 个 token，Qwen2.5-VL 是 1,230 个；GLM 设成 2007040 才得到 1,230 个。
 
 <!-- COVERAGE_TABLE_BEGIN -->
-标注：auto_v1 (automatic, not human-verified)；下表用全部 820 张（质检通过子集、A / B 分开的数字在 JSON 里）。格式：中位数（5%–95% 分位）。
+标注：auto_v3 定稿（自动标注，经模型辅助预审和部分人工复核）；下表用全部 818 张（A / B 分开的数字在 JSON 里）。格式：中位数（5%–95% 分位）。
 
-| 模型 | 设置 | 网格 | 视觉 token 数 | target 覆盖（有重叠） | target 覆盖（≥50% 面积） | reference 覆盖（有重叠） | reference 覆盖（≥50% 面积） | 两质心距离（token） | target 没有任何 ≥50% token 的比例 |
-|---|---|---|---|---|---|---|---|---|---|
-| Qwen2.5-VL-7B-Instruct | max_pixels/2 | 21×29 | 609 | 24 (4–100.1) | 13 (0–62) | 60 (9–117) | 32 (2–88) | 7.1 (0–11) | 8.5% |
-| Qwen2.5-VL-7B-Instruct | smoke(max_pixels=1003520) | 30×41 | 1230 | 41 (6–180.1) | 28 (1–138) | 113 (14–210) | 69 (5–179) | 10.1 (0–15.6) | 1.8% |
-| Qwen2.5-VL-7B-Instruct | max_pixels*2 | 34×46 | 1564 | 51 (7–228.1) | 35 (2–162) | 139 (16–266) | 81 (7–226) | 11.5 (0–17.5) | 0.2% |
-| Qwen3-VL-8B-Instruct | max_pixels/2 | 19×25 | 475 | 20 (4–80) | 10 (0–50) | 51 (8–94) | 21 (1–67) | 6.4 (0–9.6) | 12.9% |
-| Qwen3-VL-8B-Instruct | smoke(max_pixels=1003520) | 27×36 | 972 | 34 (5–150) | 21.5 (1–103) | 95 (12–171) | 52 (4–142) | 9 (0–13.8) | 2.1% |
-| Qwen3-VL-8B-Instruct | max_pixels*2 | 30×40 | 1200 | 41 (6–179) | 27 (1–131) | 114.5 (13–207) | 59 (5–173) | 10.1 (0–15.3) | 1.5% |
-| RoboBrain2.0-7B | max_pixels/2 | 21×29 | 609 | 24 (4–100.1) | 13 (0–62) | 60 (9–117) | 32 (2–88) | 7.1 (0–11) | 8.5% |
-| RoboBrain2.0-7B | smoke(max_pixels=1003520) | 30×41 | 1230 | 41 (6–180.1) | 28 (1–138) | 113 (14–210) | 69 (5–179) | 10.1 (0–15.6) | 1.8% |
-| RoboBrain2.0-7B | max_pixels*2 | 34×46 | 1564 | 51 (7–228.1) | 35 (2–162) | 139 (16–266) | 81 (7–226) | 11.5 (0–17.5) | 0.2% |
-| VST-7B-RL | max_pixels/2 | 21×29 | 609 | 24 (4–100.1) | 13 (0–62) | 60 (9–117) | 32 (2–88) | 7.1 (0–11) | 8.5% |
-| VST-7B-RL | smoke(max_pixels=1003520) | 30×41 | 1230 | 41 (6–180.1) | 28 (1–138) | 113 (14–210) | 69 (5–179) | 10.1 (0–15.6) | 1.8% |
-| VST-7B-RL | max_pixels*2 | 34×46 | 1564 | 51 (7–228.1) | 35 (2–162) | 139 (16–266) | 81 (7–226) | 11.5 (0–17.5) | 0.2% |
-| GLM-4.6V-Flash | max_pixels/2 | 15×20 | 300 | 14 (3–54) | 6 (0–31) | 40 (6–60) | 11 (0–44) | 5 (0–7.6) | 18.9% |
-| GLM-4.6V-Flash | smoke(max_pixels=1003520) | 21×29 | 609 | 24 (4–100.1) | 13 (0–62) | 60 (9–117) | 32 (2–88) | 7.1 (0–11) | 8.5% |
-| GLM-4.6V-Flash | max_pixels*2 | 30×41 | 1230 | 41 (6–180.1) | 28 (1–138) | 113 (14–210) | 69 (5–179) | 10.1 (0–15.6) | 1.8% |
-| GLM-4.6V-Flash | smoke_actual(default resolution) | 34×46 | 1564 | 51 (7–228.1) | 35 (2–162) | 139 (16–266) | 81 (7–226) | 11.5 (0–17.5) | 0.2% |
-| InternVL3-8B | fixed_448_single_view | 16×16 | 256 | 13 (3–48) | 5 (0–24.1) | 32 (5–59) | 9 (0–36) | 4.9 (0–6.3) | 23.2% |
-| InternVL3_5-8B | fixed_448_single_view | 16×16 | 256 | 13 (3–48) | 5 (0–24.1) | 32 (5–59) | 9 (0–36) | 4.9 (0–6.3) | 23.2% |
-| SenseNova-SI-1.2-InternVL3-8B | fixed_448_single_view | 16×16 | 256 | 13 (3–48) | 5 (0–24.1) | 32 (5–59) | 9 (0–36) | 4.9 (0–6.3) | 23.2% |
-| SenseNova-SI-1.3-InternVL3-8B | fixed_448_single_view | 16×16 | 256 | 13 (3–48) | 5 (0–24.1) | 32 (5–59) | 9 (0–36) | 4.9 (0–6.3) | 23.2% |
+| 模型 | 设置 | 网格 | 视觉 token 数 | target 覆盖（有重叠） | target 覆盖（≥50% 面积） | reference 覆盖（有重叠） | reference 覆盖（≥50% 面积） | 同时与两个物体重叠 | 两质心距离（token） | target 没有任何 ≥50% token 的比例 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Qwen2.5-VL-7B-Instruct | max_pixels/2 | 21×29 | 609 | 19 (4–68) | 9 (0–50) | 60 (9–117) | 31 (2–88) | 0 (0–8) | 7.4 (0.7–11.1) | 9.9% |
+| Qwen2.5-VL-7B-Instruct | smoke(max_pixels=1003520) | 30×41 | 1230 | 33 (6–125) | 20 (1–101) | 111.5 (14–210) | 68 (5–179) | 0 (0–11) | 10.5 (0.9–15.7) | 2.3% |
+| Qwen2.5-VL-7B-Instruct | max_pixels*2 | 34×46 | 1564 | 39 (6–156) | 26 (2–127) | 139 (16–266) | 81 (7–225) | 0 (0–12) | 11.8 (1.1–17.6) | 0.4% |
+| Qwen3-VL-8B-Instruct | max_pixels/2 | 19×25 | 475 | 15 (3–55) | 8 (0–38) | 51 (8–93) | 21 (1–67) | 0 (0–7) | 6.6 (0.6–9.6) | 14.4% |
+| Qwen3-VL-8B-Instruct | smoke(max_pixels=1003520) | 27×36 | 972 | 27 (5–102) | 16 (1–80) | 95 (11.9–171) | 51 (4–140) | 0 (0–10) | 9.4 (0.8–13.8) | 2.6% |
+| Qwen3-VL-8B-Instruct | max_pixels*2 | 30×40 | 1200 | 31 (6–122) | 19 (1–97.1) | 111.5 (13–207) | 58 (5–173) | 0 (0–11) | 10.4 (0.9–15.3) | 2.0% |
+| RoboBrain2.0-7B | max_pixels/2 | 21×29 | 609 | 19 (4–68) | 9 (0–50) | 60 (9–117) | 31 (2–88) | 0 (0–8) | 7.4 (0.7–11.1) | 9.9% |
+| RoboBrain2.0-7B | smoke(max_pixels=1003520) | 30×41 | 1230 | 33 (6–125) | 20 (1–101) | 111.5 (14–210) | 68 (5–179) | 0 (0–11) | 10.5 (0.9–15.7) | 2.3% |
+| RoboBrain2.0-7B | max_pixels*2 | 34×46 | 1564 | 39 (6–156) | 26 (2–127) | 139 (16–266) | 81 (7–225) | 0 (0–12) | 11.8 (1.1–17.6) | 0.4% |
+| VST-7B-RL | max_pixels/2 | 21×29 | 609 | 19 (4–68) | 9 (0–50) | 60 (9–117) | 31 (2–88) | 0 (0–8) | 7.4 (0.7–11.1) | 9.9% |
+| VST-7B-RL | smoke(max_pixels=1003520) | 30×41 | 1230 | 33 (6–125) | 20 (1–101) | 111.5 (14–210) | 68 (5–179) | 0 (0–11) | 10.5 (0.9–15.7) | 2.3% |
+| VST-7B-RL | max_pixels*2 | 34×46 | 1564 | 39 (6–156) | 26 (2–127) | 139 (16–266) | 81 (7–225) | 0 (0–12) | 11.8 (1.1–17.6) | 0.4% |
+| GLM-4.6V-Flash | max_pixels/2 | 15×20 | 300 | 12 (3–37) | 4 (0–24) | 40 (6–60) | 10 (0–44) | 0 (0–6) | 5.2 (0.5–7.6) | 21.9% |
+| GLM-4.6V-Flash | smoke(max_pixels=1003520) | 21×29 | 609 | 19 (4–68) | 9 (0–50) | 60 (9–117) | 31 (2–88) | 0 (0–8) | 7.4 (0.7–11.1) | 9.9% |
+| GLM-4.6V-Flash | max_pixels*2 | 30×41 | 1230 | 33 (6–125) | 20 (1–101) | 111.5 (14–210) | 68 (5–179) | 0 (0–11) | 10.5 (0.9–15.7) | 2.3% |
+| GLM-4.6V-Flash | smoke_actual(default resolution) | 34×46 | 1564 | 39 (6–156) | 26 (2–127) | 139 (16–266) | 81 (7–225) | 0 (0–12) | 11.8 (1.1–17.6) | 0.4% |
+| InternVL3-8B | fixed_448_single_view | 16×16 | 256 | 10 (3–33) | 4 (0–20) | 32 (5–59) | 9 (0–36) | 0 (0–6) | 5 (0.5–6.3) | 26.7% |
+| InternVL3_5-8B | fixed_448_single_view | 16×16 | 256 | 10 (3–33) | 4 (0–20) | 32 (5–59) | 9 (0–36) | 0 (0–6) | 5 (0.5–6.3) | 26.7% |
+| SenseNova-SI-1.2-InternVL3-8B | fixed_448_single_view | 16×16 | 256 | 10 (3–33) | 4 (0–20) | 32 (5–59) | 9 (0–36) | 0 (0–6) | 5 (0.5–6.3) | 26.7% |
+| SenseNova-SI-1.3-InternVL3-8B | fixed_448_single_view | 16×16 | 256 | 10 (3–33) | 4 (0–20) | 32 (5–59) | 9 (0–36) | 0 (0–6) | 5 (0.5–6.3) | 26.7% |
 <!-- COVERAGE_TABLE_END -->
+
+A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50%”= 格子面积至少一半被 target 的 mask 覆盖）：
+
+| 模型 | 子集 | target 覆盖（≥50%）中位数 | target 覆盖（有重叠）中位数 | target 没有任何 ≥50% token 的图 | target 的每个重叠 token 同时也与 reference 重叠的图 |
+|---|---|---|---|---|---|
+| Qwen2.5-VL-7B（RoboBrain、VST 相同，30×41） | A | 4 | 11 | 4.6% | 10.7% |
+| | B | 49 | 67 | 0% | 0% |
+| Qwen3-VL-8B（27×36） | A | 3 | 10 | 5.1% | 11.2% |
+| | B | 38 | 55 | 0% | 0% |
+| GLM-4.6V（默认分辨率，34×46） | A | 5.5 | 13 | 0.7% | 8.0% |
+| | B | 62 | 83 | 0% | 0% |
+| InternVL3 / 3.5 / SenseNova（16×16） | A | **0** | 5 | **53.2%** | **20.5%** |
+| | B | 10 | 19 | 0% | 0% |
+
+- **InternVL 系 + Subset A**：超过一半的图里，没有一个视觉 token 以 target 为主；约五分之一的图里，target 的 token 全部与 reference 共用。按 token 替换或屏蔽 target 的实验，在这个组合上必然同时动到背景或 reference。
+- Subset B 没有这个问题。
+- 与 v1 暂定版相比，target 的覆盖数变小（例如 30×41 网格“≥50%”中位数 28 → 20），主要因为 v1 有一批 target 框在家具上。
 
 ---
 
 ## 8. 需要你决定或动手的事项（按阻塞程度排序）
 
-1. **审核 F1 的自动标注**（阻塞：LaMa 抹除、坐标约定标定、所有需要真值框的实验）。至少 211 张待审，在联系表第 1–11 页。
-2. **是否做标注 v2**：对 target 框与 reference 框重合（IoU > 0.8）的 68 张，改用下一个候选框并重新分割；其中 56 张有可用候选。要做的话最好在你开始填 `review.csv` 之前定，因为联系表和审核表要重新生成。你没说之前我不动 v1。
-3. **COCO-Pairs 与 COCO-spatial 的划分不一致**：834 张共用图像可能一边是 dev 一边是 test。选项：(a) 让 COCO-Pairs 的划分服从 COCO-spatial；(b) 分析时用已记录的标记排除共用图像（剩 440 张图）；(c) 保持现状并限定两个数据集不混用于同一个选择—报告流程。
-4. **What's Up B 的 front / behind 可由垂直位置决定**（7.1）：这影响“深度关系”实验的设计，是否需要另找或另造不带这一捷径的数据，请你定。
-5. **SpatialRGPT 改写规则**：请看 20 条对照后确认；另外三点要定：是否接受 34 条 “No.” 样本的否定推断；同名类别的 14 条（全集 123 条）跳过还是用“左边的 / 右边的”区分；定位真值用框还是 mask。
-6. **合成场景**：看联系表后确认生成器；另要定：现在把 What's Up 抠图加进去重建抠图库（会改变划分、要重做试生成），还是等人工审核后再加；来自 COCO-spatial / COCO-Pairs 图像的抠图是否要排除；自然背景用哪个来源。
-7. **F1 质检阈值**：面积下限 0.2% 对 Subset A 的小物体误报多（52 张只带这一个标记）；“on” 的几何检查对椅子会误报。是否调整这两条规则由你定，我没有改。
-8. **GQA 的 29 处同义词**：是否做一张手工同义词表来补框。
-9. **四个 27B 以上大模型的冒烟**：批处理作业（435213）在 16:24 被取消，不是我取消的。是否重新提交？目前记为“大模型冒烟未做”。
-10. **Qwen3-VL-8B 的 3D 框输出**：提示词留到 dev 上定（你已说明），这里只提醒它在框预测部分目前有约四分之一的输出不可用。
-11. **GPU 配额**：仍只有 debug QoS 能较快拿到卡（单作业 3 小时、同时 2 个作业）。
+1. **默认真值框**：检测框还是 mask 外接框（阻塞：坐标约定标定、所有需要真值框的实验）。4 张图的 reference 减 mask 后外接框与新 mask 不贴合（2.4 节）。
+2. **COCO-Pairs 与 COCO-spatial 的划分不一致**：834 张共用图像可能一边是 dev 一边是 test。选项：(a) 让 COCO-Pairs 的划分服从 COCO-spatial；(b) 分析时用已记录的标记排除共用图像（剩 440 张图）；(c) 保持现状并限定两个数据集不混用于同一个选择—报告流程。
+3. **What's Up B 的 front / behind 完全由垂直位置决定**（7.1）：“深度关系”实验是否需要另找或另造不带这一捷径的数据。
+4. **SpatialRGPT 改写规则**：请看 20 条对照后确认；另要定：是否接受 34 条 “No.” 样本的否定推断；同名类别的 14 条（全集 123 条）跳过还是用“左边的 / 右边的”区分；定位真值用框还是 mask。
+5. **合成场景**：看联系表后确认生成器；来自 COCO-spatial / COCO-Pairs 图像的抠图是否要排除；自然背景用哪个来源。（抠图库只用 COCO，你已决定。）
+6. **框预测部分的精度**：bf16 下两种注意力实现的框输出不是逐 token 相同；InternVL3-8B 在 float32 下 40/40 相同（`docs/parts/bbox_impl_diff.md`）。正式实验的框预测用 bf16 还是 float32，请你定；其它模型没有做 float32 对照。
+7. **GLM-4.6V 的分辨率**：是否把它限制到与其它模型相近的视觉 token 数。
+8. **没有官方框约定的模型**：按你的决定，下一阶段用带真值框的 dev 子集标定。Qwen3-VL-8B 的 3D 框输出（40 次里 11 次解析不出）也留到那时。
+9. **GQA 的 29 处同义词**：是否做一张手工同义词表来补框。
+10. **眼镜类的口径**（2.6 节）：是否含镜片、镜腿间空隙怎么算。只影响 mask 精度要求高的实验。
+11. **GPU 节点**：gpu-05、gpu-07、gpu-49 上出现过缺卡或 CUDA 不可用（gpu-07 只认得到 3 张卡，分配到第 4 张时 CUDA 不可用），作业里已避开，建议报给管理员。能较快拿到卡的仍只有 debug QoS。
+
+已了结、不再列出：F1 审核与 v2 / v3、质检阈值调整、四个大模型的冒烟（你取消 435213，记为“未做，让位给数据作业”）。
 
 ---
 
@@ -377,7 +425,8 @@
 | `models/sam2.1-hiera-large`、`models/big-lama` | 1.80 GB + 0.38 GB |
 | `envs/tools`（第三个环境，锁文件 `requirements/tools.lock`） | 约 7.8 G |
 | `data/depth/spatialrgpt_bench` | 2.91 GB |
-| `data/gqa` + 压缩包 | 约 0.6 G |
-| `data/coco_pairs`、`data/whatsup_annotations` | 约 9 MB |
-| `data/synth`（抠图库 + 试生成） | 见 `docs/parts/F4_synth.md` |
-| `outputs/annotation_review` | 63 MB |
+| `data/gqa` + 压缩包 | 约 0.4 G |
+| `data/coco_pairs`、`data/whatsup_annotations`（v1–v3） | 约 27 MB |
+| `data/synth`（抠图库 + 试生成） | 308 MB |
+| `outputs/`（含 v1、v2 联系表、候选图、v3 确认图、诊断记录） | 246 MB |
+| **本项目合计**（models 91 G、envs 24 G、cache 8.7 G、data 6.8 G、其余很小） | **约 131 G** |

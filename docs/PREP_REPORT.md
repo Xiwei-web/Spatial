@@ -2,6 +2,8 @@
 
 日期：2026-11-25。范围：环境、模型清点与补齐、数据集、冒烟测试。**本阶段没有跑任何正式实验，本报告不含任何可写进论文的数字。** 冒烟测试只回答“管线能否跑通、内部状态能否拿到”，没有计算任何正确率。
 
+**更新（2026-11-25 晚）**：第 3.3 节的冒烟表是修复 eager 注意力问题之后的重跑结果；第 4–6 节标注了各事项的后续。数据构建、1.3 / 1.4 的排查结论、两种注意力实现的对比、What's Up 标注 v3 定稿见 `docs/DATA_REPORT.md`，两份报告不一致时以 DATA_REPORT 为准。
+
 配套文档：`docs/MODEL_INVENTORY.md`（模型逐项清单）、`docs/DATA_MANIFEST.md`（数据清单）、`docs/SMOKE_RESULTS.md`（冒烟结果表，脚本生成）。
 
 ---
@@ -20,7 +22,7 @@
 | `long` 分区 | **本账号不可用**：`sbatch -p long` 返回 `Invalid qos specification`（该分区只允许 `gpu-12` / `gpu-debug-qos`，而账号 `cscc-users` 没有 `gpu-12`） |
 | 排队情况（当天实测） | `sbatch` 到 `cscc-gpu-p` 的预计开始时间约 **1 天多之后**；走 debug QoS 的 `srun` 1 卡作业数分钟内能启动，3 卡作业调度器预估要等十几个小时；CPU 分区排队约 1 小时 |
 | 计算节点联网 | **能**。在 `gpu-49` 上访问 huggingface.co 和 github.com 均返回 200；登录节点同样能联网（hf-mirror.com 也通） |
-| 其它 | `sacctmgr`、`sacct` 在登录节点不可用（连不上 slurmdbd），以上限额来自 `scontrol show assoc_mgr`；申请 1 卡的作业里 `nvidia-smi` 能看到节点上全部 4 张卡（未验证是否有 cgroup 隔离，代码里只用 `CUDA_VISIBLE_DEVICES` 给的卡） |
+| 其它 | `sacctmgr`、`sacct` 在登录节点不可用（连不上 slurmdbd），以上限额来自 `scontrol show assoc_mgr`；申请 1 卡的作业里 `nvidia-smi` 能看到节点上全部 4 张卡（未验证是否有 cgroup 隔离，代码里只用 `CUDA_VISIBLE_DEVICES` 给的卡）。**部分节点缺卡**：gpu-05 出现过 CUDA 报错，gpu-07 只认得到 3 张卡（分到第 4 张时 CUDA 不可用），gpu-49 在一次探测里也只看到 3 张 |
 
 对后续实验的直接影响：27B 以上的模型 bf16 权重 55～72 GB，单卡放不下，必须 2～4 张 40GB 卡切分；而多卡作业排队明显更久。
 
@@ -78,7 +80,7 @@
 - 外部路径全部在 `configs/paths.yaml`，代码通过 `src/paths.py` 读取。`src/`、`scripts/`、`tests/` 里没有写死的绝对路径（Slurm 日志目录也由 `scripts/submit.sh` 从该文件读取）。
 - nfs-stor 下已建 `models/ data/ cache/ outputs/ envs/`，另加 `logs/`。
 - 所有缓存（`HF_HOME`、`TORCH_HOME`、pip、uv、matplotlib）由 `scripts/env.sh` 指向 `cache/`。
-- 依赖一个环境满足不了所有模型，建了两个：
+- 依赖一个环境满足不了所有模型，建了两个（数据阶段另加了第三个 `tools` 环境，给 GroundingDINO / SAM 用，锁文件 `requirements/tools.lock`）：
 
 | 环境 | 位置 | 关键版本 | 锁文件 | 用于 |
 |---|---|---|---|---|
@@ -111,7 +113,7 @@
 | Gemma-4 | gemma-4-31B-it | 60 / 5376 / 32 | **50 层滑动窗口自注意力（窗口 1024）+ 10 层全局自注意力**（层 5,11,…,59）；图像 token 之间在滑动层里是双向的 | 最多 280，(H'/48)·(W'/48) | 单视图 | 有；`enable_thinking=False` |
 | GLM | GLM-4.6V-Flash | 40 / 4096 / 32 | 全部标准自注意力 | (H'/28)·(W'/28) | 单视图 | 有；`enable_thinking=False` |
 | MiniCPM | MiniCPM-V-4_5 | 36 / 4096 / 32 | 全部标准自注意力 | 每视图固定 64 个（resampler 的 learned query） | `max_slice_nums=1` | 有；默认关 |
-| LLaVA | LLaVA-1.5-7B / 13B | 32/4096/32、40/5120/40 | 全部标准自注意力 | 固定 576（24×24） | 单视图（短边缩放到 336 后**中心裁剪**，非正方形图会丢掉两侧） | 无 |
+| LLaVA | LLaVA-1.5-7B / 13B | 32/4096/32、40/5120/40 | 全部标准自注意力 | 固定 576（24×24） | 单视图。`llava-hf` 默认是短边缩放到 336 后中心裁剪；**按你的决定改为先用均值色补成正方形**（`pad_to_square`） | 无 |
 | LLaVA-OneVision | LLaVA-OneVision-7B | 28 / 3584 / 28 | 全部标准自注意力 | 729（整图）+ anyres 切片 | **没有官方的单视图开关** | 无 |
 | Cambrian-S | Cambrian-S-7B（空间微调；基座是纯文本 LLM Qwen2.5-7B-Instruct + SigLIP2） | 28 / 3584 / 28 | config 显示为标准自注意力（未经代码确认） | 查不到 | 查不到 | 无 |
 
@@ -196,14 +198,14 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 
 原始输出：`/nfs-stor/xiwei.liu/interpretability/outputs/smoke/<模型>/records.jsonl`（每条带模型名、revision、提示词、配置哈希、Git commit）、`summary.json`、`token_region.png`（第 6 项的验证图）。运行日志在 `logs/smoke/<模型>.log`。
 
-干预单元测试在 `tests/test_interventions.py`，默认用随机初始化的 4 层小模型在 CPU 上跑（11 个测试全部通过）；`INTERP_TEST_MODEL=<模型名>` 可在真实模型上跑同一套检查。冒烟脚本对每个真实模型调用的是同一组检查函数（`src/checks.py`）。
+干预单元测试在 `tests/test_interventions.py`，默认用随机初始化的 4 层小模型在 CPU 上跑（全仓库目前 63 个测试，全部通过）；`INTERP_TEST_MODEL=<模型名>` 可在真实模型上跑同一套检查。冒烟脚本对每个真实模型调用的是同一组检查函数（`src/checks.py`）。
 
 冒烟测试里做过、需要你知道的处理：
-- 所有模型都用 **eager 注意力**、bf16 加载（基线与带 hook 的对比在同一设置下进行）。
+- 所有模型都用 **eager 注意力**、bf16 加载，语言模型的注意力打分和 softmax 在 float32 里计算（`patch_eager_fp32`）。第一轮没有这个修复，eager + bf16 会损坏部分模型的输出（RoboBrain 框输出可解析 15/40，修复后 40/40）；**第 7 项“逐位一致”是同一设置下自己和自己比，抓不到这类问题**，所以另做了 sdpa 对比（DATA_REPORT 1.5）。
 - 解码统一为贪心，并显式覆盖了仓库自带的生成参数（RoboBrain 自带 `repetition_penalty=1.05`、`do_sample=true`，被覆盖为 1.0 / 不采样）。
 - 动态分辨率的 Qwen 系 / GLM 把 `max_pixels` 限制在 1,003,520（What's Up 原图 1280×960 → 约 1,000～1,560 个视觉 token）。这是冒烟用的设置，不是对正式实验的建议。 **更正（2026-11-25）：该限制对 GLM-4.6V 没有生效**（它的处理器不接受 `max_pixels`），实际是 1288×952、1,564 个视觉 token。四个 27B 以上模型的冒烟：未做，让位给数据作业。
 - InternVL 系固定为单视图（整图压到 448×448，256 个 token）。
-- LLaVA-OneVision 默认 anyres 在原图上产生 7,309 个视觉 token，eager 注意力在 40 GB 卡上 OOM；改为先把输入等比缩到长边 768 再重跑（见下方结果）。
+- LLaVA-OneVision 默认 anyres 在原图上产生 7,309 个视觉 token，eager 注意力在 40 GB 卡上 OOM；改为先把输入等比缩到长边 768 再重跑；重跑后只剩注意力屏蔽一步仍因单卡显存不足失败，没有在 2 张卡上重试。
 - 解析器在第一轮后补了三种模型实际输出的包裹格式（`<answer>C</answer>`、`<|begin_of_box|>C<|end_of_box|>`、`<box>x y x y</box>`）。这是让解析器认识真实输出格式，判定标准没有放宽。
 
 ---
@@ -214,17 +216,17 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 
 | 数据 | 数量 | 体积 | 许可 | 核对 |
 |---|---|---|---|---|
-| What's Up Subset A | 412 张（left/right **206**） | 合计 850 MB（含 GQA 图像） | 仓库 MIT；数据无单独许可声明 | 通过，无缺图 |
+| What's Up Subset A | 412 张（left/right **206**）；其中 2 张 pillow 因原始数据左右与标签相反被剔除，实际可用 410 张 | 合计 850 MB（含 GQA 图像） | 仓库 MIT；数据无单独许可声明 | 通过，无缺图 |
 | What's Up Subset B | **408** 张 | 同上 | 同上 | 通过，无缺图 |
 | COCO-spatial（one / two） | 2,247 / 440 条 | 标注很小；图像见 COCO | 同上 | 通过，引用的图像都在 val2017 里 |
 | GQA-spatial（one / two） | 1,160 / 291 条；官方打包图像 4,797 张 | 含在 850 MB 内 | 同上 | 通过，无缺图 |
 | COCO val2017 + 实例标注 | 5,000 张 + `instances_val2017.json` | 835 MB | 标注 CC BY 4.0 | 通过（5,000） |
 | GSR-Bench 的框 / mask / 深度标注 | — | — | — | **没有找到公开发布** |
-| SpatialRGPT-Bench / 3DSRBench / CV-Bench | 只下了说明和标注元数据（6.9 MB） | 完整 2.91 / 1.52 / 0.41 GB | 未声明 / CC BY 4.0 / Apache-2.0 | 待你三选一 |
+| SpatialRGPT-Bench / 3DSRBench / CV-Bench | 只下了说明和标注元数据（6.9 MB） | 完整 2.91 / 1.52 / 0.41 GB | 未声明 / CC BY 4.0 / Apache-2.0 | 已定：只下 SpatialRGPT-Bench 完整数据（仅评测、不再分发），已完成 |
 | 背景图 | 未下载 | — | 见清单 | 4 个候选来源 |
 | ImageNet val | 未下载 | — | — | 没有官方公共副本；有其他用户的可读副本 |
 
-- 加载器：`src/data/loaders.py`，六个数据集返回同一个 `Sample` 结构（图像路径、target、reference、关系、框、mask）。What's Up A/B 和 GQA 没有框；COCO-spatial 的框和 mask 是我用 COCO 实例标注按类别名唯一匹配得到的（全部样本都能唯一匹配），不是 What's Up 发布的。
+- 加载器：`src/data/loaders.py`，六个数据集返回同一个 `Sample` 结构（图像路径、target、reference、关系、框、mask）。加载器里 What's Up A/B 的 `Sample` 没有框（标注 v3 用 `src/data/whatsup_annotations.py` 单独读取）；GQA 的框已由场景图补上（DATA_REPORT 3.1）；COCO-spatial 的框和 mask 是我用 COCO 实例标注按类别名唯一匹配得到的（全部样本都能唯一匹配），不是 What's Up 发布的。
 - 划分：`splits/*.json`，种子 20261125，按关系分层对半，已提交。
 - 抽样图：`/nfs-stor/xiwei.liu/interpretability/outputs/sanity/{whatsup_a,whatsup_b,coco_spatial_one,coco_spatial_two,gqa_spatial_one,gqa_spatial_two}.png`，**请肉眼检查**。我看了 `coco_spatial_two.png`，5 个样本的框与标签一致；其余几张我没有逐张看。
 
@@ -232,20 +234,23 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 
 ## 5. 未完成或失败的事项
 
-见本节末尾由结果决定的部分（第 3.3 节的“失败项与说明”逐条列出了每个失败的原因）。结构性的未完成事项：
+第 3.3 节的“失败项与说明”逐条列出了每个失败的原因。结构性的未完成事项（括号里是后续）：
 
-1. **Cambrian-S-7B 完全没有测试。** `model_type=cambrian_qwen` 不在 transformers 里，仓库不带代码，需要官方 cambrian-s 代码库和它自己的依赖环境。本机有一份官方代码拷贝和一个 `cambrian-s` conda 环境（属于其它项目），我没有擅自使用。
-2. **GSR-Bench 标注没有找到**，What's Up 的框和 mask 需要自己生成（本阶段按要求没有生成）。
-3. **辅助模型（SAM、LaMa）没有下载**，按“先报告再下载”处理，见第 6 节。
-4. **Gemma-3 没有下载**（gated，需要你接受许可）。
+1. **Cambrian-S-7B 完全没有测试。** `model_type=cambrian_qwen` 不在 transformers 里，仓库不带代码，需要官方 cambrian-s 代码库和它自己的依赖环境。本机有一份官方代码拷贝和一个 `cambrian-s` conda 环境（属于其它项目），我没有擅自使用。（你已决定不适配，去掉。）
+2. **GSR-Bench 标注没有找到**，What's Up 的框和 mask 需要自己生成（本阶段按要求没有生成）。（已生成并定稿为 v3：自动标注，经模型辅助预审和部分人工复核。）
+3. **辅助模型（SAM、LaMa）没有下载**，按“先报告再下载”处理，见第 6 节。（已下载 sam2.1-hiera-large 与 big-lama。）
+4. **Gemma-3 没有下载**（gated，需要你接受许可）。（你已决定不下载。）
 5. **每用户磁盘配额查不到。**
-6. **GQA-spatial 没有框**（需要 GQA scene graph，未下载）。
+6. **GQA-spatial 没有框**（需要 GQA scene graph，未下载）。（已下载并补框。）
 7. 模型清单里所有标为“查不到”的字段（各 yaml 的 `unknown`），其中最重要的是多个模型的官方框约定（3.2 节）。
-8. 第 6 项“视觉 token → 图像区域”的验证方式是画图供人看 + 数量与连续性检查，**没有做基于模型行为的验证**（例如遮挡某区域看哪些 token 变化）。Qwen3.5-2B 的图我看过，网格与图像对齐；其余模型的图需要你抽查。
+8. 第 6 项“视觉 token → 图像区域”的验证方式是画图供人看 + 数量与连续性检查，**没有做基于模型行为的验证**（例如遮挡某区域看哪些 token 变化）。Qwen3.5-2B 的图我看过，网格与图像对齐；其余模型的图需要你抽查。（第一组 9 个模型已补做，见 DATA_REPORT 1.4：没有发现错位的证据，但不能证明精确到单个 token。）
+9. **四个 27B 以上模型的冒烟未做**（Qwen3.6-27B、Qwen3.8-27B、Qwen3.6-35B-A3B、gemma-4-31B-it）：让位给数据作业。
 
 ---
 
 ## 6. 需要你决定的事项
+
+**你的决定（2026-11-25）**：1 不下载 Gemma-3；2 选 SpatialRGPT-Bench；3 不需要 ImageNet，改用 COCO 留出池；6 下载 SAM 2.1 和 LaMa；7 留到有真值框后在 dev 上标定；8 先补成正方形；9、11 你自己处理；10 不适配 Cambrian-S。第 5 条按你给的三组处理（`configs/adapters.yaml` 的 `group`）。**目前仍待决定的事项以 DATA_REPORT 第 8 节为准**，下面是当时的原文。
 
 1. **Gemma-3（4b-it 或 12b-it）**：两个仓库都是 `gated: manual`，许可 `gemma`。体积 8.6 GB / 24.4 GB。需要你在 HF 上接受许可并提供 `HF_TOKEN` 环境变量后我再下。要哪一个，还是都不要？
 2. **深度关系数据集三选一**（对比表在 `docs/DATA_MANIFEST.md`）：
@@ -284,7 +289,7 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 | `…/cache`（uv 7.7 G、conda_pkgs 0.9 G、其余很小） | 8.7 G |
 | `…/data` | 3.4 G |
 | `…/outputs`、`…/logs` | 约 10 MB |
-| **本项目合计** | **约 117 G** |
+| **本项目合计**（本表为准备阶段结束时的数字；最新合计约 131 G，见 DATA_REPORT 第 9 节） | **约 117 G** |
 | 已有权重 `/nfs-stor/xiwei.liu/l/model`（未改动） | 421 G |
 
 补充模型明细：Qwen2.5-VL-7B-Instruct 16.6 GB、Qwen3-VL-8B-Instruct 17.5 GB、InternVL3-8B 15.9 GB、InternVL3-2B 4.2 GB、LLaVA-1.5-7B 14.1 GB、LLaVA-1.5-13B 26.7 GB。全部固定到 commit（`configs/downloads/models.yaml`），下载后逐文件核对大小、LFS 文件核对 sha256，全部一致；各目录下有 `SHA256SUMS`。LLaVA-1.5 的许可标签是 `llama2`（非 gated，但不是 Apache/MIT，发布衍生物前请留意）。InternVL3 的卡片 front matter 写 apache-2.0（license_name: qwen），README 正文写 MIT，两处不一致。
