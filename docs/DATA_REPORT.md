@@ -486,7 +486,7 @@ A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50
 ## 8. 需要你决定或动手的事项（按阻塞程度排序）
 
 1. **深度检验的数据**：SpatialRGPT（88.5%）、CV-Bench 3D（85.3%）都有垂直位置捷径，What's Up B 完全混淆。CV-Bench 与捷径相反的只有 88 条（< 150），没有构造子集。需要你定数据来源。
-2. **框预测精度**：teacher-forced 对比已完成（`docs/parts/bbox_impl_diff.md` 第 4–6 节，作业 435836）。InternVL3-8B：fp32 下两种实现期望坐标最大差 0.0064（0–1000），bf16 下均值 0.45、最大 5.0；bf16 对 fp32 均值约 0.8、最大约 14。其它模型没有测 fp32 的实现一致性。Qwen2.5-VL-7B 的 float32 + eager 单卡 40 GB 能跑但没有余量。请你定。
+2. **框预测精度**：teacher-forced 对比已完成（`docs/parts/bbox_impl_diff.md` 第 4–6 节，作业 435836）。InternVL3-8B：fp32 下两种实现期望坐标最大差 0.0064（0–1000），bf16 下均值 0.45、最大 5.0；bf16 对 fp32 均值约 0.8、最大约 14。Qwen2.5-VL-7B 也已测（作业 436204，第 7 节）：fp32 下两种实现期望坐标最大差 3.9e-4 像素、自由生成 40/40 框逐 token 相同；bf16 对 fp32 框中心差的 95% 分位 0.012 个视觉 token（n=80）。按 planner 2026-11-26 的固定标准：Qwen2.5-VL-7B 通过（边缘），InternVL3-8B 不通过（cx 偏移约 0.004 个 token，区间不含 0）。其它模型没有测 fp32 的实现一致性。Qwen2.5-VL-7B 的 float32 + eager 单卡 40 GB 能跑但没有余量。请你定。
 3. **SpatialRGPT 改写规则**：20 条对照（`docs/parts/F7_spatialrgpt.md`）等你确认。
 4. **合成场景**：请看 `outputs/synth_review/trial_v1/` 与 `library_v1/`；要定：抠图库是否需要比 CLIP 更严的筛选；身份互换孪生的边缘间距不受控是否可接受（5.2）；自然背景用哪个来源。
 5. **留出池里有 1 张与 GQA-spatial 重叠的图**（COCO 126226）：是否从留出池剔除（剩 999 张）。
