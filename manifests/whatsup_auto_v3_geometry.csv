@@ -1,0 +1,3 @@
+order_v2,dataset,sample_id,relation,target_centroid_xy,reference_centroid_xy,v3_status,usable
+67,whatsup_a,pillow_left_of_chair,left,"[999, 796]","[655, 567]",excluded_label_contradicts_image,False
+68,whatsup_a,pillow_right_of_chair,right,"[300, 831]","[655, 566]",excluded_label_contradicts_image,False

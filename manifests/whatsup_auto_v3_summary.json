@@ -1,75 +1,282 @@
 {
  "version": "auto_v3",
+ "finalized": false,
  "status_wording": "自动标注，经模型辅助预审和部分人工复核",
  "n": 820,
  "v3_status": {
-  "pending_user_confirmation": 25,
+  "changed_by_user_confirmation": 17,
   "changed_by_review_pick": 7,
   "unchanged_from_v2": 786,
-  "pending_label_decision": 2
+  "excluded_label_contradicts_image": 2,
+  "pending_plant_mask_confirmation": 8
  },
- "usable": 793,
- "not_usable_pending": 27,
+ "usable": 810,
+ "usable_by_dataset": {
+  "whatsup_a": 402,
+  "whatsup_b": 408
+ },
  "review_source": {
   "human_confirmed": 41,
   "ai_prereview_with_human_rules": 83,
   "ai_prereview_thumbnail_only": 696
  },
- "lr_geometry_inconsistent": [
-  [
-   1,
-   "can_right_of_armchair",
-   "pending_user_confirmation"
-  ],
+ "geometry_inconsistent": [
   [
    67,
    "pillow_left_of_chair",
-   "pending_label_decision"
+   "excluded_label_contradicts_image",
+   false
   ],
   [
    68,
    "pillow_right_of_chair",
-   "pending_label_decision"
+   "excluded_label_contradicts_image",
+   false
   ]
  ],
- "needs_user_confirmation": {
-  "redetect_no_target_candidate": 10,
-  "lr_order_contradicts_label": 3,
-  "redetect_bread_body": 1,
-  "label_contradicts_image": 2,
-  "redetect_shoes_pair": 4,
-  "redetect_photograph_with_mat": 1,
-  "redetect_plant_with_pot": 8,
-  "redetect_swapped_boxes": 1
+ "qc_flags_on_changed_rows": {
+  "pan_under_armchair": {
+   "ambiguous_candidates": [
+    "target"
+   ],
+   "low_score": [
+    "target"
+   ]
+  },
+  "sunglasses_under_armchair": {
+   "ambiguous_candidates": [
+    "target"
+   ],
+   "low_score": [
+    "target"
+   ]
+  },
+  "bowl_in-front_of_can": {
+   "ambiguous_candidates": [
+    "reference"
+   ],
+   "low_score": [
+    "reference"
+   ],
+   "target_no_alternative": [
+    "target"
+   ]
+  },
+  "cap_in-front_of_can": {
+   "ambiguous_candidates": [
+    "reference"
+   ],
+   "low_score": [
+    "reference"
+   ],
+   "target_no_alternative": [
+    "target"
+   ]
+  },
+  "mug_in-front_of_can": {
+   "ambiguous_candidates": [
+    "reference"
+   ],
+   "low_score": [
+    "reference"
+   ],
+   "target_no_alternative": [
+    "target"
+   ]
+  },
+  "pan_on_armchair": {
+   "low_score": [
+    "target"
+   ]
+  },
+  "mug_right_of_cup": {
+   "ambiguous_candidates": [
+    "reference"
+   ]
+  },
+  "glass_under_armchair": {
+   "ambiguous_candidates": [
+    "target"
+   ],
+   "low_score": [
+    "target"
+   ]
+  },
+  "cup_in-front_of_can": {
+   "ambiguous_candidates": [
+    "reference"
+   ],
+   "low_score": [
+    "reference"
+   ]
+  },
+  "mug_left_of_cup": {
+   "ambiguous_candidates": [
+    "reference"
+   ]
+  },
+  "bread_under_armchair": {
+   "low_score": [
+    "target"
+   ]
+  },
+  "photograph_under_chair": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "pillow_left_of_chair": {
+   "geometry_inconsistent": [
+    "left"
+   ]
+  },
+  "pillow_right_of_chair": {
+   "geometry_inconsistent": [
+    "right"
+   ]
+  },
+  "shoes_left_of_chair": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "shoes_on_chair": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "photograph_on_chair": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "plant_left_of_chair": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "plant_left_of_table": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "plant_on_chair": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "plant_on_table": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "plant_right_of_chair": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "plant_right_of_table": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "plant_under_chair": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "plant_under_table": {
+   "ambiguous_candidates": [
+    "target"
+   ]
+  },
+  "mug_in-front_of_cup": {
+   "ambiguous_candidates": [
+    "reference"
+   ]
+  }
  },
- "proposals_without_candidates": [],
- "n_candidates_per_proposal": {
-  "1": 6,
-  "2": 4,
-  "3": 5,
-  "4": 6,
-  "5": 6,
-  "9": 5,
-  "10": 6,
-  "11": 6,
-  "12": 6,
-  "14": 3,
-  "30": 6,
-  "80": 5,
-  "81": 6,
-  "82": 6,
-  "83": 6,
-  "322": 6,
-  "333": 6,
-  "334": 6,
-  "335": 6,
-  "336": 6,
-  "337": 6,
-  "338": 6,
-  "339": 6,
-  "340": 6,
-  "682": 5
- },
- "annotations_sha256": "cf592ff5bbc55892d757b63f99a7445fecad5234deccf5eb1c0aa984df2f7aac",
- "downstream_blocked": "在用户确认 25 张待确认图之前，不得用 v3 生成任何下游数据"
+ "plant_mask_stats": [
+  {
+   "order": 333,
+   "sample_id": "plant_left_of_chair",
+   "leaf_area": 9871,
+   "pot_area": 2392,
+   "union_area": 11373,
+   "pot_only_area": 1502,
+   "pot_mask_share_of_pot_box": 0.5665795314211584,
+   "pot_sam_iou_pred": 0.9037583470344543
+  },
+  {
+   "order": 334,
+   "sample_id": "plant_left_of_table",
+   "leaf_area": 8186,
+   "pot_area": 2862,
+   "union_area": 10912,
+   "pot_only_area": 2726,
+   "pot_mask_share_of_pot_box": 0.6525493096358458,
+   "pot_sam_iou_pred": 0.9592628479003906
+  },
+  {
+   "order": 335,
+   "sample_id": "plant_on_chair",
+   "leaf_area": 11570,
+   "pot_area": 2726,
+   "union_area": 13753,
+   "pot_only_area": 2183,
+   "pot_mask_share_of_pot_box": 0.6095541960968242,
+   "pot_sam_iou_pred": 0.9319782853126526
+  },
+  {
+   "order": 336,
+   "sample_id": "plant_on_table",
+   "leaf_area": 11847,
+   "pot_area": 3959,
+   "union_area": 15690,
+   "pot_only_area": 3843,
+   "pot_mask_share_of_pot_box": 0.78179469579731,
+   "pot_sam_iou_pred": 0.9537313580513
+  },
+  {
+   "order": 337,
+   "sample_id": "plant_right_of_chair",
+   "leaf_area": 10545,
+   "pot_area": 2689,
+   "union_area": 13168,
+   "pot_only_area": 2623,
+   "pot_mask_share_of_pot_box": 0.6492723585915571,
+   "pot_sam_iou_pred": 0.9600887894630432
+  },
+  {
+   "order": 338,
+   "sample_id": "plant_right_of_table",
+   "leaf_area": 7057,
+   "pot_area": 3092,
+   "union_area": 10120,
+   "pot_only_area": 3063,
+   "pot_mask_share_of_pot_box": 0.8169357976913716,
+   "pot_sam_iou_pred": 0.9832996726036072
+  },
+  {
+   "order": 339,
+   "sample_id": "plant_under_chair",
+   "leaf_area": 10780,
+   "pot_area": 2289,
+   "union_area": 11431,
+   "pot_only_area": 651,
+   "pot_mask_share_of_pot_box": 0.5751307540633233,
+   "pot_sam_iou_pred": 0.9249061942100525
+  },
+  {
+   "order": 340,
+   "sample_id": "plant_under_table",
+   "leaf_area": 10575,
+   "pot_area": 3142,
+   "union_area": 13572,
+   "pot_only_area": 2997,
+   "pot_mask_share_of_pot_box": 0.6445899931067289,
+   "pot_sam_iou_pred": 0.944908857345581
+  }
+ ],
+ "annotations_sha256": "953d6015467a99a4ddfa121e992df30b0782afdd7f1fe153c9207e4d55b5a4f6"
 }
