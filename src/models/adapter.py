@@ -169,18 +169,22 @@ class HFChatAdapter(BaseAdapter):
         image = image.convert("RGB")
         messages = [{"role": "user", "content": [{"type": "image", "image": image}, {"type": "text", "text": prompt}]}]
         kw = dict(self.spec.get("chat_kwargs") or {})
-        proc_kw = {}
+        base = dict(add_generation_prompt=True, tokenize=True, return_dict=True, return_tensors="pt", **kw)
+        variants = [{}]
         if self.spec["grid"] == "qwen_thw" and self.spec.get("max_pixels"):
-            proc_kw["images_kwargs"] = {"max_pixels": int(self.spec["max_pixels"])}
-        try:
-            inputs = self.processor.apply_chat_template(messages, add_generation_prompt=True, tokenize=True,
-                                                        return_dict=True, return_tensors="pt", **proc_kw, **kw)
-        except Exception as e:  # 个别 processor 不接受 images_kwargs；退回默认分辨率并记录
-            if not proc_kw:
-                raise
-            self._max_pixels_error = repr(e)
-            inputs = self.processor.apply_chat_template(messages, add_generation_prompt=True, tokenize=True,
-                                                        return_dict=True, return_tensors="pt", **kw)
+            ik = {"images_kwargs": {"max_pixels": int(self.spec["max_pixels"])}}
+            variants = [{"processor_kwargs": ik}, ik, {}]      # 新式 API → 旧式 API → 默认分辨率（记录原因）
+        inputs, errs = None, []
+        for i, v in enumerate(variants):
+            try:
+                inputs = self.processor.apply_chat_template(messages, **base, **v)
+                self.processor_kwargs_variant = i
+                break
+            except Exception as e:
+                errs.append(repr(e))
+        if inputs is None:
+            raise RuntimeError("apply_chat_template 失败: " + " | ".join(errs))
+        self.max_pixels_errors = errs
         inputs = {k: (v.to(self.device) if hasattr(v, "to") else v) for k, v in inputs.items()}
         ids = inputs["input_ids"][0]
         vis = (ids == self.image_token_id).nonzero().flatten().tolist()
