@@ -1,0 +1,23 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+.env
+*.log
+slurm-*.out
+# 大文件一律放 nfs-stor，不进仓库
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.npy
+*.npz
+*.zip
+*.tar
+*.tar.gz
+*.parquet
+/outputs/
+/data/
+/models/

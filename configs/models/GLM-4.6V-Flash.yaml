@@ -1,0 +1,178 @@
+# 所有字段均出自本地 config / README / chat_template / transformers 5.5.4 源码（见 sources），未加载权重、未实测。
+name: GLM-4.6V-Flash
+location:
+  root_key: existing_models
+  subdir: GLM-4.6V-Flash
+hf_repo: zai-org/GLM-4.6V-Flash       # README.md:83 MODEL_PATH；MANIFEST.md 未收录该模型
+revision: 411bb4d77144a3f03accbf4b780f5acb8b7cde4e
+revision_source: ".cache/huggingface/download/*.metadata 第 1 行（14 个文件一致）。MANIFEST.md 未收录该模型，_logs/GLM-4.6V-Flash_download.log 里没有 repo id / sha。同一字段在 gemma-4-31B-it 上与 MANIFEST 的 sha 一致，据此认定其为 commit sha。"
+size_bytes: 20605705573
+license: mit
+license_source: "README.md:6 front matter `license: mit`"
+role: general
+base_model: null
+env: null
+loader:
+  model_class: Glm4vForConditionalGeneration   # config.json architectures；README.md:80,100 同
+  processor_class: Glm46VProcessor             # preprocessor_config.json processor_class；README 用 AutoProcessor
+  trust_remote_code: false                     # 模型目录内无 .py；transformers 5.5.4 自带 models/glm4v 与 models/glm46v
+  config_transformers_version: "5.0.0rc0"
+  notes: >-
+    README.md:74 `pip install transformers>=5.0.0rc0`（写在 vLLM 安装段，另有 vllm>=0.12.0、sglang>=0.5.6.post1）。
+    注意 config.json 的 model_type=glm4v / architectures=Glm4vForConditionalGeneration，
+    而 preprocessor_config.json 指定 Glm46VImageProcessor / Glm46VProcessor（video 为 Glm46VVideoProcessor）：模型类与处理器类分属两个模块。
+    tokenizer_config.json 的 tokenizer_class=PreTrainedTokenizer。
+    README 示例在 generate 前 `inputs.pop("token_type_ids", None)`（README.md:112），torch_dtype="auto", device_map="auto"。
+    generation_config.json（transformers_version 4.57.1）：do_sample=true, top_p=0.6, top_k=2, temperature=0.8；README 另建议 repetition_penalty=1.1。
+language_model:
+  model_type: glm4v_text
+  num_layers: 40
+  hidden_size: 4096
+  num_attention_heads: 32
+  num_key_value_heads: 2
+  head_dim: 128               # hidden_size // num_attention_heads（modeling_glm4v.py:523），config 中无 head_dim 字段
+  layer_mixers:
+    - full_attention   # 0
+    - full_attention   # 1
+    - full_attention   # 2
+    - full_attention   # 3
+    - full_attention   # 4
+    - full_attention   # 5
+    - full_attention   # 6
+    - full_attention   # 7
+    - full_attention   # 8
+    - full_attention   # 9
+    - full_attention   # 10
+    - full_attention   # 11
+    - full_attention   # 12
+    - full_attention   # 13
+    - full_attention   # 14
+    - full_attention   # 15
+    - full_attention   # 16
+    - full_attention   # 17
+    - full_attention   # 18
+    - full_attention   # 19
+    - full_attention   # 20
+    - full_attention   # 21
+    - full_attention   # 22
+    - full_attention   # 23
+    - full_attention   # 24
+    - full_attention   # 25
+    - full_attention   # 26
+    - full_attention   # 27
+    - full_attention   # 28
+    - full_attention   # 29
+    - full_attention   # 30
+    - full_attention   # 31
+    - full_attention   # 32
+    - full_attention   # 33
+    - full_attention   # 34
+    - full_attention   # 35
+    - full_attention   # 36
+    - full_attention   # 37
+    - full_attention   # 38
+    - full_attention   # 39
+  mixer_details: >-
+    config 中没有 layer_types / sliding_window 字段；Glm4vTextModel.forward 只构造一个 create_causal_mask
+    并用于全部层（modeling_glm4v.py:903），所有 40 层都是标准因果 softmax 自注意力（Glm4vTextAttention :510-577，is_causal=True）。
+    GQA：32 个 q 头、num_key_value_heads=2，即每 16 个 q 头共享一组 K/V（num_key_value_groups = 32 // 2，:525）。
+    q/k/v_proj 带 bias（attention_bias=true），o_proj 无 bias。
+    位置编码为 3D M-RoPE：mrope_section=[8,12,12]（时间/高/宽），rope_theta=500000，partial_rotary_factor=0.5；
+    图像 token 的 (t,h,w) 位置由 get_vision_position_ids 生成（:949-1003）。
+  mlp_type: "dense（Glm4vTextMLP，intermediate_size=13696，hidden_act silu；本模型不是 glm4v_moe）"
+  head_level_analysis: >-
+    40 层都可做 head 级分析与注意力屏蔽（全局因果 softmax 注意力，o_proj 输入为 32 头 x 128 维拼接）。
+    注意 K/V 只有 2 组：同组 16 个头共用同一份 K 和 V，头之间只有 Q（及 o_proj 切片）不同，
+    对 K/V 的干预无法做到单头粒度。attn_weights 的返回取决于注意力后端（:560-573 通过 ALL_ATTENTION_FUNCTIONS 选择，
+    缺省回落 eager_attention_forward）；非 eager 后端是否返回权重未核实。
+vision_encoder:
+  type: "Glm4vVisionModel (model_type glm4v_vision)"
+  num_layers: 24          # vision_config.depth
+  hidden_size: 1536       # num_heads 12，out_hidden_size 4096
+  patch_size: 14          # temporal_patch_size 2（Conv3d patch embed，modeling_glm4v.py:91-92）
+  resolution_strategy: >-
+    dynamic（原生分辨率，单视图）。Glm46VImageProcessor 用 smart_resize（image_processing_glm46v.py:50-83, :152-161）：
+    高宽各自四舍五入到 28（=patch_size*merge_size）的倍数；单张图按 num_frames=temporal_patch_size=2 计入，
+    若 2*H'*W' > max_pixels 则等比缩小，若 2*H'*W' < min_pixels 则等比放大；长宽比上限 200。
+    本模型 preprocessor_config.json：size.shortest_edge=12544（min_pixels），size.longest_edge=9633792（max_pixels）。
+    由此推出（未实测）单图 H'*W' 上限 4816896 像素、下限 6272 像素。
+    单张图在送入 Conv3d 前被复制成 2 帧（:184-188），grid_t=1。归一化用 CLIP mean/std。
+    vision_config.image_size=336 只决定可学习位置表的大小（24x24），不是输入分辨率。
+  position_encoding: >-
+    两种叠加：(1) 可学习绝对位置表 nn.Embedding((336/14)^2=576, hidden)，视作 24x24 网格，
+    按各 patch 的归一化坐标用 F.grid_sample（bicubic, align_corners=False, padding_mode border）插值到实际网格后相加
+    （Glm4vVisionEmbeddings，modeling_glm4v.py:136-207）；(2) 每个视觉注意力层内的 2D RoPE（h、w 位置，
+    Glm4vVisionRotaryEmbedding(head_dim//2)，rot_pos_emb :711, :730-757）。
+connector:
+  type: "post_layernorm → Conv2d downsample（kernel=stride=spatial_merge_size=2，1536→4096）→ Glm4vVisionPatchMerger（Linear+LayerNorm+GELU 后接门控 MLP，输出 4096 维）（modeling_glm4v.py:119-133, :714-724, :806-814）"
+  token_merge: "2x2 空间合并（4 个 14px patch → 1 个 token，4 倍压缩）；另有时间方向 2 帧合 1（单图为同一帧复制）"
+  tokens_per_image: >-
+    可变：n = grid_t*grid_h*grid_w / merge_size^2 = (H'/28) * (W'/28)，H'、W' 为 smart_resize 后的高宽
+    （processing_glm46v.py:115-120；image_processing_glm46v.py:190-192）。
+    按 preprocessor_config 的像素范围推算（未实测）：最少 8 个、最多 6144 个 token。
+    模板把每张图写成 <|begin_of_image|><|image|><|end_of_image|>，processor 把 <|image|> 展开成 n 个。
+  token_to_region: >-
+    可行，规则确定。图像处理器把 patch 按“合并后网格行优先、每个 2x2 块内 4 个 patch 相邻”的顺序排列
+    （permute 为 (B, grid_t, gh, gw, mh, mw, ...)，image_processing_glm46v.py:194-213），
+    视觉塔末端每 4 个相邻 patch 经 Conv2d 合成 1 个 token（modeling_glm4v.py:808-812），
+    LLM 侧位置 id 也是高度 repeat_interleave、宽度 repeat（:993-998），即行优先。
+    第 i 个图像 token ↔ row = i // (W'/28), col = i % (W'/28)，对应缩放后图像上的 28x28 像素格
+    [col*28, (col+1)*28) x [row*28, (row+1)*28)；再按 (原宽/W', 原高/H') 映回原图。
+    每个 token 经过 24 层视觉注意力，内容上会混入其他位置的信息。
+multi_view:
+  default: "否。Glm46VImageProcessor 只做一次 smart_resize，没有切片、多裁剪或缩略图；每张图恒为单视图，token 数随分辨率变化。"
+  force_single_view: "无需设置（本来就是单视图）。要固定 token 数：把输入图预先缩放到固定的 28 倍数尺寸，或通过 images_kwargs 的 size={shortest_edge, longest_edge}（即 min/max pixels）收紧范围。"
+bbox:
+  official_prompt: null
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: "README.md 全文没有 grounding / bounding box 的提示词、输出格式或坐标约定（只让读者去 GitHub zai-org/GLM-V）。tokenizer_config.json 中存在特殊 token <|begin_of_box|> 与 <|end_of_box|>，但本地任何文件都没有说明其用法。"
+thinking:
+  has_thinking_mode: true
+  how_to_disable: >-
+    apply_chat_template(..., enable_thinking=False)。模板行为（chat_template.jinja）：当 enable_thinking 已定义且为假时，
+    在每条 user 消息末尾追加 `/nothink`（:61，若内容已以 /nothink 结尾则不重复），
+    并在 generation prompt 的 `<|assistant|>` 换行后预填 `<think></think>\n`（:138-139）。
+    不传 enable_thinking 时两处都不触发，即默认不关闭思考。历史 assistant 消息统一写成 `<think></think>` 或带 reasoning_content 的 `<think>...</think>`（:74-78）。
+    README 未说明思考开关，只提到模型“may still overthink or even repeat itself”（README.md:139）。
+  source: "chat_template.jinja:61,74-78,138-139；README.md:134-139"
+sources:
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/.cache/huggingface/download/config.json.metadata:1
+  - /nfs-stor/xiwei.liu/l/model/_logs/GLM-4.6V-Flash_download.log
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/config.json
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/preprocessor_config.json
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/video_preprocessor_config.json
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/generation_config.json
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/tokenizer_config.json
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/README.md:6
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/README.md:74
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/README.md:80
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/README.md:83
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/README.md:112
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/README.md:139
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/chat_template.jinja:61
+  - /nfs-stor/xiwei.liu/l/model/GLM-4.6V-Flash/chat_template.jinja:139
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm4v/modeling_glm4v.py:91
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm4v/modeling_glm4v.py:119
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm4v/modeling_glm4v.py:136
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm4v/modeling_glm4v.py:510
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm4v/modeling_glm4v.py:714
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm4v/modeling_glm4v.py:730
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm4v/modeling_glm4v.py:808
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm4v/modeling_glm4v.py:903
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm4v/modeling_glm4v.py:993
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm46v/image_processing_glm46v.py:50
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm46v/image_processing_glm46v.py:152
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm46v/image_processing_glm46v.py:184
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm46v/image_processing_glm46v.py:194
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/glm46v/processing_glm46v.py:115
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/modeling_auto.py:983
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/processing_auto.py:86
+unknown:
+  - "bbox 全部字段：README 没有 grounding 提示词/格式/坐标约定；<|begin_of_box|>/<|end_of_box|> token 存在但用法未在本地文件中说明（README 指向 GitHub，未联网查）。"
+  - "revision 未出现在 MANIFEST.md 或下载日志中，只能取自 .cache 的下载元数据。"
+  - "不传 enable_thinking 时模型是否一定输出 <think>：模板只是不加 /nothink，实际行为未实测。"
+  - "tokens_per_image 的上下限（8 / 6144）与像素上下限是按 smart_resize 公式手算，未用真实图像跑 processor 验证。"
+  - "model_type=glm4v 的模型类与 Glm46V 处理器组合在 transformers 5.5.4 下能否直接加载：未加载验证。"
+  - "非 eager 注意力后端是否返回 attn_weights：未核实。"

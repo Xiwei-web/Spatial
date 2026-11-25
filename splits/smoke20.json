@@ -1,0 +1,86 @@
+{
+ "note": "smoke test only: accuracy on these 20 images is NOT a result",
+ "seed": 20261125,
+ "items": [
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "ball-of-yarn_on_chair"
+  },
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "bottle-of-orange-juice_on_chair"
+  },
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "glasses_right_of_armchair"
+  },
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "knife_left_of_chair"
+  },
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "mug_right_of_table"
+  },
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "pan_left_of_chair"
+  },
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "pillow_left_of_armchair"
+  },
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "pillow_on_table"
+  },
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "shoes_under_chair"
+  },
+  {
+   "dataset": "whatsup_a",
+   "sample_id": "sunglasses_under_table"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "bowl_behind_cup"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "bowl_in-front_of_headphones"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "can_in-front_of_flower"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "cap_behind_headphones"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "cap_right_of_remote"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "mug_left_of_phone"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "plate_in-front_of_candle"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "plate_left_of_remote"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "remote_behind_scissors"
+  },
+  {
+   "dataset": "whatsup_b",
+   "sample_id": "sunglasses_right_of_tape"
+  }
+ ]
+}

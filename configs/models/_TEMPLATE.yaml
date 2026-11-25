@@ -1,0 +1,60 @@
+# 模型配置模板。每个字段都必须来自本地 config / model card / transformers 源码，
+# 查不到的写 null 并在 unknown 列表里说明，不允许凭印象填。
+name: null                 # 与文件名一致
+location:
+  root_key: null           # configs/paths.yaml 里的键：existing_models 或 new_models
+  subdir: null             # 该根目录下的子目录名
+hf_repo: null
+revision: null             # HF commit sha
+revision_source: null      # sha 出自哪里（MANIFEST.md / _logs/xxx / 下载脚本）
+size_bytes: null           # 不含 .cache
+license: null
+license_source: null
+role: null                 # general | spatial_finetune
+base_model: null           # role=spatial_finetune 时写基座；并写明出处
+env: null                  # 用哪个 Python 环境（阶段 B 确定后填）
+loader:
+  model_class: null
+  processor_class: null
+  trust_remote_code: null
+  config_transformers_version: null   # config.json 里记录的版本
+  notes: null
+language_model:
+  model_type: null
+  num_layers: null
+  hidden_size: null
+  num_attention_heads: null    # 标准注意力层每层 head 数
+  num_key_value_heads: null
+  head_dim: null
+  layer_mixers: []             # 长度 = num_layers，逐层写类型字符串
+  # 允许的类型：full_attention | linear_attention | sliding_attention
+  mixer_details: null          # 非标准层的具体机制、窗口大小、head 数等
+  mlp_type: null               # dense | moe（含专家数、每 token 激活数）
+  head_level_analysis: null    # 哪些层可做 head 级分析与注意力屏蔽，哪些不能，原因
+vision_encoder:
+  type: null
+  num_layers: null
+  hidden_size: null
+  patch_size: null
+  resolution_strategy: null    # fixed | dynamic（写明范围、默认 min/max pixels）
+  position_encoding: null
+connector:
+  type: null
+  token_merge: null            # 是否合并/压缩，倍率
+  tokens_per_image: null       # 公式或固定值
+  token_to_region: null        # 视觉 token 序号 → 图像区域的对应规则
+multi_view:
+  default: null                # 默认是否切片/多视图/缩略图
+  force_single_view: null      # 如何关闭或固定为单视图（具体参数）
+bbox:
+  official_prompt: null        # 官方推荐提示词原文；没有就写 null
+  output_format: null
+  coord_range: null            # 如 0-1000 归一化 / 绝对像素（相对哪张图）
+  coord_order: null            # 如 x1,y1,x2,y2
+  source: null
+thinking:
+  has_thinking_mode: null
+  how_to_disable: null
+  source: null
+sources: []                    # 文件路径:行号 形式的出处清单
+unknown: []                    # 查不到的字段及原因

@@ -1,0 +1,168 @@
+# Generated from local files only (config.json, remote code, README, MANIFEST, transformers source). See `sources` / `unknown`.
+name: SenseNova-SI-1.1-InternVL3-2B
+location:
+  root_key: existing_models
+  subdir: SenseNova-SI-1.1-InternVL3-2B
+hf_repo: sensenova/SenseNova-SI-1.1-InternVL3-2B
+revision: 81c0e4c513cb44a6f6defc8b03983aa97ab32567
+revision_source: _logs/hf_download_394169.out line 4 (`下载 sensenova/SenseNova-SI-1.1-InternVL3-2B@81c0e4c5...`), verified line 5-6 (files=20 ok=True). Not listed in MANIFEST.md.
+size_bytes: 4186841742
+license: apache-2.0
+license_source: 'README.md front matter line 4 (`license: apache-2.0`). Not listed in MANIFEST.md.'
+role: spatial_finetune
+base_model: |
+  OpenGVLab/InternVL3-2B - from README.md front matter lines 2-3: `base_model:` / `- OpenGVLab/InternVL3-2B`.
+  The README body does not name the base checkpoint in a sentence; the closest statements are: "we explore scaling up multimodal foundation models to cultivate spatial intelligence within the **SenseNova-SI family**, built upon established multimodal foundations including visual understanding models (i.e., Qwen3-VL and InternVL3) and unified understanding and generation models (i.e., Bagel)." and "Currently, we build SenseNova-SI upon popular open-source foundation models to maximize compatibility with existing research pipelines." The example commands also show `# --model_path OpenGVLab/InternVL3-8B` as a commented alternative.
+  No variant suffix (e.g. -Instruct / -Pretrained) is given anywhere in the card.
+  Release statement in this card (lines 47-52): "In this release, we present SenseNova-SI-1.1-InternVL3-2B and SenseNova-SI-1.1-InternVL3-8B, which achieve state-of-the-art performance among open-source models of comparable size across five recent spatial intelligence benchmarks: VSI, MMSI, MindCube, ViewSpatial and SITE."
+env: null
+loader:
+  model_class: 'AutoModel (config.json auto_map -> "sensenova/SenseNova-SI-1.1-InternVL3-2B--modeling_internvl_chat.InternVLChatModel"; architectures: InternVLChatModel)'
+  processor_class: |
+    No processor class. Tokenizer: tokenizer_config.json tokenizer_class Qwen2Tokenizer (NO tokenizer.json in this directory - only vocab.json + merges.txt + added_tokens.json). Image preprocessing is done by the caller; the model card contains no preprocessing code (it delegates to example.py of the GitHub repo OpenSenseNova/SenseNova-SI, which is not in this directory).
+    No preprocessor_config.json in this directory.
+  trust_remote_code: true
+  config_transformers_version: 4.47.1
+  notes: |
+    - config.json top-level `transformers_version` is null (line 117); "4.47.1" is the value recorded inside llm_config (line 100), vision_config (line 216) and generation_config.json.
+    - No transformers version pin appears in README.md / README_CN.md. Installation is described only as `git clone git@github.com:OpenSenseNova/SenseNova-SI.git; uv sync --extra cu124; uv sync` (the pinned versions live in that repo's lock file, not here). The remote code asserts transformers >= 4.37.0 (modeling_internvl_chat.py:46).
+    - Usage in the card is only via `python example.py --image_paths ... --question ... --model_path sensenova/SenseNova-SI-1.1-InternVL3-2B` (example.py is not shipped here).
+    - auto_map entries are repo-prefixed ("sensenova/SenseNova-SI-1.1-InternVL3-2B--configuration_internvl_chat.InternVLChatConfig" etc., config.json lines 7-11). In transformers 5.5.4, get_class_from_dynamic_module takes the repo id from the part before "--" (dynamic_module_utils.py:563-566) and fetches the module from that repo, so loading this local directory with AutoModel/AutoConfig may try to resolve the code from the Hub / HF cache instead of the .py files in the directory. Not tested.
+    - Remote code supports only LlamaForCausalLM / Qwen2ForCausalLM LLMs (modeling_internvl_chat.py:68-73) and needs `einops` and `timm` (modeling_intern_vit.py:12-13); flash_attn is optional (try/except, lines 23-30).
+    - Attention weights: llm_config contains "attn_implementation": "flash_attention_2" (config.json line 25) and "_attn_implementation_autoset": true. Independently of that key, InternVLChatModel.__init__ overwrites it: `config.llm_config._attn_implementation = 'flash_attention_2' if use_flash_attn else 'eager'` (modeling_internvl_chat.py:57), with `use_flash_attn = use_flash_attn if has_flash_attn else False` (line 55) and the __init__ default use_flash_attn=True (line 43). Therefore passing attn_implementation="eager" alone is not sufficient if flash_attn is installed; pass `use_flash_attn=False` to from_pretrained (then the code itself selects 'eager'), or build without the flash_attn package. flash / sdpa backends do not return attention weights.
+    - Vision side: vision_config.use_flash_attn true in config.json, but __init__ resets it from the same flag (line 56).
+    - The remote code is byte-identical across the three local SenseNova-SI InternVL3 directories (same md5 for modeling_internvl_chat.py, modeling_intern_vit.py, configuration_*.py, conversation.py); conversation.py is also identical to the one in InternVL3_5-8B.
+    - config.json line 2 has "_commit_hash": "899155015275a9b7338c7f4677e19c784e0e5a21", which differs from the downloaded repo revision 81c0e4c5... (it is a value saved into the config by the uploader, not the revision of this download).
+language_model:
+  model_type: qwen2
+  num_layers: 28
+  hidden_size: 1536
+  num_attention_heads: 12
+  num_key_value_heads: 2
+  head_dim: 128
+  layer_mixers:
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  mixer_details: |
+    All 28 layers are standard causal full self-attention with grouped-query attention (12 query heads, 2 KV heads).
+    head_dim 128 is computed, not stated: config.json llm_config has no head_dim key; transformers Qwen2Attention uses getattr(config, "head_dim", hidden_size // num_attention_heads) = 1536 // 12 = 128 (models/qwen2/modeling_qwen2.py:195, transformers 5.5.4).
+    No sliding window is active: llm_config has use_sliding_window: false and sliding_window: null (max_window_layers: 70 > 28 layers and inert). In transformers 5.5.4 Qwen2Config.__post_init__ sets sliding_window=None when use_sliding_window is false and builds layer_types as all "full_attention" (models/qwen2/configuration_qwen2.py:84-94).
+    rope_scaling in llm_config: {factor: 2.0, rope_type: dynamic, type: dynamic}, rope_theta 1000000.0.
+    llm_config._name_or_path is "./pretrained/Qwen2.5-32B-Instruct", which does not match the dimensions (hidden 1536, 28 layers) - treat it as a stale path string, not as the LLM identity.
+  mlp_type: dense (architectures = Qwen2ForCausalLM; hidden_act silu, intermediate_size 8960; llm_config.moe_config is null)
+  head_level_analysis: |
+    All 28 layers have the same structure (12 heads), so head-level analysis is structurally possible on every layer.
+    Precondition: eager attention in the LLM. config.json asks for flash_attention_2 and the remote code re-forces it when use_flash_attn=True and flash_attn is importable (modeling_internvl_chat.py:55-57); load with use_flash_attn=False so the code sets 'eager'. In transformers 5.5.4 only eager_attention_forward returns the softmaxed weights (models/qwen2/modeling_qwen2.py:161-183) and config.output_attentions raises unless _attn_implementation is 'eager' (configuration_utils.py:346-351).
+    InternVLChatModel.forward passes output_attentions to the language model and returns outputs.attentions (modeling_internvl_chat.py:137,165).
+    Head masking is not offered by an argument in the code read; it would need hooks. Not tested (no weights were loaded).
+    Vision encoder: InternAttention never returns attention weights (_naive_attn returns only x; FlashAttention asserts not need_weights), so ViT attention needs hooks / re-computation.
+vision_encoder:
+  type: |
+    InternVisionModel from the shipped modeling_intern_vit.py. config.json vision_config.model_type is "intern_vit_6b" and vision_config._name_or_path is "OpenGVLab/InternViT-6B-448px-V1-5", but the actual dimensions are hidden_size 1024, 24 layers, 16 heads, intermediate_size 4096, norm_type layer_norm, qkv_bias true (i.e. not 6B-sized; the two strings contradict the numbers).
+    The README does not name the vision encoder. vision_config also carries MoE-related keys (num_experts 8, use_moe false, ...) that the shipped modeling_intern_vit.py does not read.
+  num_layers: 24
+  hidden_size: 1024
+  patch_size: 14
+  resolution_strategy: |
+    Encoder input is fixed 448x448 per tile (vision_config.image_size 448, force_image_size 448) -> 32x32 = 1024 patch tokens + 1 CLS.
+    Higher resolution is handled outside the encoder by dynamic tiling: config dynamic_image_size true, min_dynamic_patch 1, max_dynamic_patch 12, use_thumbnail true (see multi_view).
+  position_encoding: |
+    Learned absolute position embedding: nn.Parameter of shape (1, 1025, 1024) = CLS + 32x32 (modeling_intern_vit.py:149-152).
+    At forward time the patch part goes through _get_pos_embed, which bicubic-interpolates (F.interpolate, mode='bicubic', align_corners=False) the 32x32 grid to the actual (H, W) patch grid (lines 154-173); at 448x448 input this is the identity size. No rotary / 2D relative encoding in the ViT.
+connector:
+  type: |
+    pixel_shuffle (space-to-depth, downsample_ratio 0.5, ps_version v2) followed by `mlp1` = Sequential(LayerNorm(4096), Linear(4096, 1536), GELU(), Linear(1536, 1536)) (modeling_internvl_chat.py:78-83; 4096 = vit_hidden 1024 * int(1/0.5)^2; llm hidden 1536). Uses the last ViT layer (select_layer -1), CLS token dropped.
+  token_merge: 2x2 patch merge by pixel_shuffle (4 ViT patch tokens -> 1 LLM token, channels concatenated 1024 -> 4096); 4x token reduction
+  tokens_per_image: |
+    256 per 448x448 tile: num_image_token = int((448 // 14) ** 2 * (0.5 ** 2)) = int(1024 * 0.25) = 256 (modeling_internvl_chat.py:52).
+    Per image: 256 * num_tiles. In the prompt each image becomes '<img>' + '<IMG_CONTEXT>' * 256 * num_tiles + '</img>' (modeling_internvl_chat.py:284), i.e. one <img>...</img> pair per image, not per tile.
+    Token ids (added_tokens.json): <img> 151665, </img> 151666, <IMG_CONTEXT> 151667.
+  token_to_region: |
+    Derived from the shipped remote code (extract_feature + pixel_shuffle, ps_version=v2), not from a doc statement.
+    1) The ViT output drops the CLS token (vit_embeds[:, 1:, :]) and is reshaped to (tiles, 32, 32, 1024), row-major: dim1 = patch row (y), dim2 = patch column (x).
+    2) pixel_shuffle(scale_factor=0.5): view -> merges horizontally adjacent patch pairs into channels; permute(0,2,1,3); view -> merges vertically adjacent pairs; for ps_version != 'v1' a final permute(0,2,1,3) restores (row, col) order. Result (tiles, 16, 16, 4096).
+    3) reshape(tiles, -1, 4096) flattens row-major, so within one 448x448 tile, token k (0..255) has row i = k // 16, col j = k % 16 and covers ViT patches rows 2i..2i+1, cols 2j..2j+1, i.e. tile pixels x in [28*j, 28*j+28), y in [28*i, 28*i+28).
+       Channel concat order inside a token: patch(2i,2j), patch(2i,2j+1), patch(2i+1,2j), patch(2i+1,2j+1).
+    4) Across tiles: the n-th <IMG_CONTEXT> position of an image (n counted from 0) maps to tile t = n // 256, k = n % 256, because vit_embeds.reshape(-1, C) is written into the IMG_CONTEXT positions in order. Tile order = order of pixel_values along dim 0 (see multi_view).
+    5) Tile pixel -> original image pixel depends on the caller's preprocessing (tile grid cols x rows, each tile is a crop of the image resized to (448*cols, 448*rows) without keeping aspect ratio; the thumbnail is the whole image resized to 448x448).
+multi_view:
+  default: |
+    config.json: dynamic_image_size true, min_dynamic_patch 1, max_dynamic_patch 12, use_thumbnail true, force_image_size 448.
+    IMPORTANT: the shipped modeling_internvl_chat.py never reads these four flags; tiling is done by the caller, and the model consumes pixel_values of shape (total_tiles, 3, 448, 448) plus num_patches_list. The model card (README.md / README_CN.md) contains NO preprocessing code (no dynamic_preprocess / load_image / max_num); it only calls `python example.py` from the GitHub repo, which is not in this directory. So the tiling actually used by the authors (max_num, thumbnail) is not verifiable from local files.
+    What the modeling code fixes regardless of the preprocessing: tiles are consumed in the order of pixel_values along dim 0; all tiles of one image share one <img> ... </img> span with 256*num_tiles <IMG_CONTEXT> tokens; for several images, num_patches_list gives tiles per image and each '<image>' placeholder is replaced in order (modeling_internvl_chat.py:283-285). If '<image>' is absent from the question, chat() prepends a single '<image>\n' (line 257-258).
+    For reference only: the standard InternVL tiling function printed in the local InternVL3_5-8B README (dynamic_preprocess: row-major tile order, tile i at column i % cols and row i // cols, thumbnail appended last and only when more than one tile) is the same family's convention, but this card does not state that SenseNova-SI uses it.
+  force_single_view: |
+    From the modeling code: give exactly one 448x448 tensor per image, i.e. pixel_values of shape (num_images, 3, 448, 448) and num_patches_list=[1]*num_images (single image: chat() defaults num_patches_list to [pixel_values.shape[0]] = [1], modeling_internvl_chat.py:260-261). Each image then occupies exactly 256 <IMG_CONTEXT> tokens and no thumbnail exists.
+    How to obtain that through the authors' example.py (e.g. a max_num argument) is not stated in the local card. With the InternVL-family dynamic_preprocess (InternVL3_5-8B README), max_num=1 yields one tile and no thumbnail because of `if use_thumbnail and len(processed_images) != 1:`.
+bbox:
+  official_prompt: null
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: |
+    Not stated. README.md, README_CN.md and examples/ (PNG images only) contain no grounding / bounding-box prompt, no <ref>/<box> usage and no coordinate convention. The tokenizer does define <ref> </ref> <box> </box> <quad> </quad> (added_tokens.json ids 151668-151673), inherited vocabulary only.
+    Spatial QA prompt format as shown in the card (examples only, no formal spec):
+    - Multi-image questions put the placeholders at the start of the question: `--question "<image><image>\nYou are standing in front of the dice pattern and observing it. Where is the desk lamp approximately located relative to you?\nOptions: A: 90 degrees counterclockwise, B: 90 degrees clockwise, C: 135 degrees counterclockwise, D: 135 degrees clockwise"` with `--image_paths examples/Q1_1.png examples/Q1_2.png` (GT: C).
+    - Second example: `"<image><image>\nBased on these two views showing the same scene: in which direction did I move from the first view to the second view?\nA. Directly left B. Directly right C. Diagonally forward and right D. Diagonally forward and left"` (GT: D).
+    - Multiple-choice with lettered options; no answer-format suffix is used in these two examples. For jsonl batches the card points to the InternVL chat data format docs (single-image / multi-image data).
+    - For benchmark reproduction the card refers to EASI (no prompt templates given locally).
+thinking:
+  has_thinking_mode: false
+  how_to_disable: |
+    Nothing to disable: the card describes no thinking mode or switch. The only related sentence is in the overview: "present a preliminary study on spatial chain-of-thought reasoning" (about the paper, not a model switch). added_tokens.json has no <think> tokens. The tokenizer chat_template and the remote chat() both insert the default InternVL system message when none is given (conversation.py:384-390, template internvl2_5).
+  source: README.md (overview paragraph); added_tokens.json; tokenizer_config.json chat_template; conversation.py:384-390
+sources:
+- /nfs-stor/xiwei.liu/l/model/_logs/hf_download_394169.out:4-6
+- /nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/config.json:2-3 (_commit_hash, _name_or_path), 7-11 (auto_map), 12-14 (downsample_ratio, dynamic_image_size, force_image_size), 19-25 (llm _name_or_path, architectures, attn_implementation), 42,48,58,60,63,66,67 (llm hidden, intermediate, max_window_layers, model_type, heads, layers, kv heads), 81-88 (rope_scaling, sliding_window), 100,104 (llm transformers_version, use_sliding_window), 107-120 (dynamic patch, ps_version, select_layer, template, transformers_version, use_thumbnail), 123,153,158,173,180,185,193,219 (vision_config)
+- /nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/modeling_internvl_chat.py:43-57 (init, num_image_token, attn implementation), 68-73 (LLM classes), 78-83 (mlp1), 137,165 (output_attentions), 168-182 (pixel_shuffle), 184-202 (extract_feature), 253-307 (chat), 310-349 (generate)
+- /nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/modeling_intern_vit.py:12-13,23-30 (deps, has_flash_attn), 133-174 (embeddings, position embedding interpolation), 177-248 (InternAttention)
+- /nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/configuration_internvl_chat.py:48-54
+- /nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/conversation.py:240-249, 384-390
+- /nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/README.md:1-7 (front matter), 27-31 (paper/code), 34-52 (overview, release information), 153-159 (installation), 166-168 (hello world, model_path SenseNova-SI-1.1-InternVL3-8B), 178-220 (examples), 241-252 (jsonl)
+- '/nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/README_CN.md (searched for transformers / grounding / thinking / coordinates: nothing found)'
+- '/nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/examples/ (file listing only: PNG images)'
+- /nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/added_tokens.json
+- /nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/tokenizer_config.json
+- /nfs-stor/xiwei.liu/l/model/SenseNova-SI-1.1-InternVL3-2B/generation_config.json
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/README.md:468-512 (InternVL-family dynamic_preprocess / load_image, reference only)
+- /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2/configuration_qwen2.py:74-94 (transformers 5.5.4)
+- /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2/modeling_qwen2.py:161-183,187-245 (transformers 5.5.4)
+- /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/configuration_utils.py:346-351 (transformers 5.5.4)
+- /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/dynamic_module_utils.py:563-583 (transformers 5.5.4)
+unknown:
+- 'env: left null by instruction (decided in stage B).'
+- 'multi_view actual preprocessing (max_num, thumbnail, tile order) used by SenseNova-SI: the card has no preprocessing code; it lives in example.py of github.com/OpenSenseNova/SenseNova-SI, not available locally. Only the config flags (dynamic 1..12 tiles + thumbnail) and the modeling-code contract are known.'
+- 'bbox.*: no grounding / bounding-box prompt or coordinate convention in README.md, README_CN.md or examples/.'
+- 'base_model variant: the front matter gives only the repo id; no sentence in the body states the exact base checkpoint or variant.'
+- 'Required transformers version: no pin in the card; only config-recorded 4.47.1 and the code assert >= 4.37.0. The uv lock of the GitHub repo is not available locally.'
+- 'vision encoder name: README does not name it; config strings (intern_vit_6b, InternViT-6B-448px-V1-5) contradict the 1024-dim / 24-layer numbers.'
+- 'Whether the remote code loads under locally installed transformers 5.x and whether the repo-prefixed auto_map forces a Hub lookup: read from source only, not tested (no weights loaded, no model-dir code imported).'
+- examples/examples.jsonl referenced by the README is not present in the local examples/ directory (only PNG files), so the jsonl question format could not be read.
+- The example commands in this 2B card use `--model_path sensenova/SenseNova-SI-1.1-InternVL3-8B` (the 8B sibling), so no command in the card is specific to the 2B model.
+- 'Not in MANIFEST.md: repo id / sha come only from the download log; license only from the README front matter.'

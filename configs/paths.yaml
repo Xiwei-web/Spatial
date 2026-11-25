@@ -1,0 +1,12 @@
+# 所有外部路径集中在这里。代码通过 src/paths.py 读取，不允许在代码里写死绝对路径。
+# 可用环境变量 INTERP_PATHS_FILE 指向另一份同结构文件（换集群时用）。
+storage_root: /nfs-stor/xiwei.liu/interpretability   # 大文件根目录
+existing_models: /nfs-stor/xiwei.liu/l/model         # 已有权重，只读，禁止写入
+new_models: /nfs-stor/xiwei.liu/interpretability/models
+data: /nfs-stor/xiwei.liu/interpretability/data
+cache: /nfs-stor/xiwei.liu/interpretability/cache
+hf_home: /nfs-stor/xiwei.liu/interpretability/cache/hf
+outputs: /nfs-stor/xiwei.liu/interpretability/outputs
+envs: /nfs-stor/xiwei.liu/interpretability/envs
+logs: /nfs-stor/xiwei.liu/interpretability/logs
+conda_exe: /home/xiwei.liu/miniconda3/bin/conda      # 仅用于创建环境

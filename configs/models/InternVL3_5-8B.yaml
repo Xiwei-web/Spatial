@@ -1,0 +1,202 @@
+# Generated from local files only (config.json, remote code, README, MANIFEST, transformers source). See `sources` / `unknown`.
+name: InternVL3_5-8B
+location:
+  root_key: existing_models
+  subdir: InternVL3_5-8B
+hf_repo: OpenGVLab/InternVL3_5-8B
+revision: 9bb6a56ad9cc69db95e2d4eeb15a52bbcac4ef79
+revision_source: MANIFEST.md (model table row InternVL3_5-8B, and the pinned `hf download ... --revision` command)
+size_bytes: 17072800269
+license: apache-2.0
+license_source: 'README.md front matter line 2 (`license: apache-2.0`), README.md line 818, MANIFEST.md table'
+role: general
+base_model: |
+  Not a spatial fine-tune. README.md front matter (lines 5-7) declares `base_model: - OpenGVLab/InternVL3_5-8B-MPO` with `base_model_relation: finetune`.
+  README.md line 135: "We initialize the language model using the Qwen3 series and GPT-OSS, and the vision encoder using InternViT-300M and InternViT-6B."
+  config.json llm_config._name_or_path (line 15) is a training-machine path whose last component is "Qwen3-8B"; llm_config.architectures is Qwen3ForCausalLM.
+env: null
+loader:
+  model_class: 'AutoModel (config.json auto_map -> modeling_internvl_chat.InternVLChatModel; architectures: InternVLChatModel)'
+  processor_class: |
+    For the remote-code path (README): AutoTokenizer(path, trust_remote_code=True, use_fast=False) -> tokenizer_class Qwen2Tokenizer; images are preprocessed by the caller with the README functions build_transform / dynamic_preprocess / load_image (no processor object).
+    The directory additionally ships processor_config.json / preprocessor_config.json / video_preprocessor_config.json / chat_template.jinja that name processor_class InternVLProcessor (image_processor_type GotOcr2ImageProcessorFast, video_processor_type InternVLVideoProcessor); see loader.notes.
+  trust_remote_code: true
+  config_transformers_version: null
+  notes: |
+    - config.json top-level `transformers_version` is null (line 58) and llm_config has no transformers_version; generation_config.json records "4.52.1".
+    - README.md line 360: "Please use transformers>=4.52.1 to ensure the model works normally. For the 20B version of our model, transformers>=4.55.0 is required."
+    - Remote code asserts transformers >= 4.37.0 (modeling_internvl_chat.py:52) but imports `Qwen3ForCausalLM, Qwen3MoeForCausalLM` from transformers at module import time (line 18), so a transformers that has Qwen3 is required in practice.
+    - README loading call: AutoModel.from_pretrained(path, torch_dtype=torch.bfloat16, low_cpu_mem_usage=True, use_flash_attn=True, trust_remote_code=True).eval().cuda()
+    - This is the "GitHub format" checkpoint (README.md line 41: "we provide two model formats: the GitHub format ..., consistent with prior releases, and the HF format ..., aligned with the official Transformers standard"). config.json model_type is `internvl_chat` with auto_map; weight key prefixes are language_model.* / vision_model.* / mlp1.* (model.safetensors.index.json). The HF-native class in transformers uses model_type `internvl` (transformers models/internvl/configuration_internvl.py:108), which this config.json does not declare, so the native InternVLForConditionalGeneration path belongs to the separate OpenGVLab/InternVL3_5-8B-HF repo (README table line 70), which is NOT downloaded here.
+    - The HF-native processor files are nevertheless present: processor_config.json {image_seq_length: 256, processor_class: InternVLProcessor}; preprocessor_config.json {image_processor_type: GotOcr2ImageProcessorFast, size 448x448, crop_to_patches: false, min_patches: 1, max_patches: 12, ImageNet mean/std}; chat_template.jinja (plain ChatML, emits '<image>\n' / '<video>\n' placeholders, no system prompt, no thinking switch). Implication: AutoProcessor may be loadable from this dir, but its use together with the remote-code InternVLChatModel.chat() is not documented in the README and was not tested. Note preprocessor_config.json has crop_to_patches: false while the README pipeline tiles with max_num=12 - the two paths do not have the same default tiling.
+    - Remote code needs `einops` and `timm` (modeling_intern_vit.py:12-13); flash_attn is optional (try/except, lines 23-30).
+    - Attention weights: InternVLChatModel.__init__ sets `config.llm_config._attn_implementation = 'flash_attention_2' if use_flash_attn else 'eager'` (modeling_internvl_chat.py:63) where `use_flash_attn = use_flash_attn if has_flash_attn else False` (line 61) and the __init__ default is use_flash_attn=True (line 49). So the LLM attention backend is decided by the `use_flash_attn` kwarg and by whether the flash_attn package imports; pass `use_flash_attn=False` to from_pretrained to get 'eager'. In this model's config.json the llm_config has no attn_implementation key.
+language_model:
+  model_type: qwen3
+  num_layers: 36
+  hidden_size: 4096
+  num_attention_heads: 32
+  num_key_value_heads: 8
+  head_dim: 128
+  layer_mixers:
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  mixer_details: |
+    All 36 layers are standard causal full self-attention with grouped-query attention (32 query heads, 8 KV heads, head_dim 128 stated in config.json llm_config).
+    No sliding window is active: llm_config has use_sliding_window: false and sliding_window: null (max_window_layers: 36 is therefore inert). In transformers 5.5.4 Qwen3Config.__post_init__ sets sliding_window=None when use_sliding_window is false and then builds layer_types as all "full_attention" (models/qwen3/configuration_qwen3.py:87-94).
+    architectures: Qwen3ForCausalLM (not the Moe class).
+  mlp_type: dense (architectures = Qwen3ForCausalLM; hidden_act silu, intermediate_size 12288)
+  head_level_analysis: |
+    All 36 layers have the same structure (32 heads), so head-level analysis is structurally possible on every layer.
+    Precondition: the LLM must run with the eager attention backend, otherwise attention weights are not materialised. The remote code forces llm_config._attn_implementation to 'flash_attention_2' when use_flash_attn=True and flash_attn is importable (modeling_internvl_chat.py:61-63); load with use_flash_attn=False to get 'eager'. In transformers 5.5.4 only eager_attention_forward returns the softmaxed weights (models/qwen3/modeling_qwen3.py:196-218) and config.output_attentions raises unless _attn_implementation is 'eager' (configuration_utils.py:346-351).
+    InternVLChatModel.forward passes output_attentions through to the language model and returns outputs.attentions (modeling_internvl_chat.py:148,176).
+    Head masking is not offered by an argument in the code read; it would need hooks. Not tested (no weights were loaded).
+    Vision encoder: InternAttention never returns attention weights (_naive_attn returns only x; FlashAttention asserts not need_weights), so ViT attention needs hooks / re-computation.
+vision_encoder:
+  type: |
+    InternVisionModel from the shipped modeling_intern_vit.py. config.json vision_config.model_type is the string "intern_vit_6b", but the actual dimensions are hidden_size 1024, 24 layers, 16 heads, intermediate_size 4096, norm_type layer_norm, qkv_bias true.
+    README naming: line 135 says the series uses "InternViT-300M and InternViT-6B"; the family table (line 54) lists InternVL3.5-8B with #Vision Param 0.3B. The README does not print the exact vision checkpoint name for the 8B model.
+  num_layers: 24
+  hidden_size: 1024
+  patch_size: 14
+  resolution_strategy: |
+    Encoder input is fixed 448x448 per tile (vision_config.image_size 448, force_image_size 448) -> 32x32 = 1024 patch tokens + 1 CLS.
+    Higher resolution is handled outside the encoder by dynamic tiling: config dynamic_image_size true, min_dynamic_patch 1, max_dynamic_patch 12, use_thumbnail true (see multi_view).
+  position_encoding: |
+    Learned absolute position embedding: nn.Parameter of shape (1, 1025, 1024) = CLS + 32x32 (modeling_intern_vit.py:149-152).
+    At forward time the patch part is passed through _get_pos_embed, which bicubic-interpolates (F.interpolate, mode='bicubic', align_corners=False) the 32x32 grid to the actual (H, W) patch grid (lines 154-173); at 448x448 input this is the identity size. No rotary / 2D relative encoding in the ViT.
+connector:
+  type: |
+    pixel_shuffle (space-to-depth, downsample_ratio 0.5, ps_version v2) followed by `mlp1` = Sequential(LayerNorm(4096), Linear(4096, 4096), GELU(), Linear(4096, 4096)) (modeling_internvl_chat.py:89-94; 4096 = vit_hidden 1024 * int(1/0.5)^2; llm hidden 4096). Uses the last ViT layer (select_layer -1), CLS token dropped.
+  token_merge: 2x2 patch merge by pixel_shuffle (4 ViT patch tokens -> 1 LLM token, channels concatenated 1024 -> 4096); 4x token reduction
+  tokens_per_image: |
+    256 per 448x448 tile: num_image_token = int((448 // 14) ** 2 * (0.5 ** 2)) = int(1024 * 0.25) = 256 (modeling_internvl_chat.py:58). README.md line 141 agrees ("1024 visual tokens ... compressed into 256 tokens via a pixel shuffle module"); processor_config.json image_seq_length = 256.
+    Per image: 256 * num_tiles, where num_tiles = grid tiles (1..max_num) + 1 thumbnail if grid tiles > 1. In the prompt each image becomes '<img>' + '<IMG_CONTEXT>' * 256 * num_tiles + '</img>' (modeling_internvl_chat.py:295), i.e. one <img>...</img> pair per image, not per tile.
+    Token ids (added_tokens.json): <img> 151669, </img> 151670, <IMG_CONTEXT> 151671.
+  token_to_region: |
+    Derived from the shipped remote code (extract_feature + pixel_shuffle, ps_version=v2), not from a doc statement.
+    1) The ViT output drops the CLS token (vit_embeds[:, 1:, :]) and is reshaped to (tiles, 32, 32, 1024), row-major: dim1 = patch row (y), dim2 = patch column (x).
+    2) pixel_shuffle(scale_factor=0.5): view -> merges horizontally adjacent patch pairs into channels; permute(0,2,1,3); view -> merges vertically adjacent pairs; for ps_version != 'v1' a final permute(0,2,1,3) restores (row, col) order. Result (tiles, 16, 16, 4096).
+    3) reshape(tiles, -1, 4096) flattens row-major, so within one 448x448 tile, token k (0..255) has row i = k // 16, col j = k % 16 and covers ViT patches rows 2i..2i+1, cols 2j..2j+1, i.e. tile pixels x in [28*j, 28*j+28), y in [28*i, 28*i+28).
+       Channel concat order inside a token: patch(2i,2j), patch(2i,2j+1), patch(2i+1,2j), patch(2i+1,2j+1).
+    4) Across tiles: the n-th <IMG_CONTEXT> position of an image (n counted from 0) maps to tile t = n // 256, k = n % 256, because vit_embeds.reshape(-1, C) is written into the IMG_CONTEXT positions in order. Tile order = order of pixel_values along dim 0 (see multi_view).
+    5) Tile pixel -> original image pixel depends on the caller's preprocessing (tile grid cols x rows, each tile is a crop of the image resized to (448*cols, 448*rows) without keeping aspect ratio; the thumbnail is the whole image resized to 448x448).
+multi_view:
+  default: |
+    Dynamic tiling ON by default in the README pipeline: load_image(image_file, input_size=448, max_num=12) calls dynamic_preprocess(..., use_thumbnail=True, max_num=max_num); config.json has dynamic_image_size true, min_dynamic_patch 1, max_dynamic_patch 12, use_thumbnail true.
+    IMPORTANT: modeling_internvl_chat.py (inference code) never reads dynamic_image_size / min_dynamic_patch / max_dynamic_patch / use_thumbnail; tiling is done entirely by the caller's preprocessing, and the model just consumes pixel_values of shape (total_tiles, 3, 448, 448) plus num_patches_list.
+    Tile choice: the (cols, rows) grid with cols*rows <= max_num whose aspect ratio is closest to the image's; the image is resized to (448*cols, 448*rows) (aspect ratio not preserved exactly) and cropped.
+    Tile order in the sequence: row-major over the grid - tile i has column i % cols and row i // cols (left-to-right, then top-to-bottom). The thumbnail (whole image resized to 448x448) is appended LAST, and only when there is more than one grid tile.
+    All tiles of one image share a single <img> ... </img> span of 256*num_tiles <IMG_CONTEXT> tokens, in the same order as pixel_values.
+    Multi-image: pixel_values of the images are concatenated along dim 0 and num_patches_list gives tiles per image; each '<image>' placeholder in the question is replaced in order (modeling_internvl_chat.py:294-296). The README video example uses max_num=1 per frame (line 614, 633).
+    InternVL3_5-8B/README.md dynamic_preprocess (lines 468-504), quoted:
+        target_ratios = set(
+            (i, j) for n in range(min_num, max_num + 1) for i in range(1, n + 1) for j in range(1, n + 1) if
+            i * j <= max_num and i * j >= min_num)
+        ...
+        resized_img = image.resize((target_width, target_height))
+        for i in range(blocks):
+            box = (
+                (i % (target_width // image_size)) * image_size,
+                (i // (target_width // image_size)) * image_size,
+                ((i % (target_width // image_size)) + 1) * image_size,
+                ((i // (target_width // image_size)) + 1) * image_size
+            )
+            split_img = resized_img.crop(box)
+            processed_images.append(split_img)
+        if use_thumbnail and len(processed_images) != 1:
+            thumbnail_img = image.resize((image_size, image_size))
+            processed_images.append(thumbnail_img)
+    load_image (lines 506-512), quoted:
+        images = dynamic_preprocess(image, image_size=input_size, use_thumbnail=True, max_num=max_num)
+        pixel_values = [transform(image) for image in images]
+        pixel_values = torch.stack(pixel_values)
+  force_single_view: |
+    Call the README loader with max_num=1: load_image(path, max_num=1). Then target_ratios = {(1, 1)}, blocks = 1, and the thumbnail is NOT added because of `if use_thumbnail and len(processed_images) != 1:` (README.md line 501). Result: pixel_values of shape (1, 3, 448, 448) = the whole image resized to 448x448 (aspect ratio not preserved), 256 image tokens.
+    Equivalent without the helper: pass pixel_values with exactly one 448x448 tensor per image and num_patches_list=[1] (chat() defaults num_patches_list to [pixel_values.shape[0]], modeling_internvl_chat.py:271-272).
+    Note a (1,1) grid can also be selected naturally for near-square images under max_num=12 only if it is the closest aspect ratio and wins the tie-break; do not rely on that - set max_num=1.
+bbox:
+  official_prompt: null
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: |
+    Not stated in the local model card. README.md has a "### Visual Grounding" heading (line 311) that contains only a results image; a search of README.md for <ref>, <box>, "bounding", "coordinate", "1000" found no grounding prompt, output format or normalisation.
+    The tokenizer does define <ref> </ref> <box> </box> <quad> </quad> as added tokens (added_tokens.json ids 151672-151677), which shows the vocabulary has grounding markers but does not document the convention.
+thinking:
+  has_thinking_mode: true
+  how_to_disable: |
+    Thinking is OFF by default and is switched on only by a system prompt. README.md lines 410-426: "To enable thinking mode, please set the system prompt to our Thinking System Prompt. When enabling Thinking mode, we recommend setting `do_sample=True` and `temperature=0.6` to mitigate undesired repetition." followed by R1_SYSTEM_PROMPT and `model.system_message = R1_SYSTEMP_PROMPT` (sic - the README assigns a misspelled variable name).
+    R1_SYSTEM_PROMPT text (README.md lines 416-422):
+    "You are an AI assistant that rigorously follows this response protocol:
+
+    1. First, conduct a detailed analysis of the question. Consider different angles, potential solutions, and reason through the problem step-by-step. Enclose this entire thinking process within <think> and </think> tags.
+
+    2. After the thinking section, provide a clear, concise, and direct answer to the user's question. Separate the answer from the think section with a newline.
+
+    Ensure that the thinking process is thorough but remains focused on the query. The final answer should be standalone and not reference the thinking section."
+    To keep it disabled: do not set model.system_message. The default is the conv template's system message (template "internvl2_5", conversation.py:384-390: '你是书生·万象，英文名是InternVL，是由上海人工智能实验室、清华大学及多家合作单位联合开发的多模态大语言模型。'), which chat() always prepends (modeling_internvl_chat.py:278-279).
+    chat_template.jinja contains no thinking switch (no enable_thinking variable) and adds no system prompt by itself. <think> / </think> are added tokens (ids 151667 / 151668).
+  source: README.md lines 80, 410-426; conversation.py lines 384-390; chat_template.jinja; added_tokens.json
+sources:
+- /nfs-stor/xiwei.liu/l/model/MANIFEST.md (table row InternVL3_5-8B; pinned download command)
+- '/nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/config.json:5-9 (auto_map), 10-13 (downsample_ratio, dynamic_image_size, force_image_size), 25-45 (llm_config: head_dim, hidden_size, model_type, heads, layers, kv heads, sliding_window, use_sliding_window), 48-61 (max/min_dynamic_patch, ps_version, select_layer, template, transformers_version, use_thumbnail), 74-90 (vision_config)'
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/modeling_internvl_chat.py:18 (Qwen3 imports), 49-63 (init, num_image_token, attn implementation), 89-94 (mlp1), 148,176 (output_attentions), 179-193 (pixel_shuffle), 195-213 (extract_feature), 264-318 (chat), 321-360 (generate)
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/modeling_intern_vit.py:12-13,23-30 (deps, has_flash_attn), 133-174 (embeddings, position embedding interpolation), 177-248 (InternAttention)
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/configuration_internvl_chat.py:23-38,50-72
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/conversation.py:240-249 (MPT prompt), 384-390 (internvl2_5 template)
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/README.md:1-16 (front matter), 41 (two formats), 54,70 (family tables), 80 (thinking note), 135,141 (architecture), 311-313 (grounding section), 360 (transformers version), 366-376 (loading), 410-426 (thinking mode), 443-512 (preprocessing), 523-526 (tokenizer, max_num), 614-633 (video max_num=1), 818 (license)
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/chat_template.jinja
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/processor_config.json
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/preprocessor_config.json
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/video_preprocessor_config.json
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/generation_config.json
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/added_tokens.json
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/tokenizer_config.json
+- /nfs-stor/xiwei.liu/l/model/InternVL3_5-8B/model.safetensors.index.json (weight_map key prefixes only)
+- /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3/configuration_qwen3.py:77-94 (transformers 5.5.4)
+- /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3/modeling_qwen3.py:196-218,222-291 (transformers 5.5.4)
+- /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/configuration_utils.py:346-351 (transformers 5.5.4)
+- /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/internvl/configuration_internvl.py:108 (transformers 5.5.4)
+unknown:
+- 'env: left null by instruction (decided in stage B).'
+- 'loader.config_transformers_version: config.json top-level transformers_version is null and llm_config carries none; only generation_config.json says 4.52.1.'
+- 'bbox.official_prompt / output_format / coord_range / coord_order: the local README has no grounding prompt or coordinate convention (only a results image under ''Visual Grounding''); README_CN / examples are not shipped in this directory.'
+- 'vision_encoder exact checkpoint name: README names the family options (InternViT-300M / InternViT-6B) and the 0.3B vision parameter count for the 8B model, but never states the exact vision checkpoint id; config.json vision_config has no _name_or_path.'
+- 'Whether the remote code loads and returns attentions under the transformers versions installed locally (5.x): not tested - no weights were loaded and no code from the model directory was imported.'
+- 'Whether the shipped HF-native processor files (InternVLProcessor) produce inputs compatible with the remote-code InternVLChatModel: not documented in the README, not tested.'
+- 'PIL resample filter used by image.resize in dynamic_preprocess: the README code passes no resample argument, so it is whatever the installed Pillow defaults to (not stated in the card).'

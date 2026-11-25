@@ -1,0 +1,216 @@
+# 所有字段均出自本地 config / README / 模型目录内的 remote code / transformers 5.5.4 源码（见 sources），未加载权重、未实测。
+name: MiniCPM-V-4_5
+location:
+  root_key: existing_models
+  subdir: MiniCPM-V-4_5
+hf_repo: openbmb/MiniCPM-V-4_5         # config.json:2 _name_or_path；README.md:263 同；MANIFEST.md 未收录该模型
+revision: 14a2004908140699317e2109e90573c1e6323c36
+revision_source: ".cache/huggingface/download/*.metadata 第 1 行（23 个文件一致）。MANIFEST.md 未收录该模型，_logs/MiniCPM-V-4_5_download.log 里没有 repo id / sha。同一字段在 gemma-4-31B-it 上与 MANIFEST 的 sha 一致，据此认定其为 commit sha。"
+size_bytes: 17408028048
+license: apache-2.0
+license_source: "README.md:15 front matter `license: apache-2.0`；README.md:493 \"The MiniCPM-o/V model weights and code are open-sourced under the Apache-2.0 license.\" 另有 :494 自愿填写的登记问卷（optionally）与 :497-498 免责声明，未见附加的非 Apache 限制条款。"
+role: general
+base_model: null
+env: null
+loader:
+  model_class: MiniCPMV            # config.json auto_map: AutoModel / AutoModelForCausalLM → modeling_minicpmv.MiniCPMV
+  processor_class: MiniCPMVProcessor   # preprocessor_config.json auto_map: AutoProcessor → processing_minicpmv.MiniCPMVProcessor
+  trust_remote_code: true          # README.md:263,266；config/processor/tokenizer 都走 auto_map 的自带 .py
+  config_transformers_version: "4.51.0"
+  notes: >-
+    README 示例：AutoModel.from_pretrained(..., trust_remote_code=True, attn_implementation='sdpa', torch_dtype=torch.bfloat16)，
+    行尾注释 "sdpa or flash_attention_2, no eager"（README.md:263-264）；tokenizer 用 AutoTokenizer(trust_remote_code=True)
+    （tokenizer_class MiniCPMVTokenizerFast）。推理入口是 model.chat(msgs=..., tokenizer=...)（modeling_minicpmv.py:335）。
+    remote code 直接 `from transformers import Qwen3PreTrainedModel, Qwen3ForCausalLM`（modeling_minicpmv.py:10）
+    与 `Qwen3Config`（configuration_minicpm.py:8），因此需要自带 Qwen3 的 transformers；本机 5.5.4 有 models/qwen3，
+    但 config 记录的是 4.51.0，remote code 与 5.5.4 的兼容性未验证。README 未给出版本要求。
+    chat() 在未传 processor 时用 config._name_or_path 调 AutoProcessor.from_pretrained（:370）；
+    视觉塔的注意力实现被强制为 eager（除非 flash_attention_2，:36-40，注释 "not suport sdpa"）。
+    forward 需要显式的 position_ids（:232）。只读目录提示：trust_remote_code 会把模型目录里的 .py 复制到 HF modules cache 再 import，不要把 cwd 设在模型目录内。
+language_model:
+  model_type: "minicpmv（MiniCPMVConfig 继承 Qwen3Config；LLM 为 transformers 的 Qwen3ForCausalLM(config)，modeling_minicpmv.py:25）"
+  num_layers: 36
+  hidden_size: 4096
+  num_attention_heads: 32
+  num_key_value_heads: 8
+  head_dim: 128
+  layer_mixers:
+    - full_attention   # 0
+    - full_attention   # 1
+    - full_attention   # 2
+    - full_attention   # 3
+    - full_attention   # 4
+    - full_attention   # 5
+    - full_attention   # 6
+    - full_attention   # 7
+    - full_attention   # 8
+    - full_attention   # 9
+    - full_attention   # 10
+    - full_attention   # 11
+    - full_attention   # 12
+    - full_attention   # 13
+    - full_attention   # 14
+    - full_attention   # 15
+    - full_attention   # 16
+    - full_attention   # 17
+    - full_attention   # 18
+    - full_attention   # 19
+    - full_attention   # 20
+    - full_attention   # 21
+    - full_attention   # 22
+    - full_attention   # 23
+    - full_attention   # 24
+    - full_attention   # 25
+    - full_attention   # 26
+    - full_attention   # 27
+    - full_attention   # 28
+    - full_attention   # 29
+    - full_attention   # 30
+    - full_attention   # 31
+    - full_attention   # 32
+    - full_attention   # 33
+    - full_attention   # 34
+    - full_attention   # 35
+  mixer_details: >-
+    config.json：use_sliding_window=false、sliding_window=null、max_window_layers=36，无 layer_types 字段。
+    按 transformers 5.5.4 的 Qwen3Config（configuration_qwen3.py:87-94）：use_sliding_window 为假时 sliding_window 置 None，
+    layer_types 全部生成为 full_attention；Qwen3Model 只在存在 sliding 层时才建滑窗 mask（modeling_qwen3.py:370, :414-418）。
+    所以 36 层都是标准因果 softmax 自注意力，GQA：32 个 q 头 / 8 组 KV（每 4 个 q 头共享一组）。rope_theta=1000000。
+    README.md:26 称 "built on Qwen3-8B and SigLIP2-400M with a total of 8B parameters"。
+  mlp_type: "dense（Qwen3 MLP，intermediate_size=12288，hidden_act silu）"
+  head_level_analysis: >-
+    LLM 的 36 层都可做 head 级分析与注意力屏蔽（全局因果 softmax 注意力）；KV 为 8 组，同组 4 个头共享 K/V。
+    两点限制：(1) README 示例注明 attn_implementation 只用 sdpa 或 flash_attention_2、"no eager"（README.md:264），
+    而取注意力权重通常需要 eager——eager 下能否正常运行未验证；
+    (2) 图像 token 是 resampler 的 learned query 输出，不对应固定图像区域（见 connector.token_to_region），
+    “按图像区域屏蔽视觉 token”的实验在本模型上只能做到视图/切片粒度。
+vision_encoder:
+  type: "SiglipVisionTransformer（模型目录自带 modeling_navit_siglip.py，注释 \"Copied from HuggingFaceM4/siglip-so400m-14-980-flash-attn2-navit and add tgt_sizes\"；vision_config.model_type=siglip。README.md:26 称其为 SigLIP2-400M）"
+  num_layers: 27          # drop_vision_last_layer=false（config.json:38），27 层全部保留（modeling_minicpmv.py:42-43）
+  hidden_size: 1152
+  patch_size: 14
+  resolution_strategy: >-
+    dynamic（NaViT 式可变分辨率/长宽比，按 tgt_sizes 与 patch_attention_mask 处理不等长 patch 序列）+ 默认切片多视图。
+    每个视图（整图缩略或一个切片）被缩放到面积约 scale_resolution^2=448x448、长宽比保持、边长为 14 的倍数
+    （find_best_resize / ensure_divide，image_processing_minicpmv.py:138-154），即每视图约 1024 个 patch。
+    归一化 mean/std 均为 0.5。vision_config.image_size=980 只决定位置表大小（70x70）。
+    README.md:36："can process high-resolution images with any aspect ratio and up to 1.8 million pixels (e.g., 1344x1344)"。
+  position_encoding: >-
+    可学习绝对位置表 nn.Embedding((980/14)^2=4900, hidden)，视作 70x70 网格；对每个视图按 patch 的分数坐标
+    （arange(0, 1, 1/nb_patches)）bucketize 到 70 个桶，得到 pos_id = bucket_h*70 + bucket_w 后查表相加
+    （SiglipVisionEmbeddings.forward，modeling_navit_siglip.py:312-353）。
+connector:
+  type: >-
+    Resampler（resampler.py:83-89："A 2D perceiver-resampler network with one cross attention layers by given learnable queries and 2d sincos pos_emb"）。
+    query_num=64 个可学习 query（nn.Parameter，:112），一层 nn.MultiheadAttention(embed_dim=4096, num_heads=4096//128=32)（:120；modeling_minicpmv.py:50-58），
+    kv_proj 把 1152 维视觉特征线性投到 4096（:116），K = ln_kv(kv_proj(x)) + 2D sincos 位置编码，V 不加位置（:207-229），
+    输出经 ln_post 再乘 proj 矩阵（:239-240）。视频时为“3D resampler”：传入 temporal_ids 后给 K 再加 1D sincos 时间编码，
+    并把同一组的多帧 patch 拼成一条 KV 序列共同压成 64 个 token（batch_attn_forward，:248-280）。
+  token_merge: "是，强压缩：每个视图约 1024 个 patch → 64 个 token（约 16 倍）；不是空间池化，而是 learned-query 交叉注意力重采样。"
+  tokens_per_image: >-
+    64 * (1 + n_slices)。每个视图固定 64 个占位（image_feature_size=64 个 <unk>，get_slice_image_placeholder，
+    image_processing_minicpmv.py:295-313）。切片规则（get_sliced_grid，:264-293）：
+    multiple = min(ceil(W*H / 448^2), max_slice_nums)；multiple <= 1 时不切片（n_slices=0，共 64 token）；
+    否则在切片数 {multiple-1, multiple, multiple+1}（去掉 1 和超过 max_slice_nums 的）的所有 cols x rows 分解里选
+    log 长宽比最接近原图的网格，n_slices = cols*rows（2..9）。默认 max_slice_nums=9 → 最多 64*10 = 640 个视觉 token。
+    序列布局：[<image_id>idx</image_id>]<image>64*unk</image>（整图缩略视图）后接各切片 <slice>64*unk</slice>，
+    切片按行优先，行与行之间插入 "\n"（get_grid_placeholder，:218-237）。
+    视觉特征按 image_bound（<image>/<slice> 起止 token 之间的位置）scatter 进 LLM 输入嵌入（processing_minicpmv.py:115-129；modeling_minicpmv.py:175-190）。
+  token_to_region: >-
+    【不存在固定对应关系】64 个视觉 token 是 64 个 learned query 各自对该视图全部 patch 做一次交叉注意力的输出
+    （self.attn(self._repeat(q, bs), k, v, key_padding_mask=...)，resampler.py:274-278；query 定义 :112, :210），
+    第 j 个 token 不对应网格上的第 j 个位置，也没有行/列顺序；其空间来源由数据相关的注意力权重决定，逐图不同。
+    能确定的只有视图级对应：第 0 组 64 个 token ↔ 整张图的缩略视图；之后每组 64 个 token ↔ 一个切片，
+    切片 (row r, col c) 覆盖 refine 后图像的第 r 行第 c 列网格单元（split_to_patches，image_processing_minicpmv.py:178-190；
+    顺序见 get_sliced_images :257-262）。
+    可用的近似映射：resampler 交叉注意力图（每视图 64 x (h*w) 的 query→patch 权重，h,w = tgt_sizes），
+    可按 patch 行优先（pos_embed[:tgt_h, :tgt_w] reshape，:201）还原成 2D 热图；但现有 forward 只取 self.attn(...)[0]、
+    丢弃了权重，需要 hook / 重新调用 self.resampler.attn 才能拿到（具体取法未实测）。
+    此外 patch 特征本身经过 27 层 SigLIP 全局注意力，热图只是近似归因。
+multi_view:
+  default: "是。slice_mode=true、max_slice_nums=9（config.json:44,48；preprocessor_config.json）：面积超过 448x448 的图会得到 1 个整图缩略视图 + 2~9 个切片，每个视图 64 token；面积不超过 448^2 的图只有 1 个视图（并被放大到约 448^2 面积）。"
+  force_single_view: >-
+    调用时传 max_slice_nums=1：model.chat(..., max_slice_nums=1)（参数见 modeling_minicpmv.py:348，传给 processor :425）
+    或 processor(..., max_slice_nums=1)。此时 multiple=min(ceil(ratio),1)=1 → get_sliced_grid 返回 None（:268-270）
+    → slice_image 只生成一个整图视图，按 allow_upscale=True 缩放到约 448^2 面积（:200-205）→ 恒为 64 个视觉 token。
+    README 的视频示例正是这样用的：`use_image_id=False, max_slice_nums=1`（README.md:419-420）。
+    不要用 slice_mode=False：那条分支直接返回未缩放的原图（:245-246），且 chat() 断言 config.slice_mode 与
+    image_processor.slice_mode 相等（modeling_minicpmv.py:377），而 MiniCPMVConfig.__init__ 把 slice_mode 硬写成 True（configuration_minicpm.py:89）。
+    若要永久生效需同时改 config.slice_config.max_slice_nums 与 image_processor.max_slice_nums（chat() 有相等断言 :376），调用级参数则不受该断言影响。
+bbox:
+  official_prompt: null
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: "README.md 全文没有 grounding / bounding box 的提示词、输出格式或坐标约定。added_tokens.json 中有 <box>、<ref>、<quad>、<point> 等 token（:13-18），但本地文件未说明用法。"
+thinking:
+  has_thinking_mode: true
+  how_to_disable: >-
+    model.chat(..., enable_thinking=False)，这是 chat() 的默认值（modeling_minicpmv.py:351）。
+    README.md:253："If you wish to enable thinking mode, provide the argument `enable_thinking=True` to the chat function."；
+    README.md:270：`enable_thinking=False # If `enable_thinking=True`, the thinking mode is enabled.`
+    chat() 把该参数传给 tokenizer.apply_chat_template（:414）；tokenizer_config.json 的 chat_template 在 generation prompt
+    `<|im_start|>assistant\n` 之后：enable_thinking 为 false 时预填 `<think>\n\n</think>\n\n`，为 true 时预填 `<think>\n`（模板第 80-87 行）；
+    若自己调模板且不传 enable_thinking，则两者都不预填。generation_config.json:12 也写了 chat_template_kwargs.enable_thinking=false。
+    开启思考时 chat() 的采样参数不同（关闭时额外加 top_p=0.8, top_k=100, repetition_penalty=1.03，:437-444）。
+  source: "README.md:33,53,253,270；modeling_minicpmv.py:351,414-420；tokenizer_config.json chat_template；generation_config.json:12"
+sources:
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/.cache/huggingface/download/config.json.metadata:1
+  - /nfs-stor/xiwei.liu/l/model/_logs/MiniCPM-V-4_5_download.log
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/config.json:2
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/config.json:32
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/config.json:38
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/config.json:42
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/config.json:44
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/config.json:48
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/preprocessor_config.json
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/generation_config.json:12
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/tokenizer_config.json
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/added_tokens.json:13
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/README.md:15
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/README.md:26
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/README.md:36
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/README.md:253
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/README.md:263
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/README.md:270
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/README.md:420
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/README.md:493
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/configuration_minicpm.py:8
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/configuration_minicpm.py:48
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/configuration_minicpm.py:89
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:10
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:25
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:36
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:50
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:127
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:175
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:348
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:351
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:376
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_minicpmv.py:414
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/resampler.py:83
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/resampler.py:112
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/resampler.py:120
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/resampler.py:207
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/resampler.py:248
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/resampler.py:274
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/image_processing_minicpmv.py:138
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/image_processing_minicpmv.py:178
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/image_processing_minicpmv.py:192
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/image_processing_minicpmv.py:218
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/image_processing_minicpmv.py:242
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/image_processing_minicpmv.py:264
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/image_processing_minicpmv.py:295
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/processing_minicpmv.py:104
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_navit_siglip.py:16
+  - /nfs-stor/xiwei.liu/l/model/MiniCPM-V-4_5/modeling_navit_siglip.py:312
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3/configuration_qwen3.py:87
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3/modeling_qwen3.py:414
+unknown:
+  - "connector.token_to_region：不存在固定规则（resampler learned query）。交叉注意力图作为近似映射的具体取法（hook nn.MultiheadAttention 取权重）未实测。"
+  - "bbox 全部字段：README 没有 grounding 提示词/格式/坐标约定；<box>/<ref>/<quad>/<point> token 存在但用法未在本地文件中说明。"
+  - "transformers 版本要求：README 未写；config 记录 4.51.0；remote code 依赖 transformers 内置 Qwen3 类，与本机 5.5.4 的兼容性未加载验证。"
+  - "attn_implementation='eager' 是否可用：README 注释写 \"no eager\" 但未说明原因，未实测；这直接影响能否取 LLM 注意力权重。"
+  - "revision 未出现在 MANIFEST.md 或下载日志中，只能取自 .cache 的下载元数据。"
+  - "vision encoder 是 SigLIP 还是 SigLIP2：README 说 SigLIP2-400M，config/代码标的是 siglip（so400m-14-980 navit 改写），以本地代码结构为准，权重来源无法从本地文件确认。"
+  - "每视图 patch 数（约 1024）与 16 倍压缩率是按 find_best_resize 公式推算，未用真实图像验证。"

@@ -1,0 +1,162 @@
+name: VST-7B-RL
+location:
+  root_key: existing_models
+  subdir: VST-7B-RL
+hf_repo: rayruiyang/VST-7B-RL
+revision: b18ec54b43e1d0b8a171cf41d9f221fbedd803ae
+revision_source: MANIFEST.md table row (line 15) and reproduce command (line 39)
+size_bytes: 16600362430
+license: apache-2.0
+license_source: README.md front matter line 2 (MANIFEST.md also lists apache-2.0)
+role: spatial_finetune
+base_model: >-
+  Qwen2.5-VL 7B (exact hub repo not stated). The model card does not name the base; evidence is
+  config.json _name_or_path ".../0916_qwen2_5_vl_7b_grpo_dapo_mix_final/global_step_750/actor/huggingface",
+  model_type qwen2_5_vl, and the README snippet loading it with Qwen2_5_VLForConditionalGeneration.
+  "RL" per the card: "Progressive Training Pipeline: Start with supervised fine-tuning to build
+  foundational spatial knowledge, then reinforce spatial reasoning abilities via RL" (README:39);
+  VST-R is "135K curated samples that teach models to reason in space, including step-by-step
+  reasoning and rule-based data for reinforcement learning" (README:38). The card lists VST-7B-SFT
+  as the separate SFT-stage model (README:50).
+env: null
+loader:
+  model_class: Qwen2_5_VLForConditionalGeneration
+  processor_class: Qwen2_5_VLProcessor
+  trust_remote_code: false
+  config_transformers_version: 4.49.0
+  notes: >-
+    Native transformers class; README quickstart: "pip install transformers" (no version pin) and
+    "pip install qwen-vl-utils"; loads with torch_dtype=torch.bfloat16 and builds the processor as
+    AutoProcessor.from_pretrained(model_path, min_pixels=256*28*28, max_pixels=1280*28*28), i.e. the
+    card's example overrides the shipped preprocessor limits. preprocessor_config.json names
+    image_processor_type Qwen2VLImageProcessorFast. config.json vision_config is sparse (only
+    hidden_size=1280, in_chans, spatial_patch_size, tokens_per_second=2, torch_dtype); every other
+    vision field falls back to Qwen2_5_VLVisionConfig class defaults: depth=32, intermediate_size=3420,
+    num_heads=16, patch_size=14, spatial_merge_size=2, temporal_patch_size=2, window_size=112,
+    out_hidden_size=3584, fullatt_block_indexes=(7,15,23,31), hidden_act=silu, in_channels=3.
+    The weight index agrees with depth 32 (visual.blocks.0..31). MANIFEST.md records a config +
+    processor smoke test under transformers 5.5.4 (no weights loaded).
+language_model:
+  model_type: qwen2_5_vl_text      # top-level model_type is qwen2_5_vl; flat hub config is routed into Qwen2_5_VLTextConfig
+  num_layers: 28
+  hidden_size: 3584
+  num_attention_heads: 28
+  num_key_value_heads: 4
+  head_dim: 128                    # hidden_size // num_attention_heads (modeling_qwen2_5_vl.py:691)
+  layer_mixers: [full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention]
+  mixer_details: >-
+    All 28 layers are plain causal self-attention. config.json has sliding_window=32768 and
+    max_window_layers=28 but use_sliding_window=false; Qwen2_5_VLTextConfig.__post_init__ sets
+    sliding_window=None when use_sliding_window is false and then builds layer_types as
+    "sliding_attention" only if sliding_window is not None and i >= max_window_layers, so every
+    layer is "full_attention" (and even with the switch on, i >= 28 never holds for 28 layers).
+    Grouped-query attention: 28 query heads, 4 key/value heads (each kv head shared by 7 query heads).
+    Position encoding in the LM is multimodal RoPE with mrope_section [16, 24, 24], rope_theta 1e6.
+  mlp_type: dense                  # gate_proj/up_proj/down_proj with silu, intermediate_size 18944
+  head_level_analysis: >-
+    All 28 layers have the same standard attention structure (q_proj -> 28 heads x 128 dims, o_proj
+    takes the concatenated 28 heads), so head-level analysis / attention masking applies to every
+    layer. Note k/v are shared within groups of 7 query heads (4 kv heads). Whether per-head
+    attention weights are returned under the sdpa/flash backends was not checked here.
+vision_encoder:
+  type: Qwen2.5-VL ViT (Qwen2_5_VisionTransformerPretrainedModel) with window attention
+  num_layers: 32
+  hidden_size: 1280
+  patch_size: 14
+  resolution_strategy: >-
+    dynamic (native aspect ratio). Image processor smart_resize: round H and W to multiples of
+    28 (= patch 14 x merge 2); if H*W > max_pixels scale down (floor to multiple of 28), if
+    H*W < min_pixels scale up (ceil to multiple of 28); aspect ratio > 200 raises. Values shipped
+    in this model dir's preprocessor_config.json: min_pixels=3136 (56x56 -> 4 tokens),
+    max_pixels=12845056 (= 16384 x 28 x 28 -> up to 16384 tokens). Resample bicubic, CLIP mean/std.
+    The model card's example instead uses min_pixels=256*28*28 (200704) and max_pixels=1280*28*28 (1003520), i.e. 256 to 1280 tokens; the card also routes images through qwen_vl_utils.process_vision_info, whose own resizing was not read.
+  position_encoding: >-
+    2D rotary position embedding (RoPE) on (row, col) patch indices inside every vision block
+    (rot_pos_emb; no learned absolute position table). Window attention: 28 of 32 blocks attend
+    only inside 112x112 px windows (= 8x8 patches = 4x4 merged cells); blocks 7, 15, 23, 31
+    (fullatt_block_indexes) attend over the whole image. 16 heads, temporal_patch_size 2 (a still
+    image is duplicated to 2 frames and embedded by a Conv3d).
+connector:
+  type: >-
+    Qwen2_5_VLPatchMerger: RMSNorm, concatenate each 2x2 group of patch features (4 x 1280 = 5120),
+    then MLP Linear(5120,5120) -> GELU -> Linear(5120, 3584)
+  token_merge: 2x2 spatial merge (4 patches -> 1 token), spatial_merge_size 2
+  tokens_per_image: >-
+    (H'/28) * (W'/28), where (H', W') is the smart_resize output (both multiples of 28).
+    Processor: image_grid_thw.prod() // merge_size**2 with grid_t = 1 for a still image.
+    The tokens are <|image_pad|> placeholders wrapped as <|vision_start|> ... <|vision_end|>
+    by the chat template. With shipped limits: 4 to 16384 tokens per image.
+  token_to_region: >-
+    The tokens that reach the LM ARE in raster (row-major) order of merged 28x28 px cells.
+    Details: the image processor orders patches as (merged_row, merged_col, 2x2 inside the cell),
+    the vision tower then permutes merged cells into window order (window_index) for window
+    attention, the merger fuses each consecutive group of 4 patches, and finally
+    merged_hidden_states[argsort(window_index)] restores the original order before the features
+    are masked_scatter-ed into the <|image_pad|> positions. Rule: with gw = W'/28, the k-th image
+    token (0-based) is row r = k // gw, col c = k % gw and covers resized-image pixels
+    x in [28c, 28c+28), y in [28r, 28r+28); in original-image pixels multiply x by W/W' and y by
+    H/H'. CAVEAT for vision-tower internals: the pre-merger hidden states
+    (last_hidden_state / per-block outputs) are left in WINDOW order, not raster order; only the
+    merged pooler_output is un-permuted, so apply argsort(window_index) yourself when reading
+    intermediate ViT activations.
+multi_view:
+  default: >-
+    Single view. No tiling, no thumbnail, no newline tokens; one native-resolution grid per image.
+  force_single_view: >-
+    Nothing to disable. To fix the token count, pass min_pixels / max_pixels (processor or
+    image-processor kwargs) or pre-resize the image to multiples of 28.
+bbox:
+  official_prompt: null     # the card contains no grounding / bbox / point prompt
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: >-
+    README.md searched for grounding / bounding box / bbox / point / coordinate: no match. The only
+    example prompt is a spatial yes/no question (README:109).
+thinking:
+  has_thinking_mode: true
+  how_to_disable: >-
+    Thinking is prompt-driven, not a chat-template flag: the card prepends a system message
+    THINK_SYSTEM_PROMPT = "You are a helpful assistant. You should first think about the reasoning
+    process in the mind and then provide the user with the answer. The reasoning process is enclosed
+    within <think> </think> tags, i.e. <think> reasoning process here </think> answer here." when its
+    Python variable enable_thinking is True (README:80-86, 114-115). To disable, do not insert that
+    system message (the chat template then uses the default "You are a helpful assistant."). The
+    chat template itself has no enable_thinking argument. Whether the RL model still emits <think>
+    without the prompt is not stated.
+  source: README.md:80-86 and 114-115; chat_template.json:2
+sources:
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/config.json:1-50
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/preprocessor_config.json:1-36
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/generation_config.json:1-6
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/chat_template.json:2
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/tokenizer_config.json   # processor_class Qwen2_5_VLProcessor, model_max_length 16384
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/model.safetensors.index.json   # visual.blocks.0..31 present
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/README.md:2
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/README.md:32-40
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/README.md:63-69
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/README.md:77-99
+  - /nfs-stor/xiwei.liu/l/model/VST-7B-RL/README.md:109-115
+  - /nfs-stor/xiwei.liu/l/model/MANIFEST.md:15
+  - /nfs-stor/xiwei.liu/l/model/MANIFEST.md:24
+  - /nfs-stor/xiwei.liu/l/model/MANIFEST.md:39
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/configuration_qwen2_5_vl.py:51-64    # vision config class defaults
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/configuration_qwen2_5_vl.py:117-140  # use_sliding_window -> layer_types all full_attention
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py:133-146       # patch merger
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py:382-409       # 2D RoPE in vision tower
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py:411-451       # get_window_index
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py:479-518       # window reorder, fullatt blocks, merger, reverse_indices
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py:689-709       # LM attention heads / sliding_window only for sliding layers
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py:1306-1312     # masked_scatter of image embeds into placeholders
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/processing_qwen2_5_vl.py:119-127     # number of <|image_pad|> tokens
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_vl/image_processing_qwen2_vl.py:62-88     # smart_resize
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_vl/image_processing_qwen2_vl.py:201-220   # patch ordering (merged cell raster, 2x2 inside)
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/modeling_auto.py:1014                      # qwen2_5_vl -> Qwen2_5_VLForConditionalGeneration
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/processing_auto.py:144                     # qwen2_5_vl -> Qwen2_5_VLProcessor
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/image_processing_auto.py:216               # qwen2_5_vl -> Qwen2VLImageProcessor
+unknown:
+  - "base_model exact repo id: the card never names it; 'qwen2_5_vl_7b' appears only in config.json _name_or_path, so whether it is Qwen/Qwen2.5-VL-7B-Instruct specifically is not confirmed by any local file."
+  - "bbox.*: no grounding prompt, output format or coordinate convention in the model card."
+  - "thinking without the system prompt: the card does not say whether reasoning is still produced; answer format after </think> is not specified beyond the prompt text."
+  - "qwen_vl_utils.process_vision_info resizing behaviour (used in the card's example) was not read; only the transformers image processor path is documented here."
+  - "config.json vision_config uses legacy key names (in_chans, spatial_patch_size) that are not fields of Qwen2_5_VLVisionConfig in transformers 5.5.4; how they are handled at load time was not executed here (MANIFEST.md reports the config loads)."

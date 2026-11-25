@@ -1,0 +1,299 @@
+# Model inventory entry. Every field is taken from local files or the installed transformers source (see sources).
+name: Qwen3.6-27B
+location:
+  root_key: existing_models
+  subdir: Qwen3.6-27B
+hf_repo: Qwen/Qwen3.6-27B
+revision: 6a9e13bd6fc8f0983b9b99948120bc37f49c13e9
+revision_source: "MANIFEST.md line 10"
+size_bytes: 55586107940
+license: apache-2.0
+license_source: "README.md:3 front matter (license: apache-2.0); LICENSE:1-2 (Apache License, Version 2.0); MANIFEST.md line 10"
+role: general
+base_model: null
+env: null
+loader:
+  model_class: Qwen3_5ForConditionalGeneration
+  processor_class: Qwen3VLProcessor
+  trust_remote_code: false
+  config_transformers_version: "4.57.1"
+  notes:
+    - "model_type=qwen3_5; config.json architectures=[Qwen3_5ForConditionalGeneration], which is also the AutoModelForImageTextToText mapping in transformers 5.5.4 (models/auto/modeling_auto.py:1016)."
+    - "preprocessor_config.json names processor_class=Qwen3VLProcessor and image_processor_type=Qwen2VLImageProcessorFast; in transformers 5.5.4 the image-processor mapping for qwen3_5 is Qwen2VLImageProcessor (torchvision backend) with the legacy \"Fast\" name resolved to it (models/auto/image_processing_auto.py:218). Tokenizer mapping: Qwen3_5Tokenizer; video: Qwen3VLVideoProcessor."
+    - "trust_remote_code not needed: the model directory contains no .py files and tokenizer_config.json has no auto_map; all classes ship in the installed transformers 5.5.4 (spatialcraft env)."
+    - "config.json was written by transformers 4.57.1; the code read for this file is 5.5.4."
+    - "Gated DeltaNet fast path needs the optional packages flash-linear-attention (fla) and causal-conv1d; without them the pure-torch implementation is used (modeling_qwen3_5.py:205-207). pip list of the spatialcraft env shows neither package."
+    - "README:608 says the latest transformers is required and documents only serving (transformers serve / vLLM / SGLang), no in-process Python loading snippet."
+    - "MANIFEST.md:70: compared with Qwen3.8-27B in the same root, config.json differs only in transformers_version and all 1199 tensors have identical names, shapes and dtypes (weight values not compared). The same hooks/loader apply to both."
+    - "MANIFEST.md:24: config and tokenizer/processor smoke-loaded with transformers 5.5.4 (no weights)."
+language_model:
+  model_type: qwen3_5_text
+  num_layers: 64
+  hidden_size: 5120
+  num_attention_heads: 24
+  num_key_value_heads: 4
+  head_dim: 256
+  layer_mixers:
+    - linear_attention  # 0
+    - linear_attention  # 1
+    - linear_attention  # 2
+    - full_attention  # 3
+    - linear_attention  # 4
+    - linear_attention  # 5
+    - linear_attention  # 6
+    - full_attention  # 7
+    - linear_attention  # 8
+    - linear_attention  # 9
+    - linear_attention  # 10
+    - full_attention  # 11
+    - linear_attention  # 12
+    - linear_attention  # 13
+    - linear_attention  # 14
+    - full_attention  # 15
+    - linear_attention  # 16
+    - linear_attention  # 17
+    - linear_attention  # 18
+    - full_attention  # 19
+    - linear_attention  # 20
+    - linear_attention  # 21
+    - linear_attention  # 22
+    - full_attention  # 23
+    - linear_attention  # 24
+    - linear_attention  # 25
+    - linear_attention  # 26
+    - full_attention  # 27
+    - linear_attention  # 28
+    - linear_attention  # 29
+    - linear_attention  # 30
+    - full_attention  # 31
+    - linear_attention  # 32
+    - linear_attention  # 33
+    - linear_attention  # 34
+    - full_attention  # 35
+    - linear_attention  # 36
+    - linear_attention  # 37
+    - linear_attention  # 38
+    - full_attention  # 39
+    - linear_attention  # 40
+    - linear_attention  # 41
+    - linear_attention  # 42
+    - full_attention  # 43
+    - linear_attention  # 44
+    - linear_attention  # 45
+    - linear_attention  # 46
+    - full_attention  # 47
+    - linear_attention  # 48
+    - linear_attention  # 49
+    - linear_attention  # 50
+    - full_attention  # 51
+    - linear_attention  # 52
+    - linear_attention  # 53
+    - linear_attention  # 54
+    - full_attention  # 55
+    - linear_attention  # 56
+    - linear_attention  # 57
+    - linear_attention  # 58
+    - full_attention  # 59
+    - linear_attention  # 60
+    - linear_attention  # 61
+    - linear_attention  # 62
+    - full_attention  # 63
+  mixer_details: >-
+    linear_attention layers (indices i with (i+1)%4 != 0; 48 of 64 layers) are instances of
+    Qwen3_5GatedDeltaNet (modeling_qwen3_5.py:356), built at modeling_qwen3_5.py:736-737. It is a
+    Gated DeltaNet recurrent/linear-time mixer, not softmax attention: the README calls the block
+    "Gated DeltaNet" (README:41). Mechanism from source: in_proj_qkv projects the hidden state to
+    q,k,v; a depthwise causal Conv1d with kernel 4 (linear_conv_kernel_dim) + SiLU is applied to the
+    concatenated qkv channels (modeling_qwen3_5.py:375-382); q and k are L2-normalised; a per-head
+    matrix state S (key_dim x value_dim per head) is updated per position with the gated delta rule
+    S_t = exp(g_t)*S_(t-1) + k_t (x) beta_t*(v_t - S k_t), output o_t = S_t q_t (reference loop
+    modeling_qwen3_5.py:314-353; chunked parallel form used for full sequences
+    modeling_qwen3_5.py:234, called at modeling_qwen3_5.py:499); beta = sigmoid(in_proj_b), g =
+    -exp(A_log)*softplus(in_proj_a + dt_bias). The output is passed through a gated RMSNorm (norm,
+    then multiply by SiLU(z) with z = in_proj_z(hidden)) and out_proj (modeling_qwen3_5.py:529-532).
+
+    Heads: linear_num_key_heads=16 (q/k head dim 128), linear_num_value_heads=48 (value head dim
+    128); key heads are repeat-interleaved x3 to pair with the value heads
+    (modeling_qwen3_5.py:360-361, 495-496). key_dim=2048, value_dim=6144.
+
+    No attention-weight matrix exists for these layers. The module returns only the mixed hidden
+    state (modeling_qwen3_5.py:533) and _can_record_outputs maps "attentions" only to
+    Qwen3_5Attention (modeling_qwen3_5.py:795-799), so output_attentions returns nothing for linear
+    layers. The only mask they receive is the 2D padding mask (modeling_qwen3_5.py:1273, 1292),
+    applied by zeroing padded hidden states (modeling_qwen3_5.py:193), and it is dropped entirely
+    when all tokens are attended or a cache is in use.
+
+    full_attention layers (16 layers, indices [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55,
+    59, 63]) are Qwen3_5Attention (modeling_qwen3_5.py:620): causal softmax attention with 24 query
+    heads, 4 key/value heads (GQA, each KV head shared by 6 query heads), head_dim=256 (so the
+    o_proj input width is 24*256=6144 while hidden_size=5120), RMSNorm on q and k per head, rotary
+    position embedding. attn_output_gate ("Gated Attention" in README:41): q_proj outputs
+    2*num_heads*head_dim and is split into the query and a gate (modeling_qwen3_5.py:632-634,
+    658-661); the concatenated per-head attention output is multiplied elementwise by sigmoid(gate)
+    before o_proj (modeling_qwen3_5.py:689-691). The gate is therefore per position, per head and
+    per head-dimension, computed from the querying position's own input. In transformers 5.5.4 the
+    gate is unconditional: the config key attn_output_gate is never read by the modeling code.
+
+    Attention implementation: resolved through ALL_ATTENTION_FUNCTIONS with
+    config._attn_implementation (modeling_qwen3_5.py:673-675); the library default is "sdpa"
+    (modeling_utils.py:1889; class sets _supports_sdpa at modeling_qwen3_5.py:793), and the sdpa
+    path returns None for weights (integrations/sdpa_attention.py:104). Weights are produced only by
+    eager_attention_forward (modeling_qwen3_5.py:594-616), i.e. the model must be loaded with
+    attn_implementation="eager".
+  mlp_type: >-
+    dense: Qwen3_5MLP, SwiGLU-style gate_proj/up_proj/down_proj with SiLU, intermediate_size=17408
+    (modeling_qwen3_5.py:695-708, built at 740). No expert/MoE keys in config.json; README:41 lists
+    FFN.
+  head_level_analysis: >-
+    Layers that admit standard head-level analysis: the 16 full_attention layers, indices [3, 7, 11,
+    15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63] (every 4th layer, (i+1)%4==0). Why: each has
+    24 softmax attention heads (Qwen3_5Attention); the per-head outputs are still separate (shape
+    [batch, seq, 24*256], head h = slice h*256:(h+1)*256) at the input of self_attn.o_proj
+    (modeling_qwen3_5.py:691), so a forward-pre-hook on o_proj reads or ablates single heads (that
+    tensor is already multiplied by the sigmoid output gate, modeling_qwen3_5.py:689).
+    Position-to-position attention masking is possible because these layers take a 4D causal mask
+    built by create_causal_mask (modeling_qwen3_5.py:1260, selected at 1273) that is added to the
+    logits before softmax in the eager path (modeling_qwen3_5.py:607-609). Attention weights require
+    attn_implementation="eager"; under the default sdpa they are None. With eager, output_attentions
+    yields one entry per full_attention layer only (hooks are installed on Qwen3_5Attention modules
+    and None outputs are skipped: modeling_qwen3_5.py:795-799, utils/output_capturing.py:103-117),
+    so the returned tuple has 16 entries and entry j corresponds to layer index 4*j+3, not to layer
+    j. GQA: 4 KV heads, so query heads come in groups of 6 sharing keys/values.
+
+    Layers that do NOT admit it: the 48 linear_attention layers (all other indices: i%4 in {0,1,2}).
+    Why: Qwen3_5GatedDeltaNet has no token-to-token attention weights and takes no pairwise mask;
+    information from position s reaches position t through the recurrent state S (and the kernel-4
+    causal conv), so a single (t<-s) edge cannot be knocked out by a mask, and output_attentions
+    returns nothing for them. What is still hookable there: the layer output (linear_attn /
+    out_proj) and, at the input of linear_attn.out_proj, the 48 value-head slices of width 128
+    (after the gated RMSNorm, modeling_qwen3_5.py:529-532); these are DeltaNet state heads, not
+    attention heads. Residual-stream (hidden_states) hooks work on all 64 layers.
+
+    Derived by reading the source only; nothing was executed on GPU.
+vision_encoder:
+  type: >-
+    Qwen3_5VisionModel (modeling_qwen3_5.py:995): ViT with a Conv3d patch embedding (kernel/stride =
+    temporal 2 x 16 x 16, modeling_qwen3_5.py:828-837), 27 pre-norm blocks with 16-head non-causal
+    attention (modeling_qwen3_5.py:878), MLP width 4304, output projected to 5120 by the patch
+    merger. The README only says "Vision Encoder" (README:34) and does not name the pretrained
+    encoder family.
+  num_layers: 27
+  hidden_size: 1152
+  patch_size: 16
+  resolution_strategy: >-
+    dynamic, single view. Image processor resizes each image with smart_resize(factor=32=patch 16 x
+    merge 2): both sides rounded to multiples of 32, aspect ratio kept, total pixels clamped to
+    [min_pixels, max_pixels] = [size.shortest_edge, size.longest_edge] = [65536, 16777216]
+    (preprocessor_config.json; image_processing_qwen2_vl.py:62-88, 171-177). Aspect ratio above 200
+    raises. Resample is the class default BICUBIC (image_processing_qwen2_vl.py:94); mean/std 0.5.
+    Default range is therefore 64 to 16384 LM tokens per image.
+  position_encoding: >-
+    Two schemes together. (1) Learned absolute table pos_embed = nn.Embedding(2304, 1152) treated as
+    a 48x48 grid and bilinearly interpolated to the actual (grid_h, grid_w) of each image, then
+    added to the patch embeddings (modeling_qwen3_5.py:1014-1015, 1070-1131). (2) 2D rotary
+    embedding over (row, col) patch coordinates applied to q/k in every vision attention block
+    (modeling_qwen3_5.py:1030-1068).
+connector:
+  type: >-
+    Qwen3_5VisionPatchMerger (modeling_qwen3_5.py:848-861): LayerNorm on each patch, concatenate the
+    4 patches of each 2x2 block, then Linear -> GELU -> Linear to out_hidden_size=5120.
+    deepstack_visual_indexes is [] in config.json and the transformers 5.5.4 Qwen3.5 code has no
+    deepstack path (removed in modular_qwen3_5.py), so visual features enter the LM only once, by
+    replacing the <|image_pad|> input embeddings (modeling_qwen3_5.py:1648).
+  token_merge: >-
+    yes: spatial_merge_size=2, 2x2 patches -> 1 token (4x fewer tokens than patches); 32x32 resized
+    pixels per LM token.
+  tokens_per_image: >-
+    N = (H2/32) * (W2/32), where (H2, W2) = smart_resize(H, W, factor=32, min_pixels=65536,
+    max_pixels=16777216) is the resized size (multiples of 32). Equivalently image_grid_thw.prod()/4
+    with grid = (1, H2/16, W2/16) (processing_qwen3_vl.py:128-133; modeling_qwen3_5.py:1515). The
+    chat template wraps them as <|vision_start|> + N x <|image_pad|> + <|vision_end|>
+    (chat_template.jinja:18), i.e. N+2 sequence positions per image.
+  token_to_region: >-
+    Raster (row-major) order at the LM-token level. Let mw = W2/32, mh = H2/32. The k-th
+    <|image_pad|> position of an image (k from 0) is merged cell row r = k // mw, col c = k % mw,
+    covering resized-image pixels x in [32c, 32c+32), y in [32r, 32r+32); multiply by W/W2 and H/H2
+    to get original-image pixels. Reason: the image processor emits patches block-major, in order
+    (block_row, block_col, intra_row, intra_col) (image_processing_qwen2_vl.py:203-220), the
+    pos-embed is permuted the same way (modeling_qwen3_5.py:1125-1127), and the merger concatenates
+    every 4 consecutive patches (modeling_qwen3_5.py:859), which are exactly one 2x2 block.
+    Consequence for hooks INSIDE the vision encoder: patch index p is not raster; block b = p // 4,
+    j = p % 4, patch row = 2*(b // mw) + j // 2, patch col = 2*(b % mw) + j % 2. A still image is
+    duplicated along time to fill temporal_patch_size=2, giving grid_t = 1
+    (image_processing_qwen2_vl.py:196-200).
+multi_view:
+  default: >-
+    single view: no tiling, slicing or thumbnail. The image processor only resizes and patchifies
+    each image into one grid (image_processing_qwen2_vl.py:166-232) and the processor inserts one
+    placeholder run per image (processing_qwen3_vl.py:127-135).
+  force_single_view: >-
+    Nothing to turn off. To fix the token count, either pre-resize the image yourself to an exact
+    (H2, W2) with both sides multiples of 32 and 65536 <= H2*W2 <= 16777216 (smart_resize then
+    leaves it unchanged, giving exactly H2*W2/1024 tokens), or narrow the range by passing
+    min_pixels and max_pixels together (both are needed for a per-call override,
+    image_processing_qwen2_vl.py:132-133) or size={"shortest_edge": ..., "longest_edge": ...} to the
+    processor / image processor. With min_pixels == max_pixels the count is only approximately fixed
+    because of rounding to multiples of 32. Not run-tested here.
+bbox:
+  official_prompt: null
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: >-
+    Not stated locally. README.md was searched for grounding / bounding box / bbox / bbox_2d /
+    point_2d / coordinate / normalized / 0-1000: the only hits are benchmark table rows (RefCOCO /
+    ODInW) at README lines [420], with no prompt or coordinate convention. chat_template.jinja has
+    no grounding instructions.
+thinking:
+  has_thinking_mode: true
+  how_to_disable: >-
+    Thinking is ON by default. chat_template.jinja:149-153: when the template variable
+    enable_thinking is defined and false the generation prompt ends with an empty block
+    '<think>\n\n</think>\n\n'; otherwise it ends with an open '<think>\n'. To disable, set
+    enable_thinking=False as a chat-template variable. README:764 states the model thinks by
+    default; README:799 shows the serving form "chat_template_kwargs": {"enable_thinking": False}.
+    README:762: the /think and /nothink soft switches are not officially supported.
+    preserve_thinking (default off, chat_template.jinja:100) only affects how earlier assistant
+    turns are rendered.
+  source: "chat_template.jinja:149-153; README.md:764, 799, 762"
+sources:
+  - "/nfs-stor/xiwei.liu/l/model/MANIFEST.md:10 (repo, commit sha, total bytes, license)"
+  - "/nfs-stor/xiwei.liu/l/model/MANIFEST.md:70 (identical tensor names/shapes between Qwen3.6-27B and Qwen3.8-27B)"
+  - "/nfs-stor/xiwei.liu/l/model/README.md:10 (official post-trained BF16 multimodal weights, not -Base, not quantized)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/config.json:21-86 (text_config.layer_types, 64 entries)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/config.json:87-91 (linear_* head counts, dims, conv kernel)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/config.json:97-99 (num_attention_heads, num_hidden_layers, num_key_value_heads)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/config.json:16 (head_dim); :18 (hidden_size); :11 (attn_output_gate)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/config.json:20 (dense FFN intermediate_size)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/config.json:120 (transformers_version); :2-7 (architectures, model_type)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/config.json:123-136 (vision_config: deepstack_visual_indexes, depth, hidden_size, patch_size, spatial_merge_size, num_position_embeddings)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/preprocessor_config.json:1-20 (size.shortest_edge/longest_edge, patch_size, merge_size, processor_class, image_processor_type)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/chat_template.jinja:18 (image placeholder); :149-153 (enable_thinking branch); :100 (preserve_thinking)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/README.md:3 (license front matter)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/README.md:15 (post-trained model note); :34-53 (model overview: layout, heads, FFN/MoE)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/README.md:764 (thinking default); :799 (enable_thinking=False example); :762 (no /think soft switch)"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/README.md: searched whole file for grounding|bounding|bbox|box_2d|point_2d|coordinate|normalized|0-1000|RefCOCO|ODinW; hits only in benchmark table rows at lines [420]"
+  - "/nfs-stor/xiwei.liu/l/model/Qwen3.6-27B/LICENSE:1-2 (Apache License, Version 2.0)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:356-533 (Qwen3_5GatedDeltaNet); :234 / :314 (gated delta rule); :193 (padding mask)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:594-692 (eager_attention_forward, Qwen3_5Attention incl. output gate)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:731-773 (Qwen3_5DecoderLayer: mixer per layer_type, MLP)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:795-799 (_can_record_outputs); :793 (_supports_sdpa); :1273, 1292 (per-layer mask choice)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:828-861 (vision patch embed, patch merger); :995-1131 (vision model, pos_embed, rot_pos_emb, interpolation)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:1515 (tokens per image split); :1648 (image embeds scattered into input embeddings)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py:695-708 (Qwen3_5MLP)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3_5/configuration_qwen3_5.py:107-111 (default layer_types pattern from full_attention_interval)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2_vl/image_processing_qwen2_vl.py:62-88 (smart_resize); :92-104 (class defaults); :132-133 (min/max_pixels override); :166-232 (_preprocess: resize, block-major patch order)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen3_vl/processing_qwen3_vl.py:127-135 (placeholder expansion: grid.prod() // merge_size**2)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/modeling_auto.py:962, 1016 (image-text-to-text mapping)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/processing_auto.py:147 (Qwen3VLProcessor); /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/image_processing_auto.py:218 (image processor); /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/tokenization_auto.py:270 (tokenizer)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/modeling_utils.py:1888-1924 (default attn implementation sdpa, eager fallback)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/integrations/sdpa_attention.py:51-55, 104 (sdpa returns no weights)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/utils/output_capturing.py:103-117 (capture hook skips None outputs); :222-270 (attentions tuple assembly)"
+  - "/home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/__init__.py:21 (installed transformers version 5.5.4)"
+unknown:
+  - "env: left null by instruction (decided in stage B)."
+  - "bbox.official_prompt / output_format / coord_range / coord_order: the local README.md contains no grounding or bounding-box prompt and no coordinate convention (only benchmark table rows at README lines [420]); chat_template.jinja and the processor source contain none either. Not imported from other Qwen generations."
+  - "vision_encoder pretrained origin / family name: not stated in README or config; only the architecture is known from source."
+  - "text_config keys that the transformers 5.5.4 modeling code never reads (grep of the modeling file), so their intended effect is unknown from local files: attn_output_gate, output_gate_type, mtp_num_hidden_layers, mtp_use_dedicated_embeddings, mamba_ssm_dtype, full_attention_interval (attn_output_gate: the gate is hard-coded on; full_attention_interval: only used when layer_types is absent; mtp weights are ignored on load)."
+  - "All head_level_analysis / output_attentions statements come from reading source; no forward pass was run (login node, no weights loaded)."
+  - "In-process loading example (AutoProcessor/AutoModel snippet) and passing enable_thinking via apply_chat_template: README shows only the serving API form."

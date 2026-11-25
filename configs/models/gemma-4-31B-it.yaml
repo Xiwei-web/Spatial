@@ -1,0 +1,245 @@
+# 所有字段均出自本地 config / README / chat_template / transformers 5.5.4 源码（见 sources），未加载权重、未实测。
+name: gemma-4-31B-it
+location:
+  root_key: existing_models
+  subdir: gemma-4-31B-it
+hf_repo: google/gemma-4-31B-it
+revision: 842da3794eaa0b77d5f08bae87a17459d91ff475
+revision_source: "MANIFEST.md:12（表格）与 :36（hf download --revision）；与 .cache/huggingface/download/config.json.metadata 第 1 行一致"
+size_bytes: 62578686256
+license: apache-2.0
+license_source: "README.md:3 front matter `license: apache-2.0`（:4 license_link 指向 ai.google.dev/gemma/docs/gemma_4_license）；MANIFEST.md:12 同为 apache-2.0"
+role: general
+base_model: null
+env: null
+loader:
+  model_class: Gemma4ForConditionalGeneration   # config.json architectures；README 用 AutoModelForMultimodalLM
+  processor_class: Gemma4Processor              # processor_config.json processor_class；README 用 AutoProcessor
+  trust_remote_code: false                      # 模型目录内无 .py，transformers 5.5.4 自带 models/gemma4
+  config_transformers_version: "5.5.0.dev0"
+  notes: >-
+    README 只写 "You can use all Gemma 4 models with the latest version of Transformers"
+    与 `pip install -U transformers torch accelerate`（图像另加 torchvision），未给最低版本号。
+    README 示例：AutoModelForMultimodalLM.from_pretrained(MODEL_ID, dtype="auto", device_map="auto")。
+    tokenizer_class=GemmaTokenizer。processor 默认返回 mm_token_type_ids（processing_gemma4.py:41），
+    模型靠它构造图像块双向 mask（见 mixer_details），自己拼输入时不要丢掉。
+    masking_utils.py:1173-1175：使用 or_mask_function（即图像双向 mask）要求 torch>=2.6。
+    generation_config 默认 do_sample=true, temperature=1.0, top_k=64, top_p=0.95。
+language_model:
+  model_type: gemma4_text
+  num_layers: 60
+  hidden_size: 5376
+  num_attention_heads: 32
+  num_key_value_heads: 16      # 仅 sliding 层；full(global) 层为 num_global_key_value_heads=4
+  head_dim: 256                # 仅 sliding 层；full(global) 层为 global_head_dim=512
+  layer_mixers:
+    - sliding_attention   # 0
+    - sliding_attention   # 1
+    - sliding_attention   # 2
+    - sliding_attention   # 3
+    - sliding_attention   # 4
+    - full_attention      # 5
+    - sliding_attention   # 6
+    - sliding_attention   # 7
+    - sliding_attention   # 8
+    - sliding_attention   # 9
+    - sliding_attention   # 10
+    - full_attention      # 11
+    - sliding_attention   # 12
+    - sliding_attention   # 13
+    - sliding_attention   # 14
+    - sliding_attention   # 15
+    - sliding_attention   # 16
+    - full_attention      # 17
+    - sliding_attention   # 18
+    - sliding_attention   # 19
+    - sliding_attention   # 20
+    - sliding_attention   # 21
+    - sliding_attention   # 22
+    - full_attention      # 23
+    - sliding_attention   # 24
+    - sliding_attention   # 25
+    - sliding_attention   # 26
+    - sliding_attention   # 27
+    - sliding_attention   # 28
+    - full_attention      # 29
+    - sliding_attention   # 30
+    - sliding_attention   # 31
+    - sliding_attention   # 32
+    - sliding_attention   # 33
+    - sliding_attention   # 34
+    - full_attention      # 35
+    - sliding_attention   # 36
+    - sliding_attention   # 37
+    - sliding_attention   # 38
+    - sliding_attention   # 39
+    - sliding_attention   # 40
+    - full_attention      # 41
+    - sliding_attention   # 42
+    - sliding_attention   # 43
+    - sliding_attention   # 44
+    - sliding_attention   # 45
+    - sliding_attention   # 46
+    - full_attention      # 47
+    - sliding_attention   # 48
+    - sliding_attention   # 49
+    - sliding_attention   # 50
+    - sliding_attention   # 51
+    - sliding_attention   # 52
+    - full_attention      # 53
+    - sliding_attention   # 54
+    - sliding_attention   # 55
+    - sliding_attention   # 56
+    - sliding_attention   # 57
+    - sliding_attention   # 58
+    - full_attention      # 59
+  mixer_details: >-
+    模式：每 6 层一组 = 5 层 sliding_attention + 1 层 full_attention，共 50 层 sliding、10 层 full
+    （full 层下标 5,11,17,23,29,35,41,47,53,59；config.json:37 起的 layer_types，已用 python 核对长度 60）。
+    【两类层都是标准 softmax 自注意力】同一个 Gemma4TextAttention 类（modeling_gemma4.py:1126），
+    差别只在 mask 与投影形状；eager 路径 eager_attention_forward（:768-799）为
+    QK^T*scaling → 加 additive mask → softmax → 乘 V，返回 attn_weights。scaling=1.0（:1143），
+    q/k 先过 RMSNorm（q_norm/k_norm :1165,1169）再加 RoPE；文本注意力未传 softcap。
+    【sliding 层】sliding_window=1024（config.json:120）。mask = 因果 AND 窗口：
+    kv_idx <= q_idx 且 kv_idx > q_idx - sliding_window（masking_utils.py:78, :90-99, :114-118），
+    即每个 query 只能看到自己和之前的 1023 个 token；更远的 token 被 mask（注意力权重为 0，不是近似）。
+    q 头 32，head_dim=256，KV 头 num_key_value_heads=16（每 2 个 q 头共享一组 KV，repeat_kv :782-783），
+    有独立 v_proj。RoPE: theta=10000, rope_type default。
+    【full 层】纯因果全局 mask（create_causal_mask，:2063）。q 头 32，head_dim=global_head_dim=512（:1137），
+    KV 头 num_global_key_value_heads=4（:1139-1142，每 8 个 q 头共享一组 KV）。
+    attention_k_eq_v=true 只作用于 full 层（use_alternative_attention = attention_k_eq_v and not is_sliding，:1138）：
+    不建 v_proj（:1175-1179），value_states 直接取 k_proj 的输出（:1214），之后 K 走 k_norm+RoPE、V 走 v_norm（无 scale，:1170,:1216-1221）。
+    RoPE: theta=1e6, rope_type proportional, partial_rotary_factor=0.25。
+    【use_bidirectional_attention="vision"】（config.json:123）Gemma4Model.forward（:2291-2303）与
+    create_masks_for_generate（:2567-2578）在该取值下调用 create_causal_mask_mapping（:2008-2065）：
+    用 mm_token_type_ids（1=image, 2=video）把连续的视觉 token 切成组（:2052-2057），
+    再把“q 与 kv 同属一个视觉组则放行”的函数（token_type_ids_mask_function :1978-2004）作为 or_mask_function
+    【只加到 sliding_attention 的 mask 上】（:2058-2064，是并集，masking_utils.py:1173-1176）；
+    full_attention 的 mask 用的是不带 or_mask 的 mask_kwargs（:2063），仍是严格因果。
+    所以：同一张图内的图像 token 在 50 个 sliding 层里互相双向可见（包括看到同图中位置在后的 token），
+    在 10 个 full 层里仍是因果的；文本 token 永远是因果的，图像 token 看不到后面的文本或后面的另一张图
+    （源码注释 :2050-2051）。相邻图像被 <|image> / <image|> 等非视觉 token 隔开，各自成组。
+    该 or-mask 只在 mm_token_type_ids 不为 None 且 is_first_iteration 时加（:2046）；不传 mm_token_type_ids 时
+    推理会静默退化成纯因果（只有 training 时才报错，:2026-2027）。
+    is_causal = (use_bidirectional_attention != "all") = True（:1145）。
+    num_kv_shared_layers=0，所以没有跨层共享 KV 的层（:1148-1149）。
+  mlp_type: "dense（enable_moe_block=false, num_experts=null；Gemma4TextMLP 为 gate/up/down 门控 MLP，intermediate_size=21504，use_double_wide_mlp=false）"
+  head_level_analysis: >-
+    60 层都可做 head 级分析与注意力屏蔽（都是 softmax 注意力，o_proj 输入是 32 个头按 head_dim 拼接，:1181-1183,:1244-1245），
+    但要注意：(1) sliding 层每头 256 维、full 层每头 512 维，o_proj 输入宽度分别为 8192 / 16384；
+    (2) KV 是分组共享的：sliding 层 16 组（2 头/组），full 层 4 组（8 头/组）且 V 与 K 同源（k_eq_v），
+    同组的头只有 Q 不同，对 K/V 做干预会同时影响整组；
+    (3) sliding 层里距离 query >= 1024 的 token 权重恒为 0。图像最多 280 个 token，
+    若图像位于答案位置之前 1024 token 以外（长提示词/多图/开启 thinking 后的长思考），
+    这些图像 token 在 50 个 sliding 层不可直接到达，只能在 10 个 full 层被直接读取，或经窗口内的中间 token 间接传递；
+    (4) sliding 层的图像块内双向 mask 使“屏蔽图像 token”的实验需同时考虑图像 token 之间的双向边；
+    (5) attn_weights 由 eager_attention_forward 返回；非 eager 实现走 ALL_ATTENTION_FUNCTIONS（:1228-1230），
+    是否返回权重未在此核实，做注意力分析建议 attn_implementation="eager"。
+vision_encoder:
+  type: "Gemma4VisionModel (model_type gemma4_vision)；README 称 31B 的 vision encoder 约 550M 参数"
+  num_layers: 27
+  hidden_size: 1152
+  patch_size: 16
+  resolution_strategy: >-
+    dynamic（可变分辨率 + 可变长宽比，单视图）。图像处理器按 token 预算做保持长宽比的缩放
+    （image_processing_gemma4.py:162-181；get_aspect_ratio_preserving_size，image_processing_pil_gemma4.py:36-86）：
+    max_patches = max_soft_tokens * pooling_kernel_size^2 = 280*9 = 2520 个 16px patch（目标像素 645120）；
+    factor = sqrt(target_px / (H*W))，H、W 各自乘 factor 后向下取整到 48（=pooling_kernel_size*patch_size）的倍数；
+    没有“只缩不放”的条件，小图也会被放大到预算附近。再切成 16px patch，并 pad 到 max_patches（位置 id 填 -1）。
+    max_soft_tokens 默认 280（processor_config.json:42），只允许 {70,140,280,560,1120}
+    （image_processing_pil_gemma4.py:33；README:398 同）。do_normalize=false，像素 rescale 到 [0,1] 后在模型内做 2*(x-0.5)（modeling_gemma4.py:567）。
+  position_encoding: >-
+    两种叠加：(1) 可学习的分解式 2D 绝对位置表 position_embedding_table，形状 [2, position_embedding_size=10240, hidden]，
+    按 patch 的 (x, y) 坐标分别查表后相加，加到 patch embedding 上，padding patch 置 0（modeling_gemma4.py:548-570）；
+    (2) 每层注意力内的 2D RoPE：对 x、y 两个轴各用 head_dim 的一半独立计算频率（rope_theta=100，:686-700, :704-724），
+    apply_multidimensional_rope（:802-855）。编码器为双向全局注意力（create_bidirectional_mask，:993），padding patch 被 mask。
+connector:
+  type: "Gemma4VisionPooler（按位置的 3x3 平均池化 + 乘 sqrt(hidden)）→ 可选 standardize（减 std_bias 乘 std_scale）→ embed_vision（Gemma4MultimodalEmbedder 投影到 LLM 维度）"
+  token_merge: "3x3 平均池化，9 个 16px patch → 1 个 soft token（pooling_kernel_size=3；modeling_gemma4.py:581-606）"
+  tokens_per_image: >-
+    可变，不是固定 280。n = (H'/48) * (W'/48)，H'、W' 为缩放后的高宽（48 的倍数），n <= max_soft_tokens（默认 280）。
+    processor 用每张图实际的 num_soft_tokens 展开占位符：<|image> + <|image|>*n + <image|>（processing_gemma4.py:150；
+    image_processing_gemma4.py:191），pad 出来的 token 在模型里被丢弃（modeling_gemma4.py:1941-1942）。
+    按代码推算的例子（未实测）：正方形图 → 768x768 → 16x16 = 256 个 token。
+    config.vision_soft_tokens_per_image=280 / image_seq_length=280 是上限/默认预算。
+  token_to_region: >-
+    可行，规则确定。patch 按行优先排列（meshgrid indexing="xy"，位置为 (x, y)，image_processing_gemma4.py:195-201）；
+    池化索引 = floor(x/3) + (W_patches/3) * floor(y/3)（modeling_gemma4.py:600-602），所以 soft token 也是行优先：
+    第 i 个 token ↔ 池化网格 row = i // (W'/48), col = i % (W'/48)，对应缩放后图像上的 48x48 像素格
+    [col*48, (col+1)*48) x [row*48, (row+1)*48)；再按 (原宽/W', 原高/H') 映回原图（长宽比因取整到 48 的倍数只近似保持）。
+    注意每个 token 是 27 层全局双向注意力之后再池化的，内容上会混入全图信息。
+multi_view:
+  default: "否。Gemma4 processor / image processor 中没有 pan&scan、切片或缩略图逻辑（grep pan_and_scan|crop 无结果），每张图恒为单视图，token 数随长宽比变化。"
+  force_single_view: "无需设置（本来就是单视图）。要固定 token 数与网格：保持 max_soft_tokens=280（或经 processor 的 images_kwargs 传 max_soft_tokens ∈ {70,140,280,560,1120}），并把输入图预先缩放到固定长宽比/尺寸（例如 48 的倍数），使 (H'/48, W'/48) 固定。"
+bbox:
+  official_prompt: null
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: "README.md:119 只在能力列表里提到 \"Object detection ... and pointing\"，全文没有给出检测/框的提示词、输出格式或坐标约定；chat_template.jinja 中也没有相关内容。"
+thinking:
+  has_thinking_mode: true
+  how_to_disable: >-
+    apply_chat_template(..., enable_thinking=False)，这也是模板默认值（chat_template.jinja:186 `enable_thinking | default(false)`）。
+    关闭时模板不在 system turn 写 <|think|>，并在 generation prompt 的 `<|turn>model\n` 后预填空思考块
+    `<|channel>thought\n<channel|>`（:383-385）。开启时在第一个 system turn 顶部注入 `<|think|>\n`（:193-194）。
+    README.md:374 原文："Thinking is enabled by including the `<|think|>` token at the start of the system prompt. To disable thinking, remove the token."
+    README.md:377："For all models except for the E2B and E4B variants, if thinking is disabled, the model will still generate the tags but with an empty thought block"。
+    README 的纯文本示例显式传 enable_thinking=False（:165），图像示例没有传该参数（即取模板默认 false）。
+  source: "README.md:165,177,370-378；chat_template.jinja:186,193-194,383-385"
+sources:
+  - /nfs-stor/xiwei.liu/l/model/MANIFEST.md:12
+  - /nfs-stor/xiwei.liu/l/model/MANIFEST.md:36
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/.cache/huggingface/download/config.json.metadata:1
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/config.json:23
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/config.json:30
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/config.json:37
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/config.json:103
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/config.json:120
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/config.json:123
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/config.json:130
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/config.json:163
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/processor_config.json:42
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/tokenizer_config.json
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/generation_config.json
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/README.md:3
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/README.md:49
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/README.md:119
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/README.md:129
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/README.md:165
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/README.md:374
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/README.md:398
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/chat_template.jinja:186
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/chat_template.jinja:193
+  - /nfs-stor/xiwei.liu/l/model/gemma-4-31B-it/chat_template.jinja:384
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:539
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:581
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:686
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:768
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:1134
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:1175
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:1214
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:1228
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:1922
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:1978
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:2046
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:2063
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:2292
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/modeling_gemma4.py:2567
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/masking_utils.py:90
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/masking_utils.py:114
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/masking_utils.py:1173
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/image_processing_gemma4.py:162
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/image_processing_gemma4.py:195
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/image_processing_pil_gemma4.py:33
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/image_processing_pil_gemma4.py:36
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/processing_gemma4.py:41
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/gemma4/processing_gemma4.py:150
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/modeling_auto.py:980
+unknown:
+  - "bbox.official_prompt / output_format / coord_range / coord_order：README 与 chat_template 均未给出检测或框的提示词与坐标约定（只在能力列表提到 object detection / pointing）。"
+  - "loader 最低 transformers 版本：README 只说 latest version，未给版本号；config 记录 5.5.0.dev0，本机 5.5.4 自带 gemma4 实现，但未加载权重验证。"
+  - "非 eager 注意力实现（sdpa/flash）是否返回 attn_weights：未核实。"
+  - "图像块双向 mask 在增量解码（带 KV cache 的后续步）中的行为：仅读了 create_causal_mask_mapping 的 is_first_iteration 条件，未实测。"
+  - "tokens_per_image 的具体数值例子是按源码公式手算，未用真实图像跑 processor 验证。"
+  - "_logs/hf_download_*.out 中未找到 gemma 的 repo id 或 sha（grep 无结果），sha 仅来自 MANIFEST.md 与 .cache 元数据。"

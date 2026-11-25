@@ -1,0 +1,132 @@
+name: Cambrian-S-7B
+location:
+  root_key: existing_models
+  subdir: Cambrian-S-7B
+hf_repo: nyu-visionx/Cambrian-S-7B
+revision: 556e72fded09352f6aa4e9c100c9f39e6fe0fba7
+revision_source: MANIFEST.md table row (line 17) and reproduce command (line 41)
+size_bytes: 32126660771
+license: apache-2.0
+license_source: README.md front matter line 2 (MANIFEST.md also lists apache-2.0)
+role: spatial_finetune
+base_model: >-
+  Qwen/Qwen2.5-7B-Instruct (README front matter "base_model", line 3; config.json _name_or_path).
+  Note this base is a text-only LLM, not a VLM: the card describes "Qwen2.5-7B-Instruct +
+  SigLIP2-SO400M vision encoder + 2-layer MLP adapter" (README:151) trained with a "4-stage
+  pipeline (image alignment -> image IT -> video IT -> spatial IT)" (README:154) on VSI-590K
+  (spatial reasoning) + general video instruction data (README:155). Card description:
+  "Cambrian-S-7B is a spatially-grounded multimodal large language model that excels at spatial
+  reasoning in video understanding." (README:147)
+env: null
+loader:
+  model_class: CambrianQwenForCausalLM     # from config.json architectures; NOT a transformers class
+  processor_class: null                    # no preprocessor_config.json / processor_config.json in the repo; the card obtains image_processor from cambrian.model.builder.load_pretrained_model
+  trust_remote_code: null                  # not applicable: the repo ships no .py files and no auto_map; the official code package must be installed instead
+  config_transformers_version: 4.39.2
+  notes: >-
+    model_type "cambrian_qwen" has no entry in the transformers 5.5.4 auto mappings, so
+    AutoModel/AutoProcessor cannot load it. Official code: https://github.com/cambrian-mllm/cambrian-s
+    (README:143). Card usage: from cambrian.model.builder import load_pretrained_model;
+    tokenizer, model, image_processor, _ = load_pretrained_model(model_path, None, "cambrian-s-7b",
+    device_map="cuda"); conv_templates["qwen_2"]; prompt "<image>\nWhat objects are in this scene?";
+    model.generate(input_ids, images=image_tensor, image_sizes=image_sizes) (README:160-176). The card
+    states no transformers / torch version; config.json was written by transformers 4.39.2 and the
+    code's compatibility with transformers 5.5.4 is unknown. Weights are float32 on disk
+    (config torch_dtype float32, 7 shards, index total_size 32121395328). The SigLIP2 vision tower
+    weights ARE included in this repo's safetensors (421 tensors under
+    model.vision_tower_aux_list.0.vision_tower.vision_model.*, encoder layers 0..25, plus
+    post_layernorm); whether the official loader nevertheless first instantiates
+    google/siglip2-so400m-patch14-384 from the Hub (config/processor download) cannot be told
+    without the code. Tokenizer files: vocab.json + merges.txt + tokenizer_config.json
+    (Qwen2Tokenizer, model_max_length 11264), no tokenizer.json; tokenizer chat template is the
+    stock Qwen2.5 text template (default system prompt "You are Qwen, created by Alibaba Cloud...").
+    generation_config.json: do_sample true, temperature 0.7, top_p 0.8, top_k 20,
+    repetition_penalty 1.05.
+language_model:
+  model_type: cambrian_qwen        # custom; config fields and tensor names (model.layers.N.self_attn/mlp, lm_head) follow the Qwen2 layout
+  num_layers: 28
+  hidden_size: 3584
+  num_attention_heads: 28
+  num_key_value_heads: 4
+  head_dim: 128                    # 3584 / 28 (arithmetic from config)
+  layer_mixers: [full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention]
+  mixer_details: >-
+    config.json: use_sliding_window false, sliding_window 131072, max_window_layers 28. Under the
+    transformers Qwen2 rule (sliding only if use_sliding_window and layer index >= max_window_layers)
+    this is full self-attention in all 28 layers. CAVEAT: the actual attention code is the official
+    CambrianQwen implementation, which was not available to read; the list above assumes it keeps
+    standard Qwen2 attention. rope_theta 1e6, max_position_embeddings 32768.
+  mlp_type: dense                  # intermediate_size 18944, hidden_act silu; index shows 3 mlp tensors per layer
+  head_level_analysis: >-
+    By config, all 28 layers are standard attention with 28 query heads / 4 kv heads, same as Qwen2.
+    Hook points and whether the official model class alters the forward pass (e.g. how visual
+    tokens are spliced) must be checked against the official code.
+vision_encoder:
+  type: SigLIP2 so400m patch14 384 (config mm_vision_tower_aux_list ["google/siglip2-so400m-patch14-384"]; card "SigLIP2-SO400M vision encoder", "SigLIP-384")
+  num_layers: 26                   # encoder.layers.0..25 present in model.safetensors.index.json (config.json has no vision depth field)
+  hidden_size: 1152                # mm_hidden_size / vision_hidden_size
+  patch_size: 14                   # from the tower name only
+  resolution_strategy: >-
+    384x384 per view (from the tower name; 729 = 27x27 tokens per view per
+    mm_vision_tower_aux_token_len_list). config: image_aspect_ratio "anyres",
+    anyres_max_subimages 9, si_token_len 729, miv_token_len 64, video_max_frames 128,
+    max_images_per_sample 128. The actual resize/tiling procedure is in the official code (no
+    preprocessor config is shipped).
+  position_encoding: >-
+    Learned absolute position embedding table (tensor
+    vision_model.embeddings.position_embedding.weight exists in the weight index; shape not read).
+    Feature selection per config: mm_vision_select_layer -2, mm_vision_select_feature "patch".
+connector:
+  type: mlp2x_gelu (mm_projector_type); weight index has model.mm_projector.0 and model.mm_projector.2 (two Linear layers), mm_hidden_size 1152 -> LM hidden 3584; plus model.image_newline parameter
+  token_merge: null                # si_token_len 729 (= 27x27, no merge for single image views) vs miv_token_len 64 for multi-image/video suggests pooling in that mode, but the mechanism is not in any local file
+  tokens_per_image: null           # config gives si_token_len 729 per view, anyres with up to 9 sub-images, mm_use_im_newline_token true, miv_token_len 64; the exact total (base view? newline placement? unpadding?) is defined only in the official code
+  token_to_region: null            # cannot be derived without the official code
+multi_view:
+  default: >-
+    Per config: image_aspect_ratio "anyres" with anyres_max_subimages 9 and
+    mm_use_im_newline_token true, i.e. multi-sub-image tiling is the configured default for single
+    images; details (grid selection, whether a global view is added, ordering) are not in local files.
+  force_single_view: null          # not stated in config or card; requires reading the official code (candidate knob: image_aspect_ratio, unverified)
+bbox:
+  official_prompt: null            # the card has no grounding / bbox / point prompt
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: >-
+    README.md searched for grounding / bounding box / bbox / point / coordinate - no match (the
+    phrase "spatially-grounded" at README:147 is a description, not a grounding interface). The
+    tokenizer inherits Qwen2.5 special tokens <|box_start|>/<|box_end|> (added_tokens.json) but the
+    card does not say they are used.
+thinking:
+  has_thinking_mode: false
+  how_to_disable: null
+  source: >-
+    README.md does not mention thinking/reasoning modes; the tokenizer chat template
+    (tokenizer_config.json) has no thinking branch. The official conversation template "qwen_2"
+    (README:169) was not available to read.
+sources:
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/config.json:1-64
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/generation_config.json:1-14
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/added_tokens.json:1-24
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/tokenizer_config.json    # tokenizer_class Qwen2Tokenizer, model_max_length 11264, chat_template
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/model.safetensors.index.json   # key prefixes: model.vision_tower_aux_list.0.vision_tower.* (421), model.mm_projector.{0,2}, model.image_newline, model.layers.0..27
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/README.md:2-3
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/README.md:143
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/README.md:147
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/README.md:151-155
+  - /nfs-stor/xiwei.liu/l/model/Cambrian-S-7B/README.md:160-176
+  - /nfs-stor/xiwei.liu/l/model/MANIFEST.md:17
+  - /nfs-stor/xiwei.liu/l/model/MANIFEST.md:26
+  - /nfs-stor/xiwei.liu/l/model/MANIFEST.md:41
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py     # grep for "cambrian": no entry (model_type not registered)
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2/configuration_qwen2.py:74-94   # rule used to interpret use_sliding_window / max_window_layers
+unknown:
+  - "Everything implemented in the official code (https://github.com/cambrian-mllm/cambrian-s), which is not present locally: model class CambrianQwenForCausalLM, image preprocessing, anyres tiling rule, total tokens per image, token order, token -> region mapping, how to force a single view, the 'qwen_2' conversation template."
+  - "image_position: 14 (config.json:16): meaning not documented in the card; not interpreted here."
+  - "miv_token_len 64: how 729 tokens are reduced to 64 for multi-image/video input is not in local files."
+  - "mm_vision_select_layer -2 vs. 26 encoder layers stored: which SigLIP2 layer's output is used (and whether the stored tower is already truncated) needs the official code."
+  - "connector_only: true and unfreeze_mm_vision_tower: false (config.json): training-time flags whose inference effect is not documented."
+  - "Whether loading needs network access to google/siglip2-so400m-patch14-384 (processor/config) even though tower weights are in the checkpoint."
+  - "Required transformers/torch versions for the official code (card states none; config written by 4.39.2)."
+  - "language_model.layer_mixers assumes standard Qwen2 attention in the custom class (config-based, not code-verified)."
+  - "bbox.*: no grounding prompt or coordinate convention in the card."

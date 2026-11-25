@@ -1,0 +1,151 @@
+name: LLaVA-OneVision-7B
+location:
+  root_key: existing_models
+  subdir: LLaVA-OneVision-7B
+hf_repo: llava-hf/llava-onevision-qwen2-7b-ov-hf
+revision: 0d50680527681998e456c7b78950205bedd8a068
+revision_source: _logs/hf_download_394198.out line 1. Not listed in MANIFEST.md.
+size_bytes: 16073497233
+license: apache-2.0
+license_source: README.md front matter line 5
+role: general
+base_model: null   # role=general. Card: "LLaVA-Onevision is an open-source multimodal LLM trained by fine-tuning Qwen2 on GPT-generated multimodal instruction-following data" (README:28); "Architecture: SO400M + Qwen2" (README:40); text_config._name_or_path is Qwen/Qwen2-7B-Instruct (config.json:157).
+env: null
+loader:
+  model_class: LlavaOnevisionForConditionalGeneration
+  processor_class: LlavaOnevisionProcessor
+  trust_remote_code: false
+  config_transformers_version: 4.45.0.dev0
+  notes: >-
+    Native transformers class. Card requirement: "transformers >= 4.45.0" (README:50). Card example
+    loads with torch_dtype=torch.float16 (config torch_dtype float16; text_config torch_dtype
+    bfloat16; card "Precision: bfloat16"). Prompt format from chat_template.json:
+    "<|im_start|>role " + all <image> placeholders first, then "\n" + text, "<|im_end|>"; images of
+    a message are rendered before its text regardless of content order. Image token id 151646,
+    video token id 151647. Not covered by the MANIFEST.md smoke test.
+language_model:
+  model_type: qwen2
+  num_layers: 28
+  hidden_size: 3584
+  num_attention_heads: 28
+  num_key_value_heads: 4
+  head_dim: 128                    # 3584 / 28
+  layer_mixers: [full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention, full_attention]
+  mixer_details: >-
+    text_config does not set use_sliding_window, so Qwen2Config's default False applies;
+    __post_init__ then sets sliding_window=None and every layer_types entry is "full_attention".
+    Grouped-query attention: 28 query heads, 4 key/value heads. RoPE (rope_theta 1e6), 1D positions.
+  mlp_type: dense                  # intermediate_size 18944
+  head_level_analysis: >-
+    All 28 layers are standard full causal self-attention with 28 query heads (4 shared kv heads,
+    groups of 7); head-level analysis applies to every layer. Attention-weight return under
+    sdpa/flash backends not checked here.
+vision_encoder:
+  type: SigLIP vision transformer (SiglipVisionModel, model_type siglip_vision_model; card says "SO400M"), no pooling head (vision_use_head false)
+  num_layers: 26                   # config num_hidden_layers 26; weight index has encoder.layers.0..25
+  hidden_size: 1152
+  patch_size: 14
+  resolution_strategy: >-
+    Every view is a fixed 384x384 crop (27x27 = 729 patch tokens, no CLS; conv is "valid" so only
+    378 of 384 px per side are covered). High resolution is handled by AnyRes tiling, not by a
+    dynamic-resolution ViT: see multi_view. Normalisation mean/std 0.5 (preprocessor_config.json),
+    bicubic resample.
+  position_encoding: >-
+    Learned absolute position embeddings: nn.Embedding(729, 1152) added to patch embeddings
+    (SiglipVisionEmbeddings). Features taken from hidden_states[vision_feature_layer = -1] with
+    vision_feature_select_strategy "full" (nothing dropped).
+connector:
+  type: "2-layer MLP (LlavaOnevisionMultiModalProjector): Linear(1152, 3584) -> GELU -> Linear(3584, 3584), plus a learned image_newline vector (3584)"
+  token_merge: >-
+    No fixed merge for images (1 patch -> 1 token). Only when the unpadded tile grid exceeds the
+    anyres_max_9 budget (sqrt(h*w / (9*729)) > 1.1) is the tile feature map bilinearly
+    interpolated down to (int(h // ratio), int(w // ratio)). Video frames use a separate 2x pooling
+    path (not relevant to still images).
+  tokens_per_image: >-
+    Single image in a sample (default AnyRes path): N = 729 (base view) + h' * (w' + 1), where
+    (gh*384, gw*384) = select_best_resolution(original (H, W), image_grid_pinpoints), the tile
+    feature map is (27*gh) x (27*gw), unpadding removes the rows or columns that came from
+    aspect-ratio padding giving (h, w), then if ratio = sqrt(h*w / (9*729)) > 1.1:
+    h' = int(h // ratio), w' = int(w // ratio), else h' = h, w' = w; "+1" is one image_newline
+    token appended to every row. The base view gets no newline. Number of vision-tower forward
+    views = 1 + gh*gw. Multi-image sample (more than one image in the same prompt): each image is
+    729 + 1 = 730 tokens (base view only + one trailing newline).
+  token_to_region: >-
+    Order in the LM sequence for a single image: [729 base tokens] then [tile map rows, each row
+    followed by one newline token]. (1) Base tokens j = 0..728: row j // 27, col j % 27 of the
+    whole image resized directly to 384x384 (aspect ratio NOT preserved on this path), each token a
+    14x14 px cell of that 384 view, i.e. original x in [col*14*W/384, (col+1)*14*W/384), same for y
+    with H. (2) Tile part, index t = 729 + r*(w'+1) + c: c == w' is the newline; otherwise (r, c)
+    indexes the unpadded high-res feature map. That map comes from the image resized (aspect
+    preserved) into the best resolution (gh*384, gw*384) and centre-padded, cut into gh x gw tiles
+    of 384 in row-major order, each encoded to 27x27, re-assembled (view/permute) into one
+    (27*gh, 27*gw) grid and cropped back to the image area, so (r, c) covers approximately the
+    original-image fraction [c/w, (c+1)/w) x [r/h, (r+1)/h) when no interpolation happened. If the
+    bilinear down-interpolation fired (ratio > 1.1), tokens are blends of neighbouring patches and
+    no longer correspond 1:1 to ViT patches. Multi-image path: each image is padded to a square
+    with the mean colour, resized to 384, tokens are the 27x27 raster of that padded square plus
+    one final newline.
+multi_view:
+  default: >-
+    Yes for a single image: AnyRes ("anyres_max_9") with 36 grid pinpoints from 384x384 up to
+    2304x2304 (multiples of 384); the model sees 1 base view (whole image at 384x384) plus gh*gw
+    high-resolution 384x384 tiles, with image_newline tokens and unpadding. When a sample contains
+    more than one image, tiling is switched off automatically by the processor/model
+    (batch_num_images != 1 -> base view only, "only single image patching is supported").
+  force_single_view: >-
+    There is NO officially supported switch for a lone image in transformers 5.5.4.
+    vision_aspect_ratio is only parsed as "anyres_max_N" (the budget for the interpolation step);
+    it does not turn tiling off. Shrinking image_grid_pinpoints to [[384, 384]] (must be set in BOTH
+    the image processor and model.config, since both call select_best_resolution) still yields
+    base + 1 tile = up to 729 + 27*28 tokens, i.e. two views of the image, not one. The only
+    built-in base-only path is the multi-image one (pass a nested list with >= 2 images for the
+    sample; each image becomes 730 tokens). A true single 729(+1)-token view of one image therefore
+    needs a custom override, e.g. calling the model with pixel_values of shape
+    (1, 1, 3, 384, 384), a hand-built prompt with exactly 730 <image> tokens and a
+    batch_num_images value != 1 so that need_patching is False (read from source, NOT executed or
+    verified here), or bypassing the processor and feeding inputs_embeds.
+bbox:
+  official_prompt: null     # the card contains no grounding / bbox / point prompt
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: README.md searched for grounding / bounding box / bbox / point / coordinate - no match.
+thinking:
+  has_thinking_mode: false
+  how_to_disable: null      # nothing to disable
+  source: >-
+    chat_template.json:2 has no thinking branch or flag; README.md does not mention
+    thinking/reasoning modes.
+sources:
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/config.json:1-191
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/preprocessor_config.json:1-171
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/processor_config.json:1-7
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/chat_template.json:2
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/added_tokens.json:1-7
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/model.safetensors.index.json   # vision_tower.vision_model.encoder.layers.0..25, image_newline, multi_modal_projector.linear_1/2
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/README.md:5
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/README.md:21-45
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/README.md:50
+  - /nfs-stor/xiwei.liu/l/model/LLaVA-OneVision-7B/README.md:84-115
+  - /nfs-stor/xiwei.liu/l/model/_logs/hf_download_394198.out:1-3
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/modeling_llava_onevision.py:137-156   # projector
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/modeling_llava_onevision.py:159-224   # grid shape / number of views
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/modeling_llava_onevision.py:227-263   # unpad_image
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/modeling_llava_onevision.py:292-355   # pack_image_features: base first, tiles, bilinear interpolate, newline
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/modeling_llava_onevision.py:381-430   # need_patching / batch_num_images, feature layer selection
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/processing_llava_onevision.py:162-245  # placeholder count, multi-image = 729 + 1
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/image_processing_llava_onevision.py:75-85    # batch_num_images from nesting
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/image_processing_llava_onevision.py:121-153  # base view + tiles
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/image_processing_llava_onevision.py:192-222  # no tiling for multi-image, pad_to_square
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/llava_onevision/configuration_llava_onevision.py:67-72
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/siglip/modeling_siglip.py:116-135                     # learned absolute position embedding, num_positions = num_patches
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/qwen2/configuration_qwen2.py:74-94                    # use_sliding_window default False -> all full_attention
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/image_processing_utils.py:633-668                            # select_best_resolution
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/modeling_auto.py:1002
+  - /home/xiwei.liu/miniconda3/envs/spatialcraft/lib/python3.11/site-packages/transformers/models/auto/processing_auto.py:118
+unknown:
+  - "bbox.*: the model card gives no grounding prompt or coordinate convention."
+  - "force_single_view for a lone image: no official switch found in transformers 5.5.4 source; the override sketched above is derived from reading the code and has not been run."
+  - "Whether hidden_states[-1] of the SigLIP tower is taken before or after post_layernorm was not verified by execution (post_layernorm exists at modeling_siglip.py:593,615 and is applied to last_hidden_state)."
+  - "Card inconsistency: README:35 says 'LLaVA-Onevision-7b-si was added in August 2024' and config _name_or_path is '/raid/raushan/si-7b', while the repo id is ...-7b-ov-hf; the card says it was copied from the lmms-lab 0.5b-si card (README:21). Which training stage (si vs ov) the weights correspond to cannot be settled from local files beyond the repo name."
+  - "Loading under transformers 5.5.4 not smoke-tested per local records (config written by 4.45.0.dev0)."
