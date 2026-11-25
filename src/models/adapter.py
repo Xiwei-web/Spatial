@@ -137,8 +137,9 @@ def find_lm_layers(model: nn.Module, num_layers: int) -> tuple[str, nn.ModuleLis
 class BaseAdapter:
     kind = "base"
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, dtype: torch.dtype = torch.bfloat16):
         self.name = name
+        self.dtype = dtype                # 默认 bf16；float32 只用于精度对照（scripts/check_fp32_sdpa_vs_eager.py）
         self.spec = adapter_spec(name)
         self.facts = model_facts(name)
         self.path = paths.get(self.spec["root"]) / name
@@ -203,7 +204,7 @@ class HFChatAdapter(BaseAdapter):
         self.processor = AutoProcessor.from_pretrained(self.path)
         self.tokenizer = self.processor.tokenizer
         self.model = AutoModelForImageTextToText.from_pretrained(
-            self.path, dtype=torch.bfloat16, device_map="auto", attn_implementation="eager")
+            self.path, dtype=self.dtype, device_map="auto", attn_implementation="eager")
         cfg = self.model.config
         self.image_token_id = getattr(cfg, "image_token_id", None) or getattr(cfg, "image_token_index", None)
         self._finish_load(t0)
@@ -310,7 +311,7 @@ class InternVLRemoteAdapter(BaseAdapter):
         self.tokenizer = AutoTokenizer.from_pretrained(self.path, trust_remote_code=True, use_fast=False)
         # use_flash_attn=False：远程代码据此把 LLM 注意力设为 eager（否则拿不到注意力权重）
         # code_revision：SenseNova 的 auto_map 带仓库前缀，远程代码会从 Hub 取，固定到权重同一 commit
-        self.model = AutoModel.from_pretrained(self.path, dtype=torch.bfloat16, trust_remote_code=True,
+        self.model = AutoModel.from_pretrained(self.path, dtype=self.dtype, trust_remote_code=True,
                                                use_flash_attn=False, code_revision=rev, device_map="auto")
         self.model.img_context_token_id = self.tokenizer.convert_tokens_to_ids("<IMG_CONTEXT>")
         self.image_token_id = self.model.img_context_token_id
@@ -326,7 +327,7 @@ class InternVLRemoteAdapter(BaseAdapter):
         size = int(self.model.config.force_image_size or self.model.config.vision_config.image_size)
         tf = T.Compose([T.Resize((size, size), interpolation=InterpolationMode.BICUBIC), T.ToTensor(),
                         T.Normalize(self.MEAN, self.STD)])
-        pixel_values = tf(image).unsqueeze(0).to(self.device, torch.bfloat16)
+        pixel_values = tf(image).unsqueeze(0).to(self.device, self.dtype)
         n_tok = int(self.model.num_image_token)
         conv = self._conv_mod.get_conv_template(self.model.template)
         conv.system_message = self.model.system_message
@@ -371,7 +372,7 @@ class MiniCPMRemoteAdapter(BaseAdapter):
         t0 = time.time()
         self.tokenizer = AutoTokenizer.from_pretrained(self.path, trust_remote_code=True)
         self.processor = AutoProcessor.from_pretrained(self.path, trust_remote_code=True)
-        self.model = AutoModel.from_pretrained(self.path, dtype=torch.bfloat16, trust_remote_code=True,
+        self.model = AutoModel.from_pretrained(self.path, dtype=self.dtype, trust_remote_code=True,
                                                attn_implementation="eager", device_map={"": 0})
         self._finish_load(t0)
         return self
@@ -412,8 +413,8 @@ class MiniCPMRemoteAdapter(BaseAdapter):
 _KINDS = {"hf_chat": HFChatAdapter, "internvl_remote": InternVLRemoteAdapter, "minicpm_remote": MiniCPMRemoteAdapter}
 
 
-def load_adapter(name: str) -> BaseAdapter:
+def load_adapter(name: str, dtype: torch.dtype = torch.bfloat16) -> BaseAdapter:
     spec = adapter_spec(name)
     if spec["kind"] not in _KINDS:
         raise NotImplementedError(f"{name}: {spec.get('reason', spec['kind'])}")
-    return _KINDS[spec["kind"]](name).load()
+    return _KINDS[spec["kind"]](name, dtype).load()
