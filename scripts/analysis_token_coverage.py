@@ -41,13 +41,28 @@ def grids_for(name, spec):
     merge = int(conf.vision_config.spatial_merge_size)
     out = {}
     for tag, mp in (("max_pixels/2", SMOKE_MAX // 2), ("smoke(max_pixels=1003520)", SMOKE_MAX), ("max_pixels*2", SMOKE_MAX * 2)):
-        g = proc.image_processor(images=[Image.new("RGB", (W, H))], max_pixels=mp, return_tensors="pt")["image_grid_thw"][0].tolist()
-        out[tag] = (g[1] // merge, g[2] // merge, f"max_pixels={mp}")
+        img = Image.new("RGB", (W, H))
+        try:
+            g = proc.image_processor(images=[img], max_pixels=mp, return_tensors="pt")["image_grid_thw"][0].tolist()
+            how = f"max_pixels={mp}"
+        except TypeError:      # GLM-4.6V 的图像处理器不接受 max_pixels，用 size 的 longest_edge 表示像素上限
+            size = dict(proc.image_processor.size)
+            size["longest_edge"] = mp
+            g = proc.image_processor(images=[img], size=size, return_tensors="pt")["image_grid_thw"][0].tolist()
+            how = f"size.longest_edge={mp}（该处理器不接受 max_pixels）"
+        out[tag] = (g[1] // merge, g[2] // merge, how)
+    if "GLM" in name:          # 冒烟里 GLM 实际没有被限制分辨率（参数被拒后退回默认），单独给出默认设置下的网格
+        g = proc.image_processor(images=[Image.new("RGB", (W, H))], return_tensors="pt")["image_grid_thw"][0].tolist()
+        out["smoke_actual(default resolution)"] = (g[1] // merge, g[2] // merge, "处理器默认 size；冒烟实际使用的设置")
+        out["smoke(max_pixels=1003520)"] = out.pop("smoke(max_pixels=1003520)")
     try:        # 与冒烟实际记录核对
         s = json.load(open(paths.get("outputs") / "smoke" / name / "summary.json"))["tests"]["6_visual_token_mapping"]["grid_hw"]
-        out["smoke(max_pixels=1003520)"] += (f"冒烟记录网格 {s}，{'一致' if list(s) == list(out['smoke(max_pixels=1003520)'][:2]) else '不一致!'}",)
+        key = "smoke_actual(default resolution)" if "smoke_actual(default resolution)" in out else "smoke(max_pixels=1003520)"
+        out[key] += (f"冒烟记录网格 {s}，{'一致' if list(s) == list(out[key][:2]) else '不一致!'}",)
     except Exception as e:
         out["smoke(max_pixels=1003520)"] += (f"无法核对冒烟记录: {e}",)
+    if "GLM" in name:
+        out["smoke(max_pixels=1003520)"] = out["smoke(max_pixels=1003520)"][:3] + ("注意：这是把像素上限设为 1003520 时的网格，冒烟里并未生效",)
     return out
 
 
