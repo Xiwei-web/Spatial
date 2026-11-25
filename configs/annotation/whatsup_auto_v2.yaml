@@ -1,0 +1,27 @@
+# What's Up Subset A/B 自动标注 v2（用户 2026-11-25 指定的规则）。v1 保留不动（configs/annotation/whatsup_auto.yaml）。
+# 在用户填完 review.csv 之前，这份标注只能称为“自动标注”。
+version: auto_v2
+detector: {name: groundingdino, variant: swinb, candidate_floor: 0.10, dedup_iou: 0.8}
+segmenter: {name: sam2.1-hiera-large, multimask_output: false}
+selection:
+  # (a) target 的最高分候选框与 reference 框 IoU 超过该值时，改用分数次高、且与 reference 框 IoU 不超过该值的候选框并重新分割；
+  #     没有这样的候选时保留最高分候选并记录 target_selection=no_alternative
+  target_avoid_reference_iou: 0.8
+boxes:
+  # (e) 两种框都存：box_det_xyxy = GroundingDINO 检测框；box_mask_xyxy = SAM mask 的外接框（像素闭区间转成 [x1,y1,x2+1,y2+1]）。
+  #     默认用哪个作为“真值框”尚未确定，等用户审完再定；在此之前任何代码都必须显式指明用的是哪一个。
+  default_truth_box: null
+qc:
+  low_score: 0.35
+  ambiguous_margin: 0.10
+  min_area_frac: {whatsup_a: 0.0002, whatsup_b: 0.002}   # (b) Subset A 小物体：只标记小于 0.02% 的；Subset B 仍为 0.2%
+  max_area_frac: 0.60
+  max_pair_mask_iou: 0.5
+  geometry:            # (c)
+    left: "target 质心 x < reference 质心 x"
+    right: "target 质心 x > reference 质心 x"
+    on: "target 质心 y < reference 检测框下边缘 y（图像 y 轴向下）"
+    under: "target 质心 y > reference 质心 y"
+  min_mask_box_iou: 0.8  # (d) mask 外接框与检测框 IoU 低于该值 → mask_box_mismatch（mask 可能不完整或溢出）
+review:
+  allowed_human_verdicts: [ok, wrong_object, box_bad, mask_partial, mask_overflow, unusable]   # (f)

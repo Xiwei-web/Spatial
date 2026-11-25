@@ -2,11 +2,12 @@
 GroundingDINO 检测（物体名称来自数据集标注解析结果，不手改）+ SAM 2.1 框提示分割。
 只产出原始自动标注，不做质检判断（质检在 scripts/whatsup_qc.py，纯 CPU，可反复重跑）。
 输出：<data>/whatsup_annotations/<version>/raw.jsonl
-用法：source scripts/env.sh tools && python scripts/annotate_whatsup.py
+用法：source scripts/env.sh tools && python scripts/annotate_whatsup.py [配置文件名，默认 whatsup_auto.yaml]
 """
 from __future__ import annotations
 
 import json
+import sys
 import time
 
 import numpy as np
@@ -36,7 +37,8 @@ def dedup(cands, thr):
 
 
 def main():
-    cfg = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "annotation" / "whatsup_auto.yaml"))
+    cfg = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "annotation" / (sys.argv[1] if len(sys.argv) > 1 else "whatsup_auto.yaml")))
+    avoid = (cfg.get("selection") or {}).get("target_avoid_reference_iou")
     out_dir = paths.get("data") / "whatsup_annotations" / cfg["version"]
     out_dir.mkdir(parents=True, exist_ok=True)
     dev = "cuda" if torch.cuda.is_available() else "cpu"
@@ -52,12 +54,18 @@ def main():
             image = Image.open(s.image_path).convert("RGB")
             W, H = image.size
             rec = {"dataset": s.dataset, "sample_id": s.sample_id, "relation": s.relation, "width": W, "height": H, "objects": {}}
-            for role, name in (("target", s.target), ("reference", s.reference)):
+            for role, name in (("reference", s.reference), ("target", s.target)):      # 先 reference，target 的选框规则要用到它
                 cands = dedup(gdino.detect(det, image, name, cfg["detector"]["candidate_floor"]), cfg["detector"]["dedup_iou"])
                 o = {"name": name, "n_candidates": len(cands), "candidates": cands[:5], "box_xyxy": None, "score": None,
-                     "mask_rle": None, "mask_area": None, "mask_centroid_xy": None, "sam_iou_pred": None}
+                     "mask_rle": None, "mask_area": None, "mask_centroid_xy": None, "sam_iou_pred": None,
+                     "selected_candidate_rank": None, "selection": None}
                 if cands:
-                    box = cands[0]["box_xyxy"]
+                    pick, why = 0, "top_score"
+                    ref_box = rec["objects"].get("reference", {}).get("box_xyxy")
+                    if role == "target" and avoid is not None and ref_box is not None and box_iou(cands[0]["box_xyxy"], ref_box) > avoid:
+                        alt = [i for i, c in enumerate(cands) if box_iou(c["box_xyxy"], ref_box) <= avoid]
+                        pick, why = (alt[0], "next_candidate_not_coinciding_with_reference") if alt else (0, "no_alternative")
+                    box = cands[pick]["box_xyxy"]
                     inp = sam_proc(images=image, input_boxes=[[box]], return_tensors="pt").to(dev)
                     with torch.no_grad():
                         so = sam(**inp, multimask_output=cfg["segmenter"]["multimask_output"])
@@ -66,10 +74,10 @@ def main():
                     rle = mu.encode(np.asfortranarray(m.astype(np.uint8)))
                     rle["counts"] = rle["counts"].decode()
                     ys, xs = np.nonzero(m)
-                    o.update(box_xyxy=box, score=cands[0]["score"], mask_rle=rle, mask_area=int(m.sum()),
+                    o.update(box_xyxy=box, score=cands[pick]["score"], mask_rle=rle, mask_area=int(m.sum()),
                              mask_centroid_xy=[float(xs.mean()), float(ys.mean())] if m.any() else None,
                              mask_bbox_xyxy=[int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1] if m.any() else None,
-                             sam_iou_pred=float(so.iou_scores.flatten()[0]))
+                             sam_iou_pred=float(so.iou_scores.flatten()[0]), selected_candidate_rank=pick, selection=why)
                 rec["objects"][role] = o
             f.write(json.dumps(rec) + "\n")
             if n % 50 == 0:

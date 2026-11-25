@@ -8,7 +8,7 @@
   "max_pair_mask_iou": 0.5
  },
  "n_images": 820,
- "annotations_sha256": "1bb2c1d75f79da540c780a18db8c7459fe91937403ea6bb15f65f503f94d9be2",
+ "annotations_sha256": "66f0fd20ce6930798c3963b5ea82784cd52b2b10acf9317239427e6cf3c11e85",
  "by_dataset": {
   "whatsup_a": {
    "n": 412,

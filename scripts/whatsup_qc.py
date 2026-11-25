@@ -3,7 +3,8 @@
   <data>/whatsup_annotations/<version>/annotations.jsonl   每张图：两个物体的框、mask(RLE)、分数、候选数 + 质检标记
   manifests/whatsup_auto_qc_summary.json                    质检统计（进 Git）
   <outputs>/annotation_review/sheet_XXX.png + review.csv   联系表（每页 20 张，待审的排最前）与审核表
-用法：python scripts/whatsup_qc.py [--no-sheets]
+用法：python scripts/whatsup_qc.py [--config whatsup_auto_v2.yaml] [--no-sheets]
+规则随配置版本不同：v1 用最初的规则；v2 用用户 2026-11-25 指定的规则（见 configs/annotation/whatsup_auto_v2.yaml）。
 注意：这是“自动标注”。在 review.csv 的 human_verdict 填完之前，不得称为人工校正/验证。
 """
 from __future__ import annotations
@@ -21,7 +22,8 @@ from pycocotools import mask as mu
 from src import paths
 from src.data import load_dataset
 
-FLAGS = ["not_detected", "ambiguous_candidates", "low_score", "area_out_of_range", "pair_mask_overlap", "geometry_inconsistent"]
+FLAGS = ["not_detected", "ambiguous_candidates", "low_score", "area_out_of_range", "pair_mask_overlap", "geometry_inconsistent",
+         "mask_box_mismatch", "target_no_alternative"]
 
 
 def box_iou(a, b):
@@ -35,20 +37,30 @@ def qc_one(rec: dict, q: dict) -> dict:
     flags = {f: [] for f in FLAGS}
     T, R = rec["objects"]["target"], rec["objects"]["reference"]
     area = rec["width"] * rec["height"]
+    min_area = q["min_area_frac"][rec["dataset"]] if isinstance(q["min_area_frac"], dict) else q["min_area_frac"]
+    v2_geom = "geometry" in q
     for role, o in (("target", T), ("reference", R)):
         if o["box_xyxy"] is None or not o["mask_area"]:
             flags["not_detected"].append(role)
             continue
         c = o["candidates"]
-        # 第二个“不同的”候选（与第一候选 IoU<0.5）分数接近
-        others = [x for x in c[1:] if box_iou(x["box_xyxy"], c[0]["box_xyxy"]) < 0.5]
-        if others and c[0]["score"] - others[0]["score"] < q["ambiguous_margin"]:
+        sel = o.get("selected_candidate_rank") or 0
+        chosen = c[sel] if sel < len(c) else {"box_xyxy": o["box_xyxy"], "score": o["score"]}
+        # 另一个“不同的”候选（与所选候选 IoU<0.5）分数接近或更高
+        others = [x for i, x in enumerate(c) if i != sel and box_iou(x["box_xyxy"], chosen["box_xyxy"]) < 0.5]
+        if role == "target" and R["box_xyxy"] and q.get("min_mask_box_iou") is not None:
+            others = [x for x in others if box_iou(x["box_xyxy"], R["box_xyxy"]) <= 0.8]   # v2：与 reference 重合的候选已按规则排除，不算歧义
+        if others and chosen["score"] - max(x["score"] for x in others) < q["ambiguous_margin"]:
             flags["ambiguous_candidates"].append(role)
         if q["low_score"] is not None and o["score"] < q["low_score"]:
             flags["low_score"].append(role)
         frac = o["mask_area"] / area
-        if frac < q["min_area_frac"] or frac > q["max_area_frac"]:
+        if frac < min_area or frac > q["max_area_frac"]:
             flags["area_out_of_range"].append(role)
+        if q.get("min_mask_box_iou") is not None and box_iou(o["mask_bbox_xyxy"], o["box_xyxy"]) < q["min_mask_box_iou"]:
+            flags["mask_box_mismatch"].append(role)
+        if o.get("selection") == "no_alternative":
+            flags["target_no_alternative"].append(role)
     pair_iou = None
     if T["mask_rle"] and R["mask_rle"]:
         pair_iou = float(mu.iou([T["mask_rle"]], [R["mask_rle"]], [0])[0][0])
@@ -56,7 +68,10 @@ def qc_one(rec: dict, q: dict) -> dict:
             flags["pair_mask_overlap"].append("pair")
         (tx, ty), (rx, ry) = T["mask_centroid_xy"], R["mask_centroid_xy"]
         rel = rec["relation"]
-        ok = {"left": tx < rx, "right": tx > rx, "on": ty < ry, "under": ty > ry}.get(rel)   # front/behind 不检查
+        if v2_geom:    # on：target 质心高于 reference 检测框下边缘；under：target 质心低于 reference 质心
+            ok = {"left": tx < rx, "right": tx > rx, "on": ty < R["box_xyxy"][3], "under": ty > ry}.get(rel)
+        else:
+            ok = {"left": tx < rx, "right": tx > rx, "on": ty < ry, "under": ty > ry}.get(rel)   # front/behind 不检查
         if ok is False:
             flags["geometry_inconsistent"].append(rel)
     active = [f for f in FLAGS if flags[f]]
@@ -64,8 +79,11 @@ def qc_one(rec: dict, q: dict) -> dict:
 
 
 def main():
-    cfg = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "annotation" / "whatsup_auto.yaml"))
+    cfg_name = sys.argv[sys.argv.index("--config") + 1] if "--config" in sys.argv else "whatsup_auto.yaml"
+    cfg = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "annotation" / cfg_name))
     q = cfg["qc"]
+    v1 = cfg["version"] == "auto_v1"
+    verdicts = (cfg.get("review") or {}).get("allowed_human_verdicts")
     d = paths.get("data") / "whatsup_annotations" / cfg["version"]
     raw = [json.loads(l) for l in open(d / "raw.jsonl")]
     samples = {(s.dataset, s.sample_id): s for ds in ("whatsup_a", "whatsup_b") for s in load_dataset(ds)}
@@ -75,6 +93,9 @@ def main():
         r = qc_one(rec, q)
         rec.update(r)
         rec["annotation_status"] = "auto (not human-verified)"
+        for o in rec["objects"].values():       # (e) 两种框都明确命名；box_xyxy 保留为检测框的别名以兼容 v1 读取代码
+            o["box_det_xyxy"] = o["box_xyxy"]
+            o["box_mask_xyxy"] = o.get("mask_bbox_xyxy")
         rows.append(rec)
     with open(d / "annotations.jsonl", "w") as f:
         for rec in rows:
@@ -97,12 +118,22 @@ def main():
             "n_candidates_hist": {role: dict(sorted(Counter(min(r["objects"][role]["n_candidates"], 5) for r in sub).items())) for role in ("target", "reference")},
             "area_frac_percentiles": {role: pct([r["objects"][role]["mask_area"] / (r["width"] * r["height"]) for r in sub if r["objects"][role]["mask_area"]]) for role in ("target", "reference")}}
     (paths.REPO_ROOT / "manifests").mkdir(exist_ok=True)
-    json.dump(summ, open(paths.REPO_ROOT / "manifests" / "whatsup_auto_qc_summary.json", "w"), indent=1, ensure_ascii=False)
+    json.dump(summ, open(paths.REPO_ROOT / "manifests" / ("whatsup_auto_qc_summary.json" if v1 else f"whatsup_{cfg['version']}_qc_summary.json"), "w"), indent=1, ensure_ascii=False)
     print(json.dumps(summ["by_dataset"], indent=1, ensure_ascii=False))
     # ---- 审核表：待审在前（标记多的更靠前），其后是通过的 ----
     order = sorted(rows, key=lambda r: (r["auto_qc"] != "review", -len(r["flags"]), r["dataset"], r["sample_id"]))
-    out = paths.get("outputs") / "annotation_review"
+    out = paths.get("outputs") / "annotation_review"     # v1 的材料保留在顶层；之后的版本各自放子目录
+    if not v1:
+        out = out / cfg["version"]
     out.mkdir(parents=True, exist_ok=True)
+    if verdicts:
+        (out / "README_review.txt").write_text(
+            "review.csv 填写说明\n"
+            f"human_verdict 只能取以下值之一：{', '.join(verdicts)}\n"
+            "  ok            两个物体的框和 mask 都可用\n  wrong_object  框住的不是标注所指的物体\n  box_bad       物体对了但框明显不准\n"
+            "  mask_partial  mask 只覆盖物体的一部分\n  mask_overflow mask 溢出到物体之外\n  unusable      该图不适合使用（其它原因写在 note）\n"
+            "填完后运行：python scripts/validate_review.py <review.csv 路径>  检查取值是否合法、是否有漏填。\n"
+            "两种框：红/蓝实线 = 检测框(box_det)，虚线 = mask 外接框(box_mask)。默认用哪个作真值框尚未确定。\n")
     review = out / "review.csv"
     if review.exists():
         old = list(csv.DictReader(open(review)))
@@ -113,7 +144,7 @@ def main():
         w = csv.writer(f)
         w.writerow(["order", "page", "slot", "dataset", "sample_id", "relation", "target", "reference", "auto_qc"] + FLAGS +
                    ["score_target", "score_reference", "n_cand_target", "n_cand_reference", "area_frac_target", "area_frac_reference",
-                    "pair_mask_iou", "human_verdict", "note"])
+                    "mask_box_iou_target", "mask_box_iou_reference", "target_selection", "pair_mask_iou", "human_verdict", "note"])
         for i, r in enumerate(order):
             T, R = r["objects"]["target"], r["objects"]["reference"]
             A = r["width"] * r["height"]
@@ -122,6 +153,8 @@ def main():
                        [None if T["score"] is None else round(T["score"], 3), None if R["score"] is None else round(R["score"], 3),
                         T["n_candidates"], R["n_candidates"], None if not T["mask_area"] else round(T["mask_area"] / A, 4),
                         None if not R["mask_area"] else round(R["mask_area"] / A, 4),
+                        None if not T["mask_area"] else round(box_iou(T["mask_bbox_xyxy"], T["box_xyxy"]), 3),
+                        None if not R["mask_area"] else round(box_iou(R["mask_bbox_xyxy"], R["box_xyxy"]), 3), T.get("selection"),
                         None if r["pair_mask_iou"] is None else round(r["pair_mask_iou"], 3), "", ""])
     print("review table:", review)
     if "--no-sheets" in sys.argv:
@@ -150,12 +183,15 @@ def main():
                 if o["box_xyxy"]:
                     x1, y1, x2, y2 = o["box_xyxy"]
                     ax.add_patch(Rectangle((x1 * sx, y1 * sy), (x2 - x1) * sx, (y2 - y1) * sy, fill=False, ec=col, lw=1.5))
+                    if o.get("mask_bbox_xyxy"):
+                        a1, b1, a2, b2 = o["mask_bbox_xyxy"]
+                        ax.add_patch(Rectangle((a1 * sx, b1 * sy), (a2 - a1) * sx, (b2 - b1) * sy, fill=False, ec=col, lw=1, ls="--"))
                     ax.text(x1 * sx, y1 * sy - 3, f"{role[0].upper()}:{o['name']} {o['score']:.2f}", color="white", fontsize=7,
                             bbox=dict(fc=col, ec="none", pad=0.8))
             fl = ",".join(r["flags"]) or "-"
             ax.set_title(f"#{p + j + 1} [{r['auto_qc'].upper()}] {r['dataset'][-1].upper()}:{r['sample_id']}\nrel={r['relation']} | flags: {fl}",
                          fontsize=8, color="darkred" if r["auto_qc"] == "review" else "black")
-        fig.suptitle(f"What's Up AUTO annotation (not human-verified) — page {p // 20 + 1}/{(len(order) + 19) // 20}   red=target  blue=reference", fontsize=12)
+        fig.suptitle(f"What's Up AUTO annotation {cfg['version']} (not human-verified; solid=detector box, dashed=mask bbox) — page {p // 20 + 1}/{(len(order) + 19) // 20}   red=target  blue=reference", fontsize=12)
         fig.tight_layout()
         fig.savefig(out / f"sheet_{p // 20 + 1:03d}.png", dpi=70)
         plt.close(fig)
