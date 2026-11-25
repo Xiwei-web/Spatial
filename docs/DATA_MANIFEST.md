@@ -25,6 +25,7 @@
 | `gqa_spatial_two` | `vg_qa_two_obj.json` | 291 | 258 | 0 | right 137 / left 127 / front 19 / behind 5 / top 3 | 无 |
 
 - **任务书要求的核对**：Subset A 的 left/right = 103 + 103 = **206**（符合）；Subset B = **408**（符合）。
+- **更正与剔除**（更正表 `annotations/whatsup/corrections.yaml`；原始数据未改动）：`pillow_left_of_chair` 与 `pillow_right_of_chair` 两张**剔除**。原因：原始数据左右与标签相反——文件名和官方标注 JSON 分别为 left / right，图像中枕头却分别在椅子的右边 / 左边。已核对：本地文件与官方压缩包内同名文件 sha256 相同，加载器给出的标签与官方 JSON 一致，所以不是下载、解压或加载造成的。两张都在 Subset A 的 test 里；划分文件不变，`load_split` 读取时剔除，因此 **Subset A 实际可用 410 张（dev 204 / test 206），其中 left/right 204 张**（原始发布 206 张，核对数量时仍以 206 为准）。用户 2026-11-25 决定剔除、不改标签。
 - Subset A 图像目录里有 421 个文件，比标注多 9 个（`armchair.jpeg`、`chair.jpeg`、`table.jpeg`、`chair_*_table.jpeg`×3、`chair2_*_table.jpeg`×3）；它们不在官方标注 JSON 里，加载器不使用。
 - GQA-spatial 图像目录有 4,797 张，标注实际引用 1,043 + 258（有重叠）张；这是官方打包的子集，没有下载完整 GQA/VG。
 - COCO-spatial 的框和 mask **不是 What's Up 发布的**：加载器用 COCO 实例标注按类别名匹配，仅当该类别在图中恰有一个非 crowd 实例时才给出。实测 one-object 2,247/2,247、two-object 440/440（target 与 reference 都有）都能唯一匹配。

@@ -50,4 +50,16 @@ def test_splits_are_disjoint_halves_and_stratified():
         dev, test = set(d["dev"]), set(d["test"])
         assert not dev & test
         assert len(dev) + len(test) == d["n_total"]
-        assert abs(len(dev) - len(test)) <= len(d["per_relation"])   # 每个关系类别至多差 1
+        strata = d.get("per_relation") or d["per_category"]          # 合成场景抠图库按类别分层，其余按关系分层
+        assert abs(len(dev) - len(test)) <= len(strata)              # 每个层至多差 1
+
+
+def test_corrections_are_excluded_from_splits_only():
+    """更正表剔除的样本不出现在 load_split 里，但原始数据集仍完整（412 条）。"""
+    from src.data import load_dataset, load_split
+    from src.data.loaders import excluded_samples
+    ex = {i for d, i in excluded_samples() if d == "whatsup_a"}
+    assert ex == {"pillow_left_of_chair", "pillow_right_of_chair"}
+    ids = {s.sample_id for sp in ("dev", "test") for s in load_split("whatsup_a", sp)}
+    assert not ex & ids and len(ids) == 410
+    assert len(load_dataset("whatsup_a")) == 412

@@ -1,0 +1,19 @@
+# What's Up 样本更正表（不改原始数据；由 src/data/loaders.py 的 load_split 读取）。
+# action: exclude = 从 dev/test 中剔除（load_dataset 仍返回原始发布的全部样本，划分文件 splits/*.json 不变）。
+corrections:
+  - dataset: whatsup_a
+    sample_id: pillow_left_of_chair
+    review_order_v2: 67
+    split: test
+    action: exclude
+    reason: "原始数据左右与标签相反：文件名、官方标注 JSON 均为 left，图像中枕头在椅子右边（mask 质心 x：枕头 999，椅子 655）"
+    checked: "官方压缩包内的同名文件与本地文件 sha256 相同，加载器读取的标签与官方 JSON 一致，排除下载/解压/加载环节出错"
+    decided_by: "用户，2026-11-25：剔除，不改标签"
+  - dataset: whatsup_a
+    sample_id: pillow_right_of_chair
+    review_order_v2: 68
+    split: test
+    action: exclude
+    reason: "原始数据左右与标签相反：文件名、官方标注 JSON 均为 right，图像中枕头在椅子左边（mask 质心 x：枕头 300，椅子 655）"
+    checked: "官方压缩包内的同名文件与本地文件 sha256 相同，加载器读取的标签与官方 JSON 一致，排除下载/解压/加载环节出错"
+    decided_by: "用户，2026-11-25：剔除，不改标签"

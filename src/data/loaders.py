@@ -171,9 +171,20 @@ def load_dataset(name: str) -> list[Sample]:
     return DATASETS[name]()
 
 
+@lru_cache(maxsize=1)
+def excluded_samples() -> frozenset:
+    """更正表（annotations/whatsup/corrections.yaml）里 action=exclude 的 (dataset, sample_id)。"""
+    import yaml
+    f = paths.REPO_ROOT / "annotations" / "whatsup" / "corrections.yaml"
+    if not f.is_file():
+        return frozenset()
+    return frozenset((c["dataset"], c["sample_id"]) for c in yaml.safe_load(open(f))["corrections"] if c["action"] == "exclude")
+
+
 def load_split(name: str, split: str) -> list[Sample]:
-    """split ∈ {dev, test}。选择类操作只用 dev，报告数字只用 test。"""
+    """split ∈ {dev, test}。选择类操作只用 dev，报告数字只用 test。
+    更正表里标为 exclude 的样本会被剔除（划分文件本身不变；load_dataset 仍返回原始发布的全部样本）。"""
     assert split in ("dev", "test")
     ids = json.load(open(paths.REPO_ROOT / "splits" / f"{name}.json"))[split]
     by_id = {s.sample_id: s for s in load_dataset(name)}
-    return [by_id[i] for i in ids]
+    return [by_id[i] for i in ids if (name, i) not in excluded_samples()]

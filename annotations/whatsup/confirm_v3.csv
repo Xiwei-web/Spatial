@@ -1,0 +1,26 @@
+﻿order_v2,image_id,case,object_name,n_candidates,proposed_pick,proposed_basis,target_pick,reference_pick,note,ai_confidence
+1,whatsup_a:can_right_of_armchair,no_target_candidate,can,6,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C1,,C1框住椅子右侧地面上的罐子，mask贴合,high
+2,whatsup_a:can_under_armchair,no_target_candidate,can,4,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C1,,C1框住椅底的罐子，mask贴合,high
+3,whatsup_a:pan_under_armchair,no_target_candidate,pan,5,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C1,,C1框住椅底的平底锅，mask含锅身和手柄,high
+4,whatsup_a:scarf_under_armchair,no_target_candidate,scarf,6,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C1,,C1框住椅底阴影里的围巾，位置正确；物体很暗，mask边界无法精确判断,medium
+5,whatsup_a:sunglasses_under_armchair,no_target_candidate,sunglasses,6,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C1,,C1包含两片镜片(C2、C3各只有一片)，正确,high
+9,whatsup_a:can_left_of_armchair,no_target_candidate,can,5,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C1,,C1框住椅子左侧地面上的罐子，mask贴合,high
+10,whatsup_a:can_on_armchair,no_target_candidate,can,6,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C1,,C1框住座面上的罐子，mask贴合,high
+11,whatsup_a:can_on_chair,no_target_candidate,can,6,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C1,,C1框住椅子座面上的罐子，mask贴合,high
+12,whatsup_a:pan_on_armchair,no_target_candidate,pan,6,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C2,,"不同意建议：C1只框住锅身，手柄在框外(右图可见手柄未被mask覆盖)。C2(frying pan, 259x73)包含锅身和手柄。其它平底锅图(#57、58、69-72)都含手柄，应改选C2保持一致",high
+14,whatsup_a:glass_under_armchair,no_target_candidate,glass,3,target=C1,排除与 reference 重合/覆盖的框后分数最高的候选,C1,,C1框住椅底的透明玻璃杯，位置正确；透明物体，mask边界无法精确判断,medium
+30,whatsup_a:bread_under_armchair,bread_body,bread,6,target=C1,与当前框（面包袋尾部）不重合的最高分候选,C2,,"不同意建议：C1(bread in a plastic bag)的mask把右侧透明袋尾也包进去了，违反口径。C2(loaf of bread, 185x83)只含面包本体，右边界正好停在袋尾之前。建议改选C2，请看一眼确认",medium
+80,whatsup_a:shoes_left_of_chair,shoes_pair,shoes,5,target=C1,并集框（符合口径：两只鞋）,C1,,C1为两只鞋的并集框，mask覆盖两只鞋,high
+81,whatsup_a:shoes_on_chair,shoes_pair,shoes,6,target=C1,并集框（符合口径：两只鞋）,C1,,C1为两只鞋的并集框，mask覆盖两只鞋,high
+82,whatsup_a:shoes_right_of_chair,shoes_pair,shoes,6,target=C1,并集框（符合口径：两只鞋）,C1,,C1为两只鞋的并集框，mask覆盖两只鞋,high
+83,whatsup_a:shoes_under_chair,shoes_pair,shoes,6,target=C1,并集框（符合口径：两只鞋）,C1,,C1为两只鞋的并集框，mask覆盖两只鞋,high
+322,whatsup_a:photograph_on_chair,photograph_with_mat,photograph,6,target=C1,包含当前框且略大的最小候选（口径：包含白色衬纸）,C1,,C1(photo print)包含整张照片和白色衬纸，mask覆盖完整,high
+333,whatsup_a:plant_left_of_chair,plant_with_pot,plant,6,target=C1,并集框（符合口径：包含花盆）,C1,,框正确(包含花盆)；但mask没有覆盖花盆：右图里花盆仍是原色，红色只盖住叶片。需要把mask改为“植物mask与花盆mask的并集”,box_ok_mask_bad
+334,whatsup_a:plant_left_of_table,plant_with_pot,plant,6,target=C1,并集框（符合口径：包含花盆）,C1,,框正确；右图里花盆看起来被盖住了，但颜色接近，请确认,box_ok_mask_check
+335,whatsup_a:plant_on_chair,plant_with_pot,plant,6,target=C1,并集框（符合口径：包含花盆）,C1,,框正确；mask没有覆盖花盆(花盆仍是白色),box_ok_mask_bad
+336,whatsup_a:plant_on_table,plant_with_pot,plant,6,target=C1,并集框（符合口径：包含花盆）,C1,,框正确；mask只盖住了花盆口和叶片，花盆主体仍是白色,box_ok_mask_bad
+337,whatsup_a:plant_right_of_chair,plant_with_pot,plant,6,target=C1,并集框（符合口径：包含花盆）,C1,,框正确；mask没有覆盖花盆(花盆仍是灰色),box_ok_mask_bad
+338,whatsup_a:plant_right_of_table,plant_with_pot,plant,6,target=C1,并集框（符合口径：包含花盆）,C1,,框正确；mask没有覆盖花盆(花盆仍是白色),box_ok_mask_bad
+339,whatsup_a:plant_under_chair,plant_with_pot,plant,6,target=C1,并集框（符合口径：包含花盆）,C1,,框正确；花盆在椅下阴影中，无法判断mask是否覆盖,box_ok_mask_check
+340,whatsup_a:plant_under_table,plant_with_pot,plant,6,target=C1,并集框（符合口径：包含花盆）,C1,,框正确；花盆看起来被红色覆盖，请确认,box_ok_mask_check
+682,whatsup_b:mug_in-front_of_cup,swapped_boxes,mug,5,target=T1/reference=R2,修正后的规则 (a)：两者最高分候选重合，target 分数高 → target 保留 T1，reference 改用 R2,T1,R2,target T1是前面的马克杯，reference R2是后面的红色杯子，正确,high
