@@ -10,6 +10,10 @@ def test_parse_mcq():
     assert parse_mcq("(C)") == "C"
     assert parse_mcq("The answer is D.") == "D"
     assert parse_mcq("<think>maybe A</think>\nB") == "B"
+    assert parse_mcq("<think></think><answer>C</answer>") == "C"
+    assert parse_mcq("<|begin_of_box|>A<|end_of_box|>") == "A"
+    assert parse_mcq("<answer>cat</answer>") is None
+    assert parse_mcq("The glasses are located to the right of the armchair") is None
     assert parse_mcq("I cannot tell") is None
     assert parse_mcq("Apple") is None
 
@@ -19,6 +23,9 @@ def test_parse_four_numbers():
     assert parse_four_numbers("<box>[[100, 200, 300, 400]]</box>") == [100, 200, 300, 400]
     assert parse_four_numbers("[0.1, 0.2, 0.3, 0.4]") == [0.1, 0.2, 0.3, 0.4]
     assert parse_four_numbers("(12,34),(56,78)") == [12, 34, 56, 78]
+    assert parse_four_numbers("<ref>knife</ref><box>213 765 274 843</box>") == [213, 765, 274, 843]
+    assert parse_four_numbers("[270, 6") is None
+    assert parse_four_numbers('{"bbox_2d":[0.03,0.25,2.29,0.19,0.07,0.19,0.51,0.41,0.51]}') is None
     assert parse_four_numbers("no box here") is None
     assert parse_four_numbers("[1, 2, 3]") is None
 

@@ -167,6 +167,11 @@ class HFChatAdapter(BaseAdapter):
 
     def prepare(self, image: Image.Image, prompt: str) -> Prepared:
         image = image.convert("RGB")
+        W, H = image.size
+        side = self.spec.get("max_image_side")
+        if side and max(W, H) > side:     # 仅用于限制 anyres 切片数（见 configs/adapters.yaml）；等比缩放，网格映射仍按原图比例
+            r = side / max(W, H)
+            image = image.resize((round(W * r), round(H * r)), Image.BICUBIC)
         messages = [{"role": "user", "content": [{"type": "image", "image": image}, {"type": "text", "text": prompt}]}]
         kw = dict(self.spec.get("chat_kwargs") or {})
         base = dict(add_generation_prompt=True, tokenize=True, return_dict=True, return_tensors="pt", **kw)
@@ -188,7 +193,6 @@ class HFChatAdapter(BaseAdapter):
         inputs = {k: (v.to(self.device) if hasattr(v, "to") else v) for k, v in inputs.items()}
         ids = inputs["input_ids"][0]
         vis = (ids == self.image_token_id).nonzero().flatten().tolist()
-        W, H = image.size
         grid_hw, grid_pos, model_wh, note, extra = None, None, None, "", {}
         g = self.spec["grid"]
         vc = self.model.config.vision_config

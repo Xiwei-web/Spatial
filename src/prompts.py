@@ -25,6 +25,10 @@ def relation_mcq(dataset: str, target: str, reference: str) -> tuple[str, list[s
 def parse_mcq(text: str) -> str | None:
     """返回 A/B/C/D 或 None（解析不出就是 None，不猜）。"""
     t = re.sub(r"<think>.*?</think>", "", text, flags=re.S).strip()
+    # 一些模型把答案包在固定的标记里：<answer>C</answer>（RoboBrain）、<|begin_of_box|>C<|end_of_box|>（GLM）
+    w = re.match(r"^(?:<answer>|<\|begin_of_box\|>)\s*(.*?)\s*(?:</answer>|<\|end_of_box\|>|$)", t, flags=re.S)
+    if w:
+        t = w.group(1).strip()
     m = re.match(r"^\(?([ABCD])\)?(?:[\s\.\):,]|$)", t)
     if m:
         return m.group(1)
@@ -43,6 +47,10 @@ def parse_four_numbers(text: str) -> list[float] | None:
         return [float(g) for g in m.groups()]
     # (x1,y1),(x2,y2) 形式
     m = re.search(rf"\(\s*({_NUM})\s*,\s*({_NUM})\s*\)\s*,?\s*\(\s*({_NUM})\s*,\s*({_NUM})\s*\)", t)
+    if m:
+        return [float(g) for g in m.groups()]
+    # <box>x1 y1 x2 y2</box>（空格分隔，MiniCPM-V）
+    m = re.search(rf"<box>\s*({_NUM})\s+({_NUM})\s+({_NUM})\s+({_NUM})\s*</box>", t)
     if m:
         return [float(g) for g in m.groups()]
     # <loc0123> 形式
