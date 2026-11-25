@@ -1,0 +1,394 @@
+# Official bounding-box (2D grounding) prompt + output-coordinate conventions per VLM family.
+# Compiled 2026-11-25 from official sources only (HF cards, vendor GitHub repos/cookbooks, vendor docs, papers).
+# Every entry carries source URLs with verbatim quotes. `found: false` = no official convention located
+# (see notes for what was checked and any untested hypothesis). Entries whose notes start with CAVEAT are
+# inherited/inferred from a sibling generation's official source rather than stated for that exact model.
+#
+# convention enum:
+#   norm1000_xyxy  - [x1,y1,x2,y2], each scaled to 0..1000 of ORIGINAL image width/height
+#   norm1000_yxyx  - [y1,x1,y2,x2], each scaled to 0..1000 of ORIGINAL image height/width
+#   norm1_xyxy     - [x1,y1,x2,y2] floats in 0..1 (LLaVA-1.5: of the PADDED-TO-SQUARE image, see notes)
+#   abs_model_xyxy - absolute pixels on the model's RESIZED input image (rescale to original yourself)
+#   abs_orig_xyxy  - absolute pixels on the original image
+#   unknown        - not documented
+# prompt_template uses {object} as the placeholder for the referring phrase / object name.
+qwen2_5_vl:
+  applies_to:
+  - Qwen2.5-VL-7B-Instruct
+  found: true
+  prompt_template: Locate {object}, output its bbox coordinates using JSON format.
+  output_format: '```json [{"bbox_2d": [x1, y1, x2, y2], "label": "..."}] ``` (JSON list inside a markdown fence)'
+  convention: abs_model_xyxy
+  notes: 'Absolute pixel coordinates on the RESIZED model-input image (smart_resize output; input_height/width = image_grid_thw*14), order x1,y1,x2,y2, origin top-left.
+    Rescale to the original with x/input_width*orig_w, y/input_height*orig_h. Default system prompt in the cookbook is ''You are a helpful assistant''. The cookbook
+    lives at an old commit of the repo (the repo was renamed Qwen2.5-VL -> Qwen3-VL and main now holds the Qwen3-VL version of the notebook). Verbatim cookbook wording
+    is ''Locate the top right brown cake, output its bbox coordinates using JSON format.''; {object} substituted for the referring phrase. Other official variants:
+    ''Outline the position of each small cake and output all the coordinates in JSON format.''; ''Locate the shadow of the paper fox, report the bbox coordinates
+    in JSON format.'''
+  sources:
+  - url: https://github.com/QwenLM/Qwen3-VL/blob/f61c3cdcffac3aa3dba0bde01c9763b87db0dccb/cookbooks/spatial_understanding.ipynb
+    quote: prompt = "Locate the top right brown cake, output its bbox coordinates using JSON format."
+  - url: https://github.com/QwenLM/Qwen3-VL/blob/f61c3cdcffac3aa3dba0bde01c9763b87db0dccb/cookbooks/spatial_understanding.ipynb
+    quote: abs_x1 = int(bounding_box["bbox_2d"][0]/input_width * width)  /  abs_y1 = int(bounding_box["bbox_2d"][1]/input_height * height)
+  - url: https://github.com/QwenLM/Qwen3-VL/blob/f61c3cdcffac3aa3dba0bde01c9763b87db0dccb/cookbooks/spatial_understanding.ipynb
+    quote: input_height = inputs['image_grid_thw'][0][1]*14  /  input_width = inputs['image_grid_thw'][0][2]*14
+  - url: https://github.com/QwenLM/Qwen3-VL/blob/f61c3cdcffac3aa3dba0bde01c9763b87db0dccb/cookbooks/spatial_understanding.ipynb
+    quote: 'Qwen2.5-VL now support these formats: * bbox-format: JSON `{"bbox_2d": [x1, y1, x2, y2], "label": "object name/description"}`'
+  - url: https://www.alibabacloud.com/help/en/model-studio/vision
+    quote: 'Qwen2.5-VL: The returned coordinates are absolute values in pixels, relative to the top-left corner of the scaled image.'
+qwen3_vl:
+  applies_to:
+  - Qwen3-VL-8B-Instruct
+  found: true
+  prompt_template: Locate {object}, output its bbox coordinates using JSON format.
+  output_format: '```json [{"bbox_2d": [x1, y1, x2, y2], "label": "..."}] ```'
+  convention: norm1000_xyxy
+  notes: 'Relative coordinates 0-1000 (cookbook divides by 1000; Alibaba Cloud doc states the range as [0, 999]), order x1,y1,x2,y2, independent of the resized input
+    size, so map straight to the original image: x/1000*orig_w, y/1000*orig_h. Multi-object official wording: ''Locate every instance that belongs to the following
+    categories: "...". Report bbox coordinates in JSON format.'' Note: the plot helper''s docstring in the notebook says ''normalized [y1 x1 y2 x2] format'' (leftover
+    from a Gemini-style util) but the code indexes bbox_2d[0]->x1, [1]->y1, [2]->x2, [3]->y2, and prompts spell the format as [x1, y1, x2, y2].'
+  sources:
+  - url: https://github.com/QwenLM/Qwen3-VL/blob/main/cookbooks/2d_grounding.ipynb
+    quote: 'Coordinate System: Qwen3-VL''s default coordinate system has been changed from the absolute coordinates used in Qwen2.5-VL to relative coordinates ranging
+      from 0 to 1000. (You don''t need to calculate the resized_w)'
+  - url: https://github.com/QwenLM/Qwen3-VL/blob/main/cookbooks/2d_grounding.ipynb
+    quote: prompt = "Locate the top right brown cake, output its bbox coordinates using JSON format."
+  - url: https://github.com/QwenLM/Qwen3-VL/blob/main/cookbooks/2d_grounding.ipynb
+    quote: abs_y1 = int(bounding_box["bbox_2d"][1] / 1000 * height)  /  abs_x1 = int(bounding_box["bbox_2d"][0] / 1000 * width)
+  - url: https://github.com/QwenLM/Qwen3-VL/blob/main/cookbooks/2d_grounding.ipynb
+    quote: 'JSON format like this: {"bbox_2d": [x1, y1, x2, y2], "label": "vehicle", ...}'
+  - url: https://github.com/QwenLM/Qwen3-VL/blob/main/README.md
+    quote: Precise Object Grounding Across Formats | Using relative position coordinates, it supports both boxes and points, allowing for diverse combinations of
+      positioning and labeling tasks.
+  - url: https://www.alibabacloud.com/help/en/model-studio/vision
+    quote: 'Qwen3-VL, Qwen3.5, Qwen3.6, and Qwen3.7 series (such as qwen3.5-plus, qwen3.6-plus, and qwen3.7-plus): The returned coordinates are relative and normalized
+      to the range [0, 999] .'
+qwen3_5_and_3_6:
+  applies_to:
+  - Qwen3.5-2B
+  - Qwen3.5-4B
+  - Qwen3.5-9B
+  - Qwen3.6-27B
+  - Qwen3.6-35B-A3B
+  found: true
+  prompt_template: Locate {object}, output its bbox coordinates using JSON format.
+  output_format: '```json [{"bbox_2d": [x1, y1, x2, y2], "label": "..."}] ``` (format inherited from the Qwen3-VL cookbook; not restated for these generations)'
+  convention: norm1000_xyxy
+  notes: 'CAVEAT - partially inferred. The only official statement found is the Alibaba Cloud Model Studio FAQ, which groups ''Qwen3.5, Qwen3.6'' with Qwen3-VL (relative,
+    normalized to [0, 999]) and points to the same qwen3_vl_2d.py drawing script; its examples name the API models (qwen3.5-plus, qwen3.6-plus), not the open-weight
+    checkpoints. The HF cards for Qwen3.5-2B/4B/9B, Qwen3.6-27B, Qwen3.6-35B-A3B report RefCOCO/ODInW13 scores but give NO grounding prompt or coordinate convention,
+    and github.com/QwenLM/Qwen3.5 and /Qwen3.6 redirect to QwenLM/Qwen3.8 whose README has no grounding section and no cookbooks. The prompt_template is therefore
+    the Qwen3-VL cookbook wording, not a prompt published for these generations. Coordinate order (xyxy) is from the Qwen3-VL cookbook. The doc page''s own 2D-localization
+    example prompt: ''Detect all food items in the image and output their bbox coordinates in JSON format.'' Verify empirically.'
+  sources:
+  - url: https://www.alibabacloud.com/help/en/model-studio/vision
+    quote: 'Qwen3-VL, Qwen3.5, Qwen3.6, and Qwen3.7 series (such as qwen3.5-plus, qwen3.6-plus, and qwen3.7-plus): The returned coordinates are relative and normalized
+      to the range [0, 999] . To draw detection frames, see the code in qwen3_vl_2d.py (2D positioning)'
+  - url: https://www.alibabacloud.com/help/en/model-studio/vision
+    quote: 'Return Box (bounding box) coordinates: Detect all food items in the image and output their bbox coordinates in JSON format.'
+  - url: https://huggingface.co/Qwen/Qwen3.6-27B/raw/main/README.md
+    quote: RefCOCO <sub><small>avg</small></sub> (benchmark table row only; no prompt or coordinate convention anywhere in the card)
+qwen3_8:
+  applies_to:
+  - Qwen3.8-27B
+  found: false
+  prompt_template: ''
+  output_format: ''
+  convention: unknown
+  notes: 'No official grounding prompt or coordinate convention found for Qwen3.8. Checked: HF card Qwen/Qwen3.8-27B (no occurrence of bbox/grounding/coordinate/RefCOCO),
+    GitHub QwenLM/Qwen3.8 README (repo contains only README/LICENSE/.github; no cookbooks; no grounding text), and the Alibaba Cloud Model Studio vision FAQ, which
+    lists ''Qwen3-VL, Qwen3.5, Qwen3.6, and Qwen3.7 series'' as [0, 999]-normalized but does not name Qwen3.8. Plausible guess to test empirically (NOT documented):
+    same as qwen3_vl (norm1000_xyxy, bbox_2d JSON).'
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/README.md
+    quote: (no grounding/bbox text present; checked by grep)
+  - url: https://github.com/QwenLM/Qwen3.8/blob/main/README.md
+    quote: 'Unified Vision-Language Foundation: Early fusion training on trillions of multimodal tokens achieves cross-generational parity with Qwen3 and outperforms
+      Qwen3-VL models across reasoning, coding, agents, and visual understanding benchmarks. (only vision-related statement; no grounding convention)'
+  - url: https://www.alibabacloud.com/help/en/model-studio/vision
+    quote: 'Qwen3-VL, Qwen3.5, Qwen3.6, and Qwen3.7 series (such as qwen3.5-plus, qwen3.6-plus, and qwen3.7-plus): The returned coordinates are relative and normalized
+      to the range [0, 999] . (Qwen3.8 not listed)'
+internvl3:
+  applies_to:
+  - InternVL3-8B
+  - InternVL3-2B
+  found: true
+  prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>'
+  output_format: <ref>{object}</ref><box>[[x1, y1, x2, y2]]</box>
+  convention: norm1000_xyxy
+  notes: 'Coordinates are integers normalized to [0, 1000] by the ORIGINAL image width/height (not per-tile), order x1,y1,x2,y2. Official parser regex: PATTERN =
+    re.compile(r''\[*\[(.*?),(.*?),(.*?),(.*?)\]\]*''); the eval divides by 1000 then multiplies by original (h, w). Expected answer form: <ref>phrase</ref><box>[[x1,
+    y1, x2, y2]]</box> (a bare [[x1, y1, x2, y2]] also parses). The InternVL3 HF cards only show a ''Visual Grounding'' results figure; the prompt/convention come
+    from the official repo eval script and the version-agnostic ''Chat Data Format'' doc page (not InternVL3-specific pages).'
+  sources:
+  - url: https://github.com/OpenGVLab/InternVL/blob/main/internvl_chat/eval/refcoco/evaluate_grounding.py
+    quote: 'prompt = ''Please provide the bounding box coordinate of the region this sentence describes: <ref>{}</ref>'''
+  - url: https://github.com/OpenGVLab/InternVL/blob/main/internvl_chat/eval/refcoco/evaluate_grounding.py
+    quote: 'if predict_bbox.sum() >= 4: predict_bbox = predict_bbox / 1000  /  predict_bbox[:, 0::2] *= output[''hw''][1]  /  predict_bbox[:, 1::2] *= output[''hw''][0]'
+  - url: https://internvl.readthedocs.io/en/latest/get_started/chat_data_format.html
+    quote: For grounding or detection data, we normalize each coordinate box to the range [0, 1000] using the width and height of the image, and round the normalized
+      coordinates to integers
+  - url: https://internvl.readthedocs.io/en/latest/get_started/chat_data_format.html
+    quote: 'We organize the model''s responses in the following format: <ref>class name</ref><box>[[x1, y1, x2, y2], ...]</box>'
+internvl3_5:
+  applies_to:
+  - InternVL3_5-8B
+  found: true
+  prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>'
+  output_format: <ref>{object}</ref><box>[[x1, y1, x2, y2]]</box>
+  convention: norm1000_xyxy
+  notes: 'CAVEAT - inherited, not restated for 3.5. Coordinates are integers normalized to [0, 1000] by the ORIGINAL image width/height (not per-tile), order x1,y1,x2,y2.
+    Official parser regex: PATTERN = re.compile(r''\[*\[(.*?),(.*?),(.*?),(.*?)\]\]*''); the eval divides by 1000 then multiplies by original (h, w). Expected answer
+    form: <ref>phrase</ref><box>[[x1, y1, x2, y2]]</box> (a bare [[x1, y1, x2, y2]] also parses). The InternVL3_5-8B HF card has a ''Visual Grounding'' results figure
+    but no prompt/format text, and internvl.readthedocs.io has no internvl3.5 evaluation page (404). The sources are the shared OpenGVLab/InternVL repo eval script
+    and the version-agnostic data-format doc. If using the HF-format (-HF) checkpoint the same text prompt applies; verify empirically.'
+  sources:
+  - url: https://github.com/OpenGVLab/InternVL/blob/main/internvl_chat/eval/refcoco/evaluate_grounding.py
+    quote: 'prompt = ''Please provide the bounding box coordinate of the region this sentence describes: <ref>{}</ref>'''
+  - url: https://internvl.readthedocs.io/en/latest/get_started/chat_data_format.html
+    quote: For grounding or detection data, we normalize each coordinate box to the range [0, 1000] using the width and height of the image, and round the normalized
+      coordinates to integers
+  - url: https://huggingface.co/OpenGVLab/InternVL3_5-8B/raw/main/README.md
+    quote: '### Visual Grounding (section contains only a results image; no prompt or coordinate text)'
+sensenova_si_internvl3:
+  applies_to:
+  - SenseNova-SI-1.1-InternVL3-2B
+  - SenseNova-SI-1.2-InternVL3-8B
+  - SenseNova-SI-1.3-InternVL3-8B
+  found: false
+  prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>'
+  output_format: 'undocumented (README shows only a ground truth ''GT: [0.096234, 0.161229, 0.436516, 1.000000]'', not a model output)'
+  convention: unknown
+  notes: 'No official bbox convention for versions 1.1-1.3. The repo''s only grounding example (Example 4, InternVL-style <ref> prompt, RefCOCO) is run with SenseNova-SI-1.4-InternVL3-8B,
+    which the README describes as the release that adds ''Enhanced capability in grounding and depth estimation''; nothing states that 1.1-1.3 were trained for grounding,
+    and the model output format/normalization is not shown (GT is given as [0,1] floats; RefCOCO is scored via lmms-eval). The prompt_template is that 1.4 example,
+    listed for reference only. Base model is InternVL3, so the InternVL3 convention (norm1000_xyxy, <box>[[...]]</box>) is the natural hypothesis but is NOT documented
+    for these checkpoints. Official spatial-QA prompt format (example.py --question, images passed separately): ''Question: ...\nOptions: \nA. ...\nB. ...\nGive me
+    the answer letter directly. The best answer is:'' or ''...\nOptions: A. ..., B. ..., C. ..., D. ...\nAnswer with the option''s letter from the given choices directly.
+    Enclose the option''s letter within ``.'' Checked: GitHub README, example.py, sensenova_si/internvl.py, HF card SenseNova-SI-1.3-InternVL3-8B (no bbox/grounding
+    text).'
+  sources:
+  - url: https://github.com/OpenSenseNova/SenseNova-SI/blob/main/README.md
+    quote: '--question "Please provide the bounding box coordinate of the region this sentence describes: <ref>blue shirt lady</ref>" --model_path sensenova/SenseNova-SI-1.4-InternVL3-8B'
+  - url: https://github.com/OpenSenseNova/SenseNova-SI/blob/main/README.md
+    quote: 'GT: [0.096234, 0.161229, 0.436516, 1.000000]'
+  - url: https://github.com/OpenSenseNova/SenseNova-SI/blob/main/README.md
+    quote: We have released SenseNova-SI-1.4-InternVL3-8B, which significantly improves grounding and depth estimation capabilities, achieving 89.21 on RefCOCO avg
+      and 78.64 on CountBench.
+  - url: https://github.com/OpenSenseNova/SenseNova-SI/blob/main/README.md
+    quote: 'Question: Consider the real-world 3D locations of the objects. Which is closer to the sink, the toilet paper or the towel?\nOptions: \nA. toilet paper\nB.
+      towel\nGive me the answer letter directly. The best answer is:'
+robobrain2_0:
+  applies_to:
+  - RoboBrain2.0-7B
+  found: true
+  prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: {object}.'
+  output_format: '[x1, y1, x2, y2] plain text; official regex r''\[\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]''. With thinking enabled the raw reply contains
+    a ''<think>...</think>'' section before the answer; the official wrapper strips the think/answer tags and returns e.g. ''[0, 193, 226, 640]''.'
+  convention: abs_orig_xyxy
+  notes: 'IMPORTANT version trap: the repo main branch is now RoboBrain 2.5, whose inference.py rescales by /1000 (''coords are relative (0~1000)''). For RoboBrain
+    2.0 use the 2.0-era inference.py (commit a4f9450, 2025-08-03): it parses integers and draws them DIRECTLY on the cv2-loaded original image with no rescaling,
+    i.e. absolute pixels treated as original-image coordinates (README example answer ''[0, 193, 226, 640]''). No doc sentence states original-vs-resized explicitly;
+    the model is Qwen2.5-VL-based (qwen_vl_utils.process_vision_info), so if smart_resize changes the image size the true frame may be the resized input - check empirically
+    / keep images within pixel limits. Thinking: enable_thinking appends ''<think>'' to the user text; disabled-but-supported (7B/32B) appends ''<think></think><answer>''.
+    Other 2.0 task templates (verbatim): pointing: ''{text}. Your answer should be formatted as a list of tuples, i.e. [(x1, y1), (x2, y2), ...], where each tuple
+    contains the x and y coordinates of a point satisfying the conditions above. The coordinates should indicate the normalized pixel locations of the points in the
+    image.''; affordance: ''You are a robot using the joint control. The task is "{text}". Please predict a possible affordance area of the end effector.'' (output
+    parsed as a box); trajectory: ''You are a robot using the joint control. The task is "{text}". Please predict up to 10 key trajectory points to complete the task.
+    Your answer should be formatted as a list of tuples, i.e. [[x1, y1], [x2, y2], ...], where each tuple contains the x and y coordinates of a point.'' The HF card
+    BAAI/RoboBrain2.0-7B is access-restricted (gated) and could not be read.'
+  sources:
+  - url: https://github.com/FlagOpen/RoboBrain2.0/blob/a4f9450e1a62a1b6ca855451ce8d5472535f9930/inference.py
+    quote: 'text = f"Please provide the bounding box coordinate of the region this sentence describes: {text}."'
+  - url: https://github.com/FlagOpen/RoboBrain2.0/blob/a4f9450e1a62a1b6ca855451ce8d5472535f9930/inference.py
+    quote: box_pattern = r'\[\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]'  ...  plot_boxes = [[int(x1), int(y1), int(x2), int(y2)] for x1, y1, x2, y2 in boxes]
+  - url: https://github.com/FlagOpen/RoboBrain2.0/blob/a4f9450e1a62a1b6ca855451ce8d5472535f9930/inference.py
+    quote: 'image = cv2.imread(image_path) ... for box in boxes: x1, y1, x2, y2 = box; cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)'
+  - url: https://github.com/FlagOpen/RoboBrain2.0/blob/a4f9450e1a62a1b6ca855451ce8d5472535f9930/inference.py
+    quote: 'if enable_thinking: text = f"{text}<think>"  elif self.supports_thinking: text = f"{text}<think></think><answer>"'
+  - url: https://github.com/FlagOpen/RoboBrain2.0/blob/a4f9450e1a62a1b6ca855451ce8d5472535f9930/README.md
+    quote: 'pred = model.inference(prompt, image, task="grounding", plot=True, enable_thinking=True, do_sample=True) ... ''answer'': ''[0, 193, 226, 640]'''
+  - url: https://github.com/FlagOpen/RoboBrain2.0/blob/main/inference.py
+    quote: 'boxes: List of boxes in format [[x1, y1, x2, y2], ...] where coords are relative (0~1000)  (RoboBrain 2.5 code on main - NOT the 2.0 convention)'
+vst:
+  applies_to:
+  - VST-7B-RL
+  found: false
+  prompt_template: ''
+  output_format: ''
+  convention: unknown
+  notes: 'No official 2D bounding-box/grounding prompt or 2D coordinate convention found. Checked: HF card rayruiyang/VST-7B-RL (spatial QA quickstart only), GitHub
+    Yangr116/VST README (master) and both cookbooks (scene_understanding.ipynb = spatial QA; object_detection_3d.ipynb = 3D boxes only), and the paper arXiv:2511.05491
+    (HTML). What exists officially: (a) 3D detection prompt ending ''Output a json list where each entry contains the object name in "label" and its 3D bounding box
+    in "bbox_3d"'' + ''Detect the 3D bounding boxes of {object}'' with format [x_center, y_center, z_center, x_size, y_size, z_size, pitch, yaw, roll] (metres; angles
+    normalized by 180 deg); (b) a paper training-data example whose ANSWER uses Qwen-style 2D JSON ''{"bbox_2d":[324,81,477,475],"label":"person"}'', but the normalization/reference
+    frame is not stated. Model class is Qwen2_5_VLForConditionalGeneration (processor min_pixels=256*28*28, max_pixels=1280*28*28), so Qwen2.5-VL''s abs_model_xyxy/bbox_2d
+    convention is the natural hypothesis - undocumented, verify empirically. Thinking system prompt (official): ''You are a helpful assistant. You should first think
+    about the reasoning process in the mind and then provide the user with the answer. The reasoning process is enclosed within <think> </think> tags, i.e. <think>
+    reasoning process here </think> answer here.'''
+  sources:
+  - url: https://huggingface.co/rayruiyang/VST-7B-RL/raw/main/README.md
+    quote: '{"type": "text", "text": "Consider the real-world 3D locations of the objects. Is the ''no motorcycle'' sign directly above the red bus?"}'
+  - url: https://github.com/Yangr116/VST/blob/master/cookbook/object_detection_3d.ipynb
+    quote: 'question = "Detect the 3D bounding boxes of chair"  /  3D bounding box format: [x_center, y_center, z_center, x_size, y_size, z_size, pitch, yaw, roll]'
+  - url: https://arxiv.org/html/2511.05491
+    quote: 'You are given several 2D bounding boxes in the image: [3, 132, 98, 468] [322, 83, 475, 481] ... Output the sorted bboxes and labels using JSON format.
+      Answer [ {"bbox_2d":[324,81,477,475],"label":"person"}, {"bbox_2d":[3,130,98,462],"label":"person"} ]'
+llava_1_5:
+  applies_to:
+  - LLaVA-1.5-7B
+  - LLaVA-1.5-13B
+  found: true
+  prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: {object}.'
+  output_format: '[x1, y1, x2, y2] with floats in [0, 1], two decimals, e.g. [0.65, 0.29, 0.78, 0.43]'
+  convention: norm1_xyxy
+  notes: 'Coordinates are fractions in [0,1], order left,top,right,bottom, measured on the image AFTER padding the shorter side to a square (expand2square with the
+    processor image_mean), NOT on the raw image. To map back: side = max(W, H); x_px = x*side - (side-W)/2; y_px = y*side - (side-H)/2. The convention is confirmed
+    by the repo owner in a GitHub issue (the paper only lists the prompt); it is not in the repo docs (docs/Data.md has no bbox text). HF-port caveat: llava-hf/llava-1.5-7b-hf
+    preprocessor_config.json uses resize shortest_edge=336 + do_center_crop=true (no pad-to-square), so non-square images are center-cropped and the padded-square
+    frame does not match what the model sees - pad images to square yourself before the processor for grounding. The paper''s Table of data lists the prompt without
+    ''Please'' (''Provide the bounding box coordinate of the region this sentence describes.''); the released training data uses the ''Please provide ...: <phrase>.''
+    form.'
+  sources:
+  - url: https://arxiv.org/abs/2310.03744
+    quote: 'RefCOCO 48K Note: randomly choose between the two formats  Provide a short description for this region.  VG 86K  Provide the bounding box coordinate of
+      the region this sentence describes. (Table 7, Instruction-following Data Mixture of LLaVA-1.5; read via ar5iv.labs.arxiv.org/html/2310.03744)'
+  - url: https://github.com/haotian-liu/LLaVA/issues/606#issuecomment-1774076879
+    quote: '{''from'': ''human'', ''value'': ''Please provide the bounding box coordinate of the region this sentence describes: 01 on the train.''}, {''from'': ''gpt'',
+      ''value'': ''[0.65, 0.29, 0.78, 0.43]''}'
+  - url: https://github.com/haotian-liu/LLaVA/issues/606#issuecomment-1774076879
+    quote: it does based on image shape 336x336(or any square), but it is NOT as simple as resizing. it is padding the shorter edge to the longer, pouring processor.image_mean
+      to the padding area. ... the four floats are actually `wa, ha, wb, hb`, a is the left up corner and b is the right bottom corner ... it provides a rectangle
+      on the padded image.
+  - url: https://github.com/haotian-liu/LLaVA/issues/606#issuecomment-1776029252
+    quote: Thank you @Maxlinn and your understanding is correct. We will need to clarify this in our revised paper to make it clearer. (haotian-liu, repo OWNER)
+  - url: https://huggingface.co/llava-hf/llava-1.5-7b-hf/raw/main/preprocessor_config.json
+    quote: '"do_center_crop": true ... "size": { "shortest_edge": 336 }'
+llava_onevision:
+  applies_to:
+  - LLaVA-OneVision-7B
+  found: false
+  prompt_template: Provide the bounding box coordinate of the region this sentence describes. {object}
+  output_format: undocumented
+  convention: unknown
+  notes: 'Prompt found, coordinate convention NOT found. The OneVision paper lists RefCOCO (50.6K) in the single-image training mix with prompt ID 8 ''Grounding:
+    Provide the bounding box coordinate of the region this sentence describes.'', but neither the paper, the LLaVA-NeXT repo README/docs/LLaVA_OneVision.md, nor the
+    llava-hf model card states the output format, normalization or reference frame (OneVision uses AnyRes tiling, so LLaVA-1.5''s padded-square frame cannot be assumed).
+    The exact placement of the referring phrase relative to the instruction is also not specified (the template above appends it; LLaVA-1.5 data used ''...describes:
+    <phrase>.''). Hypothesis to test: LLaVA-1.5-style [x1, y1, x2, y2] floats in [0,1] (the RefCOCO split is inherited from the LLaVA-1.5 data lineage) - undocumented.'
+  sources:
+  - url: https://arxiv.org/html/2408.03326
+    quote: 8 Grounding All Provide the bounding box coordinate of the region this sentence describes.
+  - url: https://arxiv.org/html/2408.03326
+    quote: RefCOCO [ 152 ] 50586 7,8
+  - url: https://github.com/LLaVA-VL/LLaVA-NeXT/blob/main/docs/LLaVA_OneVision.md
+    quote: (no grounding/bbox/coordinate text; checked by grep)
+cambrian_s:
+  applies_to:
+  - Cambrian-S-7B
+  found: false
+  prompt_template: ''
+  output_format: ''
+  convention: unknown
+  notes: 'No official grounding/bounding-box prompt or coordinate convention exists in the sources checked: HF card nyu-visionx/Cambrian-S-7B, GitHub cambrian-mllm/cambrian-s
+    README, and the paper arXiv:2511.04670 (HTML). The model targets video spatial reasoning (VSI-590K QA); ''bounding boxes'' appear in the paper only as 3D annotation
+    metadata used to generate QA pairs, never as a model output format.'
+  sources:
+  - url: https://huggingface.co/nyu-visionx/Cambrian-S-7B/raw/main/README.md
+    quote: 'Training Data: Trained on VSI-590K (spatial reasoning) + general video instruction data'
+  - url: https://arxiv.org/html/2511.04670
+    quote: annotations are consolidated into a meta-information file capturing scene-level attributes such as object counts by category, object bounding boxes, room
+      dimensions, and related metadata. Question templates are then automatically instantiated to generate corresponding questions.
+  - url: https://github.com/cambrian-mllm/cambrian-s/blob/main/README.md
+    quote: (no grounding/box/detect text; checked by grep)
+glm_4_6v:
+  applies_to:
+  - GLM-4.6V-Flash
+  found: true
+  prompt_template: Please pinpoint the bounding box [[x1,y1,x2,y2], …] in the image as per the given description. {object}
+  output_format: '<|begin_of_box|>[[x1,y1,x2,y2]]<|end_of_box|> (bracket style may vary: [], [[]], (), <>)'
+  convention: norm1000_xyxy
+  notes: 'Each value is normalized by ORIGINAL image width (x) / height (y) and scaled by 1000; order x1,y1 (top-left), x2,y2 (bottom-right). Parse the content between
+    <|begin_of_box|> and <|end_of_box|> and be tolerant of bracket style; the model may reason step by step before the box. Statement is for the GLM-4.5V/4.6V/4.1V
+    family in the official GLM-V repo; the GLM-4.6V-Flash HF card itself has no grounding section but says it is ''part of the GLM-V series''. Alternative official
+    wordings: ''Help me to locate <expr> in the image and give me its bounding boxes.'' (README); ''Where is the second bottle of beer from the right on the table?  Provide
+    coordinates in [[xmin,ymin,xmax,ymax]] format'' (docs.z.ai); detection-style JSON with keys label and bbox_2d ([x1, y1, x2, y2]) (docs.z.ai GLM-4.6V guide).'
+  sources:
+  - url: https://github.com/zai-org/GLM-V/blob/main/README.md
+    quote: '> - Help me to locate <expr> in the image and give me its bounding boxes.
+
+      > - Please pinpoint the bounding box [[x1,y1,x2,y2], …] in the image as per the given description. <expr>'
+  - url: https://github.com/zai-org/GLM-V/blob/main/README.md
+    quote: The output bounding box is a quadruple $$[x_1,y_1,x_2,y_2]$$ composed of the coordinates of the top-left and bottom-right corners, where each value is
+      normalized by the image width (for x) or height (for y) and scaled by 1000.
+  - url: https://github.com/zai-org/GLM-V/blob/main/README.md
+    quote: 'In the response, the special tokens `<|begin_of_box|>` and `<|end_of_box|>` are used to mark the image bounding box in the answer. The bracket style may
+      vary ([], [[]], (), <>, etc.), but the meaning is the same: to enclose the coordinates of the box.'
+  - url: https://docs.z.ai/guides/vlm/glm-4.6v
+    quote: Where is the second bottle of beer from the right on the table?  Provide coordinates in [[xmin,ymin,xmax,ymax]] format
+  - url: https://huggingface.co/zai-org/GLM-4.6V-Flash/raw/main/README.md
+    quote: This Hugging Face repository hosts the `GLM-4.6V-Flash` model, part of the `GLM-V` series.
+minicpm_v_4_5:
+  applies_to:
+  - MiniCPM-V-4_5
+  found: true
+  prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>'
+  output_format: <box>x1 y1 x2 y2</box> (four SPACE-separated integers; official regex r"<box>([\d\s]+)</box>")
+  convention: norm1000_xyxy
+  notes: 'Integers 0-1000 normalized by ORIGINAL image width/height, order x1 y1 x2 y2, space-separated (not comma-separated) inside <box>...</box>. Source is the
+    MiniCPM-V CookBook (OpenSQZ/MiniCPM-V-CookBook), which the official openbmb/MiniCPM-V-4_5 HF card links as ''CookBook''; the HF card and the OpenBMB/MiniCPM-V
+    README themselves contain no grounding text. Cookbook call: model.chat(image=None, msgs=[{''role'':''user'',''content'':[question, image]}], tokenizer=tokenizer,
+    sampling=True, max_new_tokens=1024, max_inp_length=8192, use_image_id=True) - note the question precedes the image in content. Multi-object variant asks for JSON
+    with a "box": "x1 y1 x2 y2" field.'
+  sources:
+  - url: https://github.com/OpenSQZ/MiniCPM-V-CookBook/blob/main/inference/minicpm-v4_5_grounding.md
+    quote: 'question = ''Please provide the bounding box coordinate of the region this sentence describes: <ref>airplane</ref>'''
+  - url: https://github.com/OpenSQZ/MiniCPM-V-CookBook/blob/main/inference/minicpm-v4_5_grounding.md
+    quote: match = re.search(r"<box>([\d\s]+)</box>", response) ... bbox = list(map(int, bbox_str.strip().split()))
+  - url: https://github.com/OpenSQZ/MiniCPM-V-CookBook/blob/main/inference/minicpm-v4_5_grounding.md
+    quote: w, h = image.size  /  x1 = int(bbox[0] / 1000 * w)  /  y1 = int(bbox[1] / 1000 * h)  /  x2 = int(bbox[2] / 1000 * w)  /  y2 = int(bbox[3] / 1000 * h)
+  - url: https://huggingface.co/openbmb/MiniCPM-V-4_5/raw/main/README.md
+    quote: '[CookBook](https://github.com/OpenSQZ/MiniCPM-V-CookBook)'
+gemma_4:
+  applies_to:
+  - gemma-4-31B-it
+  found: true
+  prompt_template: detect {object}, output only ```json
+  output_format: '```json [{"box_2d": [y1, x1, y2, x2], "label": "..."}] ```'
+  convention: norm1000_yxyx
+  notes: 'ORDER IS y-first: [y_min, x_min, y_max, x_max], normalized to a 1000x1000 grid relative to the ORIGINAL image (descale: x/1000*orig_w, y/1000*orig_h). Official
+    prompts are terse: ''detect person and cat'' and ''detect person and car, output only ```json''. The doc example runs google/gemma-4-E2B-it and says ''All Gemma
+    4 models support variable resolution''; use a higher visual token budget (70/140/280/560/1120) for detection accuracy. The gemma-4-31B-it HF card lists ''Object
+    detection ... and pointing'' under Image Understanding but gives no prompt/format; the convention comes from the official docs page (ai.google.dev/gemma/docs/capabilities/vision
+    now redirects/links to gemma.ai). Output may be followed by a ''<turn|>'' end token in raw text.'
+  sources:
+  - url: https://gemma.ai/get-started/capabilities/image/
+    quote: Models are trained to detect objects in an image and get their bounding box coordinates. Bounding box coordinates are expressed as normalized values relative
+      to a 1000x1000 grid. You need to descale these coordinates based on your original image size.
+  - url: https://gemma.ai/get-started/capabilities/image/
+    quote: y1, x1, y2, x2 = [int(coord)/1000 for coord in coordinates]
+  - url: https://gemma.ai/get-started/capabilities/image/
+    quote: '{"type": "text", "text": "detect person and car, output only ```json"}'
+  - url: https://gemma.ai/get-started/capabilities/image/
+    quote: '{"box_2d": [243, 252, 956, 415], "label": "person"}'
+  - url: https://huggingface.co/google/gemma-4-31B-it/raw/main/README.md
+    quote: Image Understanding – Object detection, Document/PDF parsing, screen and UI understanding, chart comprehension, OCR (including multilingual), handwriting
+      recognition, and pointing.
+gemma_3:
+  applies_to: []
+  found: false
+  prompt_template: ''
+  output_format: ''
+  convention: unknown
+  notes: Not in the project's model list (reference entry for google/gemma-3-4b-it). No Gemma-3-specific official bbox prompt/convention found. The image-understanding
+    doc opens with 'You can use Gemma 3 and later models to analyze and understand the content of images', but its Object Detection section (box_2d, [y1, x1, y2,
+    x2], 1000x1000 grid) is demonstrated only with google/gemma-4-E2B-it and concludes 'you learned how to use Gemma 4 models'. The gemma.ai Gemma 3 model page has
+    no box/detect/coordinate text, and the HF card google/gemma-3-4b-it is gated (HTTP 401, not read). Do not assume the Gemma 4 convention applies to Gemma 3 without
+    testing.
+  sources:
+  - url: https://gemma.ai/get-started/capabilities/image/
+    quote: You can use Gemma 3 and later models to analyze and understand the content of images.
+  - url: https://gemma.ai/get-started/capabilities/image/
+    quote: MODEL_ID = "google/gemma-4-E2B-it"
+  - url: https://gemma.ai/models/gemma-3/
+    quote: (no bounding box / object detection / coordinate text; checked by grep)
