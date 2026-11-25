@@ -37,13 +37,16 @@ def main() -> int:
             print(f"[STOP] {m['hf_repo']} 是受限仓库（gated={info.gated}），跳过，需用户决定")
             rc = 1
             continue
+        allow = m.get("allow_patterns")
+        if allow:
+            info.siblings = [s for s in info.siblings if s.rfilename in allow]
         total = sum(s.size or 0 for s in info.siblings)
         print(f"[download] {m['hf_repo']}@{m['revision']} -> {dest}  ({total/1e9:.2f} GB, {len(info.siblings)} files)", flush=True)
         if total > 50e9:
             print("[STOP] 单项超过 50 GB，跳过，需用户决定")
             rc = 1
             continue
-        snapshot_download(m["hf_repo"], revision=m["revision"], local_dir=dest, max_workers=8)
+        snapshot_download(m["hf_repo"], revision=m["revision"], local_dir=dest, max_workers=8, allow_patterns=allow)
         # 核对：文件齐全、大小一致；LFS 文件核对 sha256
         lines, ok = [], True
         for s in sorted(info.siblings, key=lambda s: s.rfilename):

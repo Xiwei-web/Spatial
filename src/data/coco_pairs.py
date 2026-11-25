@@ -155,6 +155,39 @@ def projection_overlap_frac(a, b, axis: str) -> float:
     return projection_overlap_len(a, b, axis) / m if m > 0 else 0.0
 
 
+# 由框算出的量：现行值按 mask 外接框（真值框），COCO 自带框算出的旧值以 _detbox 后缀保留
+BOX_FIELDS = ("norm_gap", "norm_gap_axis", "bbox_iou", "proj_overlap", "proj_overlap_frac",
+              "containment_target_in_reference", "containment_reference_in_target")
+
+
+def with_mask_boxes(records: list[dict], coco: dict) -> list[dict]:
+    """把记录里的框和框几何量换成按 mask 外接框计算（用户 2026-11-25）；旧值保留在 *_detbox。
+    关系标签、轴、质心来自 mask 质心，与框无关，不变。"""
+    r6 = lambda v: round(float(v), 6)      # noqa: E731
+    cache: dict[int, list[float]] = {}
+
+    def gt(o, iid):
+        if o["ann_id"] not in cache:
+            im = coco["images"][iid]
+            cache[o["ann_id"]] = coco_segmentation_bbox(coco["anns"][o["ann_id"]]["segmentation"], im["height"], im["width"])
+        return cache[o["ann_id"]]
+
+    out = []
+    for r in records:
+        assert "norm_gap_detbox" not in r
+        t, ref = gt(r["target"], r["image_id"]), gt(r["reference"], r["image_id"])
+        ct, cr, ax = r["target"]["centroid"], r["reference"]["centroid"], r["axis"]
+        new = {"norm_gap": r6(normalized_gap(ct, cr, t, ref, ax)), "norm_gap_axis": r6(normalized_gap_axis(ct, cr, t, ref, ax)),
+               "bbox_iou": r6(bbox_iou(t, ref)), "proj_overlap": bool(projection_overlap(t, ref, ax)), "proj_overlap_frac": r6(projection_overlap_frac(t, ref, ax)),
+               "containment_target_in_reference": r6(containment(t, ref)), "containment_reference_in_target": r6(containment(ref, t))}
+        n = {k: (new[k] if k in new else v) for k, v in r.items()}
+        n.update({f"{k}_detbox": r[k] for k in BOX_FIELDS})
+        for side, b in (("target", t), ("reference", ref)):
+            n[side] = {**r[side], "bbox": b, "bbox_detbox": r[side]["bbox"]}
+        out.append(n)
+    return out
+
+
 def make_pair_id(image_id: int, target_ann: int, reference_ann: int) -> str:
     return f"{int(image_id):012d}_{int(target_ann)}_{int(reference_ann)}"
 
@@ -231,22 +264,15 @@ def record_to_sample(r: dict, anns: dict | None = None) -> Sample:
         extra[f"{side}_area_decoded"] = o["area_decoded"]
         extra[f"{side}_area_frac"] = o["area_frac"]
         extra[f"{side}_centroid"] = o["centroid"]
-    # 真值框 = mask 外接框（用户 2026-11-25）；记录里的 bbox 是 COCO 自带的框，几何量（间距、IoU 等）是按它算的，保留在 extra
-    extra["coco_bbox_target"], extra["coco_bbox_reference"] = list(t["bbox"]), list(ref["bbox"])
-    gt = {}
-    for side, o in (("target", t), ("reference", ref)):
-        if anns is None:
-            gt[side] = None
-        else:
-            im = load_coco_instances()["images"][r["image_id"]]
-            gt[side] = coco_segmentation_bbox(anns[o["ann_id"]]["segmentation"], im["height"], im["width"])
+    # 真值框 = mask 外接框（用户 2026-11-25）；COCO 自带框保留在 extra
+    extra["coco_bbox_target"], extra["coco_bbox_reference"] = list(t["bbox_detbox"]), list(ref["bbox_detbox"])
     cap_true = make_caption(t["category"], ref["category"], r["relation"])
     cap_false = make_caption(t["category"], ref["category"], OPPOSITE[r["relation"]])
     return Sample(
         dataset=DATASET, sample_id=r["pair_id"], image_path=str(coco_image_path(r["file_name"])),
         target=t["category"], reference=ref["category"], relation=r["relation"],
         caption_true=cap_true, caption_options=[cap_true, cap_false],
-        bbox_target=gt["target"], bbox_reference=gt["reference"],
+        bbox_target=list(t["bbox"]), bbox_reference=list(ref["bbox"]),
         mask_target=None if anns is None else anns[t["ann_id"]]["segmentation"],
         mask_reference=None if anns is None else anns[ref["ann_id"]]["segmentation"],
         extra=extra,

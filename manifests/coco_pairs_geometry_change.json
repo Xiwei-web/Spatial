@@ -1,0 +1,30 @@
+{
+ "n_pairs": 5124,
+ "n_relation_changed": 0,
+ "n_gap_bin_changed": 14,
+ "n_proj_overlap_changed": 16,
+ "max_abs_norm_gap_change": 0.06958099999999945,
+ "mean_abs_norm_gap_change": 0.0030199063231850145,
+ "gap_bin_transitions": {
+  "2-3 -> 3-5": 4,
+  "0.5-1 -> 1-1.5": 6,
+  "1-1.5 -> 1.5-2": 4
+ },
+ "n_proj_overlap": {
+  "old": 2908,
+  "new": 2892
+ },
+ "n_bbox_iou_gt0": {
+  "old": 2814,
+  "new": 2796
+ },
+ "per_gap_bin_new": {
+  "1-1.5": 1136,
+  "0.5-1": 1658,
+  "1.5-2": 596,
+  "<0.5": 778,
+  "3-5": 320,
+  ">=5": 88,
+  "2-3": 548
+ }
+}

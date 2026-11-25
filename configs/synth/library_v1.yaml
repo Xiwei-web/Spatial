@@ -1,0 +1,14 @@
+# 合成场景抠图库 v1（用户 2026-11-25）。成员 = v0 库的 1,333 个 COCO 抠图（同样的 mask 最大连通块），从原图按原分辨率重裁；
+# dev / test 由 splits/synth_cutouts_v2.json 继承所在图像的划分。
+version: library_v1
+background_gray: 128
+margin_frac: 0.10                 # 贴到灰色正方形上时四周留的边（占物体长边的比例）
+clip:                             # 可识别性过滤：不得使用任何被研究的 VLM；OpenAI CLIP 是 LLaVA-1.5 的视觉塔，故用 LAION 训练的 CLIP
+  model: CLIP-ViT-L-14-laion2B
+  prompt: "a photo of {article} {name}."
+  min_prob: 0.5                   # 正确类别在 80 个 COCO 类别上排第一，且 softmax 概率（模型自带 logit_scale）>= 0.5
+min_long_side_px: 128             # 原图里最大连通块紧致框的长边
+max_upscale: 1.5                  # 放大倍数 = 目标 sqrt(面积) / 原图 sqrt(mask 面积)，按最大尺寸档算
+max_sqrt_area_px: 161             # 最大尺寸档：画布宽 896 的 18%
+max_aspect: 3.0                   # mask 紧致框的长边 / 短边
+min_per_side: 3                   # 过滤后 dev、test 各至少 3 个抠图的类别才能用

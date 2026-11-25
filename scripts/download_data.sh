@@ -69,7 +69,12 @@ PY
   ( cd "$S" && find . -type f -not -path './.cache/*' -not -name SHA256SUMS | LC_ALL=C sort | sed 's|^\./||' | xargs -d '\n' sha256sum > SHA256SUMS )
   echo "files: $(find "$S" -type f -not -path '*/.cache/*' -not -name SHA256SUMS | wc -l)  bytes: $(find "$S" -type f -not -path '*/.cache/*' -not -name SHA256SUMS -printf '%s\n' | awk '{s+=$1} END {print s}')"
 }
+vg_meta() {  # Visual Genome 图像元数据（coco_id），1.8 MB
+  mkdir -p "$DATA/vg_meta"
+  dl https://homes.cs.washington.edu/~ranjay/visualgenome/data/dataset/image_data.json.zip "$ARCH/vg_image_data.json.zip" && unzip -q -n "$ARCH/vg_image_data.json.zip" image_data.json -d "$DATA/vg_meta"
+}
 case "${1:-all}" in
+  vg_meta) vg_meta ;;
   whatsup) whatsup ;; coco) coco ;; depth_meta) depth_meta ;;
   gqa_sg) gqa_sg ;; spatialrgpt) spatialrgpt ;;   # 新增目标不并入 all（需单独确认后再下）
   all) whatsup; coco; depth_meta ;;

@@ -42,3 +42,9 @@ models:
     revision: 05cb2be7f8dbe6ca7c6e78f4fc827a4b2baaa4a9
     license: apache-2.0
     why: "辅助：像素级抹除物体（LaMa 官方 README 给出的下载地址）；本阶段只下载不使用"
+  - name: CLIP-ViT-L-14-laion2B
+    hf_repo: laion/CLIP-ViT-L-14-laion2B-s32B-b82K
+    revision: 1627032197142fbe2a7cfec626f4ced3ae60d07a
+    license: mit
+    why: "辅助：合成场景抠图的可识别性过滤。不用 OpenAI CLIP，因为 LLaVA-1.5 的视觉塔是 OpenAI CLIP ViT-L/14-336"
+    allow_patterns: [README.md, config.json, preprocessor_config.json, tokenizer.json, tokenizer_config.json, special_tokens_map.json, vocab.json, merges.txt, model.safetensors]

@@ -1,0 +1,51 @@
+{
+ "file": "depth_candidates/cv_bench/test_3d.jsonl",
+ "n_3d": 1200,
+ "n_by_task": {
+  "Depth": 600,
+  "Distance": 600
+ },
+ "n_depth": 600,
+ "problems": {},
+ "all": {
+  "n": 600,
+  "n_source_images": 508,
+  "answer_A_share": 0.5,
+  "rule_d_bottom_acc": 0.853,
+  "rule_d_center_acc": 0.808,
+  "rule_log_area_acc": 0.595,
+  "n_contrary_to_bottom_rule": 88
+ },
+ "Omni3D_Hypersim": {
+  "n": 200,
+  "n_source_images": 184,
+  "answer_A_share": 0.515,
+  "rule_d_bottom_acc": 0.8,
+  "rule_d_center_acc": 0.795,
+  "rule_log_area_acc": 0.44,
+  "n_contrary_to_bottom_rule": 40
+ },
+ "Omni3D_SUNRGBD": {
+  "n": 200,
+  "n_source_images": 133,
+  "answer_A_share": 0.46,
+  "rule_d_bottom_acc": 0.82,
+  "rule_d_center_acc": 0.865,
+  "rule_log_area_acc": 0.67,
+  "n_contrary_to_bottom_rule": 36
+ },
+ "Omni3D_nuScenes": {
+  "n": 200,
+  "n_source_images": 191,
+  "answer_A_share": 0.525,
+  "rule_d_bottom_acc": 0.94,
+  "rule_d_center_acc": 0.765,
+  "rule_log_area_acc": 0.675,
+  "n_contrary_to_bottom_rule": 12
+ },
+ "balanced": {
+  "n_contrary": 88,
+  "n_consistent": 512,
+  "built": false
+ }
+}

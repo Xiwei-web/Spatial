@@ -277,7 +277,7 @@ def summarize(coco, image_ids, cands, funnel, records, obj_info, n_tie, in_one, 
         "tie": "|dx|==|dy| 归 above/below；质心完全重合时 ann_id 较小的一方记为 above（保证 twin 相反），并置 centroid_tie=true",
         "norm_gap": "质心欧氏距离 / 两个 bbox 沿关系轴长度的均值（水平轴用宽，竖直轴用高）",
         "norm_gap_axis": "质心差在关系轴上的分量 / 同一分母（补充量）",
-        "bbox": "COCO bbox 字段，转成 [x1,y1,x2,y2]",
+        "bbox": "真值框 = mask 外接框（[x1,y1,x2,y2]，用户 2026-11-25）；COCO 自带框及按它算的量保留在 *_detbox 字段",
         "size_ratio": "COCO area(target) / COCO area(reference)",
         "containment": "bbox 交集面积 / 自身 bbox 面积；两个方向都记",
         "proj_overlap": "两个 bbox 在关系轴上的投影区间重叠长度 > 0（端点相接不算）",
@@ -529,13 +529,10 @@ def write_report(s: dict, f: Path, pairs_path_display: str):
           "每条记录带 `in_coco_spatial_one` / `in_coco_spatial_two` 两个标记；没有因此剔除任何图像。", ""]
     sp = s["split"]
     L += ["## 10. dev / test 划分", "",
-          f"按**图像**划分（同一张图的所有 pair 在同一侧），对半，种子 {s['seed']}。分层方法：先给每张图算一个分层键 = "
-          "（主导关系轴，候选数档）。主导关系轴：该图的无向 pair 里 horizontal 多记 `H`，vertical 多记 `V`，一样多记 `T`"
-          "（left/right、above/below 在每张图里数量恒等，所以图像级能分层的只有水平/竖直）；候选数档：2 / 3 / 4+"
-          "（决定这张图贡献多少 pair）。每一层内把图像 id 排序后用 `random.Random(f\"{seed}:coco_pairs:{层键}\")` 打乱，"
-          "前一半归 dev，奇数时多出的 1 张归 test。间距和拥挤度没有参与分层，下面的表是事后核对。", "",
+          f"按**图像**划分，与 COCO-spatial 统一分配（种子 {s['seed']}，`scripts/make_joint_coco_split.py`，`splits/coco_images_v2.json`）。"
+          "层 = 属于哪些数据集（one / two / pairs）| 主导关系轴（H / V / T）| 候选物体数（2 / 3 / 4+）；下表也列出只属于 COCO-spatial 的层。", "",
           md_table(["层（主导轴/候选数）", "图像数", "dev", "test"],
-                   [[k, v["n_images"], v["dev"], v["test"]] for k, v in sp["per_stratum"].items()]), "",
+                   [[k, v.get("n_images", v.get("n")), v["dev"], v["test"]] for k, v in sp["per_stratum"].items()]), "",
           md_table(["", "dev", "test"],
                    [["图像数", sp["counts"]["dev"]["n_images"], sp["counts"]["test"]["n_images"]],
                     ["无向 pair", sp["counts"]["dev"]["n_undirected_pairs"], sp["counts"]["test"]["n_undirected_pairs"]],
@@ -549,8 +546,8 @@ def write_report(s: dict, f: Path, pairs_path_display: str):
                       ["也在 coco_spatial_one", sp["counts"]["dev"]["in_coco_spatial_one"], sp["counts"]["test"]["in_coco_spatial_one"]],
                       ["也在 coco_spatial_two", sp["counts"]["dev"]["in_coco_spatial_two"], sp["counts"]["test"]["in_coco_spatial_two"]]]), "",
           "（除前两行外，单位都是有向 pair。）", "",
-          "注意：COCO-Pairs 的 dev/test 与 COCO-spatial 自己的 dev/test 是各自独立划分的，同一张图可能在两边落在不同侧；"
-          "需要严格隔离时请用 `in_coco_spatial_*` 标记过滤。", ""]
+          "COCO-Pairs 与 COCO-spatial 的划分是按图像统一分配的（`splits/coco_images_v2.json`），同一张图在两个数据集里同侧。",
+          "本文所有框几何量按 mask 外接框计算；按 COCO 自带框的旧值在记录的 `*_detbox` 字段，变化逐条列在 `manifests/coco_pairs_geometry_change.csv`。", ""]
     f.parent.mkdir(parents=True, exist_ok=True)
     f.write_text("\n".join(L))
 
@@ -586,6 +583,7 @@ def main():
 
     cands, funnel = find_candidates(coco, image_ids)
     records, obj_info, n_tie = build_records(coco, cands, in_one, in_two)
+    records = cp.with_mask_boxes(records, coco)          # 框几何量按 mask 外接框；旧值在 *_detbox
     check_records(records)
     print(f"[info] 候选物体 {sum(len(v) for v in cands.values())}，有向 pair {len(records)}", flush=True)
 

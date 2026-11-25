@@ -43,7 +43,16 @@ def test_splits_cover_everything_and_old_ones_are_refused(monkeypatch):
         ids = [s.sample_id for x in ("dev", "test") for s in load_split(n, x)]
         assert len(ids) == len(set(ids)) == len(load_dataset(n))
     import src.data.splits as sp
-    for n in ("coco_spatial_one", "coco_spatial_two", "coco_pairs", "synth_cutouts"):
+    for n in ("coco_spatial_one", "coco_spatial_two", "coco_pairs", "synth_cutouts", "gqa_spatial_one", "gqa_spatial_two"):
         monkeypatch.setitem(sp.ACTIVE, n, n)          # 指回旧文件
         with pytest.raises(RuntimeError, match="作废"):
             sp.read_split(n)
+
+
+def test_no_image_crosses_sides_across_all_datasets():
+    """含 GQA（按 Visual Genome 的 coco_id 换成统一图像键）、COCO-Pairs、合成抠图、What's Up。"""
+    from scripts.check_split_consistency import run
+    if not (paths.get("data") / "vg_meta" / "image_data.json").is_file():
+        pytest.skip("VG 图像元数据未下载")
+    r = run()
+    assert r["n_cross_side"] == 0 and all(d["covers_all"] for d in r["datasets"].values())

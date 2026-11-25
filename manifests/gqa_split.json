@@ -1,0 +1,82 @@
+{
+ "n_images": 1208,
+ "n_images_by_side": {
+  "test": 608,
+  "dev": 600
+ },
+ "reason": {
+  "random_no_coco_id": 611,
+  "random_coco_id_not_in_split": 572,
+  "forced_by_coco_union": 21,
+  "forced_by_cutout_source_image": 4
+ },
+ "forced_by_side": {
+  "forced_by_coco_union:test": 15,
+  "forced_by_coco_union:dev": 6,
+  "forced_by_cutout_source_image:dev": 3,
+  "forced_by_cutout_source_image:test": 1
+ },
+ "n_with_coco_id": 597,
+ "duplicate_coco_ids": 0,
+ "gqa_images_in_coco_holdout": [
+  2406339
+ ],
+ "holdout_coco_ids_in_gqa": [
+  126226
+ ],
+ "datasets": {
+  "gqa_spatial_one": {
+   "samples": {
+    "dev": 581,
+    "test": 579
+   },
+   "images": {
+    "dev": 519,
+    "test": 524
+   },
+   "relations": {
+    "dev": {
+     "behind": 1,
+     "bottom": 115,
+     "left": 191,
+     "right": 177,
+     "top": 97
+    },
+    "test": {
+     "behind": 1,
+     "bottom": 83,
+     "left": 201,
+     "right": 199,
+     "top": 95
+    }
+   },
+   "samples_changing_side": 595
+  },
+  "gqa_spatial_two": {
+   "samples": {
+    "dev": 139,
+    "test": 152
+   },
+   "images": {
+    "dev": 127,
+    "test": 131
+   },
+   "relations": {
+    "dev": {
+     "behind": 2,
+     "front": 8,
+     "left": 59,
+     "right": 67,
+     "top": 3
+    },
+    "test": {
+     "behind": 3,
+     "front": 11,
+     "left": 68,
+     "right": 70
+    }
+   },
+   "samples_changing_side": 134
+  }
+ }
+}

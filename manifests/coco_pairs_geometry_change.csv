@@ -1,0 +1,31 @@
+pair_id,changed,relation_old,relation_new,gap_bin_old,gap_bin_new,norm_gap_old,norm_gap_new,proj_overlap_old,proj_overlap_new,target,reference
+000000025560_29572_1501321,gap_bin,above,above,2-3,3-5,2.999379,3.003069,False,False,tv,cup
+000000025560_1501321_29572,gap_bin,below,below,2-3,3-5,2.999379,3.003069,False,False,cup,tv
+000000092053_464740_694411,gap_bin,left,left,2-3,3-5,2.990558,3.003139,False,False,person,knife
+000000092053_694411_464740,gap_bin,right,right,2-3,3-5,2.990558,3.003139,False,False,knife,person
+000000108026_1106399_1117740,proj_overlap,above,above,1-1.5,1-1.5,1.044172,1.044172,True,False,mouse,keyboard
+000000108026_1117740_1106399,proj_overlap,below,below,1-1.5,1-1.5,1.044172,1.044172,True,False,keyboard,mouse
+000000150417_330873_711280,gap_bin,above,above,0.5-1,1-1.5,0.999467,1.000288,True,True,refrigerator,bowl
+000000150417_711280_330873,gap_bin,below,below,0.5-1,1-1.5,0.999467,1.000288,True,True,bowl,refrigerator
+000000163682_100419_293266,proj_overlap,left,left,1.5-2,1.5-2,1.71528,1.774174,True,False,chair,tie
+000000163682_293266_100419,proj_overlap,right,right,1.5-2,1.5-2,1.71528,1.774174,True,False,tie,chair
+000000189752_695017_2097457,proj_overlap,left,left,1-1.5,1-1.5,1.454051,1.456938,True,False,knife,wine glass
+000000189752_2097457_695017,proj_overlap,right,right,1-1.5,1-1.5,1.454051,1.456938,True,False,wine glass,knife
+000000221708_119239_330943,proj_overlap,right,right,1-1.5,1-1.5,1.097946,1.101113,True,False,dining table,refrigerator
+000000221708_330943_119239,proj_overlap,left,left,1-1.5,1-1.5,1.097946,1.101113,True,False,refrigerator,dining table
+000000269314_51951_1042088,gap_bin,right,right,1-1.5,1.5-2,1.499559,1.506924,False,False,cat,banana
+000000269314_1042088_51951,gap_bin,left,left,1-1.5,1.5-2,1.499559,1.506924,False,False,banana,cat
+000000297084_381505_437492,proj_overlap,left,left,1-1.5,1-1.5,1.002391,1.003086,True,False,chair,person
+000000297084_437492_381505,proj_overlap,right,right,1-1.5,1-1.5,1.002391,1.003086,True,False,person,chair
+000000353096_34529_1116633,proj_overlap,above,above,1-1.5,1-1.5,1.077556,1.080151,True,False,tv,keyboard
+000000353096_1116633_34529,proj_overlap,below,below,1-1.5,1-1.5,1.077556,1.080151,True,False,keyboard,tv
+000000409358_1096944_1134658,proj_overlap,left,left,1-1.5,1-1.5,1.125816,1.131118,True,False,toilet,sink
+000000409358_1134658_1096944,proj_overlap,right,right,1-1.5,1-1.5,1.125816,1.131118,True,False,sink,toilet
+000000438774_1088263_2227320,gap_bin,above,above,0.5-1,1-1.5,0.998348,1.0009,True,True,cake,dining table
+000000438774_2227320_1088263,gap_bin,below,below,0.5-1,1-1.5,0.998348,1.0009,True,True,dining table,cake
+000000460841_1210912_1623852,gap_bin,left,left,1-1.5,1.5-2,1.495836,1.50567,False,False,person,toilet
+000000460841_1623852_1210912,gap_bin,right,right,1-1.5,1.5-2,1.495836,1.50567,False,False,toilet,person
+000000480122_391893_1647525,gap_bin,below,below,0.5-1,1-1.5,0.997246,1.001189,True,True,dining table,refrigerator
+000000480122_1647525_391893,gap_bin,above,above,0.5-1,1-1.5,0.997246,1.001189,True,True,refrigerator,dining table
+000000554291_49229_2134921,proj_overlap,right,right,0.5-1,0.5-1,0.819625,0.822098,True,False,cat,mouse
+000000554291_2134921_49229,proj_overlap,left,left,0.5-1,0.5-1,0.819625,0.822098,True,False,mouse,cat
