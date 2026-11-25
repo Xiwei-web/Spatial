@@ -68,6 +68,7 @@ def whatsup_a() -> list[Sample]:
 
 
 def whatsup_b() -> list[Sample]:
+    """注意：front / behind 与垂直位置完全混淆（v3 标注上 target 质心更低即 front，204/204），深度检验只用 SpatialRGPT。"""
     return _controlled("whatsup_b", "controlled_clevr_dataset.json", "controlled_clevr", _B_RELS)
 
 

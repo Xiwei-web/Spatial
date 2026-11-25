@@ -217,7 +217,7 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 | 数据 | 数量 | 体积 | 许可 | 核对 |
 |---|---|---|---|---|
 | What's Up Subset A | 412 张（left/right **206**）；其中 2 张 pillow 因原始数据左右与标签相反被剔除，实际可用 410 张 | 合计 850 MB（含 GQA 图像） | 仓库 MIT；数据无单独许可声明 | 通过，无缺图 |
-| What's Up Subset B | **408** 张 | 同上 | 同上 | 通过，无缺图 |
+| What's Up Subset B（front / behind 与垂直位置完全混淆，深度检验只用 SpatialRGPT） | **408** 张 | 同上 | 同上 | 通过，无缺图 |
 | COCO-spatial（one / two） | 2,247 / 440 条 | 标注很小；图像见 COCO | 同上 | 通过，引用的图像都在 val2017 里 |
 | GQA-spatial（one / two） | 1,160 / 291 条；官方打包图像 4,797 张 | 含在 850 MB 内 | 同上 | 通过，无缺图 |
 | COCO val2017 + 实例标注 | 5,000 张 + `instances_val2017.json` | 835 MB | 标注 CC BY 4.0 | 通过（5,000） |
@@ -227,7 +227,7 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 | ImageNet val | 未下载 | — | — | 没有官方公共副本；有其他用户的可读副本 |
 
 - 加载器：`src/data/loaders.py`，六个数据集返回同一个 `Sample` 结构（图像路径、target、reference、关系、框、mask）。加载器里 What's Up A/B 的 `Sample` 没有框（标注 v3 用 `src/data/whatsup_annotations.py` 单独读取）；GQA 的框已由场景图补上（DATA_REPORT 3.1）；COCO-spatial 的框和 mask 是我用 COCO 实例标注按类别名唯一匹配得到的（全部样本都能唯一匹配），不是 What's Up 发布的。
-- 划分：`splits/*.json`，种子 20261125，按关系分层对半，已提交。
+- 划分：`splits/*.json`，种子 20261125，按关系分层对半，已提交。**COCO-spatial 的划分已作废**，由按图像的统一划分取代（DATA_REPORT 第 4 节）。
 - 抽样图：`/nfs-stor/xiwei.liu/interpretability/outputs/sanity/{whatsup_a,whatsup_b,coco_spatial_one,coco_spatial_two,gqa_spatial_one,gqa_spatial_two}.png`，**请肉眼检查**。我看了 `coco_spatial_two.png`，5 个样本的框与标签一致；其余几张我没有逐张看。
 
 ---

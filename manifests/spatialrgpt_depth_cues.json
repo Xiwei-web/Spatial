@@ -1,0 +1,98 @@
+{
+ "truth": "mask；真值关系见 src/data/spatialrgpt.py",
+ "subsets": {
+  "all_used": {
+   "n": 96,
+   "n_front": 52,
+   "n_source_images": 82,
+   "majority_baseline": 0.542,
+   "rule_target_centroid_lower_is_front": 0.844,
+   "rule_target_bottom_lower_is_front": 0.885,
+   "rule_target_larger_is_front": 0.583,
+   "cv": {
+    "centroid_dy": {
+     "stratified_5fold_x20": 0.837,
+     "group_by_source_image": 0.842
+    },
+    "bottom_dy": {
+     "stratified_5fold_x20": 0.854,
+     "group_by_source_image": 0.854
+    },
+    "log_area_ratio": {
+     "stratified_5fold_x20": 0.595,
+     "group_by_source_image": 0.564
+    },
+    "centroid_dy+log_area_ratio": {
+     "stratified_5fold_x20": 0.804,
+     "group_by_source_image": 0.803
+    },
+    "all_three": {
+     "stratified_5fold_x20": 0.851,
+     "group_by_source_image": 0.854
+    }
+   }
+  },
+  "explicit_only": {
+   "n": 67,
+   "n_front": 35,
+   "n_source_images": 58,
+   "majority_baseline": 0.522,
+   "rule_target_centroid_lower_is_front": 0.896,
+   "rule_target_bottom_lower_is_front": 0.925,
+   "rule_target_larger_is_front": 0.552,
+   "cv": {
+    "centroid_dy": {
+     "stratified_5fold_x20": 0.883,
+     "group_by_source_image": 0.895
+    },
+    "bottom_dy": {
+     "stratified_5fold_x20": 0.893,
+     "group_by_source_image": 0.895
+    },
+    "log_area_ratio": {
+     "stratified_5fold_x20": 0.533,
+     "group_by_source_image": 0.523
+    },
+    "centroid_dy+log_area_ratio": {
+     "stratified_5fold_x20": 0.86,
+     "group_by_source_image": 0.835
+    },
+    "all_three": {
+     "stratified_5fold_x20": 0.887,
+     "group_by_source_image": 0.88
+    }
+   }
+  },
+  "inferred_from_bare_no_only": {
+   "n": 29,
+   "n_front": 17,
+   "n_source_images": 29,
+   "majority_baseline": 0.586,
+   "rule_target_centroid_lower_is_front": 0.724,
+   "rule_target_bottom_lower_is_front": 0.793,
+   "rule_target_larger_is_front": 0.655,
+   "cv": {
+    "centroid_dy": {
+     "stratified_5fold_x20": 0.709,
+     "group_by_source_image": 0.667
+    },
+    "bottom_dy": {
+     "stratified_5fold_x20": 0.767,
+     "group_by_source_image": 0.76
+    },
+    "log_area_ratio": {
+     "stratified_5fold_x20": 0.689,
+     "group_by_source_image": 0.62
+    },
+    "centroid_dy+log_area_ratio": {
+     "stratified_5fold_x20": 0.656,
+     "group_by_source_image": 0.687
+    },
+    "all_three": {
+     "stratified_5fold_x20": 0.671,
+     "group_by_source_image": 0.687
+    }
+   }
+  }
+ }
+}

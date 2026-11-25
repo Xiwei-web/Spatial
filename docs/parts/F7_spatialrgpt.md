@@ -1,5 +1,11 @@
 # F7：SpatialRGPT-Bench
 
+> **更新（2026-11-25 晚）**：用户决定：两个区域同名的 14 条深度样本跳过；只回答 “No.” 一类的样本保留、标记（`extra["relation_inferred_from_bare_no"]`）并单独报告；真值框用 mask 外接框（自带框在 `extra["provided_bbox_*"]`）；改写规则仍等用户看过 20 条对照后再全量。
+>
+> 跳过同名后可用 **96** 条（front 52 / behind 44）：答案明确的 67 条（front 35 / behind 32），靠推断的 29 条（front 17 / behind 12；原来 34 条里有 5 条因同名被跳过）。
+>
+> **这些样本也有垂直位置捷径**（`manifests/spatialrgpt_depth_cues.json`）：规则“target 的 mask 下边缘更低 = front”在 96 条上 88.5%，在答案明确的 67 条上 92.5%（多数类 52.2%）；面积比几乎没有信息。
+
 日期 2026-11-25。代码：`src/data/spatialrgpt.py`（加载、front/behind 映射、改写规则、统计）、`scripts/spatialrgpt_rewrite_preview.py`（20 条预览）、`tests/test_gqa_spatialrgpt.py`。统计数字来自 `python -m src.data.spatialrgpt`（写到 `manifests/spatialrgpt_stats.json`）。没有跑任何模型，没有改写全量数据。
 
 **使用限制：SpatialRGPT-Bench 完整数据仅用于评测，不得再分发；HF 卡片未声明许可。**（卡片 README 的元数据里没有 `license` 字段，HF API 的 `cardData` 也没有；数据不进仓库。）

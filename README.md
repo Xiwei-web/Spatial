@@ -34,7 +34,9 @@ python scripts/smoke_test.py <模型名>     # 冒烟测试，输出到 outputs/
 
 ## 规则
 
-- dev / test：所有“选择”类操作只用 dev，所有报告数字只用 test。
+- dev / test：所有“选择”类操作只用 dev，所有报告数字只用 test。现行划分由 `src/data/splits.py` 登记；COCO-spatial、COCO-Pairs、合成抠图按图像统一划分（`splits/coco_images_v2.json`），带 `status: deprecated` 的旧文件会被拒绝读取。
+- 真值框 = 原始 mask（减去 target 之前）的外接框：What's Up 为 `box_gt_xyxy`（`src/data/whatsup_annotations.py`），COCO 与 SpatialRGPT 的 `Sample.bbox_*`。检测框 / 自带框只作对照。标注口径见 `configs/annotation/object_conventions.yaml`。
+- **What's Up B 的 front / behind 与垂直位置完全混淆**（v3 上“target 质心更低 = front”204 / 204 成立），答对不能说明用了深度信息；深度检验只用 SpatialRGPT。
 - **注意力实现与精度（所有正式实验必须遵守）**：
   - 干预组和它的对照基线必须用同一种注意力实现、同一种精度。
   - 每个模型另外报告一次默认实现下的无干预结果，作为参照。

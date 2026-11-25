@@ -209,10 +209,22 @@
 
 ### 2.3 标注口径
 
-口径文件 `configs/annotation/object_conventions.yaml`：plant 包含花盆；photograph 包含白色衬纸；shoes 包含两只鞋；microphone 不含线缆；rose、flower 不含花茎；bread 不含面包袋的透明尾部。
+口径文件 `configs/annotation/object_conventions.yaml`：plant 包含花盆；photograph 包含白色衬纸；shoes 包含两只鞋；microphone 不含线缆；rose、flower 不含花茎；bread 不含面包袋的透明尾部；glasses、sunglasses 包含镜片、整副填实。
 通用规则：**每个 mask 只包含该物体可见的像素；当 target 放在或挡在 reference 上时，reference 的 mask 不含被 target 覆盖的部分。**
 
-两种框都存：`box_det_xyxy`（检测框）和 `box_mask_xyxy`（mask 外接框）。**默认真值框用哪个尚未确定**（第 8 节）。
+**默认真值框 = 原始 mask（减去 target 之前）的外接框，存为 `box_gt_xyxy`**；检测框 `box_det_xyxy` 保留作对照。SpatialRGPT 和 COCO 也统一用 mask 外接框。两种框的 IoU（`manifests/whatsup_auto_v3_box_iou.json`、`manifests/truth_box_stats.json`）：
+
+| 数据 | 物体数 | 最小 | 5% 分位 | 中位数 | IoU < 0.8 |
+|---|---|---|---|---|---|
+| What's Up A（检测框对 mask 外接框） | 820 | 0.812 | 0.891 | 0.969 | 0 |
+| What's Up B（同上） | 816 | 0.754 | 0.924 | 0.966 | 1 |
+| COCO-spatial one / two（COCO 自带框） | 2,247 / 880 | 0.940 / 0.975 | 0.987 / 0.986 | 0.994 | 0 |
+| COCO-Pairs（不重复物体，COCO 自带框） | 3,101 | 0.880 | 0.982 | 0.994 | 0 |
+| SpatialRGPT 深度样本（数据集自带框） | 192 | 0.329 | 0.556 | 0.795 | 99 |
+
+- What's Up 里 IoU < 0.8 的唯一一个是 order 98 `cup_behind_flower` 的 flower（0.754）：mask 含花和花萼、不含花茎，检测框左侧多框了一段空地。
+- SpatialRGPT 自带框明显比 mask 松，改用 mask 外接框后真值变化很大。
+- COCO-Pairs 的几何量（间距、IoU 等）仍按 COCO 自带框计算，没有重算。
 
 ### 2.4 从 reference 的 mask 里减去 target
 
@@ -233,7 +245,7 @@
 | 161 | bottle_on_armchair | 173,074 | 170,696 | 2,378 | 98.6% |
 | 271 | laptop_under_chair | 67,329 | 65,052 | 2,277 | 96.6% |
 
-- 有 4 张减完后 mask 的外接框会变；按规则 reference 的 `box_mask_xyxy` 仍保留原 mask 的外接框，所以这 4 张的框与新 mask 不严格贴合。全部 109 张的清单：`manifests/whatsup_auto_v3_subtraction.csv`。
+- 有 4 张减完后 mask 的外接框会变；真值框按规定取减之前的外接框，所以这 4 张的框与减后的 mask 不严格贴合。全部 109 张的清单：`manifests/whatsup_auto_v3_subtraction.csv`。
 
 ### 2.5 质检
 
@@ -244,7 +256,7 @@
 ### 2.6 剔除的两张与已知不足
 
 - `pillow_left_of_chair`、`pillow_right_of_chair`：原始数据左右与标签相反（不是下载、解压或加载造成的）。按你的决定剔除、不改标签；更正表 `annotations/whatsup/corrections.yaml`，由 `load_split` 过滤，划分文件不变。两张都在 test，Subset A 因此 dev 204 / test 206。
-- 眼镜类：`glasses_on_armchair` 的 target mask 较粗（镜片中间有空洞，镜腿间的沙发面被包进来一点），减完后镜片空洞处留在扶手椅的 mask 里。口径表里没有眼镜是否含镜片的规定；其它眼镜类没有逐张看。
+- 眼镜类：`glasses_on_armchair` 的 target mask 较粗（镜片中间有空洞，镜腿间的沙发面被包进来一点），减完后镜片空洞处留在扶手椅的 mask 里。口径已定为“包含镜片，整副填实”，v3 没有因此重做：52 个眼镜类物体里，有封闭空洞的只有它明显（空洞占 mask 的 14.9%），其余都不超过 1.4%。镜腿与镜框之间的开口不算封闭空洞，没有统计。
 - 盆栽的藤蔓末端含少量叶片间的地面，order 340 有一片叶子与主体断开（你已确认不用修）。
 - 通过缩略图预审的 696 张里可能仍有未发现的错误。
 
@@ -264,7 +276,7 @@
 | two-object：reference | 287 / 291 | 98.6% |
 | two-object：两者都有 | 286 / 291 | 98.3% |
 
-- 匹配不上的 44 处：29 处名称对不上（同义词，如 “mobile phone” 对 `cell phone`），15 处同名物体有多个。样本全部保留并标记为无框。
+- 匹配不上的 44 处：29 处名称对不上（同义词，如 “mobile phone” 对 `cell phone`；按你的决定不补），15 处同名物体有多个。样本全部保留并标记为无框。
 - one-object 中 1,119 个能做左右/上下核对的唯一框，位置全部与 caption 所说的一侧一致；用关系标签也无法消除那 15 处多候选。
 - 1 张图（498187）场景图里的宽高字段有误，但框已在图像文件的像素坐标系里；32 个框越界 1 像素，已裁剪。
 - 产物：`manifests/gqa_spatial_boxes.json`；加载器 `gqa_spatial_one / two` 已带框；抽样图 `outputs/sanity/gqa_boxes.png`。
@@ -273,7 +285,9 @@
 
 - **使用限制：仅用于评测，不再分发；HF 卡片未声明许可。**
 - 下载：固定 commit `01b38d2c`，1,415 个文件，2.91 GB。`train-*` 与 `val-*` parquet 逐字节相同（重复 0.92 GB）。加载器只用 JSON + `images/`。
-- 前/后关系样本：**110 条**（`front_predicate` 55 + `behind_predicate` 55）；按答案换算成真实关系为 front 63 / behind 47。其中 34 条的标准答案只有 “No.”，真实关系是按“否定即相反”推出并标记的。
+- **用户决定后可用 96 条**：跳过两个区域同名的 14 条；靠 “No.” 推断的样本保留、标记并单独报告（跳过同名后 29 条，另有答案明确的 67 条）；真值框用 mask 外接框。
+- **也有垂直位置捷径**（`manifests/spatialrgpt_depth_cues.json`）：“target 的 mask 下边缘更低 = front”在 96 条上 88.5%，答案明确的 67 条上 92.5%，靠推断的 29 条上 79.3%。只用质心垂直差的逻辑回归（按来源图像分组 5 折）：0.842。面积比几乎没有信息（0.564）。程度比 What's Up B 轻，但不能假定它没有捷径。
+- 下载时的原始统计：前/后关系样本 **110 条**（`front_predicate` 55 + `behind_predicate` 55）；按答案换算成真实关系为 front 63 / behind 47。其中 34 条的标准答案只有 “No.”，真实关系是按“否定即相反”推出并标记的。
 - 带框 1,406 / 1,406（100%），带 mask 1,406 / 1,406（100%），数量与题目引用的区域数一致。数据自带的框不紧贴 mask（两者 IoU 中位数 0.80；2,546 个里 77 个 < 0.5）。
 - 两个区域类别名相同的：深度样本里 14 条，全集 123 条。
 - 改写规则只做了设计；20 条改写前后对照在 `docs/parts/F7_spatialrgpt.md` 的“20 条预览”，**等你确认后才全量改写**。
@@ -300,8 +314,18 @@
 | 有向对 | 632 | 1,200 | 1,258 | 1,154 | 724 | 156 |
 
 - 关系轴上投影重叠（关系本身有歧义）2,908；框 IoU > 0 的 2,814；mask IoU > 0 的 2,070。
-- 划分按图像：dev 635 张 / 2,542 对（743 / 743 / 528 / 528），test 639 张 / 2,582 对（763 / 763 / 528 / 528）。
-- 与 COCO-spatial 的重叠：1,274 张里 834 张也在 COCO-spatial one-object 里（其中 284 张在 two-object 里），440 张两者都不在。**两套划分是各自独立做的，同一张图可能在一边是 dev、另一边是 test**（见第 8 节）。
+- **划分（v2，统一）**：COCO-spatial 与 COCO-Pairs 的图像取并集 1,891 张，按图像一次性分配（种子 20261125），dev 945 / test 946；`splits/coco_images_v2.json`，脚本 `scripts/make_joint_coco_split.py`。按“属于哪些数据集 × 主轴 × 候选物体数”分层。
+
+| 数据集 | dev | test |
+|---|---|---|
+| COCO-Pairs | 637 张 / 2,550 有向对（左 757 右 757 上 518 下 518） | 637 张 / 2,574 有向对（左 749 右 749 上 538 下 538） |
+| COCO-spatial one | 1,122（{'bottom': 362, 'left': 275, 'right': 296, 'top': 189}） | 1,125（{'bottom': 382, 'left': 301, 'right': 268, 'top': 174}） |
+| COCO-spatial two | 208（{'above': 39, 'below': 37, 'left': 69, 'right': 63}） | 232（{'above': 47, 'below': 38, 'left': 81, 'right': 66}） |
+| 合成抠图 | 653 | 680 |
+
+- 旧划分的问题不止两套不一致：旧 COCO-spatial 按样本划分，one-object 有 318 张图、two-object 有 52 张图同时出现在 dev 和 test；旧抠图划分有 110 张图跨侧。旧文件保留并标记 `deprecated`，读取会报错。测试 `tests/test_joint_coco_split.py` 保证同一张图在所有数据集里同侧。
+- 按图像划分后 COCO-spatial 的关系类别不再严格对半（见上表）。
+- 1,274 张 COCO-Pairs 图里 834 张也在 COCO-spatial one-object 里（其中 284 张在 two-object 里），440 张两者都不在。
 - 口径说明：类别唯一性把 crowd 标注也计入；面积用 COCO 的 `area` 字段（与解码 mask 的面积平均相差 0.12%，4 个候选若用解码面积会落到范围外，两个值都存了）；归一化间距的分子是质心欧氏距离，另存了只沿关系轴的版本。
 
 ---
@@ -309,7 +333,8 @@
 ## 5. F4：参数化合成场景（详见 `docs/parts/F4_synth.md`）
 
 - 生成器 `src/synth/`，配置 `configs/synth/trial_v0.yaml`；每个场景的随机种子由全局种子 + 场景序号导出，可单独重生成。重新生成 20 个场景（60 张图），PNG 与元数据逐字节相同。
-- **抠图库目前只含 COCO**：1,333 个抠图、63 个类别，dev 656 / test 677，两侧不共用。构建时 F1 的标注还没出来，所以 What's Up 的部分没有纳入（代码路径已实现并用合成记录做了单元测试）。留出池的 1,000 张图已排除。有 659 个抠图来自 COCO-spatial 的图像、472 个来自 COCO-Pairs 的图像（已记录，未排除）。
+- **抠图库只用 COCO**（你的决定）：1,333 个抠图、63 个类别；留出池的 1,000 张图已排除。划分继承所在图像（v2）：dev 653 / test 680，749 个来自评测图像并集，其余来源图像也按图像分配。`book` 类只有 test 有（10 个），其余 62 类两侧都有。
+- **暂不扩量，等你看联系表。** trial_v0 用的是旧 dev 抠图，其中 326 个现在属于 test：它只能用来检查生成器，不能用于评测。之后的配置必须写 `cutout_split_name: synth_cutouts`，否则生成器拒绝运行。
 - 试生成：500 个基础场景 + 各 2 张孪生图 = 1,500 张，只用 dev 抠图。
 
 | 因素 | 每档基础场景数 |
@@ -347,7 +372,7 @@
 
 - 规则“target 质心在图像中更低就判 front”：**204 / 204**。v1 上有 3 张例外（98.5%），v3 中没有例外。
 - front 样本的 dy 均值 +0.28，behind 为 −0.30。
-- **含义：在 What's Up B 上，front / behind 完全可以由垂直位置决定，答对不能说明用了深度信息。**
+- **含义：What's Up B 的 front / behind 与垂直位置完全混淆，答对不能说明用了深度信息。** 按你的决定保留这些样本，深度检验只用 SpatialRGPT（它也有较强的垂直位置捷径，见 3.2）。
 - 注意：v3 修正的框里有 5 张是 front 样本（order 6、7、8、21、682），修正依据是物体身份（哪个是杯子、哪个是罐子），不是这条规则。
 
 ### 7.2 物体覆盖的视觉 token 数
@@ -402,19 +427,15 @@ A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50
 
 ## 8. 需要你决定或动手的事项（按阻塞程度排序）
 
-1. **默认真值框**：检测框还是 mask 外接框（阻塞：坐标约定标定、所有需要真值框的实验）。4 张图的 reference 减 mask 后外接框与新 mask 不贴合（2.4 节）。
-2. **COCO-Pairs 与 COCO-spatial 的划分不一致**：834 张共用图像可能一边是 dev 一边是 test。选项：(a) 让 COCO-Pairs 的划分服从 COCO-spatial；(b) 分析时用已记录的标记排除共用图像（剩 440 张图）；(c) 保持现状并限定两个数据集不混用于同一个选择—报告流程。
-3. **What's Up B 的 front / behind 完全由垂直位置决定**（7.1）：“深度关系”实验是否需要另找或另造不带这一捷径的数据。
-4. **SpatialRGPT 改写规则**：请看 20 条对照后确认；另要定：是否接受 34 条 “No.” 样本的否定推断；同名类别的 14 条（全集 123 条）跳过还是用“左边的 / 右边的”区分；定位真值用框还是 mask。
-5. **合成场景**：看联系表后确认生成器；来自 COCO-spatial / COCO-Pairs 图像的抠图是否要排除；自然背景用哪个来源。（抠图库只用 COCO，你已决定。）
-6. **框预测部分的精度**：bf16 下两种注意力实现的框输出不是逐 token 相同；InternVL3-8B 在 float32 下 40/40 相同（`docs/parts/bbox_impl_diff.md`）。正式实验的框预测用 bf16 还是 float32，请你定；其它模型没有做 float32 对照。
-7. **GLM-4.6V 的分辨率**：是否把它限制到与其它模型相近的视觉 token 数。
-8. **没有官方框约定的模型**：按你的决定，下一阶段用带真值框的 dev 子集标定。Qwen3-VL-8B 的 3D 框输出（40 次里 11 次解析不出）也留到那时。
-9. **GQA 的 29 处同义词**：是否做一张手工同义词表来补框。
-10. **眼镜类的口径**（2.6 节）：是否含镜片、镜腿间空隙怎么算。只影响 mask 精度要求高的实验。
-11. **GPU 节点**：gpu-05、gpu-07、gpu-49 上出现过缺卡或 CUDA 不可用（gpu-07 只认得到 3 张卡，分配到第 4 张时 CUDA 不可用），作业里已避开，建议报给管理员。能较快拿到卡的仍只有 debug QoS。
+1. **深度检验的数据**：SpatialRGPT 的前/后样本也有垂直位置捷径（下边缘规则：全部 96 条 88.5%，答案明确的 67 条 92.5%），且样本少。选项：(a) 照用，但必须同时报告“与捷径相反”的子集（下边缘规则判错的约 11 条，太少，只能作个案）；(b) 另找或另造垂直位置与深度解耦的数据。
+2. **框预测精度**：等 teacher-forced 对比（`fp32_dec`）结果。
+3. **SpatialRGPT 改写规则**：20 条对照（`docs/parts/F7_spatialrgpt.md`）等你确认。
+4. **合成场景联系表**：`outputs/synth_review/trial_v0/`，等你看；自然背景用哪个来源。
+5. **GQA-spatial 的划分也有同图跨侧**：它按样本划分，两个子集合计 1,208 张图里有 103 张同时出现在 dev 和 test（one-object 内部 56 张，two-object 内部 14 张）。是否也改成按图像统一划分，请你定，我没有改。另外 GQA 图像来自 Visual Genome，与 COCO 有部分重叠，是否与 COCO 划分对齐也没有处理。
+6. **没有官方框约定的模型**：下一阶段用带真值框的 dev 子集标定；Qwen3-VL-8B 的 3D 框输出也留到那时。
+7. **COCO-Pairs 的几何量**是否按 mask 外接框重算（现按 COCO 自带框；两种框 IoU 中位数 0.994）。
 
-已了结、不再列出：F1 审核与 v2 / v3、质检阈值调整、四个大模型的冒烟（你取消 435213，记为“未做，让位给数据作业”）。
+2026-11-25 已决定并落实：真值框（mask 外接框）；COCO 划分统一；What's Up B 的 front / behind 保留并注明混淆；SpatialRGPT 的同名跳过与 “No.” 标记；合成场景暂不扩量；GLM-4.6V 的像素预算；GQA 同义词不补；眼镜口径；坏节点由你上报。此前了结的：F1 审核与 v2 / v3、质检阈值、四个大模型的冒烟（未做，让位给数据作业）。
 
 ---
 

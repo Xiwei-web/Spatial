@@ -1,5 +1,7 @@
 # F2：GQA-spatial 的框（来自 GQA scene graph）
 
+> **更新（2026-11-25 晚）**：29 处同义词按用户决定不补，保持 `box_status` 标记为无框。
+
 日期 2026-11-25。代码：`src/data/gqa_boxes.py`（匹配规则）、`scripts/build_gqa_boxes.py`（生成 + 统计 + 拼图）、`src/data/loaders.py`（接入）、`tests/test_gqa_spatialrgpt.py`。没有跑任何模型。
 
 ## 下载

@@ -1,5 +1,7 @@
 # F4 参数化合成场景生成器（试跑 trial_v0）
 
+> **更新（2026-11-25 晚）**：用户决定：抠图库只用 COCO；暂不扩量。抠图划分改为继承所在图像（`splits/synth_cutouts_v2.json`，dev 653 / test 680），同一张图的抠图不再跨侧；旧的 `splits/synth_cutouts.json` 和库内嵌的 split 字段作废。trial_v0 用的是旧 dev 抠图，其中 326 个现在属于 test，所以 **trial_v0 只能用于检查生成器，不能用于任何评测**。按图像继承后 `book` 类在 dev 没有抠图（10 个都在 test），其余 62 类两侧都有。
+
 状态：切图库已建好（**只含 COCO**，What's Up 自动标注在构建时还没产出），500 个基础场景 + 各 2 张孪生图 = 1,500 张图已生成。
 没有生成正式全量集，没有跑任何模型。所有数字来自 `manifests/synth_cutouts.json` 和 `manifests/synth_trial_v0.json`
 （Slurm 作业 435245，cscc-cpu-p，8 核，节点 cn-14，已正常结束）。
