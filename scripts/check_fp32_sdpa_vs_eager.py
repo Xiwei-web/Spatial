@@ -4,7 +4,9 @@
 切换的是语言模型的注意力实现；InternVL 的视觉塔是远程代码自带的 _naive_attn，两种设置下相同。
 每种实现跑两遍：第二遍只用来确认同一设置自身可复现。
 另外与已保存的 bf16 结果（default_vs_eager.json）逐 token 对照，不重跑 bf16。
-输出：<outputs>/diagnostics/fp32_sdpa_vs_eager_<模型>.json"""
+切换是否生效用直接证据判断：统计语言模型层里 eager_attention_forward 与 F.scaled_dot_product_attention 的实际调用次数。
+（不用 output_attentions 判断：多卡切分时 InternVL 远程代码的 forward 会因跨设备索引报错，generate 不受影响。）
+输出：<outputs>/diagnostics/fp32_sdpa_vs_eager_<模型>[_标签].json（第二个命令行参数为标签）"""
 import json
 import subprocess
 import sys
@@ -38,28 +40,48 @@ def use(impl):
         c._attn_implementation = orig[k] if impl == "eager" else "sdpa"
 
 
+# ---- 调用计数 ----
+calls = {"eager": 0, "sdpa": 0}
+in_lm = {"on": False}
+lm_mod = sys.modules[type(ad.lm_layers[0].self_attn).__module__]
+_eager, _sdpa = lm_mod.eager_attention_forward, torch.nn.functional.scaled_dot_product_attention
+
+
+def eager_counted(*a, **k):
+    calls["eager"] += 1
+    return _eager(*a, **k)
+
+
+def sdpa_counted(*a, **k):
+    calls["sdpa"] += in_lm["on"]
+    return _sdpa(*a, **k)
+
+
+lm_mod.eager_attention_forward = eager_counted
+torch.nn.functional.scaled_dot_product_attention = sdpa_counted
+for l in ad.lm_layers:       # 只统计语言模型层里的 sdpa（视觉塔不计）
+    l.self_attn.register_forward_pre_hook(lambda m, i: in_lm.__setitem__("on", True))
+    l.self_attn.register_forward_hook(lambda m, i, o: in_lm.__setitem__("on", False))
+
 items = json.load(open(paths.REPO_ROOT / "splits" / "smoke20.json"))["items"]
 by_id = {(ds, s.sample_id): s for ds in {i["dataset"] for i in items} for s in load_dataset(ds)}
 samples = [by_id[(i["dataset"], i["sample_id"])] for i in items]
 bc = bbox_convention(name)
 jobs = [(s, role, bc["prompt_template"].format(object=getattr(s, role))) for s in samples for role in ("target", "reference")]
 assert len(jobs) == 40
-runs, probe, secs = {}, {}, {}
+runs, secs, ncalls, logits = {}, {}, {}, {}
 for impl in ("eager", "sdpa"):
     use(impl)
-    try:
-        a = ad.forward(ad.prepare(Image.open(jobs[0][0].image_path), jobs[0][2]), output_attentions=True).attentions
-        probe[impl] = "none" if a is None or all(x is None for x in a) else "returned"
-        del a
-    except Exception as e:
-        probe[impl] = f"error: {type(e).__name__}: {e}"[:200]
     for rep in (1, 2):
-        t0, out = time.time(), []
+        k = f"{impl}_{rep}"
+        calls.update(eager=0, sdpa=0)
+        t0, out, lg = time.time(), [], []
         for s, role, prompt in jobs:
             g = ad.generate(ad.prepare(Image.open(s.image_path), prompt), 96)
+            lg.append(g["first_logits"])
             out.append({"dataset": s.dataset, "sample_id": s.sample_id, "role": role, "tokens": g["token_ids"], "text": g["text_raw"]})
-        runs[f"{impl}_{rep}"], secs[f"{impl}_{rep}"] = out, round(time.time() - t0, 1)
-        print(impl, rep, "done", secs[f"{impl}_{rep}"], "s; attentions:", probe[impl], flush=True)
+        runs[k], secs[k], ncalls[k], logits[k] = out, round(time.time() - t0, 1), dict(calls), torch.stack(lg)
+        print(k, "done", secs[k], "s; calls:", ncalls[k], flush=True)
 
 
 def ident(x, y):
@@ -83,7 +105,11 @@ bf = {k: [r for r in v if r["task"] == "bbox"] for k, v in old.items()}     # ob
 for v in bf.values():
     assert [r["sample_id"] for r in v] == [r["sample_id"] for r in e]
 res = {"model": name, "dtype": "float32", "param_dtypes": dtypes, "n": 40,
-       "attentions_available": probe, "switch_effective": probe["eager"] == "returned" and probe["sdpa"] != "returned",
+       "lm_attention_calls": ncalls,
+       "switch_effective": all(ncalls[f"eager_{r}"]["eager"] > 0 and ncalls[f"eager_{r}"]["sdpa"] == 0 and ncalls[f"sdpa_{r}"]["sdpa"] > 0
+                               and ncalls[f"sdpa_{r}"]["eager"] == 0 for r in (1, 2)),
+       "fp32_first_logits_max_abs_diff_eager_vs_sdpa": float((logits["eager_1"] - logits["sdpa_1"]).abs().max()),
+       "fp32_first_logits_bit_identical_eager_vs_sdpa": bool(torch.equal(logits["eager_1"], logits["sdpa_1"])),
        "fp32_eager_vs_sdpa_identical": ident(e, d), "fp32_eager_vs_sdpa_diffs": diffs(e, d),
        "fp32_eager_repeat_identical": ident(e, runs["eager_2"]), "fp32_sdpa_repeat_identical": ident(d, runs["sdpa_2"]),
        "bf16_eager_vs_bf16_sdpa_identical(saved)": ident(bf["observed"], bf["reference"]),
@@ -92,6 +118,6 @@ res = {"model": name, "dtype": "float32", "param_dtypes": dtypes, "n": 40,
        "seconds_per_40": secs, "peak_mem_gb_per_gpu": [round(torch.cuda.max_memory_allocated(i) / 2**30, 2) for i in range(torch.cuda.device_count())],
        "git_commit": subprocess.run(["git", "rev-parse", "HEAD"], cwd=paths.REPO_ROOT, capture_output=True, text=True).stdout.strip(),
        "runs": runs}
-out = paths.get("outputs") / "diagnostics" / f"fp32_sdpa_vs_eager_{name}.json"
+out = paths.get("outputs") / "diagnostics" / ("fp32_sdpa_vs_eager_" + "_".join(sys.argv[1:3]) + ".json")
 json.dump(res, open(out, "w"), indent=1, ensure_ascii=False)
 print("SUMMARY", name, {k: (len(v) if k.endswith("_diffs") else v) for k, v in res.items() if k != "runs"})
