@@ -13,6 +13,7 @@ qc:                                                 # 与 v2 相同
   min_area_frac: {whatsup_a: 0.0002, whatsup_b: 0.002}
   max_area_frac: 0.60
   max_pair_mask_iou: 0.5
+  max_inter_over_target: 0.01   # target 与 reference 的 mask 交集占 target 面积超过 1% 就标记（target_covered_by_reference）
   geometry: {left: "target 质心 x < reference 质心 x", right: "target 质心 x > reference 质心 x",
              on: "target 质心 y < reference 检测框下边缘 y", under: "target 质心 y > reference 质心 y"}
   min_mask_box_iou: 0.8

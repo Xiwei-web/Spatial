@@ -9,3 +9,4 @@ qc:                     # 自动质检阈值（任何一条不满足就进待审
   min_area_frac: 0.002
   max_area_frac: 0.60
   max_pair_mask_iou: 0.5
+  max_inter_over_target: null   # 该检查 2026-11-25 才加入；本版本已冻结，不执行

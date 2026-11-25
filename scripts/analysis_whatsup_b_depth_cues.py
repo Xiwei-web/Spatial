@@ -3,25 +3,23 @@
 特征（只有两个）：dy = (target 质心 y − reference 质心 y) / 图像高度；log_area_ratio = ln(target mask 面积 / reference mask 面积)
 模型：标准化 + 逻辑回归。评估：分层 5 折交叉验证（重复 20 次），以及按 (target, reference) 物体组合分组的 5 折
 （同一对物体的 front/behind 两张图不会同时出现在训练和测试里）。
-标注来自 F1 的“自动标注”（未经人工验证）；同时给出“全部样本”和“仅自动质检通过”的结果。
+标注：What's Up 定稿标注 v3（自动标注，经模型辅助预审和部分人工复核）。v1 上的旧结果保留在 manifests/whatsup_b_depth_cues.json，本脚本写 ..._v3.json。
 用法：source scripts/env.sh tools && python scripts/analysis_whatsup_b_depth_cues.py"""
 import json
 
 import numpy as np
-import yaml
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GroupKFold, RepeatedStratifiedKFold, cross_val_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
 from src import paths
+from src.data.whatsup_annotations import load_annotations
 
-cfg = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "annotation" / "whatsup_auto.yaml"))
-rows = [json.loads(l) for l in open(paths.get("data") / "whatsup_annotations" / cfg["version"] / "annotations.jsonl")]
+rows = load_annotations("auto_v3")
 rows = [r for r in rows if r["dataset"] == "whatsup_b" and r["relation"] in ("front", "behind")]
-out = {"annotation": f"{cfg['version']} (automatic, not human-verified)", "n_front_behind_total": len(rows), "subsets": {}}
-for tag, sub in (("all_with_both_masks", [r for r in rows if all(r["objects"][k]["mask_area"] for k in ("target", "reference"))]),
-                 ("auto_qc_pass_only", [r for r in rows if r["auto_qc"] == "pass"])):
+out = {"annotation": "auto_v3 定稿（自动标注，经模型辅助预审和部分人工复核）", "n_front_behind_total": len(rows), "subsets": {}}
+for tag, sub in (("all_front_behind", rows),):
     T = [r["objects"]["target"] for r in sub]; R = [r["objects"]["reference"] for r in sub]
     dy = np.array([(t["mask_centroid_xy"][1] - q["mask_centroid_xy"][1]) / r["height"] for t, q, r in zip(T, R, sub)])
     la = np.log(np.array([t["mask_area"] / q["mask_area"] for t, q in zip(T, R)]))
@@ -42,6 +40,7 @@ for tag, sub in (("all_with_both_masks", [r for r in rows if all(r["objects"][k]
                                      "group_5fold_by_object_pair_mean": float(g.mean()), "group_fold_min": float(g.min()), "group_fold_max": float(g.max())}
     # 最简单的单阈值规则：target 质心更低（dy>0）就判 front
     res["rule_dy_gt_0_is_front_accuracy"] = float(((dy > 0).astype(int) == y).mean())
+    res["rule_exceptions"] = [{"sample_id": r["sample_id"], "relation": r["relation"], "dy": round(float(v), 4)} for r, v, t in zip(sub, dy, y) if (v > 0) != bool(t)]
     out["subsets"][tag] = res
-json.dump(out, open(paths.REPO_ROOT / "manifests" / "whatsup_b_depth_cues.json", "w"), indent=1, ensure_ascii=False)
+json.dump(out, open(paths.REPO_ROOT / "manifests" / "whatsup_b_depth_cues_v3.json", "w"), indent=1, ensure_ascii=False)
 print(json.dumps(out, indent=1, ensure_ascii=False))

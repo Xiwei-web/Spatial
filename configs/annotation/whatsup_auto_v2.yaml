@@ -17,6 +17,7 @@ qc:
   min_area_frac: {whatsup_a: 0.0002, whatsup_b: 0.002}   # (b) Subset A 小物体：只标记小于 0.02% 的；Subset B 仍为 0.2%
   max_area_frac: 0.60
   max_pair_mask_iou: 0.5
+  max_inter_over_target: null   # 该检查 2026-11-25 才加入；本版本已冻结，不执行
   geometry:            # (c)
     left: "target 质心 x < reference 质心 x"
     right: "target 质心 x > reference 质心 x"

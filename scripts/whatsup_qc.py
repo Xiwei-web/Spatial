@@ -20,10 +20,11 @@ import yaml
 from pycocotools import mask as mu
 
 from src import paths
+from src.annotate.masks import intersection_area
 from src.data import load_dataset
 
 FLAGS = ["not_detected", "ambiguous_candidates", "low_score", "area_out_of_range", "pair_mask_overlap", "geometry_inconsistent",
-         "mask_box_mismatch", "target_no_alternative"]
+         "mask_box_mismatch", "target_no_alternative", "target_covered_by_reference"]
 
 
 def box_iou(a, b):
@@ -74,6 +75,11 @@ def qc_one(rec: dict, q: dict) -> dict:
             ok = {"left": tx < rx, "right": tx > rx, "on": ty < ry, "under": ty > ry}.get(rel)   # front/behind 不检查
         if ok is False:
             flags["geometry_inconsistent"].append(rel)
+    # target 与 reference 的 mask 交集占 target 面积超过阈值（默认 1%，配置里没写也执行；v1/v2 已冻结，配置里显式为 null）
+    lim = q.get("max_inter_over_target", 0.01)
+    if lim is not None and T["mask_rle"] and R["mask_rle"] and T["mask_area"]:
+        if intersection_area(T["mask_rle"], R["mask_rle"]) / T["mask_area"] > lim:
+            flags["target_covered_by_reference"].append("pair")
     active = [f for f in FLAGS if flags[f]]
     return {"flags": {f: flags[f] for f in active}, "auto_qc": "review" if active else "pass", "pair_mask_iou": pair_iou}
 

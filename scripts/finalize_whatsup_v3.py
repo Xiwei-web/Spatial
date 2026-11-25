@@ -27,6 +27,7 @@ from pycocotools import mask as mu
 from scripts.whatsup_qc import qc_one
 from src import paths
 from src.annotate import sam
+from src.annotate.masks import subtract_target_from_reference
 from src.data import load_dataset
 
 CFG = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "annotation" / "whatsup_auto_v3.yaml"))
@@ -117,18 +118,50 @@ def main():
             log.append([order, *key, "待确认 plant mask（usable=false）" if pending else "按确认更新", detail + differs, basis])
         elif rec["v3_status"] == "changed_by_review_pick":
             log.append([order, *key, "按审核改选并重新分割（初版已做）", f"target 候选 {T['selected_candidate_rank'] + 1}，reference 候选 {R['selected_candidate_rank'] + 1}", "审核表的候选编号"])
-    # ---- 全量重算质检 ----
-    changed_flags_unchanged_rows, geom = [], []
+    # ---- 减之前：用原 mask 重算质检（关闭重叠检查），核对未改动的图标记与 v2 完全相同 ----
+    q_raw = dict(CFG["qc"], max_inter_over_target=None)
     for rec in draft:
-        old = (rec["flags"], rec["auto_qc"])
+        new = qc_one(rec, q_raw)
+        if rec["v3_status"] == "unchanged_from_v2":
+            assert (rec["flags"], rec["auto_qc"]) == (new["flags"], new["auto_qc"]), (rec["review_order_v2"], rec["flags"], new["flags"])
+        rec["qc_before_subtraction"] = qc_one(rec, CFG["qc"])["flags"]
+    # ---- reference 的 mask 减去 target 的 mask（有交集就减，所有关系类型） ----
+    sub = []
+    for rec in draft:
+        rec["objects"]["reference"].setdefault("mask_reference_raw", None)
+        st = subtract_target_from_reference(rec)
+        if st:
+            sub.append({"order_v2": rec["review_order_v2"], "dataset": rec["dataset"], "sample_id": rec["sample_id"], "relation": rec["relation"],
+                        "usable": rec["usable"], **st})
+    # ---- 减之后：最终质检与几何 ----
+    geom = []
+    for rec in draft:
         rec.update(qc_one(rec, CFG["qc"]))
         rec["geometry_consistent"] = geometry_ok(rec)
         rec.pop("lr_geometry_consistent", None)
-        if rec["v3_status"] == "unchanged_from_v2" and old != (rec["flags"], rec["auto_qc"]):
-            changed_flags_unchanged_rows.append((rec["review_order_v2"], old[0], rec["flags"]))
         if rec["geometry_consistent"] is False:
             geom.append(rec)
-    assert not changed_flags_unchanged_rows, changed_flags_unchanged_rows[:3]
+    with open(M / "whatsup_auto_v3_subtraction.csv", "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(sub[0]))
+        w.writeheader()
+        w.writerows(sorted(sub, key=lambda x: x["new_area"] - x["raw_area"]))
+    # ---- 与用户看过的 plant 版本逐像素比对 ----
+    cmp_plants = []
+    prev = D / "annotations_pending_plants.jsonl"
+    if prev.is_file():
+        old = {r["sample_id"]: r for r in map(json.loads, open(prev))}
+        for rec, *_ in plant_vis:
+            a, b = (mu.decode(x["objects"]["target"]["mask_rle"]).astype(bool) for x in (old[rec["sample_id"]], rec))
+            cmp_plants.append({"sample_id": rec["sample_id"], "pixels_differ": int((a ^ b).sum())})
+        cmp_all = {}
+        for rec in draft:
+            o = old[rec["sample_id"]] if old[rec["sample_id"]]["dataset"] == rec["dataset"] else None
+            if o:
+                for role in ("target", "reference"):
+                    n = rec["objects"][role]
+                    n = (n.get("mask_reference_raw") or n)["mask_rle"]
+                    if n != o["objects"][role]["mask_rle"]:
+                        cmp_all[f"{rec['sample_id']}:{role}"] = int((mu.decode(n) ^ mu.decode(o["objects"][role]["mask_rle"])).sum())
     with open(D / "annotations.jsonl", "w") as f:
         for rec in draft:
             f.write(json.dumps(rec) + "\n")
@@ -147,10 +180,19 @@ def main():
             "usable_by_dataset": dict(Counter(r["dataset"] for r in draft if r["usable"])), "review_source": dict(Counter(r["review_source"] for r in draft)),
             "geometry_inconsistent": [(r["review_order_v2"], r["sample_id"], r["v3_status"], r["usable"]) for r in geom],
             "qc_flags_on_changed_rows": {r["sample_id"]: r["flags"] for r in draft if r["v3_status"] not in ("unchanged_from_v2",) and r["flags"]},
-            "plant_mask_stats": [s for *_, s in plant_vis], "annotations_sha256": hashlib.sha256((D / "annotations.jsonl").read_bytes()).hexdigest()}
+            "plant_mask_stats": [s for *_, s in plant_vis],
+            "plants_vs_reviewed_version": cmp_plants, "other_raw_masks_differing_from_reviewed_version": cmp_all if prev.is_file() else None,
+            "subtraction": {"n_rows_changed": len(sub), "n_inter_over_target_gt_1pct": sum(x["inter_over_target"] > 0.01 for x in sub),
+                            "by_dataset": dict(Counter(x["dataset"] for x in sub)), "by_relation": dict(Counter(x["relation"] for x in sub)),
+                            "top10_area_reduction": sorted(sub, key=lambda x: x["new_area"] - x["raw_area"])[:10],
+                            "remaining_below_50pct": [x for x in sub if x["remaining"] < 0.5], "n_bbox_would_change": sum(x["bbox_would_change"] for x in sub)},
+            "qc_flag_counts_before_subtraction": dict(Counter(f for r in draft for f in r["qc_before_subtraction"])),
+            "qc_flag_counts_final": dict(Counter(f for r in draft for f in r["flags"])), "annotations_sha256": hashlib.sha256((D / "annotations.jsonl").read_bytes()).hexdigest()}
     json.dump(summ, open(M / "whatsup_auto_v3_summary.json", "w"), indent=1, ensure_ascii=False)
     print(json.dumps(summ, indent=1, ensure_ascii=False))
 
+    if PLANTS_OK:        # 用户看过的叠加图不覆盖
+        return
     # ---- 8 张 plant 的叠加图（一页）：每张左为原图裁剪，右为叠加；用轮廓线显示 mask 边界，避免颜色与物体接近时看不清 ----
     import matplotlib
     matplotlib.use("Agg")

@@ -5,7 +5,8 @@
   InternVL 系（固定单视图 448x448）：16x16，直接取冒烟 summary.json 里记录的网格。
 覆盖定义：把物体 mask 投到网格上，统计 (a) 与 mask 有任何重叠的格子数；(b) 格子面积≥50% 被 mask 覆盖的格子数。
 质心距离：两个 mask 质心在网格坐标下的欧氏距离（单位：token）。
-标注来自 F1 的“自动标注”（未经人工验证）；只统计自动质检通过的图像，同时给出全部有 mask 图像的数字。
+标注：What's Up 定稿标注 v3（自动标注，经模型辅助预审和部分人工复核），只用 usable 的样本；reference 的 mask 已减去 target。
+v1 标注上的旧结果保留在 manifests/whatsup_token_coverage_v1.json。
 用法：source scripts/env.sh tf5 && python scripts/analysis_token_coverage.py"""
 import json
 
@@ -15,17 +16,15 @@ from PIL import Image
 from pycocotools import mask as mu
 
 from src import paths
+from src.data.whatsup_annotations import load_annotations
 
 W, H = 1280, 960
 SMOKE_MAX = 1003520
 ad = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "adapters.yaml"))
-cfg = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "annotation" / "whatsup_auto.yaml"))
-rows = [json.loads(l) for l in open(paths.get("data") / "whatsup_annotations" / cfg["version"] / "annotations.jsonl")]
-rows = [r for r in rows if all(r["objects"][k]["mask_rle"] for k in ("target", "reference"))]
+rows = load_annotations("auto_v3")
 assert all((r["width"], r["height"]) == (W, H) for r in rows)
 masks = [{k: mu.decode(r["objects"][k]["mask_rle"]).astype(np.float32) for k in ("target", "reference")} for r in rows]
 cents = [{k: r["objects"][k]["mask_centroid_xy"] for k in ("target", "reference")} for r in rows]
-passed = np.array([r["auto_qc"] == "pass" for r in rows])
 is_a = np.array([r["dataset"] == "whatsup_a" for r in rows])
 
 
@@ -85,8 +84,8 @@ def q(v):
     return {"p5": round(float(np.percentile(v, 5)), 1), "median": round(float(np.median(v)), 1), "p95": round(float(np.percentile(v, 95)), 1)}
 
 
-result = {"annotation": f"{cfg['version']} (automatic, not human-verified)", "image_size": [W, H], "n_images_with_both_masks": len(rows),
-          "n_auto_qc_pass": int(passed.sum()), "models": {}}
+result = {"annotation": "auto_v3 定稿（自动标注，经模型辅助预审和部分人工复核）", "image_size": [W, H], "n_images_with_both_masks": len(rows),
+          "n_A": int(is_a.sum()), "n_B": int((~is_a).sum()), "models": {}}
 cache = {}
 for name, spec in ad["models"].items():
     if spec.get("group") != 1:
@@ -95,21 +94,24 @@ for name, spec in ad["models"].items():
     for tag, g in grids_for(name, spec).items():
         gh, gw = g[0], g[1]
         if (gh, gw) not in cache:
-            st = {"t_any": [], "t_half": [], "r_any": [], "r_half": [], "dist": []}
+            st = {"t_any": [], "t_half": [], "r_any": [], "r_half": [], "dist": [], "shared": []}
             for m, c in zip(masks, cents):
                 ct, cr = cover(m["target"], gh, gw), cover(m["reference"], gh, gw)
                 st["t_any"].append((ct > 0).sum()); st["t_half"].append((ct >= 0.5).sum())
                 st["r_any"].append((cr > 0).sum()); st["r_half"].append((cr >= 0.5).sum())
+                st["shared"].append(((ct > 0) & (cr > 0)).sum())       # 同时与两个物体有重叠的 token
                 st["dist"].append(float(np.hypot((c["target"][0] - c["reference"][0]) * gw / W, (c["target"][1] - c["reference"][1]) * gh / H)))
             cache[(gh, gw)] = {k: np.array(v) for k, v in st.items()}
         st = cache[(gh, gw)]
         entry = {"grid_hw": [gh, gw], "n_visual_tokens": gh * gw, "cell_px_in_original": [round(W / gw, 1), round(H / gh, 1)], "notes": list(g[2:])}
-        for sel_tag, sel in (("auto_qc_pass", passed), ("all", np.ones(len(rows), bool)), ("auto_qc_pass_A", passed & is_a), ("auto_qc_pass_B", passed & ~is_a)):
+        for sel_tag, sel in (("all", np.ones(len(rows), bool)), ("A", is_a), ("B", ~is_a)):
             entry[sel_tag] = {"n": int(sel.sum()), "target_tokens_any_overlap": q(st["t_any"][sel]), "target_tokens_ge50pct": q(st["t_half"][sel]),
                               "reference_tokens_any_overlap": q(st["r_any"][sel]), "reference_tokens_ge50pct": q(st["r_half"][sel]),
                               "centroid_distance_tokens": q(st["dist"][sel]),
+                              "tokens_overlapping_both_objects": q(st["shared"][sel]),
+                              "share_images_where_every_target_token_also_overlaps_reference": round(float((st["shared"][sel] == st["t_any"][sel]).mean()), 3),
                               "share_target_with_zero_ge50pct_tokens": round(float((st["t_half"][sel] == 0).mean()), 3)}
         result["models"][name][tag] = entry
-        e = entry["auto_qc_pass"]
+        e = entry["all"]
         print(f"{name:32s} {tag:28s} grid {gh}x{gw:<3d} target(any) {e['target_tokens_any_overlap']} ref(any) {e['reference_tokens_any_overlap']} dist {e['centroid_distance_tokens']}", flush=True)
 json.dump(result, open(paths.REPO_ROOT / "manifests" / "whatsup_token_coverage.json", "w"), indent=1, ensure_ascii=False)

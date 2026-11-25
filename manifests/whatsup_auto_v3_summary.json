@@ -1,18 +1,17 @@
 {
  "version": "auto_v3",
- "finalized": false,
+ "finalized": true,
  "status_wording": "自动标注，经模型辅助预审和部分人工复核",
  "n": 820,
  "v3_status": {
-  "changed_by_user_confirmation": 17,
+  "changed_by_user_confirmation": 25,
   "changed_by_review_pick": 7,
   "unchanged_from_v2": 786,
-  "excluded_label_contradicts_image": 2,
-  "pending_plant_mask_confirmation": 8
+  "excluded_label_contradicts_image": 2
  },
- "usable": 810,
+ "usable": 818,
  "usable_by_dataset": {
-  "whatsup_a": 402,
+  "whatsup_a": 410,
   "whatsup_b": 408
  },
  "review_source": {
@@ -278,5 +277,200 @@
    "pot_sam_iou_pred": 0.944908857345581
   }
  ],
- "annotations_sha256": "953d6015467a99a4ddfa121e992df30b0782afdd7f1fe153c9207e4d55b5a4f6"
+ "plants_vs_reviewed_version": [
+  {
+   "sample_id": "plant_left_of_chair",
+   "pixels_differ": 0
+  },
+  {
+   "sample_id": "plant_left_of_table",
+   "pixels_differ": 0
+  },
+  {
+   "sample_id": "plant_on_chair",
+   "pixels_differ": 0
+  },
+  {
+   "sample_id": "plant_on_table",
+   "pixels_differ": 0
+  },
+  {
+   "sample_id": "plant_right_of_chair",
+   "pixels_differ": 0
+  },
+  {
+   "sample_id": "plant_right_of_table",
+   "pixels_differ": 0
+  },
+  {
+   "sample_id": "plant_under_chair",
+   "pixels_differ": 0
+  },
+  {
+   "sample_id": "plant_under_table",
+   "pixels_differ": 0
+  }
+ ],
+ "other_raw_masks_differing_from_reviewed_version": {},
+ "subtraction": {
+  "n_rows_changed": 109,
+  "n_inter_over_target_gt_1pct": 50,
+  "by_dataset": {
+   "whatsup_a": 109
+  },
+  "by_relation": {
+   "under": 26,
+   "on": 83
+  },
+  "top10_area_reduction": [
+   {
+    "order_v2": 16,
+    "dataset": "whatsup_a",
+    "sample_id": "scarf_on_chair",
+    "relation": "on",
+    "usable": true,
+    "inter": 27872,
+    "raw_area": 67679,
+    "new_area": 39807,
+    "remaining": 0.5881735841250609,
+    "inter_over_target": 0.9952863876589059,
+    "bbox_would_change": false
+   },
+   {
+    "order_v2": 12,
+    "dataset": "whatsup_a",
+    "sample_id": "pan_on_armchair",
+    "relation": "on",
+    "usable": true,
+    "inter": 6115,
+    "raw_area": 172969,
+    "new_area": 166854,
+    "remaining": 0.9646468442322035,
+    "inter_over_target": 0.5970513571568054,
+    "bbox_would_change": false
+   },
+   {
+    "order_v2": 266,
+    "dataset": "whatsup_a",
+    "sample_id": "laptop_on_armchair",
+    "relation": "on",
+    "usable": true,
+    "inter": 4430,
+    "raw_area": 170000,
+    "new_area": 165570,
+    "remaining": 0.9739411764705882,
+    "inter_over_target": 0.3512249266629668,
+    "bbox_would_change": false
+   },
+   {
+    "order_v2": 44,
+    "dataset": "whatsup_a",
+    "sample_id": "headphones_on_armchair",
+    "relation": "on",
+    "usable": true,
+    "inter": 4000,
+    "raw_area": 177305,
+    "new_area": 173305,
+    "remaining": 0.9774400045119991,
+    "inter_over_target": 0.9945300845350572,
+    "bbox_would_change": false
+   },
+   {
+    "order_v2": 197,
+    "dataset": "whatsup_a",
+    "sample_id": "cap_under_armchair",
+    "relation": "under",
+    "usable": true,
+    "inter": 3785,
+    "raw_area": 181983,
+    "new_area": 178198,
+    "remaining": 0.9792013539726239,
+    "inter_over_target": 0.49980192790175626,
+    "bbox_would_change": true
+   },
+   {
+    "order_v2": 28,
+    "dataset": "whatsup_a",
+    "sample_id": "banjo_on_armchair",
+    "relation": "on",
+    "usable": true,
+    "inter": 3129,
+    "raw_area": 166989,
+    "new_area": 163860,
+    "remaining": 0.9812622388301026,
+    "inter_over_target": 0.24458688345188775,
+    "bbox_would_change": false
+   },
+   {
+    "order_v2": 14,
+    "dataset": "whatsup_a",
+    "sample_id": "glass_under_armchair",
+    "relation": "under",
+    "usable": true,
+    "inter": 3113,
+    "raw_area": 179785,
+    "new_area": 176672,
+    "remaining": 0.982684873599021,
+    "inter_over_target": 0.9640755651904614,
+    "bbox_would_change": false
+   },
+   {
+    "order_v2": 423,
+    "dataset": "whatsup_a",
+    "sample_id": "water-bottle_under_armchair",
+    "relation": "under",
+    "usable": true,
+    "inter": 2818,
+    "raw_area": 179638,
+    "new_area": 176820,
+    "remaining": 0.9843128959351585,
+    "inter_over_target": 0.9905096660808436,
+    "bbox_would_change": false
+   },
+   {
+    "order_v2": 161,
+    "dataset": "whatsup_a",
+    "sample_id": "bottle_on_armchair",
+    "relation": "on",
+    "usable": true,
+    "inter": 2378,
+    "raw_area": 173074,
+    "new_area": 170696,
+    "remaining": 0.9862602123946982,
+    "inter_over_target": 0.39111842105263156,
+    "bbox_would_change": false
+   },
+   {
+    "order_v2": 271,
+    "dataset": "whatsup_a",
+    "sample_id": "laptop_under_chair",
+    "relation": "under",
+    "usable": true,
+    "inter": 2277,
+    "raw_area": 67329,
+    "new_area": 65052,
+    "remaining": 0.9661809918460099,
+    "inter_over_target": 0.1271356783919598,
+    "bbox_would_change": true
+   }
+  ],
+  "remaining_below_50pct": [],
+  "n_bbox_would_change": 4
+ },
+ "qc_flag_counts_before_subtraction": {
+  "target_covered_by_reference": 50,
+  "ambiguous_candidates": 45,
+  "low_score": 74,
+  "target_no_alternative": 3,
+  "geometry_inconsistent": 2,
+  "mask_box_mismatch": 1
+ },
+ "qc_flag_counts_final": {
+  "ambiguous_candidates": 45,
+  "low_score": 74,
+  "target_no_alternative": 3,
+  "geometry_inconsistent": 2,
+  "mask_box_mismatch": 1
+ },
+ "annotations_sha256": "83d9221db782aa1d99ec5eb0931bf3e1b6b1e06c544d60ae84cccda1edb9996c"
 }

@@ -5,9 +5,9 @@ v3 = v2 + 审核结论（annotations/whatsup/review_final_v2.csv），配置 con
   - label_check（2 张）：框沿用 v2，标记为“待用户决定标签”（usable=false）。
   - redetect（25 张）：重新检测，出候选图和确认表；在用户确认前 v3 里保留 v2 的值但 usable=false。
 输出：
-  <data>/whatsup_annotations/auto_v3/annotations.jsonl、proposals.json（25 张的候选与建议）
+  <data>/whatsup_annotations/auto_v3/annotations_draft.jsonl（初版；定稿由 scripts/finalize_whatsup_v3.py 生成）、proposals.json（25 张的候选与建议）
   <outputs>/annotation_review/auto_v3_changes/{chg_<order>_*.png, confirm.csv, README.txt}
-  manifests/whatsup_auto_v3_changelog.csv、manifests/whatsup_auto_v3_geometry_lr.csv、manifests/whatsup_auto_v3_summary.json
+  manifests/whatsup_auto_v3_draft_*.{csv,json}
 在用户确认那 25 张之前，不得用 v3 生成任何下游数据。
 用法：source scripts/env.sh tools && python scripts/build_whatsup_v3.py
 """
@@ -190,16 +190,16 @@ def main():
         if ok is False and "lr_order_contradicts_label" not in rec["needs_user_confirmation"]:
             rec["needs_user_confirmation"].append("lr_order_contradicts_label")
         out_rows.append(rec)
-    with open(OUT_DATA / "annotations.jsonl", "w") as f:
+    with open(OUT_DATA / "annotations_draft.jsonl", "w") as f:
         for r in out_rows:
             f.write(json.dumps(r) + "\n")
     json.dump(proposals, open(OUT_DATA / "proposals.json", "w"), indent=1, ensure_ascii=False)
     M = paths.REPO_ROOT / "manifests"
-    with open(M / "whatsup_auto_v3_changelog.csv", "w", newline="") as f:
+    with open(M / "whatsup_auto_v3_draft_changelog.csv", "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["order_v2", "dataset", "sample_id", "change", "detail", "review_final_verdict", "review_source", "basis", "review_note"])
         w.writerows(sorted(changelog))
-    with open(M / "whatsup_auto_v3_geometry_lr.csv", "w", newline="") as f:
+    with open(M / "whatsup_auto_v3_draft_geometry_lr.csv", "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["order_v2", "dataset", "sample_id", "relation", "target_centroid_x", "reference_centroid_x", "v3_status", "usable", "review_final_verdict_v2", "review_source", "user_decision"])
         for r in out_rows:
@@ -214,9 +214,9 @@ def main():
             "needs_user_confirmation": dict(Counter(x for r in out_rows for x in r["needs_user_confirmation"])),
             "proposals_without_candidates": [p["order"] for p in proposals.values() if not p["candidates"]],
             "n_candidates_per_proposal": {k: len(p["candidates"]) for k, p in proposals.items()},
-            "annotations_sha256": hashlib.sha256((OUT_DATA / "annotations.jsonl").read_bytes()).hexdigest(),
+            "annotations_sha256": hashlib.sha256((OUT_DATA / "annotations_draft.jsonl").read_bytes()).hexdigest(),
             "downstream_blocked": "在用户确认 25 张待确认图之前，不得用 v3 生成任何下游数据"}
-    json.dump(summ, open(M / "whatsup_auto_v3_summary.json", "w"), indent=1, ensure_ascii=False)
+    json.dump(summ, open(M / "whatsup_auto_v3_draft_summary.json", "w"), indent=1, ensure_ascii=False)
     print(json.dumps({k: v for k, v in summ.items() if k != "n_candidates_per_proposal"}, indent=1, ensure_ascii=False))
     # ---- 确认图与确认表 ----
     import matplotlib

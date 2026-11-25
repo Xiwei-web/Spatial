@@ -24,12 +24,12 @@ order_v2,dataset,sample_id,change,detail,basis
 82,whatsup_a,shoes_right_of_chair,按确认更新,target→C1（union of two shoe boxes，0.77），重新分割,用户确认（按模型预填的确认表执行，2026-11-25）
 83,whatsup_a,shoes_under_chair,按确认更新,target→C1（union of two shoe boxes，0.76），重新分割,用户确认（按模型预填的确认表执行，2026-11-25）
 322,whatsup_a,photograph_on_chair,按确认更新,target→C1（photo print，0.52），重新分割,用户确认（按模型预填的确认表执行，2026-11-25）
-333,whatsup_a,plant_left_of_chair,待确认 plant mask（usable=false）,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 1502 px）,用户确认（按模型预填的确认表执行，2026-11-25）
-334,whatsup_a,plant_left_of_table,待确认 plant mask（usable=false）,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 2726 px）,用户确认（按模型预填的确认表执行，2026-11-25）
-335,whatsup_a,plant_on_chair,待确认 plant mask（usable=false）,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 2183 px）,用户确认（按模型预填的确认表执行，2026-11-25）
-336,whatsup_a,plant_on_table,待确认 plant mask（usable=false）,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 3843 px）,用户确认（按模型预填的确认表执行，2026-11-25）
-337,whatsup_a,plant_right_of_chair,待确认 plant mask（usable=false）,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 2623 px）,用户确认（按模型预填的确认表执行，2026-11-25）
-338,whatsup_a,plant_right_of_table,待确认 plant mask（usable=false）,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 3063 px）,用户确认（按模型预填的确认表执行，2026-11-25）
-339,whatsup_a,plant_under_chair,待确认 plant mask（usable=false）,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 651 px）,用户确认（按模型预填的确认表执行，2026-11-25）
-340,whatsup_a,plant_under_table,待确认 plant mask（usable=false）,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 2997 px）,用户确认（按模型预填的确认表执行，2026-11-25）
+333,whatsup_a,plant_left_of_chair,按确认更新,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 1502 px）,用户确认（按模型预填的确认表执行，2026-11-25）
+334,whatsup_a,plant_left_of_table,按确认更新,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 2726 px）,用户确认（按模型预填的确认表执行，2026-11-25）
+335,whatsup_a,plant_on_chair,按确认更新,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 2183 px）,用户确认（按模型预填的确认表执行，2026-11-25）
+336,whatsup_a,plant_on_table,按确认更新,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 3843 px）,用户确认（按模型预填的确认表执行，2026-11-25）
+337,whatsup_a,plant_right_of_chair,按确认更新,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 2623 px）,用户确认（按模型预填的确认表执行，2026-11-25）
+338,whatsup_a,plant_right_of_table,按确认更新,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 3063 px）,用户确认（按模型预填的确认表执行，2026-11-25）
+339,whatsup_a,plant_under_chair,按确认更新,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 651 px）,用户确认（按模型预填的确认表执行，2026-11-25）
+340,whatsup_a,plant_under_table,按确认更新,框→C1（叶片框与花盆框的并集）；mask = 叶片框 mask ∪ 花盆框 mask（花盆独有 2997 px）,用户确认（按模型预填的确认表执行，2026-11-25）
 682,whatsup_b,mug_in-front_of_cup,按确认更新,target→T1，reference→R2，两者重新分割,用户确认（按模型预填的确认表执行，2026-11-25）
