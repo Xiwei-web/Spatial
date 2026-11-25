@@ -31,3 +31,14 @@ models:
     revision: 5dda2880bda009266dda7c4baff660b95ca64540
     license: llama2
     why: "可选：附录弱基线"
+  # 辅助模型（数据处理用，不是研究对象）；用户于 2026-11-25 确认下载
+  - name: sam2.1-hiera-large
+    hf_repo: facebook/sam2.1-hiera-large
+    revision: 665f8e2ad61cf5f53d65644ff27c8ee525124610
+    license: apache-2.0
+    why: "辅助：由框提示生成 mask"
+  - name: big-lama
+    hf_repo: smartywu/big-lama
+    revision: 05cb2be7f8dbe6ca7c6e78f4fc827a4b2baaa4a9
+    license: apache-2.0
+    why: "辅助：像素级抹除物体（LaMa 官方 README 给出的下载地址）；本阶段只下载不使用"

@@ -10,3 +10,6 @@ outputs: /nfs-stor/xiwei.liu/interpretability/outputs
 envs: /nfs-stor/xiwei.liu/interpretability/envs
 logs: /nfs-stor/xiwei.liu/interpretability/logs
 conda_exe: /home/xiwei.liu/miniconda3/bin/conda      # 仅用于创建环境
+# 用户自己的检测模型（只读使用，不写入）：原版 GroundingDINO 代码与权重
+groundingdino_repo: /nfs-stor/xiwei.liu/tool/repos/GroundingDINO
+groundingdino_ckpt: /nfs-stor/xiwei.liu/tool/checkpoints/groundingdino

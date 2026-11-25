@@ -1,0 +1,11 @@
+# What's Up Subset A/B 自动标注（F1）的全部设置。标注 = GroundingDINO 候选框 + SAM 2.1 框提示 mask。
+# 在用户填完 review.csv 之前，这份标注只能称为“自动标注”。
+version: auto_v1
+detector: {name: groundingdino, variant: swinb, candidate_floor: 0.10, dedup_iou: 0.8}   # 候选下限；IoU>0.8 的重复候选合并
+segmenter: {name: sam2.1-hiera-large, multimask_output: false}
+qc:                     # 自动质检阈值（任何一条不满足就进待审清单）
+  low_score: null       # 看分数分布后填（scripts/whatsup_qc.py 读这里）；null 时只统计分布不打该标记
+  ambiguous_margin: 0.10      # 第二候选（与第一候选 IoU<0.5）分数与第一候选相差不到该值 → 多个分数接近的候选
+  min_area_frac: 0.002
+  max_area_frac: 0.60
+  max_pair_mask_iou: 0.5

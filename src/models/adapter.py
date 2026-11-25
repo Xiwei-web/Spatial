@@ -172,6 +172,14 @@ class HFChatAdapter(BaseAdapter):
         if side and max(W, H) > side:     # 仅用于限制 anyres 切片数（见 configs/adapters.yaml）；等比缩放，网格映射仍按原图比例
             r = side / max(W, H)
             image = image.resize((round(W * r), round(H * r)), Image.BICUBIC)
+        pad_box = None
+        if self.spec.get("pad_to_square") and W != H:   # 原版 LLaVA-1.5 的 expand2square：用图像均值色补成正方形
+            S = max(W, H)
+            mean = tuple(int(round(m * 255)) for m in self.processor.image_processor.image_mean)
+            canvas = Image.new("RGB", (S, S), mean)
+            canvas.paste(image, ((S - W) // 2, (S - H) // 2))
+            image = canvas
+            pad_box = (-((S - W) // 2), -((S - H) // 2), S - (S - W) // 2, S - (S - H) // 2)   # 正方形在原图坐标系中的范围
         messages = [{"role": "user", "content": [{"type": "image", "image": image}, {"type": "text", "text": prompt}]}]
         kw = dict(self.spec.get("chat_kwargs") or {})
         base = dict(add_generation_prompt=True, tokenize=True, return_dict=True, return_tensors="pt", **kw)
@@ -226,9 +234,13 @@ class HFChatAdapter(BaseAdapter):
             grid_hw, grid_pos = (n, n), vis
             size = int(vc.image_size)
             model_wh = (size, size)
-            s = min(W, H)   # CLIP 预处理：短边缩放到 size 后中心裁剪 → 网格只覆盖原图中心的 s x s 区域
-            extra["view_box"] = ((W - s) / 2, (H - s) / 2, (W + s) / 2, (H + s) / 2)
-            note = "CLIP 短边缩放 + 中心裁剪；网格覆盖原图中心正方形区域"
+            if pad_box is not None:
+                extra["view_box"] = pad_box
+                note = "先补成正方形再缩放；网格覆盖补边后的正方形（超出原图的格子对应填充区域）"
+            else:
+                s = min(W, H)   # CLIP 预处理：短边缩放到 size 后中心裁剪 → 网格只覆盖原图中心的 s x s 区域
+                extra["view_box"] = ((W - s) / 2, (H - s) / 2, (W + s) / 2, (H + s) / 2)
+                note = "CLIP 短边缩放 + 中心裁剪；网格覆盖原图中心正方形区域"
         elif g == "llava_ov":
             n = int(vc.image_size) // int(vc.patch_size)
             grid_hw, grid_pos = (n, n), vis[: n * n]

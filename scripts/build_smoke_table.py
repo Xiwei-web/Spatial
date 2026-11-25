@@ -8,7 +8,7 @@ from src import paths
 
 EIGHT = ["1_load", "2_bbox", "3_relation", "4_hidden_states", "5_attention_and_heads", "6_visual_token_mapping",
          "7_interventions", "8_determinism"]
-HEAD = ["1 加载", "2 框", "3 关系", "4 隐状态", "5 注意力/head", "6 视觉token映射", "7 干预", "8 确定性"]
+HEAD = ["1 加载", "2 框（解析出四个数的次数）", "3 关系（解析出选项的次数）", "4 隐状态", "5 注意力/head", "6 视觉token映射", "7 干预", "8 确定性"]
 ad = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "adapters.yaml"))
 root = paths.get("outputs") / "smoke"
 rows, notes = [], []
@@ -17,7 +17,7 @@ for name, spec in ad["models"].items():
     env = spec.get("env", ad["defaults"]["env"]) if spec.get("kind") != "unsupported" else "—"
     if not f.is_file():
         why = spec.get("reason", "未运行")
-        rows.append(f"| {name} | {env} | " + " | ".join(["未跑"] * 8) + " | — | — | — |")
+        rows.append(f"| {name} | {spec.get('group', '—')} | {env} | " + " | ".join(["未跑"] * 8) + " | — | — | — |")
         notes.append(f"- **{name}**：未运行。{why}")
         continue
     s = json.load(open(f))
@@ -25,9 +25,14 @@ for name, spec in ad["models"].items():
     cells = []
     for k in EIGHT:
         r = t.get(k)
-        cells.append("未跑" if r is None else ("通过" if r.get("pass") else "**失败**"))
+        c = "未跑" if r is None else ("通过" if r.get("pass") else "**失败**")
+        if r is not None and k == "2_bbox":
+            c += f" {r.get('n_parsed_four_numbers')}/{r.get('n_generated')}"
+        if r is not None and k == "3_relation":
+            c += f" {r.get('n_parsed_option')}/{r.get('n_generated')}"
+        cells.append(c)
     l = t.get("1_load", {})
-    rows.append(f"| {name} | {s.get('env')} | " + " | ".join(cells) +
+    rows.append(f"| {name} | {spec.get('group', '—')} | {s.get('env')} | " + " | ".join(cells) +
                 f" | {l.get('gpu_mem_after_load_gb', '—')} / {s.get('gpu_mem_peak_gb_overall', l.get('gpu_mem_peak_gb', '—'))} | {l.get('seconds_per_generation_mean', '—')} | `{str(s.get('git_commit'))[:7]}` |")
     for k in EIGHT + ["5a_attention_weights", "5b_head_hook", "7a_noop_hooks_bitwise", "7b_self_patch", "7c_attention_knockout"]:
         r = t.get(k)
@@ -48,7 +53,7 @@ for name, spec in ad["models"].items():
 out = ["# 冒烟测试结果（SMOKE_RESULTS）", "",
        "由 `scripts/build_smoke_table.py` 从 `outputs/smoke/<模型>/summary.json` 生成。**只表示管线是否跑通，不是评测；不含任何正确率，不得用于比较模型。**", "",
        "显存列为“加载后 / 全程峰值”GB（各卡之和，bf16，eager 注意力）；耗时为 60 次生成（40 次框 + 20 次关系）的平均秒数，含预处理。", "",
-       "| 模型 | 环境 | " + " | ".join(HEAD) + " | 显存 GB | 秒/样本 | commit |", "|---|---|" + "---|" * 11] + rows
+       "| 模型 | 组 | 环境 | " + " | ".join(HEAD) + " | 显存 GB | 秒/样本 | commit |", "|---|---|---|" + "---|" * 11] + rows
 out += ["", "## 失败项与说明", ""] + (notes or ["（无）"])
 (paths.REPO_ROOT / "docs" / "SMOKE_RESULTS.md").write_text("\n".join(out) + "\n")
 rep = paths.REPO_ROOT / "docs" / "PREP_REPORT.md"

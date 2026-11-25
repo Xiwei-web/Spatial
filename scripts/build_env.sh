@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 用法：bash scripts/build_env.sh <tf5|tf4>     （应在计算节点上跑：scripts/submit.sh cpu scripts/build_env.sh tf5）
+# 用法：bash scripts/build_env.sh <tf5|tf4|tools>     （应在计算节点上跑：scripts/submit.sh cpu scripts/build_env.sh tf5）
 # 1) conda 建 python 3.11 前缀环境  2) uv 由 requirements/<env>.in 解析出带哈希的锁文件
 # 3) uv pip sync 严格按锁文件安装。锁文件 requirements/<env>.lock 提交进 Git。
 set -euo pipefail

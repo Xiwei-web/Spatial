@@ -1,0 +1,408 @@
+{
+ "boxes_file_bytes": 651349,
+ "boxes_file_sha256": "8134ce36fdd8451bc4805079a6f3d22504f0af70ceb36643a6635e22107abd0a",
+ "examples_matched": [
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "left",
+   "sample_id": "00512_2369996",
+   "target": {
+    "bbox": [
+     20.0,
+     96.0,
+     129.0,
+     212.0
+    ],
+    "n_candidates": 1,
+    "name": "television",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "bottom",
+   "sample_id": "01060_2396707",
+   "target": {
+    "bbox": [
+     206.0,
+     380.0,
+     305.0,
+     464.0
+    ],
+    "n_candidates": 1,
+    "name": "salad",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_two",
+   "reference": {
+    "bbox": [
+     127.0,
+     337.0,
+     221.0,
+     453.0
+    ],
+    "n_candidates": 1,
+    "name": "cabinet",
+    "rule": "exact",
+    "status": "unique"
+   },
+   "relation": "right",
+   "sample_id": "00044_2372090",
+   "target": {
+    "bbox": [
+     219.0,
+     364.0,
+     333.0,
+     500.0
+    ],
+    "n_candidates": 1,
+    "name": "toilet",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "right",
+   "sample_id": "00056_2318945",
+   "target": {
+    "bbox": [
+     342.0,
+     104.0,
+     453.0,
+     156.0
+    ],
+    "n_candidates": 1,
+    "name": "bus",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "left",
+   "sample_id": "00329_2334386",
+   "target": {
+    "bbox": [
+     0.0,
+     231.0,
+     91.0,
+     309.0
+    ],
+    "n_candidates": 1,
+    "name": "napkin",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "bottom",
+   "sample_id": "00208_2391756",
+   "target": {
+    "bbox": [
+     257.0,
+     237.0,
+     353.0,
+     309.0
+    ],
+    "n_candidates": 1,
+    "name": "banana",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "left",
+   "sample_id": "00150_2366645",
+   "target": {
+    "bbox": [
+     3.0,
+     107.0,
+     129.0,
+     172.0
+    ],
+    "n_candidates": 1,
+    "name": "car",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "bottom",
+   "sample_id": "00676_2352191",
+   "target": {
+    "bbox": [
+     72.0,
+     370.0,
+     269.0,
+     418.0
+    ],
+    "n_candidates": 1,
+    "name": "pizza",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "right",
+   "sample_id": "01107_2361429",
+   "target": {
+    "bbox": [
+     294.0,
+     42.0,
+     450.0,
+     166.0
+    ],
+    "n_candidates": 1,
+    "name": "screen",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "top",
+   "sample_id": "00591_2411015",
+   "target": {
+    "bbox": [
+     181.0,
+     13.0,
+     301.0,
+     101.0
+    ],
+    "n_candidates": 1,
+    "name": "fence",
+    "rule": "exact",
+    "status": "unique"
+   }
+  }
+ ],
+ "examples_unmatched": [
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "top",
+   "sample_id": "00864_2411367",
+   "target": {
+    "bbox": null,
+    "n_candidates": 2,
+    "name": "car",
+    "rule": "exact",
+    "status": "multiple"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "right",
+   "sample_id": "00230_2413136",
+   "target": {
+    "bbox": null,
+    "n_candidates": 2,
+    "name": "remote control",
+    "rule": "exact",
+    "status": "multiple"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "right",
+   "sample_id": "00801_2413136",
+   "target": {
+    "bbox": null,
+    "n_candidates": 0,
+    "name": "remote",
+    "rule": null,
+    "status": "none"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_two",
+   "reference": {
+    "bbox": null,
+    "n_candidates": 0,
+    "name": "palm",
+    "rule": null,
+    "status": "none"
+   },
+   "relation": "behind",
+   "sample_id": "00185_4709",
+   "target": {
+    "bbox": [
+     0.0,
+     46.0,
+     349.0,
+     157.0
+    ],
+    "n_candidates": 1,
+    "name": "building",
+    "rule": "exact",
+    "status": "unique"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "left",
+   "sample_id": "00873_2329965",
+   "target": {
+    "bbox": null,
+    "n_candidates": 0,
+    "name": "flower bouquet",
+    "rule": null,
+    "status": "none"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "left",
+   "sample_id": "00229_2388377",
+   "target": {
+    "bbox": null,
+    "n_candidates": 0,
+    "name": "table cloth",
+    "rule": null,
+    "status": "none"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "left",
+   "sample_id": "00576_2333049",
+   "target": {
+    "bbox": null,
+    "n_candidates": 0,
+    "name": "surf board",
+    "rule": null,
+    "status": "none"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "top",
+   "sample_id": "01016_2398329",
+   "target": {
+    "bbox": null,
+    "n_candidates": 0,
+    "name": "tennis racket",
+    "rule": null,
+    "status": "none"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "bottom",
+   "sample_id": "00843_2407703",
+   "target": {
+    "bbox": null,
+    "n_candidates": 2,
+    "name": "surfboard",
+    "rule": "exact",
+    "status": "multiple"
+   }
+  },
+  {
+   "dataset": "gqa_spatial_one",
+   "relation": "top",
+   "sample_id": "00684_2327809",
+   "target": {
+    "bbox": null,
+    "n_candidates": 2,
+    "name": "chair",
+    "rule": "exact",
+    "status": "multiple"
+   }
+  }
+ ],
+ "max_overflow_px": 1.0,
+ "n_fully_matched": 1407,
+ "n_not_fully_matched": 44,
+ "none_rescued_by_plural_singular": 0,
+ "size_check": {
+  "mismatch": [
+   {
+    "file_wh": [
+     1280,
+     960
+    ],
+    "image_id": "498187",
+    "scene_graph_wh": [
+     1024,
+     768
+    ]
+   }
+  ],
+  "n_images": 1208,
+  "n_match": 1207
+ },
+ "subsets": {
+  "gqa_spatial_one": {
+   "n": 1160,
+   "pair_status": {},
+   "scene_graph_file": {
+    "val": 1160
+   },
+   "side_check": {
+    "multiple_still_ambiguous": 15,
+    "unique_consistent": 1119
+   },
+   "status": {
+    "target": {
+     "multiple": 15,
+     "none": 24,
+     "unique": 1121
+    }
+   },
+   "status_by_rule": {
+    "target": {
+     "multiple/exact": 15,
+     "none/None": 24,
+     "unique/attr+name": 14,
+     "unique/exact": 1107
+    }
+   },
+   "unique_via_attr_with_same_name_gt1": 2
+  },
+  "gqa_spatial_two": {
+   "n": 291,
+   "pair_status": {
+    "both_unique": 286,
+    "target=none|reference=unique": 1,
+    "target=unique|reference=none": 4
+   },
+   "scene_graph_file": {
+    "val": 291
+   },
+   "side_check": {},
+   "status": {
+    "reference": {
+     "none": 4,
+     "unique": 287
+    },
+    "target": {
+     "none": 1,
+     "unique": 290
+    }
+   },
+   "status_by_rule": {
+    "reference": {
+     "none/None": 4,
+     "unique/attr+name": 4,
+     "unique/exact": 283
+    },
+    "target": {
+     "none/None": 1,
+     "unique/attr+name": 59,
+     "unique/exact": 231
+    }
+   },
+   "unique_via_attr_with_same_name_gt1": 2
+  }
+ },
+ "unique_boxes_out_of_image_bounds": 32
+}

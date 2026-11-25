@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 阶段 D 数据下载（在计算节点上跑）。全部来自官方来源；压缩包保留在 data/_archives/。
-# 用法：source scripts/env.sh tf5 && bash scripts/download_data.sh <whatsup|coco|depth_meta|all>
+# 用法：source scripts/env.sh tf5 && bash scripts/download_data.sh <whatsup|coco|depth_meta|gqa_sg|spatialrgpt|all>
 set -uo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DATA="$(python -m src.paths data)"
@@ -47,8 +47,31 @@ depth_meta() {  # 只下说明文件和标注元数据，不下图像
   dl $H/nyu-visionx/CV-Bench/resolve/bc284db50d036958861cb60cdd7b77612052ce0d/test_2d.jsonl "$D/cv_bench/test_2d.jsonl"
   dl $H/nyu-visionx/CV-Bench/resolve/bc284db50d036958861cb60cdd7b77612052ce0d/test_3d.jsonl "$D/cv_bench/test_3d.jsonl"
 }
+gqa_sg() {  # GQA scene graphs（官方下载页 https://cs.stanford.edu/people/dorarad/gqa/download.html，ver 1.1，约 45 MB）
+  local G="$DATA/gqa"; mkdir -p "$G"
+  dl https://downloads.cs.stanford.edu/nlp/data/gqa/sceneGraphs.zip "$ARCH/gqa_sceneGraphs.zip" || return 1
+  # 压缩包视为不可信：只解到它自己的新目录里
+  if [ ! -d "$G/sceneGraphs" ]; then
+    mkdir -p "$G/sceneGraphs.tmp" && unzip -q "$ARCH/gqa_sceneGraphs.zip" -d "$G/sceneGraphs.tmp" && mv "$G/sceneGraphs.tmp" "$G/sceneGraphs" \
+      || { echo "[FAIL] unzip gqa_sceneGraphs.zip"; FAIL=1; return 1; }
+  fi
+  ( cd "$ARCH" && sha256sum gqa_sceneGraphs.zip )
+  ( cd "$G" && find sceneGraphs -type f | LC_ALL=C sort | xargs sha256sum > SHA256SUMS.sceneGraphs )
+}
+spatialrgpt() {  # SpatialRGPT-Bench 完整快照（约 2.9 GB，固定 commit，匿名下载）。仅用于评测，不得再分发；HF 卡片未声明许可。
+  local S="$DATA/depth/spatialrgpt_bench"; mkdir -p "$S"
+  python - "$S" <<'PY' || { echo "[FAIL] snapshot_download SpatialRGPT-Bench"; FAIL=1; return 1; }
+import sys
+from huggingface_hub import snapshot_download
+snapshot_download("a8cheng/SpatialRGPT-Bench", repo_type="dataset",
+                  revision="01b38d2c7aa805223518c061f2a7602ad8f491ef", local_dir=sys.argv[1], max_workers=8)
+PY
+  ( cd "$S" && find . -type f -not -path './.cache/*' -not -name SHA256SUMS | LC_ALL=C sort | sed 's|^\./||' | xargs -d '\n' sha256sum > SHA256SUMS )
+  echo "files: $(find "$S" -type f -not -path '*/.cache/*' -not -name SHA256SUMS | wc -l)  bytes: $(find "$S" -type f -not -path '*/.cache/*' -not -name SHA256SUMS -printf '%s\n' | awk '{s+=$1} END {print s}')"
+}
 case "${1:-all}" in
   whatsup) whatsup ;; coco) coco ;; depth_meta) depth_meta ;;
+  gqa_sg) gqa_sg ;; spatialrgpt) spatialrgpt ;;   # 新增目标不并入 all（需单独确认后再下）
   all) whatsup; coco; depth_meta ;;
   *) echo "unknown target"; exit 2 ;;
 esac

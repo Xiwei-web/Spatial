@@ -146,37 +146,37 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 判定是严格的：第 2 项要求“有官方提示词和坐标约定，且 40 次生成全部解析出四个数并还原”；第 3 项要求 20/20；第 7 项用 `torch.equal` 判逐位一致、要求被屏蔽位置的权重精确等于 0。**“通过”不代表框或答案是对的**——没有计算正确率。
 
 <!-- SMOKE_TABLE_BEGIN -->
-| 模型 | 环境 | 1 加载 | 2 框 | 3 关系 | 4 隐状态 | 5 注意力/head | 6 视觉token映射 | 7 干预 | 8 确定性 | 显存 GB | 秒/样本 | commit |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Qwen2.5-VL-7B-Instruct | tf5 | 通过 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 15.45 / — | — | `efc744e` |
-| Qwen3-VL-8B-Instruct | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
-| RoboBrain2.0-7B | tf5 | 通过 | **失败** | **失败** | 通过 | 通过 | 通过 | 通过 | 通过 | 15.45 / 22.97 | 1.061 | `462d086` |
-| VST-7B-RL | tf5 | 通过 | **失败** | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 15.45 / 22.97 | 1.635 | `462d086` |
-| Qwen3.5-2B | tf5 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 4.12 / 9.08 | 1.503 | `52229e2` |
-| Qwen3.5-4B | tf5 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 8.46 / 13.42 | 1.933 | `60f2f9a` |
-| Qwen3.5-9B | tf5 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 17.53 / 22.49 | 1.901 | `60f2f9a` |
-| Qwen3.6-27B | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
-| Qwen3.8-27B | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
-| Qwen3.6-35B-A3B | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
-| GLM-4.6V-Flash | tf5 | 通过 | 通过 | **失败** | 通过 | 通过 | 通过 | 通过 | 通过 | 19.17 / 34.43 | 1.694 | `462d086` |
-| gemma-4-31B-it | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
-| LLaVA-OneVision-7B | tf5 | 通过 | **失败** | 通过 | 通过 | **失败** | 通过 | **失败** | 通过 | 14.96 / 38.38 | 3.202 | `462d086` |
-| LLaVA-1.5-7B | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
-| LLaVA-1.5-13B | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
-| InternVL3-8B | tf4 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
-| InternVL3-2B | tf4 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
-| InternVL3_5-8B | tf4 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 15.89 / 16.97 | 0.946 | `60f2f9a` |
-| SenseNova-SI-1.1-InternVL3-2B | tf4 | 通过 | **失败** | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 3.89 / 4.97 | 0.825 | `60f2f9a` |
-| SenseNova-SI-1.2-InternVL3-8B | tf4 | 通过 | **失败** | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 14.8 / 15.88 | 0.773 | `5337b5e` |
-| SenseNova-SI-1.3-InternVL3-8B | tf4 | 通过 | **失败** | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 | 14.8 / 15.88 | 0.77 | `462d086` |
-| MiniCPM-V-4_5 | tf4 | 通过 | **失败** | 通过 | 通过 | 通过 | **失败** | 通过 | 通过 | 17.37 / 17.83 | 0.809 | `462d086` |
-| Cambrian-S-7B | — | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
+| 模型 | 组 | 环境 | 1 加载 | 2 框（解析出四个数的次数） | 3 关系（解析出选项的次数） | 4 隐状态 | 5 注意力/head | 6 视觉token映射 | 7 干预 | 8 确定性 | 显存 GB | 秒/样本 | commit |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Qwen2.5-VL-7B-Instruct | 1 | tf5 | 通过 | **失败** 39/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 15.45 / 22.97 | 1.653 | `efc744e` |
+| Qwen3-VL-8B-Instruct | 1 | tf5 | 通过 | **失败** 29/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 16.33 / 22.72 | 1.813 | `bde880c` |
+| RoboBrain2.0-7B | 1 | tf5 | 通过 | **失败** 15/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 15.45 / 22.97 | 1.09 | `bde880c` |
+| VST-7B-RL | 1 | tf5 | 通过 | **失败** 11/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 15.45 / 22.97 | 1.635 | `462d086` |
+| Qwen3.5-2B | 2 | tf5 | 通过 | 通过 40/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 4.12 / 9.08 | 1.503 | `52229e2` |
+| Qwen3.5-4B | 2 | tf5 | 通过 | 通过 40/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 8.46 / 13.42 | 1.933 | `60f2f9a` |
+| Qwen3.5-9B | 2 | tf5 | 通过 | 通过 40/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 17.53 / 22.49 | 1.901 | `60f2f9a` |
+| Qwen3.6-27B | 3 | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
+| Qwen3.8-27B | 3 | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
+| Qwen3.6-35B-A3B | 3 | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
+| GLM-4.6V-Flash | 1 | tf5 | 通过 | 通过 40/40 | **失败** 10/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 19.17 / 34.43 | 1.747 | `bde880c` |
+| gemma-4-31B-it | 3 | tf5 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
+| LLaVA-OneVision-7B | 3 | tf5 | 通过 | **失败** 40/40 | 通过 20/20 | 通过 | **失败** | 通过 | **失败** | 通过 | 14.96 / 38.38 | 3.202 | `462d086` |
+| LLaVA-1.5-7B | 2 | tf5 | 通过 | 通过 40/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 13.16 / 16.24 | 0.576 | `bde880c` |
+| LLaVA-1.5-13B | 2 | tf5 | 通过 | 通过 40/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 24.87 / 29.34 | 0.732 | `bde880c` |
+| InternVL3-8B | 1 | tf4 | 通过 | **失败** 21/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 14.8 / 15.88 | 0.626 | `bde880c` |
+| InternVL3-2B | 2 | tf4 | 通过 | **失败** 37/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 3.89 / 4.97 | 0.649 | `bde880c` |
+| InternVL3_5-8B | 1 | tf4 | 通过 | 通过 40/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 15.89 / 16.97 | 0.946 | `60f2f9a` |
+| SenseNova-SI-1.1-InternVL3-2B | 2 | tf4 | 通过 | **失败** 40/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 3.89 / 4.97 | 0.825 | `60f2f9a` |
+| SenseNova-SI-1.2-InternVL3-8B | 1 | tf4 | 通过 | **失败** 31/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 14.8 / 15.88 | 0.773 | `5337b5e` |
+| SenseNova-SI-1.3-InternVL3-8B | 1 | tf4 | 通过 | **失败** 34/40 | 通过 20/20 | 通过 | 通过 | 通过 | 通过 | 通过 | 14.8 / 15.88 | 0.77 | `462d086` |
+| MiniCPM-V-4_5 | 3 | tf4 | 通过 | 通过 40/40 | 通过 20/20 | 通过 | 通过 | **失败** | 通过 | 通过 | 17.37 / 17.83 | 0.803 | `bde880c` |
+| Cambrian-S-7B | excluded | — | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | 未跑 | — | — | — |
 
 ## 失败项与说明
 
-- **Qwen3-VL-8B-Instruct**：未运行。未运行
+- **Qwen2.5-VL-7B-Instruct** / 2_bbox：官方提示词=True，约定=abs_model_xyxy，解析出四个数 39/40，还原 39/40；
+- **Qwen3-VL-8B-Instruct** / 2_bbox：官方提示词=True，约定=norm1000_xyxy，解析出四个数 29/40，还原 29/40；
 - **RoboBrain2.0-7B** / 2_bbox：官方提示词=True，约定=abs_orig_xyxy，解析出四个数 15/40，还原 15/40；
-- **RoboBrain2.0-7B** / 3_relation：解析出选项 0/20，四个选项 logit 齐全 20/20
 - **VST-7B-RL** / 2_bbox：官方提示词=False，约定=unknown，解析出四个数 11/40，还原 0/40；
 - **Qwen3.5-2B** / 非标准层：18 层 linear_attention（子模块 {'linear_attn': 'Qwen3_5GatedDeltaNet', 'mlp': 'Qwen3_5MLP', 'input_layernorm': 'Qwen3_5RMSNorm', 'post_attention_layernorm': 'Qwen3_5RMSNorm'}）。能：读取/替换该层输出的残差流（activation patching）；hook 混合模块整体的输入输出。不能：没有注意力权重矩阵，不能做位置间注意力屏蔽，也没有 softmax 注意力意义上的 head 级分析。实测自 patch 逐位一致=True。
 - **Qwen3.5-4B** / 非标准层：24 层 linear_attention（子模块 {'linear_attn': 'Qwen3_5GatedDeltaNet', 'mlp': 'Qwen3_5MLP', 'input_layernorm': 'Qwen3_5RMSNorm', 'post_attention_layernorm': 'Qwen3_5RMSNorm'}）。能：读取/替换该层输出的残差流（activation patching）；hook 混合模块整体的输入输出。不能：没有注意力权重矩阵，不能做位置间注意力屏蔽，也没有 softmax 注意力意义上的 head 级分析。实测自 patch 逐位一致=True。
@@ -184,7 +184,7 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 - **Qwen3.6-27B**：未运行。未运行
 - **Qwen3.8-27B**：未运行。未运行
 - **Qwen3.6-35B-A3B**：未运行。未运行
-- **GLM-4.6V-Flash** / 3_relation：解析出选项 0/20，四个选项 logit 齐全 20/20
+- **GLM-4.6V-Flash** / 3_relation：解析出选项 10/20，四个选项 logit 齐全 20/20
 - **gemma-4-31B-it**：未运行。未运行
 - **LLaVA-OneVision-7B** / 2_bbox：官方提示词=False，约定=unknown，解析出四个数 40/40，还原 0/40；
 - **LLaVA-OneVision-7B** / 5_attention_and_heads：{"nonstandard": {"has_nonstandard": false}}
@@ -193,16 +193,13 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 - **LLaVA-OneVision-7B** / 5b_head_hook：OutOfMemoryError: CUDA out of memory. Tried to allocate 5.70 GiB. GPU 0 has a total capacity of 39.49 GiB of which 190.31 MiB is free. Including non-PyTorch memory, this process has 39.30 GiB memory in use. Of the allocated memory 30.37 GiB is allocated by PyTorch, and 8.43 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorc
 - **LLaVA-OneVision-7B** / 7b_self_patch：OutOfMemoryError: CUDA out of memory. Tried to allocate 4.19 GiB. GPU 0 has a total capacity of 39.49 GiB of which 3.37 GiB is free. Including non-PyTorch memory, this process has 36.12 GiB memory in use. Of the allocated memory 27.70 GiB is allocated by PyTorch, and 7.92 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.
 - **LLaVA-OneVision-7B** / 7c_attention_knockout：OutOfMemoryError: CUDA out of memory. Tried to allocate 5.70 GiB. GPU 0 has a total capacity of 39.49 GiB of which 546.31 MiB is free. Including non-PyTorch memory, this process has 38.95 GiB memory in use. Of the allocated memory 35.54 GiB is allocated by PyTorch, and 2.91 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorc
-- **LLaVA-1.5-7B**：未运行。未运行
-- **LLaVA-1.5-13B**：未运行。未运行
-- **InternVL3-8B**：未运行。未运行
-- **InternVL3-2B**：未运行。未运行
+- **InternVL3-8B** / 2_bbox：官方提示词=True，约定=norm1000_xyxy，解析出四个数 21/40，还原 21/40；
+- **InternVL3-2B** / 2_bbox：官方提示词=True，约定=norm1000_xyxy，解析出四个数 37/40，还原 37/40；
 - **SenseNova-SI-1.1-InternVL3-2B** / 2_bbox：官方提示词=False，约定=unknown，解析出四个数 40/40，还原 0/40；
 - **SenseNova-SI-1.2-InternVL3-8B** / 2_bbox：官方提示词=False，约定=unknown，解析出四个数 31/40，还原 0/40；
 - **SenseNova-SI-1.3-InternVL3-8B** / 2_bbox：官方提示词=False，约定=unknown，解析出四个数 34/40，还原 0/40；
-- **MiniCPM-V-4_5** / 2_bbox：官方提示词=True，约定=norm1000_xyxy，解析出四个数 0/40，还原 0/40；
 - **MiniCPM-V-4_5** / 6_visual_token_mapping：视觉 token 没有固定的图像区域对应
-- **Cambrian-S-7B**：未运行。model_type=cambrian_qwen 不在 transformers 中，需要官方 cambrian-s 代码库及其依赖环境；本阶段未适配
+- **Cambrian-S-7B**：未运行。用户决定不适配，已从候选中去掉（2026-11-25）；model_type=cambrian_qwen 不在 transformers 中
 <!-- SMOKE_TABLE_END -->
 
 原始输出：`/nfs-stor/xiwei.liu/interpretability/outputs/smoke/<模型>/records.jsonl`（每条带模型名、revision、提示词、配置哈希、Git commit）、`summary.json`、`token_region.png`（第 6 项的验证图）。运行日志在 `logs/smoke/<模型>.log`。

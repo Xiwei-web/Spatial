@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from src import paths
+from src.data import gqa_boxes
 
 
 @dataclass
@@ -118,13 +119,19 @@ def _qa(name: str, ann: str, image_fmt, coco: bool) -> list[Sample]:
     for i, (img_id, cap_true, cap_false) in enumerate(json.load(open(_wu_root() / ann))):
         t, ref, rel = _parse_caption(cap_true)
         bt = mt = br = mr = None
+        sid = f"{i:05d}_{img_id}"
+        extra = {}
         if coco:
             bt, mt = _coco_box_mask(int(img_id), t)
             br, mr = _coco_box_mask(int(img_id), ref)
+        else:
+            # GQA-spatial：框来自 GQA scene graph 的名称匹配（scripts/build_gqa_boxes.py 预先算好）。
+            # 只有唯一匹配才有框；其余样本保留、框为 None，原因写在 extra['box_status']。没有 mask。
+            bt, br, extra["box_status"] = gqa_boxes.lookup(name, sid)
         out.append(Sample(
-            dataset=name, sample_id=f"{i:05d}_{img_id}", image_path=str(image_fmt(img_id)),
+            dataset=name, sample_id=sid, image_path=str(image_fmt(img_id)),
             target=t, reference=ref, relation=rel, caption_true=cap_true, caption_options=[cap_true, cap_false],
-            bbox_target=bt, bbox_reference=br, mask_target=mt, mask_reference=mr,
+            bbox_target=bt, bbox_reference=br, mask_target=mt, mask_reference=mr, extra=extra,
         ))
     return out
 

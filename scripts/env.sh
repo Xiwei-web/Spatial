@@ -5,7 +5,7 @@ _REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 _PATHS="${INTERP_PATHS_FILE:-$_REPO/configs/paths.yaml}"
 _p() { sed -n "s/^$1:[[:space:]]*\([^[:space:]#]*\).*/\1/p" "$_PATHS"; }
 export INTERP_REPO="$_REPO"
-export INTERP_ENV_NAME="${1:?usage: source scripts/env.sh <tf5|tf4>}"
+export INTERP_ENV_NAME="${1:?usage: source scripts/env.sh <tf5|tf4|tools>}"
 export HF_HOME="$(_p hf_home)"
 export HF_HUB_CACHE="$HF_HOME/hub"
 export HF_DATASETS_CACHE="$HF_HOME/datasets"

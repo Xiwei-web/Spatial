@@ -1,0 +1,30 @@
+# 工具环境：数据处理用的辅助模型（GroundingDINO 原版代码 + SAM 2.1），与 tf4 相同的基础依赖再加 GroundingDINO 所需的包
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch==2.10.0+cu128
+torchvision==0.25.0+cu128
+transformers==4.57.6
+accelerate
+huggingface_hub
+tokenizers
+safetensors
+sentencepiece
+protobuf
+einops
+timm
+qwen-vl-utils
+numpy
+scipy
+pandas
+pyarrow
+pillow
+opencv-python-headless
+matplotlib
+pycocotools
+pyyaml
+tqdm
+gdown
+pytest
+addict
+yapf
+supervision>=0.22.0
+scikit-learn
