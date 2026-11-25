@@ -109,12 +109,12 @@ def test_split_integrity():
         pytest.skip("splits/coco_pairs.json 不存在")
     sp = json.load(open(cp.split_file()))
     dev, test = sp["dev"], sp["test"]
-    assert sp["seed"] == cp.SEED and sp["unit"] == "image"
+    assert sp["seed"] == cp.SEED and sp["unit"] == "image" and sp["status"] == "active"
     assert dev == sorted(set(dev)) and test == sorted(set(test))
     assert not set(dev) & set(test)
     assert len(dev) == sp["n_dev_images"] and len(test) == sp["n_test_images"]
     assert len(dev) + len(test) == sp["n_images"]
-    assert abs(len(dev) - len(test)) <= len(sp["per_stratum"])       # 每层最多差 1 张
+    assert abs(len(dev) - len(test)) <= len(sp["per_stratum"])       # 每层最多差 1 张（v2 的层还包含只在 COCO-spatial 的图）
     if not cp.pairs_file().is_file():
         pytest.skip("pairs.jsonl 不存在，只做了划分文件自身的检查")
     recs = cp.read_pair_records()

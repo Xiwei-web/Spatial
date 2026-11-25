@@ -190,6 +190,7 @@ def load_split(name: str, split: str) -> list[Sample]:
     """split ∈ {dev, test}。选择类操作只用 dev，报告数字只用 test。
     更正表里标为 exclude 的样本会被剔除（划分文件本身不变；load_dataset 仍返回原始发布的全部样本）。"""
     assert split in ("dev", "test")
-    ids = json.load(open(paths.REPO_ROOT / "splits" / f"{name}.json"))[split]
+    from .splits import read_split
+    ids = read_split(name)[split]
     by_id = {s.sample_id: s for s in load_dataset(name)}
     return [by_id[i] for i in ids if (name, i) not in excluded_samples()]

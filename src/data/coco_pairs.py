@@ -207,7 +207,8 @@ def pairs_file() -> Path:
 
 
 def split_file() -> Path:
-    return paths.REPO_ROOT / "splits" / f"{DATASET}.json"
+    from .splits import split_path
+    return split_path(DATASET)
 
 
 def read_pair_records(f: Path | None = None) -> list[dict]:
@@ -253,12 +254,13 @@ def record_to_sample(r: dict, anns: dict | None = None) -> Sample:
 
 
 def load_coco_pairs(split: str | None = None) -> list[Sample]:
-    """split ∈ {None, "dev", "test"}。None 返回全部有向 pair；dev/test 按 splits/coco_pairs.json 的图像 id 过滤。
+    """split ∈ {None, "dev", "test"}。None 返回全部有向 pair；dev/test 按现行划分（splits/coco_pairs_v2.json，继承 coco_images_v2）的图像 id 过滤。
     选择类操作只用 dev，报告数字只用 test。caption_true / caption_options 是按模板生成的（第一个为真，第二个为相反关系）。"""
     assert split in (None, "dev", "test")
     records = read_pair_records()
     if split is not None:
-        keep = set(json.load(open(split_file()))[split])
+        from .splits import read_split
+        keep = set(read_split(DATASET)[split])
         records = [r for r in records if r["image_id"] in keep]
     anns = load_coco_instances()["anns"]
     return [record_to_sample(r, anns) for r in records]

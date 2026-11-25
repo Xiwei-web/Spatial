@@ -45,7 +45,10 @@ def load_config(path: str | Path) -> dict:
     p = Path(path)
     if not p.is_absolute():
         p = paths.REPO_ROOT / p
-    return yaml.safe_load(open(p))
+    cfg = yaml.safe_load(open(p))
+    if cfg["version"] != "trial_v0" and not cfg.get("cutout_split_name"):
+        raise ValueError("trial_v0 之后的配置必须写 cutout_split_name: synth_cutouts（按图像的统一划分）；库内嵌的旧划分已作废")
+    return cfg
 
 
 def scene_seed(global_seed: int, index: int) -> int:

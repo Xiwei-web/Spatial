@@ -45,6 +45,8 @@ def test_mcq_prompt_has_four_options():
 def test_splits_are_disjoint_halves_and_stratified():
     for f in sorted((paths.REPO_ROOT / "splits").glob("*.json")):
         d = json.load(open(f))
+        if d.get("status") == "deprecated" or str(d.get("unit", "")).startswith("image"):
+            continue      # 作废的划分；按图像继承的划分由 test_joint_coco_split 检查
         if "dev" not in d or "n_total" not in d:     # 只检查按样本分层的划分（coco_pairs 按图像划分，另有专门测试）
             continue
         dev, test = set(d["dev"]), set(d["test"])

@@ -32,7 +32,7 @@ _G: dict = {}
 
 
 def _init(cfg, lib_dir, out_dir):
-    _G.update(cfg=cfg, lib=CutoutLibrary(lib_dir), out=Path(out_dir) if out_dir else None)
+    _G.update(cfg=cfg, lib=CutoutLibrary(lib_dir, split_name=cfg.get("cutout_split_name")), out=Path(out_dir) if out_dir else None)
 
 
 def _work(index: int):
@@ -112,7 +112,7 @@ def summarize(metas: list[dict], cfg: dict) -> dict:
 
 def verify(cfg, lib_dir, out: Path, lines_by_index: dict[int, list[str]], n: int) -> dict:
     """在主进程里重新生成 n 个等间隔的场景，与磁盘上的 PNG 和 metadata 逐字节比较。"""
-    lib = CutoutLibrary(lib_dir)
+    lib = CutoutLibrary(lib_dir, split_name=cfg.get("cutout_split_name"))
     idx = sorted(lines_by_index)
     pick = [idx[int(i * (len(idx) - 1) / max(1, n - 1))] for i in range(min(n, len(idx)))]
     pick = sorted(set(pick))
@@ -163,7 +163,7 @@ def main():
               open(out / "timing.json", "w"))
     n = len(results)
     N = args.full_n_scenes
-    lib = CutoutLibrary(args.library_dir)
+    lib = CutoutLibrary(args.library_dir, split_name=cfg.get("cutout_split_name"))
     timing = {
         "hardware": f"{'Slurm 分区 ' + os.environ['SLURM_JOB_PARTITION'] + '，作业 ' + os.environ.get('SLURM_JOB_ID', '?') if 'SLURM_JOB_PARTITION' in os.environ else '非 Slurm（本地小试）'}，"
                     f"{args.workers} 个进程 / 可用 {len(os.sched_getaffinity(0))} 核，节点 {os.uname().nodename}",

@@ -11,6 +11,7 @@ from collections import defaultdict
 
 from src import paths
 from src.data import DATASETS, load_dataset
+from src.data.splits import ACTIVE
 
 SEED = 20261125
 
@@ -20,6 +21,9 @@ def main():
     out_dir = paths.REPO_ROOT / "splits"
     out_dir.mkdir(exist_ok=True)
     for name in DATASETS:
+        if name in ACTIVE:          # COCO-spatial 的划分由 scripts/make_joint_coco_split.py 统一生成
+            print(f"[skip] {name}: 由 make_joint_coco_split.py 生成")
+            continue
         f = out_dir / f"{name}.json"
         if f.exists() and not force:
             print(f"[skip] {f.name} 已存在")

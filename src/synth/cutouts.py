@@ -331,7 +331,9 @@ class CutoutLibrary:
     """切图库的只读视图。磁盘布局：<root>/library.jsonl（每行一个切图的 metadata）+ <root>/png/<cutout_id>.png。"""
 
     def __init__(self, root: Path | str | None = None, entries: list[dict] | None = None,
-                 arrays: dict[str, np.ndarray] | None = None):
+                 arrays: dict[str, np.ndarray] | None = None, split_name: str | None = None):
+        """split_name：用登记的现行划分（如 "synth_cutouts" → splits/synth_cutouts_v2.json）覆盖库里内嵌的 split 字段；
+        内嵌 split 是按切图划分的旧划分，已作废，只有 trial_v0 的重现还在用。"""
         self.root = Path(root) if root is not None else (library_dir() if entries is None else None)
         if entries is None:
             raw = (self.root / "library.jsonl").read_bytes()
@@ -339,6 +341,13 @@ class CutoutLibrary:
             entries = [json.loads(line) for line in raw.decode().splitlines() if line.strip()]
         else:                                   # 内存里的库（单元测试用）
             self.sha256 = hashlib.sha256(json.dumps(entries, sort_keys=True).encode()).hexdigest()
+        if split_name is not None:
+            from src.data.splits import read_split
+            sp = read_split(split_name)
+            if sp["library_sha256"] != self.sha256:
+                raise RuntimeError("切图库与划分文件的 sha256 不一致")
+            side = {i: x for x in ("dev", "test") for i in sp[x]}
+            entries = [{**e, "split": side[e["cutout_id"]]} for e in entries]
         self.entries = sorted(entries, key=lambda e: e["cutout_id"])
         self.by_id = {e["cutout_id"]: e for e in self.entries}
         self._arrays = dict(arrays or {})

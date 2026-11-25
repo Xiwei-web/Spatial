@@ -39,7 +39,8 @@ def _coco_membership() -> tuple[dict[str, set[int]], dict]:
     for name in ("coco_spatial_one", "coco_spatial_two"):
         mem[f"in_{name}"] = {int(Path(s.image_path).stem) for s in load_dataset(name)}
     info = {"coco_pairs_split_present": False}
-    f = paths.REPO_ROOT / "splits" / "coco_pairs.json"
+    from src.data.splits import split_path
+    f = split_path("coco_pairs")
     if f.is_file():
         sp = json.load(open(f))
         mem["in_coco_pairs"] = {int(i) for i in sp["dev"] + sp["test"]}
@@ -73,7 +74,7 @@ def main():
     if args.limit_images is not None and not trial:
         sys.exit("[error] --limit-images 只能和 --out-dir 一起用（不允许把试跑结果写进正式位置）")
     out = args.out_dir if trial else cu.library_dir()
-    f_split = (out / "synth_cutouts.split.json") if trial else paths.REPO_ROOT / "splits" / "synth_cutouts.json"
+    f_split = (out / "synth_cutouts.split.json") if trial else out / "synth_cutouts.embedded_split.json"     # 库内嵌划分，仅留档；现行划分 splits/synth_cutouts_v2.json 由 make_joint_coco_split.py 生成
     f_man = (out / "synth_cutouts.manifest.json") if trial else paths.REPO_ROOT / "manifests" / "synth_cutouts.json"
     if not trial and not args.force and ((out / "library.jsonl").exists() or f_split.exists()):
         sys.exit(f"[error] {out / 'library.jsonl'} 或 {f_split} 已存在；确认要重建请加 --force（dev/test 划分会随之改变）")

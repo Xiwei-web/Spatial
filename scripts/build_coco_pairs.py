@@ -3,7 +3,7 @@
 
 输出：
   <data>/coco_pairs/pairs.jsonl          每行一条“有向 pair”（target → reference），两个方向互为 twin
-  splits/coco_pairs.json                 按图像的 dev/test 划分（只存图像 id）；已存在时拒绝覆盖，除非 --force
+  划分：splits/coco_pairs_v2.json（按图像，继承 coco_images_v2），由 scripts/make_joint_coco_split.py 生成，本脚本正式模式下不写划分
   manifests/coco_pairs_summary.json      机器可读的统计 + pairs.jsonl 的 sha256
   docs/parts/F3_coco_pairs.md            分布报告（表格）
 
@@ -399,7 +399,7 @@ def write_report(s: dict, f: Path, pairs_path_display: str):
           f"扫描图像数：{s['n_images_scanned']}（COCO val2017 全部图像，未下采样）。种子 {s['seed']}。", "",
           f"- 数据：`{pairs_path_display}`（每行一条有向 pair；sha256 `{s['pairs_jsonl']['sha256']}`，"
           f"{s['pairs_jsonl']['n_lines']} 行，{s['pairs_jsonl']['bytes']} 字节）",
-          "- 划分：`splits/coco_pairs.json`（只存图像 id）",
+          "- 划分：`splits/coco_pairs_v2.json`（只存图像 id；继承 COCO-spatial 与 COCO-Pairs 的统一图像划分 `splits/coco_images_v2.json`）",
           "- 统计：`manifests/coco_pairs_summary.json`",
           "- 加载：`from src.data.coco_pairs import load_coco_pairs; load_coco_pairs(split=None|'dev'|'test')`", ""]
     L += ["## 1. 规则（含需要解释的地方）", ""]
@@ -558,7 +558,7 @@ def write_report(s: dict, f: Path, pairs_path_display: str):
 # ---------------------------------------------------------------- main
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--force", action="store_true", help="允许覆盖已存在的 splits/coco_pairs.json")
+    ap.add_argument("--force", action="store_true", help="只对 --out-dir 试跑有效：允许覆盖试跑目录里的划分")
     ap.add_argument("--limit", type=int, default=None, help="只处理 image_id 最小的 N 张图（试跑用，必须同时给 --out-dir）")
     ap.add_argument("--out-dir", type=Path, default=None, help="把全部输出写到这个目录（试跑用），不碰正式位置")
     args = ap.parse_args()
@@ -591,12 +591,14 @@ def main():
 
     # 划分：已存在则不覆盖（除非 --force）；已存在的划分必须与当前图像集合一致，否则报错退出
     pair_imgs = sorted({r["image_id"] for r in records})
-    if f_split.exists() and not args.force:
+    if f_split.exists() and (not args.force or args.out_dir is None):
         split = json.load(open(f_split))
         if sorted(split["dev"] + split["test"]) != pair_imgs:
-            sys.exit(f"[error] {f_split} 已存在，但它的图像集合与本次构建不一致；拒绝覆盖。确认要重做划分请加 --force")
+            sys.exit(f"[error] {f_split} 已存在，但它的图像集合与本次构建不一致；拒绝覆盖。需要重做请运行 scripts/make_joint_coco_split.py --force")
         print(f"[skip] {f_split.name} 已存在且与本次构建一致，沿用（不覆盖）")
         write_split = False
+    elif args.out_dir is None:
+        split, write_split = None, False        # 正式划分由 make_joint_coco_split.py 生成
     else:
         split = make_split(records)
         write_split = True
@@ -607,6 +609,9 @@ def main():
             fh.write(json.dumps(r, ensure_ascii=False, sort_keys=False) + "\n")
     raw = f_pairs.read_bytes()
     sha = hashlib.sha256(raw).hexdigest()
+    if split is None:
+        print(f"[ok] {f_pairs} sha256={sha}；划分文件不存在：先运行 scripts/make_joint_coco_split.py，再重跑本脚本生成统计")
+        return
 
     summary = summarize(coco, image_ids, cands, funnel, records, obj_info, n_tie, in_one, in_two)
     summary["limit"] = args.limit
@@ -617,7 +622,7 @@ def main():
         split["pairs_jsonl_sha256"] = sha
         json.dump(split, open(f_split, "w"), indent=0)
         print(f"[ok] 写入划分 {f_split}")
-    summary["split"] = {"file": "splits/coco_pairs.json", "unit": "image", "stratify_by": split["stratify_by"],
+    summary["split"] = {"file": f"splits/{f_split.name}", "unit": "image", "stratify_by": split["stratify_by"],
                         "per_stratum": split["per_stratum"], "counts": counts}
     json.dump(summary, open(f_sum, "w"), indent=1, ensure_ascii=False)
     write_report(summary, f_md, pairs_display)

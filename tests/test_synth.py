@@ -315,7 +315,8 @@ def test_cap_and_split():
 def test_real_library_split_is_disjoint_if_present():
     """正式切图库存在时：划分文件与 library.jsonl 一致，dev / test 没有共用的切图，类别数 ≥ 40。"""
     from src import paths
-    f_split = paths.REPO_ROOT / "splits" / "synth_cutouts.json"
+    from src.data.splits import split_path
+    f_split = split_path("synth_cutouts")
     f_lib = cu.library_dir() / "library.jsonl"
     if not (f_split.is_file() and f_lib.is_file()):
         pytest.skip("正式切图库还没构建")
@@ -324,6 +325,7 @@ def test_real_library_split_is_disjoint_if_present():
     if lib.sha256 != sp["library_sha256"]:
         pytest.skip("切图库正在重建（library.jsonl 与划分文件的 sha256 暂不一致）")
     assert not set(sp["dev"]) & set(sp["test"])
+    lib = CutoutLibrary(split_name="synth_cutouts")
     assert {e["cutout_id"]: e["split"] for e in lib.entries} == {**{i: "dev" for i in sp["dev"]}, **{i: "test" for i in sp["test"]}}
     assert len(lib.categories("both")) >= 40
     assert all(e["source"] in (cu.COCO_SOURCE, cu.WHATSUP_SOURCE) for e in lib.entries)

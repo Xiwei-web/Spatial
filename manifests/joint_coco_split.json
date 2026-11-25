@@ -1,0 +1,206 @@
+{
+ "n_union_images": 1891,
+ "dev_images": 945,
+ "test_images": 946,
+ "per_stratum": {
+  "-|-|pairs|H|n2": {
+   "n": 179,
+   "dev": 89,
+   "test": 90
+  },
+  "-|-|pairs|H|n3": {
+   "n": 34,
+   "dev": 17,
+   "test": 17
+  },
+  "-|-|pairs|H|n4+": {
+   "n": 7,
+   "dev": 4,
+   "test": 3
+  },
+  "-|-|pairs|T|n4+": {
+   "n": 1,
+   "dev": 0,
+   "test": 1
+  },
+  "-|-|pairs|V|n2": {
+   "n": 198,
+   "dev": 99,
+   "test": 99
+  },
+  "-|-|pairs|V|n3": {
+   "n": 19,
+   "dev": 10,
+   "test": 9
+  },
+  "-|-|pairs|V|n4+": {
+   "n": 2,
+   "dev": 1,
+   "test": 1
+  },
+  "one|-|-|-|-": {
+   "n": 606,
+   "dev": 303,
+   "test": 303
+  },
+  "one|-|pairs|H|n2": {
+   "n": 208,
+   "dev": 104,
+   "test": 104
+  },
+  "one|-|pairs|H|n3": {
+   "n": 87,
+   "dev": 43,
+   "test": 44
+  },
+  "one|-|pairs|H|n4+": {
+   "n": 20,
+   "dev": 10,
+   "test": 10
+  },
+  "one|-|pairs|T|n4+": {
+   "n": 4,
+   "dev": 2,
+   "test": 2
+  },
+  "one|-|pairs|V|n2": {
+   "n": 175,
+   "dev": 88,
+   "test": 87
+  },
+  "one|-|pairs|V|n3": {
+   "n": 45,
+   "dev": 22,
+   "test": 23
+  },
+  "one|-|pairs|V|n4+": {
+   "n": 11,
+   "dev": 6,
+   "test": 5
+  },
+  "one|two|-|-|-": {
+   "n": 11,
+   "dev": 5,
+   "test": 6
+  },
+  "one|two|pairs|H|n2": {
+   "n": 82,
+   "dev": 41,
+   "test": 41
+  },
+  "one|two|pairs|H|n3": {
+   "n": 73,
+   "dev": 37,
+   "test": 36
+  },
+  "one|two|pairs|H|n4+": {
+   "n": 45,
+   "dev": 22,
+   "test": 23
+  },
+  "one|two|pairs|T|n4+": {
+   "n": 12,
+   "dev": 6,
+   "test": 6
+  },
+  "one|two|pairs|V|n2": {
+   "n": 28,
+   "dev": 14,
+   "test": 14
+  },
+  "one|two|pairs|V|n3": {
+   "n": 27,
+   "dev": 14,
+   "test": 13
+  },
+  "one|two|pairs|V|n4+": {
+   "n": 17,
+   "dev": 8,
+   "test": 9
+  }
+ },
+ "coco_spatial_relation_by_side": {
+  "coco_spatial_one": {
+   "dev": {
+    "bottom": 362,
+    "left": 275,
+    "right": 296,
+    "top": 189
+   },
+   "test": {
+    "bottom": 382,
+    "left": 301,
+    "right": 268,
+    "top": 174
+   }
+  },
+  "coco_spatial_two": {
+   "dev": {
+    "above": 39,
+    "below": 37,
+    "left": 69,
+    "right": 63
+   },
+   "test": {
+    "above": 47,
+    "below": 38,
+    "left": 81,
+    "right": 66
+   }
+  }
+ },
+ "coco_pairs": {
+  "dev": {
+   "n_images": 637,
+   "n_directed_pairs": 2550,
+   "per_relation": {
+    "above": 518,
+    "below": 518,
+    "left": 757,
+    "right": 757
+   },
+   "n_proj_overlap": 1476
+  },
+  "test": {
+   "n_images": 637,
+   "n_directed_pairs": 2574,
+   "per_relation": {
+    "above": 538,
+    "below": 538,
+    "left": 749,
+    "right": 749
+   },
+   "n_proj_overlap": 1432
+  }
+ },
+ "cutouts": {
+  "n_dev": 653,
+  "n_test": 680,
+  "n_in_union_images": 749,
+  "categories_missing_on_one_side": {
+   "book": [
+    0,
+    10
+   ]
+  },
+  "n_categories_both_sides": 62
+ },
+ "vs_old": {
+  "coco_spatial_one": {
+   "samples_changing_side": 1137,
+   "images_on_both_sides_in_old_split": 318
+  },
+  "coco_spatial_two": {
+   "samples_changing_side": 249,
+   "images_on_both_sides_in_old_split": 52
+  },
+  "synth_cutouts": {
+   "cutouts_changing_side": 649,
+   "images_on_both_sides_in_old_split": 110,
+   "trial_v0_dev_cutouts_now_test": 326
+  },
+  "coco_pairs": {
+   "images_changing_side": 652
+  }
+ }
+}

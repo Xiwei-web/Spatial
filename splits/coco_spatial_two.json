@@ -1,4 +1,7 @@
 {
+"status": "deprecated",
+"superseded_by": "splits/coco_spatial_two_v2.json",
+"deprecated_reason": "2026-11-25 起 COCO-spatial / COCO-Pairs / 合成抠图统一按图像划分（splits/coco_images_v2.json）",
 "dataset": "coco_spatial_two",
 "seed": 20261125,
 "stratify_by": "relation",
