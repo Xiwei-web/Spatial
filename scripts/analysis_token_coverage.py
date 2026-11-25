@@ -51,14 +51,18 @@ def grids_for(name, spec):
     return out
 
 
+_IDX = {}
+
+
 def cover(m, gh, gw):
-    """每个格子被 mask 覆盖的面积比例（格子边界按实数等分，像素按中心归属）。"""
-    ys = np.minimum((np.arange(H) + 0.5) * gh / H, gh - 1e-6).astype(int)
-    xs = np.minimum((np.arange(W) + 0.5) * gw / W, gw - 1e-6).astype(int)
-    acc = np.zeros((gh, gw)); cnt = np.zeros((gh, gw))
-    np.add.at(acc, (ys[:, None].repeat(W, 1), xs[None].repeat(H, 0)), m)
-    np.add.at(cnt, (ys[:, None].repeat(W, 1), xs[None].repeat(H, 0)), 1)
-    return acc / cnt
+    """每个格子被 mask 覆盖的面积比例（格子边界按实数等分，像素按中心归属）。用 bincount 实现。"""
+    if (gh, gw) not in _IDX:
+        ys = np.minimum((np.arange(H) + 0.5) * gh / H, gh - 1e-6).astype(np.int64)
+        xs = np.minimum((np.arange(W) + 0.5) * gw / W, gw - 1e-6).astype(np.int64)
+        idx = (ys[:, None] * gw + xs[None, :]).ravel()
+        _IDX[(gh, gw)] = (idx, np.bincount(idx, minlength=gh * gw).astype(np.float64))
+    idx, cnt = _IDX[(gh, gw)]
+    return (np.bincount(idx, weights=m.ravel(), minlength=gh * gw) / cnt).reshape(gh, gw)
 
 
 def q(v):

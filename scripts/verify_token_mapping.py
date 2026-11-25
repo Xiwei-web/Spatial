@@ -59,6 +59,20 @@ for s in samples:
                          "mean_change_in_P": float(d[list(P)].mean()), "mean_change_outside_P_any": float(np.delete(d, list(P_any)).mean())}
         if li == 0:
             d0 = d
+            # 补充指标：(1) 预测覆盖比例图与实测变化图的相关系数；(2) 实测变化的加权质心与矩形中心的距离（单位：token）；
+            # (3) 对照：把预测图左右翻转 / 上下翻转 / 同时翻转后的重合率——映射若有系统性错位，对照不应明显低于正确映射
+            fm, dm = frac.reshape(gh, gw), d.reshape(gh, gw)
+            wgt = np.clip(dm - np.median(dm), 0, None)
+            yy, xx = np.mgrid[0:gh, 0:gw]
+            cy, cx = (wgt * yy).sum() / wgt.sum(), (wgt * xx).sum() / wgt.sum()
+            ry, rx = (fm * yy).sum() / fm.sum(), (fm * xx).sum() / fm.sum()
+            ctrl = {}
+            for tag, alt in (("hflip", fm[:, ::-1]), ("vflip", fm[::-1]), ("hvflip", fm[::-1, ::-1])):
+                Pa = set(np.nonzero(alt.ravel() >= 0.5)[0].tolist())
+                ctrl[tag] = len(Pa & A) / max(len(Pa), 1)
+            per_layer[0].update(corr_pred_vs_measured=float(np.corrcoef(fm.ravel(), dm.ravel())[0, 1]),
+                                centroid_error_tokens=float(np.hypot(cy - ry, cx - rx)),
+                                argmax_inside_rect=bool(frac[int(np.argmax(d))] > 0), control_overlap=ctrl)
     # 非网格的其余视觉 token（如 LLaVA-OV 切片）不在此验证范围
     results.append({"dataset": s.dataset, "sample_id": s.sample_id, "rect_xyxy": rect, "grid_hw": [gh, gw], "n_pred": len(P),
                     "n_any": len(P_any), "per_layer": per_layer})
@@ -69,6 +83,12 @@ summary = {"model": name, "seed": SEED, "n_images": len(results), "rect_frac": 0
            "mean_overlap_hs0": float(np.mean([r["per_layer"][0]["overlap"] for r in results])),
            "min_overlap_hs0": float(np.min([r["per_layer"][0]["overlap"] for r in results])),
            "mean_top_in_any_intersect_hs0": float(np.mean([r["per_layer"][0]["top_in_any_intersect"] for r in results])),
+           "mean_corr_pred_vs_measured": float(np.mean([r["per_layer"][0]["corr_pred_vs_measured"] for r in results])),
+           "mean_centroid_error_tokens": float(np.mean([r["per_layer"][0]["centroid_error_tokens"] for r in results])),
+           "max_centroid_error_tokens": float(np.max([r["per_layer"][0]["centroid_error_tokens"] for r in results])),
+           "n_argmax_inside_rect": int(sum(r["per_layer"][0]["argmax_inside_rect"] for r in results)),
+           "mean_control_overlap": {k: float(np.mean([r["per_layer"][0]["control_overlap"][k] for r in results])) for k in ("hflip", "vflip", "hvflip")},
+           "mean_change_ratio_in_vs_out": float(np.mean([r["per_layer"][0]["mean_change_in_P"] / max(r["per_layer"][0]["mean_change_outside_P_any"], 1e-9) for r in results])),
            "mean_overlap_after_layer": {str(k): float(np.mean([r["per_layer"][k]["overlap"] for r in results])) for k in (1, 2, 3)},
            "images": results}
 out = paths.get("outputs") / "token_mapping_verify" / name
@@ -90,4 +110,7 @@ fig.suptitle(f"{name}: visual-token → image-region mapping, behavioural check 
 fig.tight_layout()
 fig.savefig(out / "compare.png", dpi=110)
 print("SUMMARY", name, "mean_overlap_hs0", round(summary["mean_overlap_hs0"], 3), "min", round(summary["min_overlap_hs0"], 3),
-      "after layers 1-3", {k: round(v, 3) for k, v in summary["mean_overlap_after_layer"].items()})
+      "after layers 1-3", {k: round(v, 3) for k, v in summary["mean_overlap_after_layer"].items()},
+      "| corr", round(summary["mean_corr_pred_vs_measured"], 3), "centroid_err_tok", round(summary["mean_centroid_error_tokens"], 2),
+      "argmax_in_rect", summary["n_argmax_inside_rect"], "/", len(results), "controls", {k: round(v, 3) for k, v in summary["mean_control_overlap"].items()},
+      "in/out", round(summary["mean_change_ratio_in_vs_out"], 1))
