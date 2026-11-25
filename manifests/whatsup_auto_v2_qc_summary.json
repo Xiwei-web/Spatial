@@ -1,0 +1,356 @@
+{
+ "version": "auto_v2",
+ "qc_config": {
+  "low_score": 0.35,
+  "ambiguous_margin": 0.1,
+  "min_area_frac": {
+   "whatsup_a": 0.0002,
+   "whatsup_b": 0.002
+  },
+  "max_area_frac": 0.6,
+  "max_pair_mask_iou": 0.5,
+  "geometry": {
+   "left": "target 质心 x < reference 质心 x",
+   "right": "target 质心 x > reference 质心 x",
+   "true": "target 质心 y < reference 检测框下边缘 y（图像 y 轴向下）",
+   "under": "target 质心 y > reference 质心 y"
+  },
+  "min_mask_box_iou": 0.8
+ },
+ "n_images": 820,
+ "annotations_sha256": "8dc0d2f66e780041531e5e69cecd4b57202e335c8acbc8372f83ccda2ba21ef2",
+ "by_dataset": {
+  "whatsup_a": {
+   "n": 412,
+   "n_pass": 342,
+   "n_review": 70,
+   "flag_counts_images": {
+    "low_score": 56,
+    "ambiguous_candidates": 14,
+    "pair_mask_overlap": 9,
+    "geometry_inconsistent": 8,
+    "target_no_alternative": 9
+   },
+   "flag_counts_by_role": {
+    "low_score:target": 56,
+    "ambiguous_candidates:target": 14,
+    "pair_mask_overlap:pair": 9,
+    "geometry_inconsistent:under": 5,
+    "target_no_alternative:target": 9,
+    "geometry_inconsistent:left": 1,
+    "geometry_inconsistent:right": 2
+   },
+   "review_by_relation": {
+    "right": 14,
+    "left": 16,
+    "on": 20,
+    "under": 20
+   },
+   "score_percentiles": {
+    "target": {
+     "p1": 0.117,
+     "p5": 0.222,
+     "p10": 0.306,
+     "p25": 0.424,
+     "p50": 0.603,
+     "p75": 0.704,
+     "p90": 0.799
+    },
+    "reference": {
+     "p1": 0.861,
+     "p5": 0.895,
+     "p10": 0.9,
+     "p25": 0.907,
+     "p50": 0.922,
+     "p75": 0.937,
+     "p90": 0.946
+    }
+   },
+   "score_hist_0.1_bins": {
+    "target": [
+     0,
+     16,
+     21,
+     53,
+     50,
+     65,
+     100,
+     66,
+     41,
+     0
+    ],
+    "reference": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     42,
+     369
+    ]
+   },
+   "n_candidates_hist": {
+    "target": {
+     "1": 63,
+     "2": 272,
+     "3": 39,
+     "4": 24,
+     "5": 14
+    },
+    "reference": {
+     "1": 410,
+     "2": 2
+    }
+   },
+   "area_frac_percentiles": {
+    "target": {
+     "p1": 0.001,
+     "p5": 0.001,
+     "p10": 0.001,
+     "p25": 0.002,
+     "p50": 0.004,
+     "p75": 0.008,
+     "p90": 0.017
+    },
+    "reference": {
+     "p1": 0.043,
+     "p5": 0.05,
+     "p10": 0.052,
+     "p25": 0.053,
+     "p50": 0.097,
+     "p75": 0.143,
+     "p90": 0.145
+    }
+   }
+  },
+  "whatsup_b": {
+   "n": 408,
+   "n_pass": 376,
+   "n_review": 32,
+   "flag_counts_images": {
+    "low_score": 25,
+    "ambiguous_candidates": 20,
+    "geometry_inconsistent": 2,
+    "pair_mask_overlap": 3,
+    "target_no_alternative": 3,
+    "mask_box_mismatch": 1
+   },
+   "flag_counts_by_role": {
+    "low_score:target": 11,
+    "ambiguous_candidates:reference": 20,
+    "low_score:reference": 15,
+    "geometry_inconsistent:right": 1,
+    "pair_mask_overlap:pair": 3,
+    "target_no_alternative:target": 3,
+    "mask_box_mismatch:reference": 1,
+    "geometry_inconsistent:left": 1
+   },
+   "review_by_relation": {
+    "behind": 11,
+    "left": 7,
+    "right": 8,
+    "front": 6
+   },
+   "score_percentiles": {
+    "target": {
+     "p1": 0.317,
+     "p5": 0.387,
+     "p10": 0.486,
+     "p25": 0.767,
+     "p50": 0.844,
+     "p75": 0.878,
+     "p90": 0.913
+    },
+    "reference": {
+     "p1": 0.29,
+     "p5": 0.403,
+     "p10": 0.484,
+     "p25": 0.585,
+     "p50": 0.758,
+     "p75": 0.831,
+     "p90": 0.9
+    }
+   },
+   "score_hist_0.1_bins": {
+    "target": [
+     0,
+     1,
+     1,
+     23,
+     19,
+     32,
+     9,
+     48,
+     214,
+     61
+    ],
+    "reference": [
+     0,
+     0,
+     6,
+     14,
+     26,
+     64,
+     47,
+     104,
+     106,
+     41
+    ]
+   },
+   "n_candidates_hist": {
+    "target": {
+     "1": 258,
+     "2": 96,
+     "3": 21,
+     "4": 26,
+     "5": 7
+    },
+    "reference": {
+     "1": 205,
+     "2": 142,
+     "3": 46,
+     "4": 12,
+     "5": 3
+    }
+   },
+   "area_frac_percentiles": {
+    "target": {
+     "p1": 0.006,
+     "p5": 0.011,
+     "p10": 0.018,
+     "p25": 0.024,
+     "p50": 0.04,
+     "p75": 0.056,
+     "p90": 0.081
+    },
+    "reference": {
+     "p1": 0.003,
+     "p5": 0.004,
+     "p10": 0.005,
+     "p25": 0.007,
+     "p50": 0.014,
+     "p75": 0.029,
+     "p90": 0.054
+    }
+   }
+  },
+  "all": {
+   "n": 820,
+   "n_pass": 718,
+   "n_review": 102,
+   "flag_counts_images": {
+    "low_score": 81,
+    "ambiguous_candidates": 34,
+    "pair_mask_overlap": 12,
+    "geometry_inconsistent": 10,
+    "target_no_alternative": 12,
+    "mask_box_mismatch": 1
+   },
+   "flag_counts_by_role": {
+    "low_score:target": 67,
+    "ambiguous_candidates:target": 14,
+    "pair_mask_overlap:pair": 12,
+    "geometry_inconsistent:under": 5,
+    "target_no_alternative:target": 12,
+    "geometry_inconsistent:left": 2,
+    "geometry_inconsistent:right": 3,
+    "ambiguous_candidates:reference": 20,
+    "low_score:reference": 15,
+    "mask_box_mismatch:reference": 1
+   },
+   "review_by_relation": {
+    "right": 22,
+    "left": 23,
+    "on": 20,
+    "under": 20,
+    "behind": 11,
+    "front": 6
+   },
+   "score_percentiles": {
+    "target": {
+     "p1": 0.129,
+     "p5": 0.304,
+     "p10": 0.366,
+     "p25": 0.528,
+     "p50": 0.727,
+     "p75": 0.849,
+     "p90": 0.889
+    },
+    "reference": {
+     "p1": 0.31,
+     "p5": 0.484,
+     "p10": 0.545,
+     "p25": 0.758,
+     "p50": 0.9,
+     "p75": 0.924,
+     "p90": 0.943
+    }
+   },
+   "score_hist_0.1_bins": {
+    "target": [
+     0,
+     17,
+     22,
+     76,
+     69,
+     97,
+     109,
+     114,
+     255,
+     61
+    ],
+    "reference": [
+     0,
+     0,
+     6,
+     14,
+     26,
+     65,
+     47,
+     104,
+     148,
+     410
+    ]
+   },
+   "n_candidates_hist": {
+    "target": {
+     "1": 321,
+     "2": 368,
+     "3": 60,
+     "4": 50,
+     "5": 21
+    },
+    "reference": {
+     "1": 615,
+     "2": 144,
+     "3": 46,
+     "4": 12,
+     "5": 3
+    }
+   },
+   "area_frac_percentiles": {
+    "target": {
+     "p1": 0.001,
+     "p5": 0.001,
+     "p10": 0.002,
+     "p25": 0.004,
+     "p50": 0.018,
+     "p75": 0.041,
+     "p90": 0.071
+    },
+    "reference": {
+     "p1": 0.003,
+     "p5": 0.005,
+     "p10": 0.006,
+     "p25": 0.015,
+     "p50": 0.053,
+     "p75": 0.097,
+     "p90": 0.144
+    }
+   }
+  }
+ }
+}
