@@ -241,7 +241,7 @@ def rewrite_record(r: Record, same_class: str = "skip") -> dict:
     if len(r.classes) > r.n_regions:
         notes.append(f"class 有 {len(r.classes)} 个、区域只有 {r.n_regions} 个：按 class[0] 取")
     if any(c.strip().lower() in PLURAL_CLASSES for c in r.classes[: r.n_regions]):
-        notes.append("含复数类名：做了 is/does/has 的数一致处理")
+        notes.append("含复数类名（紧邻的 is/does/has 按规则改成复数）")
     if names is None:
         return {"status": status, "question": None, "answer": None, "notes": notes}
     if re.search(r"\b(it|It|They|they)\b", r.answer):

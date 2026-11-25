@@ -1,0 +1,129 @@
+{
+ "depth": {
+  "by_category": {
+   "behind_predicate": 55,
+   "front_predicate": 55
+  },
+  "by_category_answer_relation_source": {
+   "behind_predicate | no | front | answer_no_explicit_opposite": 12,
+   "behind_predicate | no | front | answer_no_implied_opposite": 21,
+   "behind_predicate | yes | behind | answer_yes": 22,
+   "front_predicate | no | behind | answer_no_explicit_opposite": 12,
+   "front_predicate | no | behind | answer_no_implied_opposite": 13,
+   "front_predicate | yes | front | answer_yes": 30
+  },
+  "by_true_relation": {
+   "behind": 47,
+   "front": 63
+  },
+  "image_source": {
+   "ARKitScenes": 8,
+   "KITTI_object": 7,
+   "SUNRGBD": 33,
+   "hypersim": 41,
+   "nuScenes": 21
+  },
+  "n": 110,
+  "n_with_both_bbox": 110,
+  "n_with_both_mask": 110,
+  "relation_source": {
+   "answer_no_explicit_opposite": 24,
+   "answer_no_implied_opposite": 34,
+   "answer_yes": 52
+  },
+  "same_class": 14,
+  "same_class_by_category": {
+   "behind_predicate": 5,
+   "front_predicate": 9
+  }
+ },
+ "image_source_all": {
+  "ARKitScenes": 140,
+  "KITTI_object": 99,
+  "SUNRGBD": 594,
+  "hypersim": 384,
+  "nuScenes": 189
+ },
+ "n_bbox_mask_count_equals_regions": 1406,
+ "n_records": 1406,
+ "n_regions": {
+  "1": 266,
+  "2": 1140
+ },
+ "n_unique_ids": 1406,
+ "n_unique_source_images": 688,
+ "n_with_bbox": 1406,
+ "n_with_mask": 1406,
+ "per_category": {
+  "above_choice": 29,
+  "above_predicate": 37,
+  "behind_predicate": 55,
+  "below_choice": 19,
+  "below_predicate": 35,
+  "big_predicate": 61,
+  "direction": 107,
+  "distance_data": 148,
+  "front_predicate": 55,
+  "height_data": 133,
+  "horizontal_distance_data": 122,
+  "left_choice": 28,
+  "left_predicate": 25,
+  "right_choice": 24,
+  "right_predicate": 28,
+  "short_choice": 33,
+  "short_predicate": 22,
+  "small_predicate": 45,
+  "tall_choice": 31,
+  "tall_predicate": 26,
+  "thin_predicate": 48,
+  "vertical_distance_data": 106,
+  "wide_predicate": 56,
+  "width_data": 133
+ },
+ "per_type": {
+  "qualitative": 657,
+  "quantitative": 749
+ },
+ "predicate_yes_no": {
+  "n": 493,
+  "parsed": 493
+ },
+ "rewrite": {
+  "items_with_plural_class": 232,
+  "items_with_plural_class_and_pronoun_it_in_answer": 24,
+  "same_class_by_category": {
+   "above_choice": 2,
+   "above_predicate": 2,
+   "behind_predicate": 5,
+   "below_predicate": 1,
+   "big_predicate": 3,
+   "direction": 19,
+   "distance_data": 24,
+   "front_predicate": 9,
+   "horizontal_distance_data": 19,
+   "left_choice": 5,
+   "left_predicate": 6,
+   "right_choice": 5,
+   "right_predicate": 3,
+   "short_choice": 3,
+   "short_predicate": 1,
+   "small_predicate": 6,
+   "tall_choice": 1,
+   "tall_predicate": 2,
+   "thin_predicate": 1,
+   "vertical_distance_data": 5,
+   "wide_predicate": 1
+  },
+  "same_class_two_region_items": 123,
+  "single_region_items_with_two_classes": 168,
+  "status_same_class_position": {
+   "ambiguous_same_class": 77,
+   "ok": 1283,
+   "ok_position": 46
+  },
+  "status_same_class_skip": {
+   "ambiguous_same_class": 123,
+   "ok": 1283
+  }
+ }
+}

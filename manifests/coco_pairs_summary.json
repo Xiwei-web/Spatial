@@ -1,0 +1,864 @@
+{
+ "dataset": "coco_pairs",
+ "seed": 20261125,
+ "source": "COCO val2017 instances_val2017.json",
+ "rules": {
+  "candidate": {
+   "iscrowd": 0,
+   "unique_category": "该类别在该图的全部标注（含 iscrowd=1）中恰好出现 1 次",
+   "area_frac_range_inclusive": [
+    0.01,
+    0.4
+   ],
+   "area_source": "COCO annotation `area` 字段（不是解码后的像素数；两者差异见 area_check）",
+   "min_short_side": 300
+  },
+  "pairing": "同一张图里所有无序候选对；每对保留两个方向（两条记录，twin_id 互指）",
+  "centroid": "解码后的二值 mask 的像素下标均值 + 0.5（像素中心，与 COCO bbox 连续坐标一致）",
+  "relation": "|dx|>|dy| → left/right（target 质心 x 更小 → left）；否则 above/below（target 质心 y 更小 → above）",
+  "tie": "|dx|==|dy| 归 above/below；质心完全重合时 ann_id 较小的一方记为 above（保证 twin 相反），并置 centroid_tie=true",
+  "norm_gap": "质心欧氏距离 / 两个 bbox 沿关系轴长度的均值（水平轴用宽，竖直轴用高）",
+  "norm_gap_axis": "质心差在关系轴上的分量 / 同一分母（补充量）",
+  "bbox": "COCO bbox 字段，转成 [x1,y1,x2,y2]",
+  "size_ratio": "COCO area(target) / COCO area(reference)",
+  "containment": "bbox 交集面积 / 自身 bbox 面积；两个方向都记",
+  "proj_overlap": "两个 bbox 在关系轴上的投影区间重叠长度 > 0（端点相接不算）",
+  "n_other_instances": "该图全部标注数（含 crowd）- 2；n_other_instances_noncrowd 只数 iscrowd=0",
+  "filters_on_hard_cases": "无"
+ },
+ "n_images_scanned": 5000,
+ "funnel_objects": {
+  "annotations_all": 36781,
+  "a_noncrowd": 36335,
+  "b_unique_category": 8548,
+  "c_area_1_40pct": 5050,
+  "d_short_side_300": 4966
+ },
+ "n_candidate_objects": 4966,
+ "n_images_with_ge1_candidate": 3139,
+ "n_images_with_ge2_candidates": 1274,
+ "images_by_n_candidates": {
+  "1": 1865,
+  "2": 870,
+  "3": 285,
+  "4": 92,
+  "5": 24,
+  "6": 3,
+  "0": 1861
+ },
+ "n_objects_in_pairs": 3101,
+ "n_undirected_pairs": 2562,
+ "n_directed_pairs": 5124,
+ "n_centroid_ties": 0,
+ "n_abs_dx_eq_abs_dy_undirected": 0,
+ "area_check": {
+  "n_objects_checked": 4966,
+  "definition": "(decoded_pixels - coco_area) / coco_area",
+  "rel_diff": {
+   "p0": -0.442829,
+   "p5": -0.002247,
+   "p25": -0.000483,
+   "p50": 6.7e-05,
+   "p75": 0.000616,
+   "p95": 0.002409,
+   "p100": 0.016948,
+   "mean": -0.0001
+  },
+  "abs_rel_diff_mean": 0.001172,
+  "abs_rel_diff_max": 0.442829,
+  "n_abs_rel_diff_gt_1pct": 17,
+  "n_abs_rel_diff_gt_5pct": 4,
+  "n_candidates_outside_1_40pct_if_decoded_area_were_used": 4
+ },
+ "per_relation": {
+  "left": 1506,
+  "right": 1506,
+  "above": 1056,
+  "below": 1056
+ },
+ "per_axis_undirected": {
+  "horizontal": 1506,
+  "vertical": 1056
+ },
+ "per_gap_bin": {
+  "<0.5": 778,
+  "0.5-1": 1664,
+  "1-1.5": 1134,
+  "1.5-2": 592,
+  "2-3": 552,
+  "3-5": 316,
+  ">=5": 88
+ },
+ "per_gap_axis_bin": {
+  "<0.5": 940,
+  "0.5-1": 1786,
+  "1-1.5": 1058,
+  "1.5-2": 532,
+  "2-3": 472,
+  "3-5": 272,
+  ">=5": 64
+ },
+ "per_crowding_bin": {
+  "0": 632,
+  "1-2": 1200,
+  "3-5": 1258,
+  "6-10": 1154,
+  "11-20": 724,
+  ">20": 156
+ },
+ "per_crowding_bin_noncrowd": {
+  "0": 632,
+  "1-2": 1200,
+  "3-5": 1258,
+  "6-10": 1154,
+  "11-20": 740,
+  ">20": 140
+ },
+ "images_per_crowding_bin": {
+  "0": 316,
+  "1-2": 315,
+  "3-5": 238,
+  "6-10": 209,
+  "11-20": 156,
+  ">20": 40
+ },
+ "relation_x_gap_bin": {
+  "left": {
+   "<0.5": 183,
+   "0.5-1": 435,
+   "1-1.5": 348,
+   "1.5-2": 194,
+   "2-3": 179,
+   "3-5": 128,
+   ">=5": 39
+  },
+  "right": {
+   "<0.5": 183,
+   "0.5-1": 435,
+   "1-1.5": 348,
+   "1.5-2": 194,
+   "2-3": 179,
+   "3-5": 128,
+   ">=5": 39
+  },
+  "above": {
+   "<0.5": 206,
+   "0.5-1": 397,
+   "1-1.5": 219,
+   "1.5-2": 102,
+   "2-3": 97,
+   "3-5": 30,
+   ">=5": 5
+  },
+  "below": {
+   "<0.5": 206,
+   "0.5-1": 397,
+   "1-1.5": 219,
+   "1.5-2": 102,
+   "2-3": 97,
+   "3-5": 30,
+   ">=5": 5
+  }
+ },
+ "relation_x_crowding_bin": {
+  "left": {
+   "0": 129,
+   "1-2": 352,
+   "3-5": 378,
+   "6-10": 353,
+   "11-20": 237,
+   ">20": 57
+  },
+  "right": {
+   "0": 129,
+   "1-2": 352,
+   "3-5": 378,
+   "6-10": 353,
+   "11-20": 237,
+   ">20": 57
+  },
+  "above": {
+   "0": 187,
+   "1-2": 248,
+   "3-5": 251,
+   "6-10": 224,
+   "11-20": 125,
+   ">20": 21
+  },
+  "below": {
+   "0": 187,
+   "1-2": 248,
+   "3-5": 251,
+   "6-10": 224,
+   "11-20": 125,
+   ">20": 21
+  }
+ },
+ "gap_bin_x_crowding_bin": {
+  "<0.5": {
+   "0": 150,
+   "1-2": 220,
+   "3-5": 218,
+   "6-10": 132,
+   "11-20": 50,
+   ">20": 8
+  },
+  "0.5-1": {
+   "0": 326,
+   "1-2": 456,
+   "3-5": 374,
+   "6-10": 284,
+   "11-20": 180,
+   ">20": 44
+  },
+  "1-1.5": {
+   "0": 106,
+   "1-2": 292,
+   "3-5": 298,
+   "6-10": 262,
+   "11-20": 146,
+   ">20": 30
+  },
+  "1.5-2": {
+   "0": 24,
+   "1-2": 104,
+   "3-5": 166,
+   "6-10": 160,
+   "11-20": 114,
+   ">20": 24
+  },
+  "2-3": {
+   "0": 18,
+   "1-2": 76,
+   "3-5": 112,
+   "6-10": 186,
+   "11-20": 136,
+   ">20": 24
+  },
+  "3-5": {
+   "0": 8,
+   "1-2": 40,
+   "3-5": 70,
+   "6-10": 102,
+   "11-20": 72,
+   ">20": 24
+  },
+  ">=5": {
+   "0": 0,
+   "1-2": 12,
+   "3-5": 20,
+   "6-10": 28,
+   "11-20": 26,
+   ">20": 2
+  }
+ },
+ "proj_overlap": {
+  "directed": 2908,
+  "per_relation": {
+   "left": 744,
+   "right": 744,
+   "above": 710,
+   "below": 710
+  },
+  "per_gap_bin": {
+   "<0.5": 778,
+   "0.5-1": 1636,
+   "1-1.5": 486,
+   "1.5-2": 8,
+   "2-3": 0,
+   "3-5": 0,
+   ">=5": 0
+  },
+  "frac_ge_0.5_directed": 1756,
+  "frac_eq_1_directed": 788
+ },
+ "bbox_iou_gt0_directed": 2814,
+ "mask_iou_gt0_directed": 2070,
+ "bbox_iou_ge_0.5_directed": 182,
+ "containment_target_in_reference_ge_0.9_directed": 384,
+ "containment_target_in_reference_eq_1_directed": 224,
+ "metric_quantiles_undirected": {
+  "norm_gap": {
+   "p0": 0.001979,
+   "p5": 0.222541,
+   "p25": 0.693696,
+   "p50": 1.046441,
+   "p75": 1.691312,
+   "p95": 3.512483,
+   "p100": 8.524225,
+   "mean": 1.3566
+  },
+  "norm_gap_axis": {
+   "p0": 0.001812,
+   "p5": 0.200542,
+   "p25": 0.621244,
+   "p50": 0.951821,
+   "p75": 1.538579,
+   "p95": 3.2887,
+   "p100": 8.310366,
+   "mean": 1.243251
+  },
+  "centroid_dist": {
+   "p0": 0.6447,
+   "p5": 53.570182,
+   "p25": 140.85526,
+   "p50": 210.959094,
+   "p75": 292.242458,
+   "p95": 432.980265,
+   "p100": 627.748827,
+   "mean": 222.499918
+  },
+  "bbox_iou": {
+   "p0": 0.0,
+   "p5": 0.0,
+   "p25": 0.0,
+   "p50": 0.012679,
+   "p75": 0.111671,
+   "p95": 0.430696,
+   "p100": 0.978042,
+   "mean": 0.091186
+  },
+  "mask_iou": {
+   "p0": 0.0,
+   "p5": 0.0,
+   "p25": 0.0,
+   "p50": 0.0,
+   "p75": 0.002975,
+   "p95": 0.111261,
+   "p100": 0.968573,
+   "mean": 0.024851
+  },
+  "proj_overlap_frac": {
+   "p0": 0.0,
+   "p5": 0.0,
+   "p25": 0.0,
+   "p50": 0.127475,
+   "p75": 0.749987,
+   "p95": 1.0,
+   "p100": 1.0,
+   "mean": 0.349368
+  },
+  "n_other_instances": {
+   "p0": 0.0,
+   "p5": 0.0,
+   "p25": 1.0,
+   "p50": 4.0,
+   "p75": 8.0,
+   "p95": 19.0,
+   "p100": 38.0,
+   "mean": 5.86573
+  },
+  "n_other_instances_noncrowd": {
+   "p0": 0.0,
+   "p5": 0.0,
+   "p25": 1.0,
+   "p50": 4.0,
+   "p75": 8.0,
+   "p95": 18.0,
+   "p100": 36.0,
+   "mean": 5.827479
+  }
+ },
+ "metric_quantiles_directed": {
+  "size_ratio": {
+   "p0": 0.027068,
+   "p5": 0.094824,
+   "p25": 0.354822,
+   "p50": 1.000001,
+   "p75": 2.818319,
+   "p95": 10.545915,
+   "p100": 36.943941,
+   "mean": 2.562721
+  },
+  "containment_target_in_reference": {
+   "p0": 0.0,
+   "p5": 0.0,
+   "p25": 0.0,
+   "p50": 0.025578,
+   "p75": 0.278025,
+   "p95": 0.991141,
+   "p100": 1.0,
+   "mean": 0.196976
+  }
+ },
+ "n_distinct_categories_candidates": 80,
+ "n_distinct_categories_in_pairs": 80,
+ "category_top20": [
+  {
+   "category": "person",
+   "n_objects_in_pairs": 519,
+   "n_directed_pairs_as_target": 747,
+   "n_candidate_objects": 794
+  },
+  {
+   "category": "dining table",
+   "n_objects_in_pairs": 190,
+   "n_directed_pairs_as_target": 366,
+   "n_candidate_objects": 259
+  },
+  {
+   "category": "chair",
+   "n_objects_in_pairs": 143,
+   "n_directed_pairs_as_target": 270,
+   "n_candidate_objects": 168
+  },
+  {
+   "category": "tv",
+   "n_objects_in_pairs": 107,
+   "n_directed_pairs_as_target": 201,
+   "n_candidate_objects": 126
+  },
+  {
+   "category": "cup",
+   "n_objects_in_pairs": 94,
+   "n_directed_pairs_as_target": 182,
+   "n_candidate_objects": 109
+  },
+  {
+   "category": "cat",
+   "n_objects_in_pairs": 90,
+   "n_directed_pairs_as_target": 153,
+   "n_candidate_objects": 144
+  },
+  {
+   "category": "laptop",
+   "n_objects_in_pairs": 90,
+   "n_directed_pairs_as_target": 171,
+   "n_candidate_objects": 113
+  },
+  {
+   "category": "couch",
+   "n_objects_in_pairs": 83,
+   "n_directed_pairs_as_target": 149,
+   "n_candidate_objects": 118
+  },
+  {
+   "category": "bowl",
+   "n_objects_in_pairs": 80,
+   "n_directed_pairs_as_target": 165,
+   "n_candidate_objects": 92
+  },
+  {
+   "category": "dog",
+   "n_objects_in_pairs": 71,
+   "n_directed_pairs_as_target": 110,
+   "n_candidate_objects": 110
+  },
+  {
+   "category": "sink",
+   "n_objects_in_pairs": 68,
+   "n_directed_pairs_as_target": 101,
+   "n_candidate_objects": 96
+  },
+  {
+   "category": "bed",
+   "n_objects_in_pairs": 64,
+   "n_directed_pairs_as_target": 104,
+   "n_candidate_objects": 88
+  },
+  {
+   "category": "refrigerator",
+   "n_objects_in_pairs": 64,
+   "n_directed_pairs_as_target": 114,
+   "n_candidate_objects": 76
+  },
+  {
+   "category": "bench",
+   "n_objects_in_pairs": 57,
+   "n_directed_pairs_as_target": 77,
+   "n_candidate_objects": 104
+  },
+  {
+   "category": "oven",
+   "n_objects_in_pairs": 57,
+   "n_directed_pairs_as_target": 106,
+   "n_candidate_objects": 64
+  },
+  {
+   "category": "toilet",
+   "n_objects_in_pairs": 56,
+   "n_directed_pairs_as_target": 73,
+   "n_candidate_objects": 116
+  },
+  {
+   "category": "bottle",
+   "n_objects_in_pairs": 55,
+   "n_directed_pairs_as_target": 111,
+   "n_candidate_objects": 67
+  },
+  {
+   "category": "potted plant",
+   "n_objects_in_pairs": 51,
+   "n_directed_pairs_as_target": 101,
+   "n_candidate_objects": 61
+  },
+  {
+   "category": "umbrella",
+   "n_objects_in_pairs": 48,
+   "n_directed_pairs_as_target": 71,
+   "n_candidate_objects": 82
+  },
+  {
+   "category": "keyboard",
+   "n_objects_in_pairs": 47,
+   "n_directed_pairs_as_target": 89,
+   "n_candidate_objects": 57
+  }
+ ],
+ "category_objects_in_pairs_all": {
+  "person": 519,
+  "dining table": 190,
+  "chair": 143,
+  "tv": 107,
+  "cup": 94,
+  "cat": 90,
+  "laptop": 90,
+  "couch": 83,
+  "bowl": 80,
+  "dog": 71,
+  "sink": 68,
+  "bed": 64,
+  "refrigerator": 64,
+  "bench": 57,
+  "oven": 57,
+  "toilet": 56,
+  "bottle": 55,
+  "potted plant": 51,
+  "umbrella": 48,
+  "keyboard": 47,
+  "truck": 47,
+  "cake": 46,
+  "tennis racket": 45,
+  "handbag": 44,
+  "surfboard": 41,
+  "car": 38,
+  "fork": 38,
+  "motorcycle": 38,
+  "pizza": 37,
+  "cell phone": 35,
+  "skateboard": 35,
+  "sandwich": 33,
+  "knife": 32,
+  "bus": 30,
+  "book": 28,
+  "bicycle": 27,
+  "horse": 27,
+  "backpack": 26,
+  "suitcase": 26,
+  "vase": 21,
+  "microwave": 20,
+  "mouse": 20,
+  "spoon": 19,
+  "teddy bear": 19,
+  "train": 17,
+  "banana": 16,
+  "hot dog": 16,
+  "skis": 16,
+  "tie": 16,
+  "frisbee": 14,
+  "orange": 14,
+  "apple": 13,
+  "fire hydrant": 13,
+  "remote": 13,
+  "wine glass": 11,
+  "carrot": 10,
+  "cow": 9,
+  "baseball bat": 8,
+  "bird": 8,
+  "donut": 8,
+  "kite": 8,
+  "parking meter": 8,
+  "boat": 7,
+  "snowboard": 7,
+  "baseball glove": 6,
+  "broccoli": 6,
+  "clock": 6,
+  "elephant": 5,
+  "sheep": 5,
+  "sports ball": 5,
+  "traffic light": 5,
+  "airplane": 4,
+  "giraffe": 4,
+  "scissors": 4,
+  "bear": 3,
+  "stop sign": 3,
+  "toaster": 3,
+  "hair drier": 2,
+  "toothbrush": 1,
+  "zebra": 1
+ },
+ "n_distinct_category_pairs_unordered": 675,
+ "category_pair_top20_undirected": [
+  {
+   "categories": [
+    "dining table",
+    "person"
+   ],
+   "n_undirected_pairs": 43
+  },
+  {
+   "categories": [
+    "person",
+    "tennis racket"
+   ],
+   "n_undirected_pairs": 40
+  },
+  {
+   "categories": [
+    "person",
+    "surfboard"
+   ],
+   "n_undirected_pairs": 36
+  },
+  {
+   "categories": [
+    "sink",
+    "toilet"
+   ],
+   "n_undirected_pairs": 35
+  },
+  {
+   "categories": [
+    "chair",
+    "person"
+   ],
+   "n_undirected_pairs": 33
+  },
+  {
+   "categories": [
+    "person",
+    "skateboard"
+   ],
+   "n_undirected_pairs": 30
+  },
+  {
+   "categories": [
+    "chair",
+    "dining table"
+   ],
+   "n_undirected_pairs": 29
+  },
+  {
+   "categories": [
+    "couch",
+    "tv"
+   ],
+   "n_undirected_pairs": 26
+  },
+  {
+   "categories": [
+    "laptop",
+    "person"
+   ],
+   "n_undirected_pairs": 26
+  },
+  {
+   "categories": [
+    "oven",
+    "refrigerator"
+   ],
+   "n_undirected_pairs": 26
+  },
+  {
+   "categories": [
+    "bed",
+    "person"
+   ],
+   "n_undirected_pairs": 25
+  },
+  {
+   "categories": [
+    "person",
+    "tv"
+   ],
+   "n_undirected_pairs": 24
+  },
+  {
+   "categories": [
+    "bench",
+    "person"
+   ],
+   "n_undirected_pairs": 23
+  },
+  {
+   "categories": [
+    "chair",
+    "tv"
+   ],
+   "n_undirected_pairs": 23
+  },
+  {
+   "categories": [
+    "cup",
+    "dining table"
+   ],
+   "n_undirected_pairs": 23
+  },
+  {
+   "categories": [
+    "person",
+    "umbrella"
+   ],
+   "n_undirected_pairs": 23
+  },
+  {
+   "categories": [
+    "cake",
+    "dining table"
+   ],
+   "n_undirected_pairs": 22
+  },
+  {
+   "categories": [
+    "couch",
+    "dining table"
+   ],
+   "n_undirected_pairs": 22
+  },
+  {
+   "categories": [
+    "chair",
+    "couch"
+   ],
+   "n_undirected_pairs": 21
+  },
+  {
+   "categories": [
+    "couch",
+    "person"
+   ],
+   "n_undirected_pairs": 20
+  }
+ ],
+ "coco_spatial_overlap": {
+  "n_coco_spatial_one_images": 1451,
+  "n_coco_spatial_two_images": 295,
+  "n_coco_spatial_either_images": 1451,
+  "n_pair_images": 1274,
+  "pair_images_in_one": 834,
+  "pair_images_in_two": 284,
+  "pair_images_in_either": 834,
+  "pair_images_in_neither": 440,
+  "directed_pairs_in_one": 3916,
+  "directed_pairs_in_two": 1896,
+  "directed_pairs_in_either": 3916,
+  "directed_pairs_in_neither": 1208
+ },
+ "limit": null,
+ "pairs_jsonl": {
+  "path": "<data>/coco_pairs/pairs.jsonl",
+  "sha256": "1b99821b4ce4ed5deb509189b505a540daaddc0cb42354036ed129d9924d5c58",
+  "bytes": 5734707,
+  "n_lines": 5124
+ },
+ "split": {
+  "file": "splits/coco_pairs.json",
+  "unit": "image",
+  "stratify_by": "image-level (dominant relation axis H/V/T among the image's undirected pairs) x (number of candidates in image: 2 / 3 / 4+)",
+  "per_stratum": {
+   "H/n2": {
+    "n_images": 469,
+    "dev": 234,
+    "test": 235
+   },
+   "H/n3": {
+    "n_images": 194,
+    "dev": 97,
+    "test": 97
+   },
+   "H/n4+": {
+    "n_images": 72,
+    "dev": 36,
+    "test": 36
+   },
+   "T/n4+": {
+    "n_images": 17,
+    "dev": 8,
+    "test": 9
+   },
+   "V/n2": {
+    "n_images": 401,
+    "dev": 200,
+    "test": 201
+   },
+   "V/n3": {
+    "n_images": 91,
+    "dev": 45,
+    "test": 46
+   },
+   "V/n4+": {
+    "n_images": 30,
+    "dev": 15,
+    "test": 15
+   }
+  },
+  "counts": {
+   "dev": {
+    "n_images": 635,
+    "n_directed_pairs": 2542,
+    "n_undirected_pairs": 1271,
+    "per_relation": {
+     "left": 743,
+     "right": 743,
+     "above": 528,
+     "below": 528
+    },
+    "per_gap_bin": {
+     "<0.5": 364,
+     "0.5-1": 834,
+     "1-1.5": 558,
+     "1.5-2": 300,
+     "2-3": 292,
+     "3-5": 148,
+     ">=5": 46
+    },
+    "per_crowding_bin": {
+     "0": 312,
+     "1-2": 572,
+     "3-5": 640,
+     "6-10": 554,
+     "11-20": 394,
+     ">20": 70
+    },
+    "proj_overlap": 1418,
+    "bbox_iou_gt0": 1384,
+    "mask_iou_gt0": 1004,
+    "in_coco_spatial_one": 1964,
+    "in_coco_spatial_two": 968
+   },
+   "test": {
+    "n_images": 639,
+    "n_directed_pairs": 2582,
+    "n_undirected_pairs": 1291,
+    "per_relation": {
+     "left": 763,
+     "right": 763,
+     "above": 528,
+     "below": 528
+    },
+    "per_gap_bin": {
+     "<0.5": 414,
+     "0.5-1": 830,
+     "1-1.5": 576,
+     "1.5-2": 292,
+     "2-3": 260,
+     "3-5": 168,
+     ">=5": 42
+    },
+    "per_crowding_bin": {
+     "0": 320,
+     "1-2": 628,
+     "3-5": 618,
+     "6-10": 600,
+     "11-20": 330,
+     ">20": 86
+    },
+    "proj_overlap": 1490,
+    "bbox_iou_gt0": 1430,
+    "mask_iou_gt0": 1066,
+    "in_coco_spatial_one": 1952,
+    "in_coco_spatial_two": 928
+   }
+  }
+ }
+}
