@@ -3,6 +3,7 @@
 # grid:  qwen_thw（image_grid_thw + 2x2 合并）| gemma_pool | llava15 | llava_ov | internvl_tile | none
 # group: 用户 2026-11-25 给的暂定分组：1=机制分析候选（全标准自注意力）；2=只做行为层和残差流层；3=暂缓；excluded=去掉
 # pad_to_square: 送入前先用图像均值色补成正方形（原版 LLaVA-1.5 的做法；用户决定不用 llava-hf 默认的中心裁剪）
+# image_size: 不接受 max_pixels 的图像处理器用它表示像素预算（GLM-4.6V；longest_edge 的计数含时间维 2 帧）
 # env:   tf5 | tf4      n_gpus: 冒烟测试申请的 A100-40GB 数量（bf16 权重体积 + 余量）
 defaults: {env: tf5, n_gpus: 1, chat_kwargs: {}, max_pixels: 1003520}   # 1280*28*28，仅用于限制动态分辨率模型的 token 数
 models:
@@ -16,7 +17,7 @@ models:
   Qwen3.6-27B:            {group: 3, kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}, n_gpus: 3}
   Qwen3.8-27B:            {group: 3, kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}, n_gpus: 3}
   Qwen3.6-35B-A3B:        {group: 3, kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}, n_gpus: 3}
-  GLM-4.6V-Flash:         {group: 1, kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}}
+  GLM-4.6V-Flash:         {group: 1, kind: hf_chat, grid: qwen_thw, chat_kwargs: {enable_thinking: false}, image_size: {shortest_edge: 12544, longest_edge: 2007040}}   # 处理器按 2 帧计像素：2007040 = 2 x 1003520，与 Qwen2.5-VL 同一像素预算（用户 2026-11-25）
   gemma-4-31B-it:         {group: 3, kind: hf_chat, grid: gemma_pool, chat_kwargs: {enable_thinking: false}, n_gpus: 3}
   LLaVA-OneVision-7B:     {group: 3, kind: hf_chat, grid: llava_ov, max_image_side: 768, n_gpus: 2}   # 原图 1280x960 默认 anyres 产生 7309 个视觉 token，eager 注意力在 40GB 上 OOM；输入先等比缩到长边 768
   LLaVA-1.5-7B:           {group: 2, kind: hf_chat, grid: llava15, pad_to_square: true, root: new_models}

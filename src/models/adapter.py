@@ -230,8 +230,11 @@ class HFChatAdapter(BaseAdapter):
         base = dict(add_generation_prompt=True, tokenize=True, return_dict=True, return_tensors="pt", **kw)
         variants = [{}]
         if self.spec["grid"] == "qwen_thw" and self.spec.get("max_pixels"):
-            ik = {"images_kwargs": {"max_pixels": int(self.spec["max_pixels"])}}
-            variants = [{"processor_kwargs": ik}, ik, {}]      # 新式 API → 旧式 API → 默认分辨率（记录原因）
+            if self.spec.get("image_size"):                    # 不接受 max_pixels 的处理器（GLM-4.6V）：用 size 表示像素预算
+                ik = {"images_kwargs": {"size": dict(self.spec["image_size"])}}
+            else:
+                ik = {"images_kwargs": {"max_pixels": int(self.spec["max_pixels"])}}
+            variants = [{"processor_kwargs": ik}, ik]          # 新式 API → 旧式 API；都不接受就报错，不悄悄退回默认分辨率
         inputs, errs = None, []
         for i, v in enumerate(variants):
             try:
