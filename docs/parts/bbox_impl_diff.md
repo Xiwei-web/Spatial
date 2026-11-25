@@ -231,7 +231,7 @@ bf16 列引自 DATA_REPORT 1.5（作业 435451；GLM 为 435862）；fp32 生成
 - fp32 下两种实现 40/40 框、20/20 关系逐 token 相同；选项 logit 差最大 4.4e-5。
 - bf16 内部两种实现 23/40 一致，坐标最多差 2 像素；bf16 对 fp32 为 18/40（eager）、17/40（sdpa）一致，坐标最多差 2 像素。关系提示四个比较的首选项都是 20/20 相同。
 
-### 7.2 判定：框中心差（planner 2026-11-26 给定标准，看到 Qwen 数字之前固定；脚本 `scripts/tf_box_center_criterion.py`）
+### 7.2 判定：框中心差（planner 2026-11-26 给定标准；先于 Qwen 的数字固定，但对 InternVL3-8B 不是：定标准时 planner 已看过它的差异数字；脚本 `scripts/tf_box_center_criterion.py`）
 
 标准：eager 下 bf16 − fp32 的框中心（e_tree、模型自带 lm_head）；(1) |差| 的 95% 分位 < 0.25 个视觉 token；(2) 有符号差均值的 95% bootstrap 区间（按图像重采样 10,000 次）包含 0；cx、cy 各自都要满足。
 
