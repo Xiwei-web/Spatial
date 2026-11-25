@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 import sys
 import time
 from dataclasses import dataclass, field
@@ -157,7 +158,7 @@ class BaseAdapter:
         self.lm_layers_path, self.lm_layers = find_lm_layers(self.model, n)
         self.layer_mixers = self.facts["language_model"]["layer_mixers"]
         self.n_heads = self.facts["language_model"]["num_attention_heads"]
-        self.eager_fp32 = patch_eager_fp32(self.lm_layers) if self.spec.get("eager_fp32", True) else {"applied": False, "why": "disabled in adapters.yaml"}
+        self.eager_fp32 = patch_eager_fp32(self.lm_layers) if (self.spec.get("eager_fp32", True) and os.environ.get("INTERP_EAGER_FP32", "1") != "0") else {"applied": False, "why": "disabled in adapters.yaml"}
 
     def attn_layers(self) -> list[int]:
         """有 softmax 注意力权重的层（full / sliding）。"""
