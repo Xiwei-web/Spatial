@@ -25,7 +25,7 @@
 | `gqa_spatial_two` | `vg_qa_two_obj.json` | 291 | 258 | 0 | right 137 / left 127 / front 19 / behind 5 / top 3 | 无 |
 
 - **任务书要求的核对**：Subset A 的 left/right = 103 + 103 = **206**（符合）；Subset B = **408**（符合）。
-- **What's Up B 的 front / behind 与垂直位置完全混淆**（v3 上“target 质心更低 = front”204 / 204 成立），答对不能说明用了深度信息；深度检验只用 SpatialRGPT。
+- **What's Up B 的 front / behind 与垂直位置完全混淆**（v3 上“target 质心更低 = front”204 / 204 成立），答对不能说明用了深度信息；前后关系不能只依赖 SpatialRGPT（它也有较强的垂直位置捷径）。
 - 真值框统一为 mask 外接框（用户 2026-11-25）：COCO-spatial / COCO-Pairs 由 COCO 实例 mask 算出（与 COCO 自带框 IoU 最低 0.88）；What's Up 为 v3 的 `box_gt_xyxy`；SpatialRGPT 由自带 RLE 算出。
 - **更正与剔除**（更正表 `annotations/whatsup/corrections.yaml`；原始数据未改动）：`pillow_left_of_chair` 与 `pillow_right_of_chair` 两张**剔除**。原因：原始数据左右与标签相反——文件名和官方标注 JSON 分别为 left / right，图像中枕头却分别在椅子的右边 / 左边。已核对：本地文件与官方压缩包内同名文件 sha256 相同，加载器给出的标签与官方 JSON 一致，所以不是下载、解压或加载造成的。两张都在 Subset A 的 test 里；划分文件不变，`load_split` 读取时剔除，因此 **Subset A 实际可用 410 张（dev 204 / test 206），其中 left/right 204 张**（原始发布 206 张，核对数量时仍以 206 为准）。用户 2026-11-25 决定剔除、不改标签。
 - Subset A 图像目录里有 421 个文件，比标注多 9 个（`armchair.jpeg`、`chair.jpeg`、`table.jpeg`、`chair_*_table.jpeg`×3、`chair2_*_table.jpeg`×3）；它们不在官方标注 JSON 里，加载器不使用。
@@ -36,7 +36,7 @@
 
 ### 划分
 
-**COCO-spatial、COCO-Pairs、合成抠图**：2026-11-25 起按图像统一划分（`splits/coco_images_v2.json`，脚本 `scripts/make_joint_coco_split.py`），各数据集的 `*_v2.json` 继承它。旧的 `coco_spatial_one/two.json`、`coco_pairs.json`、`synth_cutouts.json` 保留但标记 `deprecated`，读取会报错。下面一段说的是 What's Up 与 GQA 的划分。
+**COCO-spatial、COCO-Pairs、合成抠图**：2026-11-25 起按图像统一划分（`splits/coco_images_v2.json`，脚本 `scripts/make_joint_coco_split.py`），各数据集的 `*_v2.json` 继承它。旧的 `coco_spatial_one/two.json`、`coco_pairs.json`、`synth_cutouts.json` 保留但标记 `deprecated`，读取会报错。GQA-spatial 也改为按图像划分（`splits/gqa_images_v2.json`，有 coco_id 的跟随 COCO；VG 图像元数据 `image_data.json.zip`，1.8 MB，来自 homes.cs.washington.edu/~ranjay/visualgenome，sha256 `b87a9491…`）。下面一段说的是 What's Up 的划分。
 
 
 `splits/<数据集>.json`，由 `scripts/make_splits.py` 生成：种子 20261125，按关系类别分层，对半（某类为奇数时多出的 1 个归 test）。文件已提交，脚本默认不覆盖已有划分。
@@ -48,8 +48,8 @@
 | coco_spatial_one（v2，按图像） | 1,122 | 1,125 |
 | coco_spatial_two（v2，按图像） | 208 | 232 |
 | coco_pairs（v2，按图像；有向对） | 2,550 | 2,574 |
-| gqa_spatial_one | 580 | 580 |
-| gqa_spatial_two | 143 | 148 |
+| gqa_spatial_one（v2，按图像） | 581 | 579 |
+| gqa_spatial_two（v2，按图像） | 139 | 152 |
 
 冒烟测试用的 20 张：`splits/smoke20.json`（A、B 的 dev 各 10 张）。
 

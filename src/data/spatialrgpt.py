@@ -116,7 +116,7 @@ _REL_TEXT = {"front": "in front of", "behind": "behind"}
 
 
 def depth_samples(include_same_class: bool = False) -> list[Sample]:
-    """front_predicate / behind_predicate → 统一 Sample。深度检验只用本数据集（What's Up B 的 front/behind 与垂直位置完全混淆）。
+    """front_predicate / behind_predicate → 统一 Sample。What's Up B 的 front/behind 与垂直位置完全混淆；本数据集也有较强的垂直位置捷径（manifests/spatialrgpt_depth_cues.json），前后关系不能只依赖它。
 
     用户 2026-11-25 的规则：
     - 真值框 = mask 外接框（bbox_*）；数据集自带的框在 extra["provided_bbox_target" / "provided_bbox_reference"]，只作对照；

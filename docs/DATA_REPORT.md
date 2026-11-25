@@ -224,7 +224,7 @@
 
 - What's Up 里 IoU < 0.8 的唯一一个是 order 98 `cup_behind_flower` 的 flower（0.754）：mask 含花和花萼、不含花茎，检测框左侧多框了一段空地。
 - SpatialRGPT 自带框明显比 mask 松，改用 mask 外接框后真值变化很大。
-- COCO-Pairs 的几何量（间距、IoU 等）仍按 COCO 自带框计算，没有重算。
+- COCO-Pairs 的几何量已按 mask 外接框重算（第 4 节）。
 
 ### 2.4 从 reference 的 mask 里减去 target
 
@@ -293,6 +293,23 @@
 - 改写规则只做了设计；20 条改写前后对照在 `docs/parts/F7_spatialrgpt.md` 的“20 条预览”，**等你确认后才全量改写**。
 - “类别名第 k 个 ↔ 第 k 个区域”的对应关系数据集没有说明，只抽查了 12 条（都符合）。
 
+- **mask 有零星碎点，会撑大外接框**：深度样本的 192 个物体里 57 个有面积 < 1% 的碎块；去掉后 32 个的外接框会变，其中 19 个与原外接框 IoU < 0.95，6 个 < 0.8。目前的真值框按全部 mask 像素取，没有去碎点。与自带框 IoU 最低的 20 个物体的联系表在 `outputs/data_review/spatialrgpt_box/`（`lowest20_depth_used.jpg` 为实际会用的 192 个物体，`lowest20_all_regions.jpg` 为全集 2,546 个区域）。
+
+### 3.3 CV-Bench 3D 深度子集（只查元数据，`manifests/cvbench_depth_cues.json`）
+
+- 许可：HF 卡片写 apache-2.0；图像来自 Omni3D（Hypersim、SUN RGB-D、nuScenes），Omni3D 代码库标 CC BY-NC 4.0，各源数据集另有自己的许可，未逐一核实。
+- Depth 题（哪个物体离相机更近）600 条、508 张来源图；两个物体的 2D 框都在元数据里（xyxy），没有 mask。图像上已画红 / 蓝框，干净原图要另从 Omni3D 源数据取。
+- 捷径：规则“2D 框下边缘更低 = 更近”。
+
+| 来源 | 条数 | 下边缘规则 | 框中心更低 | 框更大 | 与下边缘规则相反的条数 |
+|---|---|---|---|---|---|
+| 全部 | 600 | 85.3% | 80.8% | 59.5% | 88 |
+| Hypersim | 200 | 80.0% | 79.5% | 44.0% | 40 |
+| SUNRGBD | 200 | 82.0% | 86.5% | 67.0% | 36 |
+| nuScenes | 200 | 94.0% | 76.5% | 67.5% | 12 |
+
+- 与捷径相反的只有 **88** 条（< 150），按你的要求停在这里，没有构造平衡子集，也没有造深度数据。
+
 ---
 
 ## 4. F3：COCO-Pairs（详见 `docs/parts/F3_coco_pairs.md`，含关系 × 间距交叉表）
@@ -326,7 +343,17 @@
 - 旧划分的问题不止两套不一致：旧 COCO-spatial 按样本划分，one-object 有 318 张图、two-object 有 52 张图同时出现在 dev 和 test；旧抠图划分有 110 张图跨侧。旧文件保留并标记 `deprecated`，读取会报错。测试 `tests/test_joint_coco_split.py` 保证同一张图在所有数据集里同侧。
 - 按图像划分后 COCO-spatial 的关系类别不再严格对半（见上表）。
 - 1,274 张 COCO-Pairs 图里 834 张也在 COCO-spatial one-object 里（其中 284 张在 two-object 里），440 张两者都不在。
+- **几何量按 mask 外接框重算**（间距、框 IoU、包含比例、投影重叠；旧值在 `*_detbox` 字段，旧文件 `pairs_detbox_20261125.jsonl` 保留）。关系标签由 mask 质心决定，**0 对变化**；间距档变化 **14 个有向对**（7 个无向对，{'2-3 -> 3-5': 4, '0.5-1 -> 1-1.5': 6, '1-1.5 -> 1.5-2': 4}）；投影重叠与否变化 16 个有向对。归一化间距最大变化 0.070。逐条见 `manifests/coco_pairs_geometry_change.csv`。上面的间距表是重算前的，重算后：{'1-1.5': 1136, '0.5-1': 1658, '1.5-2': 596, '<0.5': 778, '3-5': 320, '>=5': 88, '2-3': 548}；投影重叠 2,892，框 IoU > 0 2,796。
 - 口径说明：类别唯一性把 crowd 标注也计入；面积用 COCO 的 `area` 字段（与解码 mask 的面积平均相差 0.12%，4 个候选若用解码面积会落到范围外，两个值都存了）；归一化间距的分子是质心欧氏距离，另存了只沿关系轴的版本。
+- **GQA-spatial 的划分**（`splits/gqa_images_v2.json`，`scripts/make_gqa_split.py`）：按图像，1,208 张，dev 600 / test 608。597 张有 coco_id，其中因 coco_id 在 COCO 统一划分里而被强制分侧的 **25 张**（21 张跟随 COCO-spatial / COCO-Pairs 并集，4 张跟随抠图来源图；dev 9、test 16）；其余随机分（无 coco_id 611 张，coco_id 不在统一划分里 572 张）。
+
+| 子集 | dev 图像 / 样本 | test 图像 / 样本 |
+|---|---|---|
+| gqa_spatial_one | 519 / 581 | 524 / 579 |
+| gqa_spatial_two | 127 / 139 | 131 / 152 |
+
+- **跨数据集一致性**（`scripts/check_split_consistency.py`，已写成测试）：把图像换成统一键后共 4,376 张，1,269 张出现在多个数据集，**跨侧 0 张**；各数据集 dev ∪ test 都等于全部样本。
+- **留出池有 1 张与 GQA-spatial 重叠**（COCO 126226 = VG 2406339，在 gqa_spatial_one 里）：建留出池时只排除了 COCO-spatial 和 COCO-Pairs。没有改动，等你定是否剔除这 1 张。
 
 ---
 
@@ -372,7 +399,7 @@
 
 - 规则“target 质心在图像中更低就判 front”：**204 / 204**。v1 上有 3 张例外（98.5%），v3 中没有例外。
 - front 样本的 dy 均值 +0.28，behind 为 −0.30。
-- **含义：What's Up B 的 front / behind 与垂直位置完全混淆，答对不能说明用了深度信息。** 按你的决定保留这些样本，深度检验只用 SpatialRGPT（它也有较强的垂直位置捷径，见 3.2）。
+- **含义：What's Up B 的 front / behind 与垂直位置完全混淆，答对不能说明用了深度信息。** 按你的决定保留这些样本；前后关系不只依赖 SpatialRGPT（它也有较强的垂直位置捷径，见 3.2）。
 - 注意：v3 修正的框里有 5 张是 front 样本（order 6、7、8、21、682），修正依据是物体身份（哪个是杯子、哪个是罐子），不是这条规则。
 
 ### 7.2 物体覆盖的视觉 token 数

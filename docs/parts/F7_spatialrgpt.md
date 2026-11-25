@@ -1,5 +1,7 @@
 # F7：SpatialRGPT-Bench
 
+> **更新（2026-11-25 夜）**：真值框用全部 mask 像素的外接框；mask 里的零星碎点会撑大外接框（192 个物体里 19 个去碎点前后 IoU < 0.95），是否去碎点待定。联系表：`outputs/data_review/spatialrgpt_box/`。
+
 > **更新（2026-11-25 晚）**：用户决定：两个区域同名的 14 条深度样本跳过；只回答 “No.” 一类的样本保留、标记（`extra["relation_inferred_from_bare_no"]`）并单独报告；真值框用 mask 外接框（自带框在 `extra["provided_bbox_*"]`）；改写规则仍等用户看过 20 条对照后再全量。
 >
 > 跳过同名后可用 **96** 条（front 52 / behind 44）：答案明确的 67 条（front 35 / behind 32），靠推断的 29 条（front 17 / behind 12；原来 34 条里有 5 条因同名被跳过）。

@@ -217,7 +217,7 @@ SenseNova-SI 的基座来自各自 README 的 front matter（`base_model: OpenGV
 | 数据 | 数量 | 体积 | 许可 | 核对 |
 |---|---|---|---|---|
 | What's Up Subset A | 412 张（left/right **206**）；其中 2 张 pillow 因原始数据左右与标签相反被剔除，实际可用 410 张 | 合计 850 MB（含 GQA 图像） | 仓库 MIT；数据无单独许可声明 | 通过，无缺图 |
-| What's Up Subset B（front / behind 与垂直位置完全混淆，深度检验只用 SpatialRGPT） | **408** 张 | 同上 | 同上 | 通过，无缺图 |
+| What's Up Subset B（front / behind 与垂直位置完全混淆，前后关系不能只依赖 SpatialRGPT（它也有较强的垂直位置捷径）） | **408** 张 | 同上 | 同上 | 通过，无缺图 |
 | COCO-spatial（one / two） | 2,247 / 440 条 | 标注很小；图像见 COCO | 同上 | 通过，引用的图像都在 val2017 里 |
 | GQA-spatial（one / two） | 1,160 / 291 条；官方打包图像 4,797 张 | 含在 850 MB 内 | 同上 | 通过，无缺图 |
 | COCO val2017 + 实例标注 | 5,000 张 + `instances_val2017.json` | 835 MB | 标注 CC BY 4.0 | 通过（5,000） |
