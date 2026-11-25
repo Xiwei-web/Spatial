@@ -1,0 +1,29 @@
+{
+ "library_sha256": "a10940fe576d1e3d6acb4d411024e2aa1b9a8d477b8bf5985a1d0cc50d458c8d",
+ "n_cutouts": 923,
+ "n_pages": 53,
+ "n_index_rows": 923,
+ "threshold": 6,
+ "n_pairs_total": 425503,
+ "n_pairs_listed": 5,
+ "by_kind": {
+  "mirror": 4,
+  "orig": 1
+ },
+ "n_cross_split": 3,
+ "n_cross_split_same_category": 0,
+ "n_same_category": 1,
+ "n_same_source_image": 1,
+ "distance_histogram": {
+  "0": 1,
+  "4": 1,
+  "6": 3
+ },
+ "n_distinct_cutouts_in_pairs": 9,
+ "min_distance_quantiles_all_pairs": {
+  "0": 0.0,
+  "0.001": 14.0,
+  "0.01": 18.0,
+  "0.5": 28.0
+ }
+}
