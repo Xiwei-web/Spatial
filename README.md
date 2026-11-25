@@ -35,6 +35,10 @@ python scripts/smoke_test.py <模型名>     # 冒烟测试，输出到 outputs/
 ## 规则
 
 - dev / test：所有“选择”类操作只用 dev，所有报告数字只用 test。
+- **注意力实现与精度（所有正式实验必须遵守）**：
+  - 干预组和它的对照基线必须用同一种注意力实现、同一种精度。
+  - 每个模型另外报告一次默认实现下的无干预结果，作为参照。
+  - 依据：bf16 下 sdpa 与 eager 的框预测不是逐 token 相同的（`docs/DATA_REPORT.md` 1.5 节）。
 - `existing_models` 指向的目录只读。
 - HF token 只从环境变量 `HF_TOKEN` 读取，不落盘。
 - 不在登录节点跑 GPU 或长时间 CPU 任务。
