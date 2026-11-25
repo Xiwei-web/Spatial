@@ -1,0 +1,145 @@
+# Generated from local files only (config.json, preprocessor/processor configs, chat template, README, shipped remote code, safetensors JSON headers, transformers 5.24.1 source). See `sources` / `unknown`.
+name: LLaVA-1.5-7B
+location:
+  root_key: new_models
+  subdir: LLaVA-1.5-7B
+hf_repo: llava-hf/llava-1.5-7b-hf
+revision: b234b804b114d9e37bb655e11cbbb5f5e971b7a9
+revision_source: configs/downloads/models.yaml (repo / sha / license pinned from the HF API on 2026-11-25; used by the download script, which also wrote SHA256SUMS in the model dir)
+size_bytes: 14131147625
+license: llama2
+license_source: |
+  README.md front matter (`license: llama2`, line 8); same tag in configs/downloads/models.yaml (HF API).
+  README body, section "## License" (last two lines): "Llama 2 is licensed under the LLAMA 2 Community License, Copyright (c) Meta Platforms, Inc. All Rights Reserved."
+role: general
+base_model: null
+env: null
+loader:
+  model_class: LlavaForConditionalGeneration
+  processor_class: LlavaProcessor
+  trust_remote_code: false
+  config_transformers_version: 4.36.0.dev0
+  notes: |
+    - Native transformers classes, no .py files in the model dir. config.json architectures = LlavaForConditionalGeneration; in transformers 5.24.1 model_type llava maps to LlavaForConditionalGeneration (MODEL_FOR_IMAGE_TEXT_TO_TEXT_MAPPING_NAMES, models/auto/modeling_auto.py:1245) and LlavaProcessor (PROCESSOR_MAPPING_NAMES, models/auto/auto_mappings.py:1311).
+    - Image processor: preprocessor_config.json names image_processor_type CLIPImageProcessor (processor_class LlavaProcessor). The transformers 5.24.1 default for model_type llava is LlavaImageProcessor (auto_mappings.py:1466), which has an extra do_pad / pad_to_square option defaulting to False (models/llava/image_processing_llava.py:45, 120-123). Which class AutoProcessor instantiates from this file was not tested; with the shipped settings both do resize + center crop and no padding.
+    - Tokenizer: tokenizer_class LlamaTokenizer, padding_side left, <image> id 32000, <pad> id 32001, add_bos_token true.
+    - README requirements: "First, make sure to have `transformers >= 4.35.3`"; "From transformers>=v4.48, you can also pass image url or local path to the conversation history". README loads with torch_dtype=torch.float16, low_cpu_mem_usage=True and generates with do_sample=False.
+    - Prompt format (README): "USER: xxx\nASSISTANT:" with `<image>` in the prompt. chat_template: role upper-cased + ': ', all images of a message rendered first as '<image>\n' regardless of their position in the content list, then text parts each followed by a space, generation prompt 'ASSISTANT:'. System messages get no role prefix. No default system prompt.
+    - Checkpoint tensor names use the old layout (language_model.model.layers.*, multi_modal_projector.*, vision_tower.vision_model.*) while the 5.24.1 class nests them under `model.`; loading relies on transformers' key remapping. Not tested (no weights loaded).
+    - torch_dtype float16. generation_config.json: bos 1, eos 2, pad 32001 (no sampling settings).
+language_model:
+  model_type: llama
+  num_layers: 32
+  hidden_size: 4096
+  num_attention_heads: 32
+  num_key_value_heads: 32
+  head_dim: 128
+  layer_mixers:
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  mixer_details: |
+    All 32 layers are standard causal full self-attention, plain multi-head (num_key_value_heads == num_attention_heads == 32, no KV sharing). The Llama architecture has no sliding-window mechanism (no sliding_window / layer_types in models/llama/configuration_llama.py or modeling_llama.py).
+    config.json text_config contains ONLY _name_or_path "lmsys/vicuna-7b-v1.5", architectures [LlamaForCausalLM], max_position_embeddings 4096, model_type llama, rms_norm_eps 1e-05, torch_dtype, vocab_size 32064. num_hidden_layers / hidden_size / num_attention_heads / num_key_value_heads / intermediate_size are NOT in the file; they come from the transformers LlamaConfig class defaults (hidden_size 4096, intermediate_size 11008, num_hidden_layers 32, num_attention_heads 32, num_key_value_heads None -> = num_attention_heads; models/llama/configuration_llama.py:63-89). Cross-checked against the safetensors headers: 32 language_model layers, q_proj/k_proj/o_proj weight shape [4096, 4096], embed_tokens [32064, 4096]. The head count (32) cannot be read from tensor shapes; it rests on the LlamaConfig default.
+    head_dim is computed: LlamaConfig.__post_init__ sets head_dim = hidden_size // num_attention_heads = 4096 // 32 = 128 (configuration_llama.py:85-89).
+    Position encoding: RoPE (LlamaConfig defaults; no rope settings in config.json). max_position_embeddings 4096.
+  mlp_type: dense (LlamaForCausalLM; intermediate_size 11008 from the LlamaConfig default, not in config.json; hidden_act silu = LlamaConfig default)
+  head_level_analysis: |
+    All 32 layers have the same structure (32 heads x 128 dims, independent K/V per head), so head-level analysis / attention masking applies to every layer.
+    Attention weights require attn_implementation="eager" (config.output_attentions raises otherwise, configuration_utils.py:582-592). The CLIP vision tower is also a standard transformers module (attention weights available the same way). Not run here.
+vision_encoder:
+  type: CLIP vision transformer (vision_config.model_type clip_vision_model -> CLIPVisionModel via AutoModel.from_config, modeling_llava.py:111); 16 heads, intermediate_size 4096, projection_dim 768. The model card does not name the CLIP checkpoint.
+  num_layers: 24
+  hidden_size: 1024
+  patch_size: 14
+  resolution_strategy: |
+    fixed 336x336 (vision_config.image_size 336) -> 24x24 = 576 patches + 1 CLS (position_embedding weight shape [577, 1024] in the safetensors header).
+    Preprocessing per preprocessor_config.json: do_convert_rgb, do_resize with size {shortest_edge: 336} (aspect ratio preserved, resample 3 = bicubic), do_center_crop with crop_size 336x336, rescale 1/255, normalize with CLIP mean [0.48145466, 0.4578275, 0.40821073] / std [0.26862954, 0.26130258, 0.27577711]. There is NO pad-to-square: the file has no do_pad key, so for non-square images the parts outside the central square along the longer side are cropped away.
+  position_encoding: Learned absolute position embedding, nn.Embedding(577, 1024) = CLS + 24x24 (models/clip/modeling_clip.py CLIPVisionEmbeddings, lines 146-159; used as-is at 336x336, lines 176-177). No rotary / relative encoding.
+connector:
+  type: 'LlavaMultiModalProjector: Linear(1024, 4096) -> GELU -> Linear(4096, 4096) (modeling_llava.py:66-85; projector_hidden_act gelu; shapes confirmed in the safetensors header). Input features: vision tower hidden_states[vision_feature_layer = -2] (penultimate entry of the CLIP hidden-states tuple, so the last CLIP layer''s output is not used), CLS removed because vision_feature_select_strategy = "default" (modeling_llava.py:141-144).'
+  token_merge: none (1 patch -> 1 token)
+  tokens_per_image: |
+    576, fixed. Processor: (336 // 14) * (336 // 14) + num_additional_image_tokens (1, processor_config.json) - 1 (strategy "default") = 576 (processing_llava.py:63-69). LlavaConfig.image_seq_length default is also 576.
+    The single '<image>' in the prompt is expanded to 576 <image> tokens (id 32000); no start/end or newline tokens are added by the processor (the chat template puts a text '\n' after it).
+  token_to_region: |
+    Raster (row-major) order of the 24x24 patch grid of the 336x336 preprocessed crop (Conv2d patch embedding flattened with flatten(2), CLS at index 0 removed). Image token k (0..575): row r = k // 24, col c = k % 24, covering crop pixels x in [14c, 14c+14), y in [14r, 14r+14).
+    Crop -> original image: scale s = 336 / min(H, W) (shortest edge resized to 336), then a centered 336x336 crop; original coords ~ ((x + off_x) / s, (y + off_y) / s) with off = (resized_long_side - 336) / 2 on the longer axis and 0 on the shorter axis. Exact rounding of the resized size / crop offset follows the torchvision backend and was not traced.
+    Image features are written into the <image> positions by masked_scatter (modeling_llava.py:230-236).
+multi_view:
+  default: 'Single view: one 336x336 image -> 576 tokens. No tiling, no thumbnail, no anyres (that is LLaVA-NeXT / OneVision, not this model).'
+  force_single_view: |
+    Nothing to disable. Note the default view is a CENTER CROP of the short-side-resized image (preprocessor_config.json: do_resize shortest_edge 336 + do_center_crop 336x336), not a padded full image.
+    To make the whole image visible, pre-process it yourself to a square before the processor (e.g. pad to square or resize to 336x336); the transformers LlavaImageProcessor has a do_pad option (pad to square with the mean colour, image_processing_llava.py:55-95, 120-123) but it is not enabled by the shipped config and the model card does not mention it.
+bbox:
+  official_prompt: null
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: Not stated. README.md contains no grounding / bounding-box prompt, example or coordinate convention (the card covers only the chat prompt format and loading). Web-sourced conventions are recorded separately in configs/bbox_conventions.yaml and were not copied here.
+thinking:
+  has_thinking_mode: false
+  how_to_disable: 'Nothing to disable: the chat template (chat_template.json / chat_template.jinja) has no thinking variable or <think> text; added_tokens.json contains only <image> and <pad>.'
+  source: chat_template.json line 2; added_tokens.json; README.md (no thinking mode mentioned)
+sources:
+- '/home/xiwei.liu/Interpretability/configs/downloads/models.yaml (entry LLaVA-1.5-7B: repo, revision, license tag)'
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/SHA256SUMS (presence only)
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/config.json:1-38
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/preprocessor_config.json:1-28
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/processor_config.json:1-7
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/generation_config.json:1-7
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/chat_template.json:2
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/chat_template.jinja:1-2
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/added_tokens.json
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/tokenizer_config.json:47-63
+- /nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/README.md:8 (license), 17, 26-31 (model details), 38-39 (transformers >= 4.35.3, prompt template), 68-104 (usage), 107 (>= v4.48), 153-155 (License section)
+- '/nfs-stor/xiwei.liu/interpretability/models/LLaVA-1.5-7B/model-0000*.safetensors (JSON headers only: 32 LM layers, 24 vision layers, q/k/o_proj, projector, position_embedding shapes)'
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/__init__.py:21 (version 5.24.1)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/llava/configuration_llava.py:49-78
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/llava/modeling_llava.py:66-85 (projector), 108-167 (get_image_features), 230-236 (masked_scatter)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/llava/processing_llava.py:33-69
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/llava/image_processing_llava.py:38-50, 55-95, 120-135
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/clip/image_processing_clip.py:23-34
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/clip/modeling_clip.py:146-213 (vision embeddings)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py:63-89
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/image_processing_backends.py:261-272 (shortest_edge resize), 399-437 (resize -> center crop -> normalize)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/auto/modeling_auto.py:1245
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/auto/auto_mappings.py:1311, 1466
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/configuration_utils.py:582-592
+unknown:
+- 'env: left null by instruction.'
+- language_model num_layers / hidden_size / heads / kv heads / intermediate_size are not written in config.json text_config; values are the transformers LlamaConfig defaults, with layers and hidden size cross-checked against safetensors headers. The head count (32) has no local confirmation other than the class default.
+- 'bbox.*: no grounding prompt or coordinate convention in the model card.'
+- 'CLIP checkpoint identity (which pretrained CLIP the tower came from): not named in the card or config; only the dimensions are known.'
+- Exact layer index selected by vision_feature_layer = -2 under the transformers 5.24.1 hidden-state capture mechanism (whether hidden_states includes the embedding output) was not traced; it is the penultimate entry of the tuple.
+- 'Which image-processor class (CLIPImageProcessor named in the file vs LlavaImageProcessor default for model_type llava) is instantiated by AutoProcessor in 5.24.1, and exact resize/crop rounding: not tested.'
+- Loading under transformers 5.24.1 (old checkpoint key layout, config written by 4.36.0.dev0) not tested (no weights loaded).

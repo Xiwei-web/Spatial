@@ -1,0 +1,150 @@
+# Generated from local files only (config.json, preprocessor/processor configs, chat template, README, shipped remote code, safetensors JSON headers, transformers 5.24.1 source). See `sources` / `unknown`.
+name: Qwen3-VL-8B-Instruct
+location:
+  root_key: new_models
+  subdir: Qwen3-VL-8B-Instruct
+hf_repo: Qwen/Qwen3-VL-8B-Instruct
+revision: 0c351dd01ed87e9c1b53cbc748cba10e6187ff3b
+revision_source: configs/downloads/models.yaml (repo / sha / license pinned from the HF API on 2026-11-25; used by the download script, which also wrote SHA256SUMS in the model dir)
+size_bytes: 17545915883
+license: apache-2.0
+license_source: 'README.md front matter line 2 (`license: apache-2.0`); same value in configs/downloads/models.yaml (HF API)'
+role: general
+base_model: null
+env: null
+loader:
+  model_class: Qwen3VLForConditionalGeneration
+  processor_class: Qwen3VLProcessor
+  trust_remote_code: false
+  config_transformers_version: 4.57.0.dev0
+  notes: |
+    - Native transformers classes, no .py files in the model dir. config.json architectures = Qwen3VLForConditionalGeneration; in transformers 5.24.1 model_type qwen3_vl maps to Qwen3VLForConditionalGeneration (MODEL_FOR_IMAGE_TEXT_TO_TEXT_MAPPING_NAMES, models/auto/modeling_auto.py:1276) and Qwen3VLProcessor (PROCESSOR_MAPPING_NAMES, models/auto/auto_mappings.py:1364).
+    - preprocessor_config.json names image_processor_type "Qwen2VLImageProcessorFast"; transformers 5.24.1 maps qwen3_vl to Qwen2VLImageProcessor / Qwen2VLImageProcessorPil (models/auto/image_processing_auto.py:150). Whether the legacy "...Fast" name resolves cleanly in 5.24.1 was not tested. video_preprocessor_config.json: Qwen3VLVideoProcessor.
+    - generation_config.json records transformers_version 4.56.0 (config.json: 4.57.0.dev0).
+    - README requirement (lines 71-75): "pip install git+https://github.com/huggingface/transformers" / "# pip install transformers==4.57.0 # currently, V4.57.0 is not released". The README example needs no qwen_vl_utils (processor.apply_chat_template with tokenize=True).
+    - text_config dtype bfloat16. generation_config.json ships do_sample=true, temperature=0.7, top_p=0.8, top_k=20, repetition_penalty=1.0 (README:134-143 lists the same plus presence_penalty=1.5); pass do_sample=False for greedy decoding.
+    - Loading under transformers 5.24.1 was not tested (no weights loaded).
+language_model:
+  model_type: qwen3_vl_text
+  num_layers: 36
+  hidden_size: 4096
+  num_attention_heads: 32
+  num_key_value_heads: 8
+  head_dim: 128
+  layer_mixers:
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  mixer_details: |
+    All 36 layers are plain causal self-attention with grouped-query attention (32 query heads, 8 KV heads; each KV head shared by 4 query heads; k_proj weight shape [1024, 4096]). head_dim 128 is stated in config.json text_config.
+    No sliding window exists for this architecture: Qwen3VLTextConfig has no sliding_window / use_sliding_window / layer_types fields (configuration_qwen3_vl.py:85-106) and config.json has none; Qwen3VLTextModel.forward builds a single causal mask with create_causal_mask and passes it to every layer (modeling_qwen3_vl.py:801-823).
+    QK-norm: q and k are RMS-normalised per head (q_norm / k_norm over head_dim) before RoPE (modeling_qwen3_vl.py:496-518).
+    Position encoding: interleaved multimodal RoPE, rope_scaling {mrope_interleaved: true, mrope_section: [24, 20, 20], rope_type: default}, rope_theta 5000000. max_position_embeddings 262144.
+    DeepStack makes the first 3 LM layers non-standard for patching purposes (the attention mixer itself is unchanged) - see connector.type.
+  mlp_type: 'dense (Qwen3VLTextMLP: gate_proj/up_proj/down_proj, hidden_act silu, intermediate_size 12288; model_type is qwen3_vl, not qwen3_vl_moe)'
+  head_level_analysis: |
+    All 36 layers share the same attention structure (q_proj -> 32 heads x 128 dims, o_proj over concatenated heads, modeling_qwen3_vl.py:484-495), so head-level analysis / attention masking is structurally possible in every layer. K/V shared within groups of 4 query heads; attention logits use RMS-normalised q/k.
+    DeepStack caveat (important for activation patching): after LM layers 0, 1 and 2, extra visual features are ADDED to the hidden states at the image-token positions (modeling_qwen3_vl.py:826-832, 841-849). So the residual stream at image positions entering layers 1-3 is not only the output of the previous layer; patching/ablating the input embeddings or layer-0..2 outputs at image positions does not remove visual information, and a hook on a decoder layer's output sees the state BEFORE the DeepStack addition (the addition happens in the Qwen3VLTextModel loop, outside the layer module).
+    Attention weights require the eager implementation (eager_attention_forward, modeling_qwen3_vl.py:220-242; configuration_utils.py:582-592). Not run here.
+vision_encoder:
+  type: Qwen3VLVisionModel (ViT; hidden_act gelu_pytorch_tanh, intermediate_size 4304, 16 heads). The model card does not name the vision encoder family.
+  num_layers: 27
+  hidden_size: 1152
+  patch_size: 16
+  resolution_strategy: |
+    dynamic (native aspect ratio, one grid per image). Same Qwen2VLImageProcessor.smart_resize as Qwen2.5-VL but factor = patch 16 x merge 2 = 32 (image_processing_qwen2_vl.py:63-89, 233-239).
+    Shipped preprocessor_config.json: size.shortest_edge=65536 (min pixels = 256x256 -> 64 tokens), size.longest_edge=16777216 (max pixels = 16384 x 32 x 32 -> 16384 tokens). image_mean = image_std = [0.5, 0.5, 0.5] (not CLIP statistics). Resample bicubic (class default).
+    The model card states no recommended pixel range. (video_preprocessor_config.json: shortest_edge 4096, longest_edge 25165824.)
+  position_encoding: |
+    Two mechanisms: (1) learned absolute table pos_embed = nn.Embedding(2304, 1152), i.e. a 48x48 grid, bilinearly interpolated (align_corners=True) to each image's patch grid and added after patch embedding (modeling_qwen3_vl.py:639-643, 683-696); (2) 2D rotary embedding on (row, col) inside every block (lines 645, 697, 708).
+    No window attention: every block attends over the whole image (cu_seqlens per image, lines 703-710). temporal_patch_size 2 (still image duplicated to 2 frames, Conv3d patch embed, lines 99-107).
+connector:
+  type: |
+    Qwen3VLVisionPatchMerger (visual.merger): LayerNorm(1152) per patch, concatenate each 2x2 patch group (4 x 1152 = 4608), Linear(4608,4608) -> GELU -> Linear(4608,4096) (modeling_qwen3_vl.py:171-184, 648-651). Its output replaces the <|image_pad|> input embeddings (masked_scatter, line 1186).
+    PLUS DeepStack (README:49 "DeepStack: Fuses multi-level ViT features to capture fine-grained details and sharpen image-text alignment"): config.json vision_config.deepstack_visual_indexes = [8, 16, 24]. These are VISION block indices (0-based): after ViT blocks 8, 16 and 24 the hidden states go through a separate merger each (deepstack_merger_list[0..2], use_postshuffle_norm=True: concatenate 2x2 -> LayerNorm(4608) -> Linear -> GELU -> Linear(4608,4096)) (modeling_qwen3_vl.py:653-662, 711-715).
+    The three feature sets are then added to the LM hidden states at the visual-token positions after LM decoder layers 0, 1 and 2 respectively: `if deepstack_visual_embeds is not None and layer_idx in range(len(deepstack_visual_embeds)): hidden_states = self._deepstack_process(...)` with `hidden_states[visual_pos_masks, :] + visual_embeds` (modeling_qwen3_vl.py:826-832, 841-849; wiring at 1197-1242). I.e. ViT block 8 -> after LM layer 0, ViT block 16 -> after LM layer 1, ViT block 24 -> after LM layer 2. The class docstring says: "not a pure text-only model, as DeepStack integrates visual features into the early hidden states" (lines 726-730).
+  token_merge: 2x2 spatial merge (4 patches -> 1 token), spatial_merge_size 2; same merge for the 3 DeepStack streams (so they align 1:1 with the image tokens)
+  tokens_per_image: |
+    (H'/32) * (W'/32), where (H', W') is the smart_resize output (multiples of 32). Processor: image_grid_thw.prod() // merge_size**2 (processing_qwen3_vl.py:70-73).
+    Placeholders are <|image_pad|> (id 151655) wrapped as <|vision_start|>...<|vision_end|> by the chat template. With shipped limits: 64 to 16384 tokens per image.
+  token_to_region: |
+    Tokens are in raster (row-major) order of merged 32x32 px cells. The image processor emits patches in (merged_row, merged_col, 2x2 inside the cell) order (image_processing_qwen2_vl.py:187-199); the Qwen3 vision tower applies no permutation (no window reordering), and the merger fuses each consecutive group of 4 patches (x.view(-1, 4608)).
+    Rule: with gw = W'/32, image token k (0-based) is row r = k // gw, col c = k % gw and covers resized-image pixels x in [32c, 32c+32), y in [32r, 32r+32); in original-image pixels multiply x by W/W' and y by H/H'.
+    The DeepStack features use the same order, so the feature added at image position k after LM layers 0-2 describes the same 32x32 px cell. ViT-internal hidden states are in merge-block order (4 consecutive patches = one cell), not plain patch raster order.
+multi_view:
+  default: Single view. No tiling, no thumbnail, no newline/separator tokens; one native-resolution grid per image.
+  force_single_view: |
+    Nothing to disable. To fix the token count, set the image processor size {shortest_edge: min_pixels, longest_edge: max_pixels} (or legacy init kwargs min_pixels / max_pixels, image_processing_qwen2_vl.py:109-119), or pre-resize the image so H and W are multiples of 32 inside the pixel range. The model card gives no resolution-control instructions.
+bbox:
+  official_prompt: null
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: |
+    Not stated in this model card. The only grounding statement is README:27: "Advanced Spatial Perception: Judges object positions, viewpoints, and occlusions; provides stronger 2D grounding and enables 3D grounding for spatial reasoning and embodied AI." No prompt, output example or coordinate convention.
+    Web-sourced conventions are recorded separately in configs/bbox_conventions.yaml and were not copied here.
+thinking:
+  has_thinking_mode: false
+  how_to_disable: 'Nothing to disable for this Instruct checkpoint: chat_template.json contains no enable_thinking variable and never emits <think>; no default system prompt is inserted either (a system block is rendered only if the first message is a system message or tools are passed).'
+  source: chat_template.json line 2; README.md:18 ("Instruct and reasoning-enhanced Thinking editions" - the Thinking edition is a different checkpoint); tokenizer_config.json lines 198, 206 define <think> / </think> tokens (vocabulary only)
+sources:
+- '/home/xiwei.liu/Interpretability/configs/downloads/models.yaml (entry Qwen3-VL-8B-Instruct: repo, revision, license)'
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen3-VL-8B-Instruct/SHA256SUMS (presence only)
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen3-VL-8B-Instruct/config.json:1-62 (text_config 7-36, vision_config 40-59, deepstack_visual_indexes 41-45)
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen3-VL-8B-Instruct/preprocessor_config.json:1-21
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen3-VL-8B-Instruct/video_preprocessor_config.json:1-21
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen3-VL-8B-Instruct/generation_config.json:1-14
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen3-VL-8B-Instruct/chat_template.json:2
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen3-VL-8B-Instruct/tokenizer_config.json:198,206
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen3-VL-8B-Instruct/README.md:2 (license), 18, 27 (grounding), 47-51 (architecture updates, DeepStack), 71-75 (requirements), 82-131 (usage), 134-143 (generation hyperparameters)
+- '/nfs-stor/xiwei.liu/interpretability/models/Qwen3-VL-8B-Instruct/model-0000*-of-00004.safetensors (JSON headers only: 750 tensors, 36 LM layers, 27 vision blocks, q/k/o_proj, q_norm, merger, deepstack_merger_list, pos_embed shapes)'
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/__init__.py:21 (version 5.24.1)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/qwen3_vl/configuration_qwen3_vl.py:44-57 (vision config), 85-106 (text config, no sliding-window fields)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/qwen3_vl/modeling_qwen3_vl.py:91-108 (patch embed), 171-184 (merger), 220-242 (eager attention), 470-540 (LM attention, q_norm/k_norm), 543-556 (MLP), 621-723 (vision model, pos_embed, deepstack features), 726-730, 801-849 (LM loop, DeepStack injection), 1027-1043, 1179-1242 (scatter, visual_pos_masks, deepstack wiring)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/qwen3_vl/processing_qwen3_vl.py:70-73
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/qwen2_vl/image_processing_qwen2_vl.py:63-89, 109-119, 177-210, 233-239
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/vision_utils.py:81-126, 231-296
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/auto/modeling_auto.py:1276
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/auto/auto_mappings.py:1364
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/auto/image_processing_auto.py:150
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/configuration_utils.py:582-592
+unknown:
+- 'env: left null by instruction.'
+- 'bbox.official_prompt / output_format / coord_range / coord_order: the model card gives no grounding prompt, example or coordinate convention (only the capability sentence at README:27).'
+- 'Recommended min/max pixels: not stated in the card; only the shipped preprocessor_config.json values are known.'
+- 'Vision encoder family / pretraining origin: not named in the card or config.'
+- 'Whether image_processor_type "Qwen2VLImageProcessorFast" (preprocessor_config.json) resolves without warnings in transformers 5.24.1: not tested.'
+- Loading / generation under transformers 5.24.1 not tested (login node, no weights loaded); DeepStack behaviour is from source reading only.

@@ -53,7 +53,8 @@ def parse_four_numbers(text: str) -> list[float] | None:
 
 
 def to_original_xyxy(nums: list[float], convention: str, orig_wh: tuple[int, int],
-                     model_wh: tuple[int, int] | None = None) -> list[float]:
+                     model_wh: tuple[int, int] | None = None,
+                     view_box: tuple[float, float, float, float] | None = None) -> list[float]:
     """把模型输出的四个数还原为原图像素坐标 [x1, y1, x2, y2]。
     convention:
       norm1000_xyxy  —— 0-1000 归一化，x1,y1,x2,y2
@@ -69,6 +70,9 @@ def to_original_xyxy(nums: list[float], convention: str, orig_wh: tuple[int, int
     if convention == "norm1000_yxyx":
         return [b / 1000 * W, a / 1000 * H, d / 1000 * W, c / 1000 * H]
     if convention == "norm1_xyxy":
+        if view_box is not None:   # 模型只看到原图的一个子区域（如 CLIP 中心裁剪）：归一化坐标相对该区域
+            x0, y0, x1, y1 = view_box
+            return [x0 + a * (x1 - x0), y0 + b * (y1 - y0), x0 + c * (x1 - x0), y0 + d * (y1 - y0)]
         return [a * W, b * H, c * W, d * H]
     if convention == "abs_model_xyxy":
         if model_wh is None:

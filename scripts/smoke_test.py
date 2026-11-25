@@ -152,7 +152,7 @@ def main(name: str) -> int:
                         if nums is not None:
                             n_box_parsed += 1
                             if bc["convention"] != "unknown":
-                                rec["bbox_xyxy_orig"] = to_original_xyxy(nums, bc["convention"], prep.orig_wh, prep.model_wh)
+                                rec["bbox_xyxy_orig"] = to_original_xyxy(nums, bc["convention"], prep.orig_wh, prep.model_wh, prep.extra.get("view_box"))
                                 n_box_restored += 1
                     else:
                         n_rel += 1

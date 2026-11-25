@@ -1,0 +1,138 @@
+# Generated from local files only (config.json, preprocessor/processor configs, chat template, README, shipped remote code, safetensors JSON headers, transformers 5.24.1 source). See `sources` / `unknown`.
+name: Qwen2.5-VL-7B-Instruct
+location:
+  root_key: new_models
+  subdir: Qwen2.5-VL-7B-Instruct
+hf_repo: Qwen/Qwen2.5-VL-7B-Instruct
+revision: cc594898137f460bfe9f0759e9844b3ce807cfb5
+revision_source: configs/downloads/models.yaml (repo / sha / license pinned from the HF API on 2026-11-25; used by the download script, which also wrote SHA256SUMS in the model dir)
+size_bytes: 16595981281
+license: apache-2.0
+license_source: 'README.md front matter line 3 (`license: apache-2.0`); same value in configs/downloads/models.yaml (HF API)'
+role: general
+base_model: null
+env: null
+loader:
+  model_class: Qwen2_5_VLForConditionalGeneration
+  processor_class: Qwen2_5_VLProcessor
+  trust_remote_code: false
+  config_transformers_version: 4.41.2
+  notes: |
+    - Native transformers classes, no .py files in the model dir. config.json architectures = Qwen2_5_VLForConditionalGeneration; in transformers 5.24.1 model_type qwen2_5_vl maps to Qwen2_5_VLForConditionalGeneration (MODEL_FOR_IMAGE_TEXT_TO_TEXT_MAPPING_NAMES, models/auto/modeling_auto.py:1271) and Qwen2_5_VLProcessor (PROCESSOR_MAPPING_NAMES, models/auto/auto_mappings.py:1359); image processor Qwen2VLImageProcessor (models/auto/image_processing_auto.py:146; preprocessor_config.json names the same class).
+    - generation_config.json records transformers_version 4.37.0 (config.json: 4.41.2).
+    - README requirement (lines 103-110): no version number; "we advise you to build from source with command: pip install git+https://github.com/huggingface/transformers accelerate", otherwise "KeyError: 'qwen2_5_vl'". README also uses `qwen-vl-utils[decord]==0.0.8` (process_vision_info) in its examples; that package is not in the model dir and was not read.
+    - config.json is the old flat layout (LM fields at top level, no text_config); Qwen2_5_VLConfig.__post_init__ routes them into Qwen2_5_VLTextConfig (configuration_qwen2_5_vl.py:192-200) and rewrites the vision model_type (202-204).
+    - torch_dtype bfloat16. generation_config.json ships do_sample=true, temperature=1e-06, repetition_penalty=1.05, eos [151645, 151643]; pass do_sample=False / repetition_penalty=1.0 explicitly for exact greedy decoding.
+    - No video_preprocessor_config.json in the dir.
+    - Loading under transformers 5.24.1 was not tested (no weights loaded).
+language_model:
+  model_type: qwen2_5_vl_text
+  num_layers: 28
+  hidden_size: 3584
+  num_attention_heads: 28
+  num_key_value_heads: 4
+  head_dim: 128
+  layer_mixers:
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  - full_attention
+  mixer_details: |
+    All 28 layers are plain causal self-attention with grouped-query attention (28 query heads, 4 KV heads; each KV head shared by 7 query heads; k_proj weight shape [512, 3584] in the safetensors header).
+    Sliding window is inactive: config.json has sliding_window=32768, max_window_layers=28, use_sliding_window=false. Qwen2_5_VLTextConfig.__post_init__ sets sliding_window=None when use_sliding_window is false and builds layer_types as "sliding_attention" only if sliding_window is not None and i >= max_window_layers (configuration_qwen2_5_vl.py:129-142), so all 28 entries are "full_attention" (and i >= 28 never holds for 28 layers anyway).
+    head_dim is computed, not stated: hidden_size // num_heads = 3584 // 28 = 128 (modeling_qwen2_5_vl.py:612). top-level model_type in config.json is qwen2_5_vl; qwen2_5_vl_text is the transformers text sub-config type.
+    LM position encoding: multimodal RoPE, rope_scaling {type: mrope, mrope_section: [16, 24, 24]}, rope_theta 1e6. max_position_embeddings 128000.
+  mlp_type: dense (gate_proj/up_proj/down_proj, hidden_act silu, intermediate_size 18944)
+  head_level_analysis: |
+    All 28 layers share the same standard structure (q_proj -> 28 heads x 128 dims; o_proj takes the concatenated heads, modeling_qwen2_5_vl.py:625-628), so head-level analysis / attention masking applies to every layer. K/V are shared within groups of 7 query heads.
+    Attention weights are produced by eager_attention_forward (modeling_qwen2_5_vl.py:234-256); setting config.output_attentions with a non-eager attn implementation raises (configuration_utils.py:582-592). Load with attn_implementation="eager". Not run here.
+vision_encoder:
+  type: Qwen2.5-VL ViT (Qwen2_5_VisionTransformerPretrainedModel) with window attention; README:46 "window attention ... SwiGLU and RMSNorm"
+  num_layers: 32
+  hidden_size: 1280
+  patch_size: 14
+  resolution_strategy: |
+    dynamic (native aspect ratio, one grid per image). Qwen2VLImageProcessor.smart_resize (image_processing_qwen2_vl.py:63-89) with factor = patch 14 x merge 2 = 28: round H and W to multiples of 28; if H*W > max_pixels scale down (floor to multiple of 28); if H*W < min_pixels scale up (ceil); aspect ratio > 200 raises.
+    Shipped preprocessor_config.json: min_pixels=3136 (56x56 -> 4 tokens), max_pixels=12845056 (= 16384 x 28 x 28 -> 16384 tokens). Resample bicubic (class default), CLIP mean/std.
+    README:160 "The default range for the number of visual tokens per image in the model is 4-16384"; README:161-164 / 427-435 suggest e.g. min_pixels = 256*28*28, max_pixels = 1280*28*28 (token range 256-1280) "to balance performance and cost".
+  position_encoding: |
+    2D rotary position embedding on (row, col) patch indices in every vision block (rotary_pos_emb, modeling_qwen2_5_vl.py:410, 461; position ids from vision_utils.get_vision_position_ids). No learned absolute position table.
+    Window attention: window_size 112 px (= 8x8 patches = 4x4 merged cells); blocks 7, 15, 23, 31 (fullatt_block_indexes) attend over the whole image, the other 28 of 32 blocks attend only inside windows (modeling_qwen2_5_vl.py:466-472). 16 heads. temporal_patch_size 2: a still image is duplicated to 2 frames and embedded by a Conv3d (image_processing_qwen2_vl.py:201-209, modeling_qwen2_5_vl.py:113-114).
+connector:
+  type: 'Qwen2_5_VLPatchMerger (inside the vision tower, visual.merger): RMSNorm(1280), concatenate each 2x2 patch group (4 x 1280 = 5120), MLP Linear(5120,5120) -> GELU -> Linear(5120,3584) (modeling_qwen2_5_vl.py:185-198; shapes confirmed in the safetensors header)'
+  token_merge: 2x2 spatial merge (4 patches -> 1 token), spatial_merge_size 2
+  tokens_per_image: |
+    (H'/28) * (W'/28), where (H', W') is the smart_resize output. Processor: image_grid_thw.prod() // merge_size**2 with grid_t = 1 for a still image (processing_qwen2_5_vl.py:51-54).
+    Placeholders are <|image_pad|> (id 151655) wrapped as <|vision_start|><|image_pad|>...<|vision_end|> by the chat template. With shipped limits: 4 to 16384 tokens per image.
+  token_to_region: |
+    Tokens reaching the LM are in raster (row-major) order of merged 28x28 px cells.
+    Details: the image processor orders patches as (merged_row, merged_col, 2x2 inside the cell) (image_processing_qwen2_vl.py:187-199); the vision tower permutes merged cells into window order for window attention (permute_input_for_window_attn, modeling_qwen2_5_vl.py:422-426, 459); the merger fuses each consecutive group of 4 patches; then merged_hidden_states[argsort(window_index)] restores the original order (lines 482-484) before masked_scatter into the <|image_pad|> positions (line 1222).
+    Rule: with gw = W'/28, image token k (0-based) is row r = k // gw, col c = k % gw and covers resized-image pixels x in [28c, 28c+28), y in [28r, 28r+28); in original-image pixels multiply x by W/W' and y by H/H'.
+    CAVEAT for ViT internals: pre-merger hidden states (last_hidden_state / per-block outputs) stay in WINDOW order; only the merged pooler_output is un-permuted (lines 486-489).
+multi_view:
+  default: Single view. No tiling, no thumbnail, no newline/separator tokens; one native-resolution grid per image.
+  force_single_view: |
+    Nothing to disable. To fix the token count: (a) processor/image-processor init kwargs min_pixels / max_pixels (README:162-164, 430-435), which transformers 5.24.1 maps to size shortest_edge / longest_edge (image_processing_qwen2_vl.py:109-119; passing them at call time emits a deprecation warning, lines 128-133); or (b) pre-resize the image so H and W are multiples of 28 inside the pixel range.
+    README:437-441 also describes per-image `resized_height` / `resized_width` ("rounded to the nearest multiple of 28") and per-image min_pixels/max_pixels in the message dict; these are handled by qwen_vl_utils.process_vision_info, not by the transformers processor.
+bbox:
+  official_prompt: null
+  output_format: null
+  coord_range: null
+  coord_order: null
+  source: |
+    Not stated in this model card. The only grounding statement is README:28: "Capable of visual localization in different formats: Qwen2.5-VL can accurately localize objects in an image by generating bounding boxes or points, and it can provide stable JSON outputs for coordinates and attributes." No prompt, no output example, no coordinate range/order. README:495 only warns that YaRN "has a significant impact on the performance of temporal and spatial localization tasks".
+    The tokenizer defines <|object_ref_start|> <|object_ref_end|> <|box_start|> <|box_end|> (tokenizer_config.json lines 29-53), vocabulary only. Web-sourced conventions are recorded separately in configs/bbox_conventions.yaml and were not copied here.
+thinking:
+  has_thinking_mode: false
+  how_to_disable: Nothing to disable. chat_template.json has no enable_thinking variable and no <think> text; it only inserts the default system prompt "You are a helpful assistant." when the first message is not a system message.
+  source: 'chat_template.json line 2; README.md (no thinking mode mentioned); tokenizer_config.json (grep for "think": no match)'
+sources:
+- '/home/xiwei.liu/Interpretability/configs/downloads/models.yaml (entry Qwen2.5-VL-7B-Instruct: repo, revision, license)'
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen2.5-VL-7B-Instruct/SHA256SUMS (presence only)
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen2.5-VL-7B-Instruct/config.json:1-61
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen2.5-VL-7B-Instruct/preprocessor_config.json:1-19
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen2.5-VL-7B-Instruct/generation_config.json:1-12
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen2.5-VL-7B-Instruct/chat_template.json:2
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen2.5-VL-7B-Instruct/tokenizer_config.json:29-53
+- /nfs-stor/xiwei.liu/interpretability/models/Qwen2.5-VL-7B-Instruct/README.md:3 (license), 28 (localization), 46 (ViT), 103-110 (requirements), 131 (qwen-vl-utils), 141-164 (usage, token range), 427-441 (resolution control), 495
+- '/nfs-stor/xiwei.liu/interpretability/models/Qwen2.5-VL-7B-Instruct/model-0000*-of-00005.safetensors (JSON headers only: 729 tensors, 28 LM layers, 32 vision blocks, q/k/o_proj and merger shapes)'
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/__init__.py:21 (version 5.24.1)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/configuration_qwen2_5_vl.py:53-67 (vision defaults), 108-144 (text config, layer_types), 192-206 (flat config routing)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py:99-122 (patch embed), 185-198 (merger), 234-256 (eager attention), 386-489 (vision tower, window order, reverse_indices), 593-677 (LM attention), 1069-1079, 1215-1222 (masked_scatter)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/qwen2_5_vl/processing_qwen2_5_vl.py:51-54
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/qwen2_vl/image_processing_qwen2_vl.py:63-89 (smart_resize), 93-119, 128-141, 177-210 (patchify), 233-239
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/vision_utils.py:81-126 (position ids), 130-188 (window index)
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/auto/modeling_auto.py:1271
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/auto/auto_mappings.py:1359
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/models/auto/image_processing_auto.py:146
+- /nfs-stor/xiwei.liu/interpretability/envs/tf5/lib/python3.11/site-packages/transformers/configuration_utils.py:582-592
+unknown:
+- 'env: left null by instruction.'
+- 'bbox.official_prompt / output_format / coord_range / coord_order: the model card gives no grounding prompt, example or coordinate convention (only the capability sentence at README:28).'
+- 'Minimum transformers version: the card gives no number (only ''build from source'').'
+- Loading / generation under transformers 5.24.1 not tested (login node, no weights loaded); statements about attention-weight availability are from source reading only.
+- qwen_vl_utils behaviour (resized_height/resized_width, default pixel limits) is described in the README but the package source was not read.

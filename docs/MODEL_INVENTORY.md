@@ -9,9 +9,15 @@
 |---|---|---|---|---|---|---|---|---|
 | Cambrian-S-7B | nyu-visionx/Cambrian-S-7B @ `556e72fd` | 32.1 | apache-2.0 | 28/3584/28 | 全部 full_attention（28 层） | — | spatial_finetune（Qwen/Qwen2.5-7B-Instruct (README front …） | 未适配 |
 | GLM-4.6V-Flash | zai-org/GLM-4.6V-Flash @ `411bb4d7` | 20.6 | mit | 40/4096/32 | 全部 full_attention（40 层） | 可变：n = grid_t*grid_h*grid_w / merge_size^2 = (H'/28) * (W'/… | general | tf5 |
+| InternVL3-2B | OpenGVLab/InternVL3-2B @ `89915501` | 4.2 | apache-2.0 | 28/1536/12 | 全部 full_attention（28 层） | 256 per 448x448 tile: num_image_token = int((448 // 14) ** … | general | tf4 |
+| InternVL3-8B | OpenGVLab/InternVL3-8B @ `853e3a79` | 15.9 | apache-2.0 | 28/3584/28 | 全部 full_attention（28 层） | 256 per 448x448 tile: num_image_token = int((448 // 14) ** … | general | tf4 |
 | InternVL3_5-8B | OpenGVLab/InternVL3_5-8B @ `9bb6a56a` | 17.1 | apache-2.0 | 36/4096/32 | 全部 full_attention（36 层） | 256 per 448x448 tile: num_image_token = int((448 // 14) ** … | general（Not a spatial fine-tune. README.md fron…） | tf4 |
+| LLaVA-1.5-13B | llava-hf/llava-1.5-13b-hf @ `5dda2880` | 26.7 | llama2 | 40/5120/40 | 全部 full_attention（40 层） | 576, fixed. Processor: (336 // 14) * (336 // 14) + num_addi… | general | tf5 |
+| LLaVA-1.5-7B | llava-hf/llava-1.5-7b-hf @ `b234b804` | 14.1 | llama2 | 32/4096/32 | 全部 full_attention（32 层） | 576, fixed. Processor: (336 // 14) * (336 // 14) + num_addi… | general | tf5 |
 | LLaVA-OneVision-7B | llava-hf/llava-onevision-qwen2-7b-ov-hf @ `0d506805` | 16.1 | apache-2.0 | 28/3584/28 | 全部 full_attention（28 层） | Single image in a sample (default AnyRes path): N = 729 (ba… | general | tf5 |
 | MiniCPM-V-4_5 | openbmb/MiniCPM-V-4_5 @ `14a20049` | 17.4 | apache-2.0 | 36/4096/32 | 全部 full_attention（36 层） | 64 * (1 + n_slices)。每个视图固定 64 个占位（image_feature_size=64 个 <… | general | tf4 |
+| Qwen2.5-VL-7B-Instruct | Qwen/Qwen2.5-VL-7B-Instruct @ `cc594898` | 16.6 | apache-2.0 | 28/3584/28 | 全部 full_attention（28 层） | (H'/28) * (W'/28), where (H', W') is the smart_resize outpu… | general | tf5 |
+| Qwen3-VL-8B-Instruct | Qwen/Qwen3-VL-8B-Instruct @ `0c351dd0` | 17.5 | apache-2.0 | 36/4096/32 | 全部 full_attention（36 层） | (H'/32) * (W'/32), where (H', W') is the smart_resize outpu… | general | tf5 |
 | Qwen3.5-2B | Qwen/Qwen3.5-2B @ `15852e8c` | 4.6 | apache-2.0 | 24/2048/8 | linear_attention×18；full_attention×6（层 3,7,11,15,19,23） | N = (H2/32) * (W2/32), where (H2, W2) = smart_resize(H, W, … | general | tf5 |
 | Qwen3.5-4B | Qwen/Qwen3.5-4B @ `851bf6e8` | 9.3 | apache-2.0 | 32/2560/16 | linear_attention×24；full_attention×8（层 3,7,11,15,19,23,27,31） | N = (H2/32) * (W2/32), where (H2, W2) = smart_resize(H, W, … | general | tf5 |
 | Qwen3.5-9B | Qwen/Qwen3.5-9B @ `c2022362` | 19.3 | apache-2.0 | 32/4096/16 | linear_attention×24；full_attention×8（层 3,7,11,15,19,23,27,31） | N = (H2/32) * (W2/32), where (H2, W2) = smart_resize(H, W, … | general | tf5 |
@@ -182,6 +188,162 @@
 - model_type=glm4v 的模型类与 Glm46V 处理器组合在 transformers 5.5.4 下能否直接加载：未加载验证。
 - 非 eager 注意力后端是否返回 attn_weights：未核实。
 
+### InternVL3-2B
+
+- **hf_repo**: OpenGVLab/InternVL3-2B
+- **revision**: 899155015275a9b7338c7f4677e19c784e0e5a21
+- **revision_source**: configs/downloads/models.yaml (repo / sha / license pinned from the HF API on 2026-11-25; used by the download script, which also wrote SHA256SUMS in the model dir)
+- **size_bytes**: 4192270578
+- **license**: apache-2.0
+- **license_source**: README.md front matter lines 2-4: `license: apache-2.0`, `license_name: qwen`, `license_link: https://huggingface.co/Qwen/Qwen2.5-72B-Instruct/blob/main/LICENSE` (the HF API value pinned in configs/downloads/models.yaml is apache-2.0). The README body says something different (line 671): "This project is released under the MIT License. This project uses the pre-trained Qwen2.5 as a component, which is licensed under the Apache-2.0 License." The shipped .py files carry an MIT header (modeling_internvl_chat.py:1-5).
+- **role**: general
+- **base_model**: —
+
+**loader**
+
+- model_class: AutoModel (config.json auto_map -> modeling_internvl_chat.InternVLChatModel; architectures: InternVLChatModel; model_type internvl_chat)
+- processor_class: No processor class. Tokenizer: tokenizer_config.json tokenizer_class Qwen2Tokenizer (README loads AutoTokenizer with trust_remote_code=True, use_fast=False). Image preprocessing is done by the caller with the README's build_transform / dynamic_preprocess / load_image (README.md:267-339). preprocessor_config.json exists (feature_extractor_type CLIPFeatureExtractor, size 448, crop_size 448, do_center_crop true, resample 3, ImageNet mean/std) but the shipped remote code never reads it, and it does NOT match the official README transform (plain Resize((448,448)), no center crop).
+- trust_remote_code: True
+- config_transformers_version: 4.48.3
+- notes: - config.json top-level transformers_version is null (line 116); "4.48.3" is recorded inside llm_config (line 99), vision_config (line 215) and generation_config.json. - README requirement (line 176): "Please use transformers>=4.37.2 to ensure the model works normally." The remote code asserts transformers >= 4.37.0 (modeling_internvl_chat.py:46). - auto_map entries are local (no "repo--" prefix): AutoConfig -> configuration_internvl_chat.InternVLChatConfig, AutoModel / AutoModelForCausalLM -> modeling_internvl_chat.InternVLChatModel (config.json lines 7-11), so the .py files in the model dir are used. (The SenseNova-SI derivatives have repo-prefixed auto_map instead.) - The five remote-code files are byte-identical (md5) between InternVL3-8B, InternVL3-2B and the local SenseNova-SI-1.2-InternVL3-8B directory. - README loading call (lines 186-191): AutoModel.from_pretrained(path, torch_dtype=torch.bfloat16, low_cpu_mem_usage=True, use_flash_attn=True, trust_remote_code=True). - Attention backend: InternVLChatModel.__init__ sets `config.llm_config._attn_implementation = 'flash_attention_2' if use_flash_attn else 'eager'` with `use_flash_attn = use_flash_attn if has_flash_attn else …
+
+**language_model**
+
+- model_type: qwen2
+- num_layers: 28
+- hidden_size: 1536
+- num_attention_heads: 12
+- num_key_value_heads: 2
+- head_dim: 128
+- layer_mixers（逐层，0 起）: `F F F F F F F F F F F F F F F F F F F F F F F F F F F F`  （F=标准自注意力，L=线性注意力/Gated DeltaNet，S=滑动窗口自注意力）
+- mixer_details: All 28 layers are standard causal full self-attention with grouped-query attention (12 query heads, 2 KV heads; k_proj weight shape [256, 1536] in the safetensors header). llm_config.architectures = Qwen2ForCausalLM. head_dim 128 is computed, not stated: llm_config has no head_dim key; Qwen2Attention uses getattr(config, "head_dim", hidden_size // num_attention_heads) = 1536 // 12 = 128 (transformers models/qwen2/modeling_qwen2.py:176). No sliding window is active: llm_config has use_sliding_window: false and sliding_window: null (max_window_layers: 70 > 28 layers, inert). Qwen2Config.__post_init__ sets sliding_window=None when use_sliding_window is false and builds layer_types as all "full_attention" (models/qwen2/configuration_qwen2.py:82-93). rope_scaling in llm_config: {factor: 2.0, rope_type: dynamic, type: dynamic}; rope_theta 1000000.0; max_position_embeddings 32768; vocab_size 151674. llm_config._name_or_path is "./pretrained/Qwen2.5-32B-Instruct", which does not match the dimensions (hidden 1536, 28 layers); treat it as a stale string. The README family table (line 44) gives the language part as Qwen2.5-1.5B.
+- mlp_type: dense (Qwen2ForCausalLM; hidden_act silu, intermediate_size 8960; llm_config.moe_config is null)
+- head_level_analysis: All 28 layers have the same structure (12 heads x 128 dims), so head-level analysis is structurally possible on every layer; K/V shared within groups of 6 query heads. Precondition: eager attention in the LLM. Load with use_flash_attn=False so the remote code sets 'eager' (modeling_internvl_chat.py:55-57). InternVLChatModel.forward passes output_attentions to the language model and returns outputs.attentions (lines 137, 165); config.output_attentions raises unless the attn implementation is eager (transformers configuration_utils.py:582-592). No head-mask argument in the code read; masking needs hooks. Vision encoder: InternAttention never returns attention weights (_naive_attn returns only x; modeling_intern_vit.py:210-248), so ViT attention needs hooks / recomputation. Not tested (no weights loaded).
+
+**vision_encoder**
+
+- type: InternVisionModel from the shipped modeling_intern_vit.py. README family table: Vision Part = InternViT-300M-448px-V2_5. config.json vision_config.model_type is "intern_vit_6b" and vision_config._name_or_path is "OpenGVLab/InternViT-6B-448px-V1-5", but the actual dimensions are hidden_size 1024, 24 layers, 16 heads, intermediate_size 4096, norm_type layer_norm, qkv_bias true (300M-sized; the two strings are stale). vision_config also carries MoE-style keys (num_experts 8, use_moe false, ...) that the shipped modeling_intern_vit.py does not read.
+- num_layers: 24
+- hidden_size: 1024
+- patch_size: 14
+- resolution_strategy: Encoder input is fixed 448x448 per tile (vision_config.image_size 448, force_image_size 448) -> 32x32 = 1024 patch tokens + 1 CLS. Higher resolution is handled outside the encoder by dynamic tiling in the caller's preprocessing: config dynamic_image_size true, min_dynamic_patch 1, max_dynamic_patch 12, use_thumbnail true; README load_image default max_num=12 (see multi_view). README:60 "dividing images into tiles of 448x448 pixels". Per-tile transform (README:270-278): convert RGB, T.Resize((448, 448), interpolation=BICUBIC), ToTensor, Normalize with IMAGENET_MEAN (0.485, 0.456, 0.406) / IMAGENET_STD (0.229, 0.224, 0.225).
+- position_encoding: Learned absolute position embedding: nn.Parameter of shape (1, 1025, 1024) = CLS + 32x32 (modeling_intern_vit.py:149-152; shape confirmed in the safetensors header). At forward time the patch part goes through _get_pos_embed, which bicubic-interpolates (F.interpolate, mode='bicubic', align_corners=False) the 32x32 grid to the actual patch grid (lines 154-173); at 448x448 this is the same size. No rotary / relative encoding in the ViT.
+
+**connector**
+
+- type: pixel_shuffle (space-to-depth, downsample_ratio 0.5, ps_version v2) followed by mlp1 = Sequential(LayerNorm(4096), Linear(4096, 1536), GELU(), Linear(1536, 1536)) (modeling_internvl_chat.py:78-83, 168-202; 4096 = 1024 * 2^2). Uses the last ViT layer (select_layer -1), CLS token dropped (line 195). README:55 "ViT-MLP-LLM" with "a randomly initialized MLP projector"; README:60 "pixel unshuffle operation, reducing the number of visual tokens to one-quarter".
+- token_merge: 2x2 patch merge by pixel_shuffle (4 ViT patch tokens -> 1 LLM token, channels concatenated 1024 -> 4096); 4x token reduction
+- tokens_per_image: 256 per 448x448 tile: num_image_token = int((448 // 14) ** 2 * (0.5 ** 2)) = 256 (modeling_internvl_chat.py:52). Per image: 256 * num_tiles, where num_tiles = n_grid_tiles + (1 thumbnail if n_grid_tiles > 1). With the README defaults (max_num=12, use_thumbnail=True): 256 (single tile) up to 13 * 256 = 3328. In the prompt each '<image>' becomes '<img>' + '<IMG_CONTEXT>' * 256 * num_tiles + '</img>' (line 284): one <img>...</img> pair per image, not per tile, no separators between tiles. Token ids (added_tokens.json): <img> 151665, </img> 151666, <IMG_CONTEXT> 151667.
+- token_to_region: Within a tile (from extract_feature + pixel_shuffle, ps_version v2, modeling_internvl_chat.py:168-202): CLS dropped, ViT tokens reshaped row-major to (tiles, 32, 32, 1024), pixel-shuffled to (tiles, 16, 16, 4096) with (row, col) order restored by the final permute, then flattened row-major. Token k (0..255) of a tile: row i = k // 16, col j = k % 16, covering tile pixels x in [28j, 28j+28), y in [28i, 28i+28). Across tiles: the n-th <IMG_CONTEXT> of an image maps to tile t = n // 256, k = n % 256 (vit_embeds.reshape(-1, C) written in order, line 334). Tile order = order along pixel_values dim 0. Tile -> original image, per the README dynamic_preprocess (lines 295-331): a grid (cols, rows) = target_aspect_ratio is chosen as the aspect ratio closest to the image among all (i, j) with min_num <= i*j <= max_num; the image is resized to (448*cols, 448*rows) WITHOUT preserving aspect ratio; tile i is the crop at column i % cols, row i // cols (row-major); so tile pixel (x, y) of tile i maps to original x_orig = (448*(i % cols) + x) * W / (448*cols), y_orig = (448*(i // cols) + y) * H / (448*rows). The thumbnail, when present, is the LAST tile and is the whole image resized to 448x448 (x…
+
+**multi_view**
+
+- default: Dynamic tiling + thumbnail, done by the caller. config.json: dynamic_image_size true, min_dynamic_patch 1, max_dynamic_patch 12, use_thumbnail true, force_image_size 448 - but the shipped modeling code never reads these flags; it consumes pixel_values of shape (total_tiles, 3, 448, 448) plus num_patches_list. Official preprocessing, quoted from README.md:295-339: def dynamic_preprocess(image, min_num=1, max_num=12, image_size=448, use_thumbnail=False): ... target_width = image_size * target_aspect_ratio[0] target_height = image_size * target_aspect_ratio[1] blocks = target_aspect_ratio[0] * target_aspect_ratio[1] resized_img = image.resize((target_width, target_height)) ... if use_thumbnail and len(processed_images) != 1: thumbnail_img = image.resize((image_size, image_size)) processed_images.append(thumbnail_img) return processed_images def load_image(image_file, input_size=448, max_num=12): image = Image.open(image_file).convert('RGB') transform = build_transform(input_size=input_size) images = dynamic_preprocess(image, image_size=input_size, use_thumbnail=True, max_num=max_num) pixel_values = [transform(image) for image in images] pixel_values = torch.stack(pixel_values) return…
+- force_single_view: Call the README's load_image(path, max_num=1): target_ratios then contains only (1, 1), so dynamic_preprocess returns exactly one tile (the whole image resized to 448x448, aspect ratio not preserved) and no thumbnail because of `if use_thumbnail and len(processed_images) != 1` (README:328). Result: pixel_values shape (1, 3, 448, 448) -> exactly 256 <IMG_CONTEXT> tokens per image. Equivalent at the model interface: one 448x448 tensor per image and num_patches_list=[1]*num_images (single image: chat() defaults num_patches_list to [pixel_values.shape[0]], modeling_internvl_chat.py:260-261).
+
+**bbox**
+
+- official_prompt: —
+- output_format: —
+- coord_range: —
+- coord_order: —
+- source: Not stated in this model card. README.md has "### Visual Grounding" (line 122) and "### GUI Grounding" (line 134) sections that contain only benchmark images; a search of the README for <ref>, <box>, 'bounding', 'coordinate' finds no prompt, example or coordinate convention. The tokenizer does define <ref> </ref> <box> </box> <quad> </quad> (added_tokens.json ids 151668-151673), vocabulary only. Web-sourced conventions are recorded separately in configs/bbox_conventions.yaml and were not copied here.
+
+**thinking**
+
+- has_thinking_mode: False
+- how_to_disable: Nothing to disable: no thinking switch in the card, the tokenizer chat_template or conversation.py, and added_tokens.json has no <think> tokens. (README:78-83 discusses Chain-of-Thought only as a training objective, MPO.) Both the tokenizer chat_template and the remote chat() insert a default Chinese InternVL system message when none is given (template internvl2_5, conversation.py:382-390; tokenizer_config.json chat_template); config.json system_message is null.
+- source: tokenizer_config.json chat_template; conversation.py:382-390; added_tokens.json; README.md:78-83
+
+**查不到 / 未确认**
+
+- env: left null by instruction.
+- bbox.official_prompt / output_format / coord_range / coord_order: no grounding prompt, <ref>/<box> example or coordinate convention anywhere in README.md (the grounding sections are benchmark images only).
+- base_model: left null because role is general, but note README front matter lines 7-9 declare `base_model: OpenGVLab/InternVL3-2B-Instruct` with `base_model_relation: finetune` (and datasets OpenGVLab/MMPR-v1.2); config _name_or_path ends in '...-MPO-try0-2'. The README body does not explain this relation in a sentence beyond the MPO section.
+- License ambiguity: front matter (apache-2.0, license_name qwen) vs README body / code headers (MIT + Apache-2.0 for the Qwen2.5 component); which governs is not resolved by local files.
+- V2PE: described in the README but absent from the shipped inference code; whether the released weights expect fractional visual position increments at inference is not stated locally.
+- Whether the remote code (written for transformers 4.48.3; requirement >=4.37.2) loads under transformers 5.24.1: read from source only, not tested (no model-dir code imported, no weights loaded).
+- PIL resample filter used by image.resize(...) in dynamic_preprocess is the PIL default (not specified in the README code).
+- vision_config strings (intern_vit_6b, InternViT-6B-448px-V1-5) contradict the 1024-dim / 24-layer numbers; the encoder identity InternViT-300M-448px-V2_5 comes from the README table only.
+
+### InternVL3-8B
+
+- **hf_repo**: OpenGVLab/InternVL3-8B
+- **revision**: 853e3a797a661694b1b8ece0cb72dc2b23e3dac9
+- **revision_source**: configs/downloads/models.yaml (repo / sha / license pinned from the HF API on 2026-11-25; used by the download script, which also wrote SHA256SUMS in the model dir)
+- **size_bytes**: 15903165729
+- **license**: apache-2.0
+- **license_source**: README.md front matter lines 2-4: `license: apache-2.0`, `license_name: qwen`, `license_link: https://huggingface.co/Qwen/Qwen2.5-72B-Instruct/blob/main/LICENSE` (the HF API value pinned in configs/downloads/models.yaml is apache-2.0). The README body says something different (line 671): "This project is released under the MIT License. This project uses the pre-trained Qwen2.5 as a component, which is licensed under the Apache-2.0 License." The shipped .py files carry an MIT header (modeling_internvl_chat.py:1-5).
+- **role**: general
+- **base_model**: —
+
+**loader**
+
+- model_class: AutoModel (config.json auto_map -> modeling_internvl_chat.InternVLChatModel; architectures: InternVLChatModel; model_type internvl_chat)
+- processor_class: No processor class. Tokenizer: tokenizer_config.json tokenizer_class Qwen2Tokenizer (README loads AutoTokenizer with trust_remote_code=True, use_fast=False). Image preprocessing is done by the caller with the README's build_transform / dynamic_preprocess / load_image (README.md:267-339). preprocessor_config.json exists (feature_extractor_type CLIPFeatureExtractor, size 448, crop_size 448, do_center_crop true, resample 3, ImageNet mean/std) but the shipped remote code never reads it, and it does NOT match the official README transform (plain Resize((448,448)), no center crop).
+- trust_remote_code: True
+- config_transformers_version: 4.48.3
+- notes: - config.json top-level transformers_version is null (line 116); "4.48.3" is recorded inside llm_config (line 99), vision_config (line 215) and generation_config.json. - README requirement (line 176): "Please use transformers>=4.37.2 to ensure the model works normally." The remote code asserts transformers >= 4.37.0 (modeling_internvl_chat.py:46). - auto_map entries are local (no "repo--" prefix): AutoConfig -> configuration_internvl_chat.InternVLChatConfig, AutoModel / AutoModelForCausalLM -> modeling_internvl_chat.InternVLChatModel (config.json lines 7-11), so the .py files in the model dir are used. (The SenseNova-SI derivatives have repo-prefixed auto_map instead.) - The five remote-code files are byte-identical (md5) between InternVL3-8B, InternVL3-2B and the local SenseNova-SI-1.2-InternVL3-8B directory. - README loading call (lines 186-191): AutoModel.from_pretrained(path, torch_dtype=torch.bfloat16, low_cpu_mem_usage=True, use_flash_attn=True, trust_remote_code=True). - Attention backend: InternVLChatModel.__init__ sets `config.llm_config._attn_implementation = 'flash_attention_2' if use_flash_attn else 'eager'` with `use_flash_attn = use_flash_attn if has_flash_attn else …
+
+**language_model**
+
+- model_type: qwen2
+- num_layers: 28
+- hidden_size: 3584
+- num_attention_heads: 28
+- num_key_value_heads: 4
+- head_dim: 128
+- layer_mixers（逐层，0 起）: `F F F F F F F F F F F F F F F F F F F F F F F F F F F F`  （F=标准自注意力，L=线性注意力/Gated DeltaNet，S=滑动窗口自注意力）
+- mixer_details: All 28 layers are standard causal full self-attention with grouped-query attention (28 query heads, 4 KV heads; k_proj weight shape [512, 3584] in the safetensors header). llm_config.architectures = Qwen2ForCausalLM. head_dim 128 is computed, not stated: llm_config has no head_dim key; Qwen2Attention uses getattr(config, "head_dim", hidden_size // num_attention_heads) = 3584 // 28 = 128 (transformers models/qwen2/modeling_qwen2.py:176). No sliding window is active: llm_config has use_sliding_window: false and sliding_window: null (max_window_layers: 70 > 28 layers, inert). Qwen2Config.__post_init__ sets sliding_window=None when use_sliding_window is false and builds layer_types as all "full_attention" (models/qwen2/configuration_qwen2.py:82-93). rope_scaling in llm_config: {factor: 2.0, rope_type: dynamic, type: dynamic}; rope_theta 1000000.0; max_position_embeddings 32768; vocab_size 151674. llm_config._name_or_path is "./pretrained/Qwen2.5-32B-Instruct", which does not match the dimensions (hidden 3584, 28 layers); treat it as a stale string. The README family table (line 45) gives the language part as Qwen2.5-7B.
+- mlp_type: dense (Qwen2ForCausalLM; hidden_act silu, intermediate_size 18944; llm_config.moe_config is null)
+- head_level_analysis: All 28 layers have the same structure (28 heads x 128 dims), so head-level analysis is structurally possible on every layer; K/V shared within groups of 7 query heads. Precondition: eager attention in the LLM. Load with use_flash_attn=False so the remote code sets 'eager' (modeling_internvl_chat.py:55-57). InternVLChatModel.forward passes output_attentions to the language model and returns outputs.attentions (lines 137, 165); config.output_attentions raises unless the attn implementation is eager (transformers configuration_utils.py:582-592). No head-mask argument in the code read; masking needs hooks. Vision encoder: InternAttention never returns attention weights (_naive_attn returns only x; modeling_intern_vit.py:210-248), so ViT attention needs hooks / recomputation. Not tested (no weights loaded).
+
+**vision_encoder**
+
+- type: InternVisionModel from the shipped modeling_intern_vit.py. README family table: Vision Part = InternViT-300M-448px-V2_5. config.json vision_config.model_type is "intern_vit_6b" and vision_config._name_or_path is "OpenGVLab/InternViT-6B-448px-V1-5", but the actual dimensions are hidden_size 1024, 24 layers, 16 heads, intermediate_size 4096, norm_type layer_norm, qkv_bias true (300M-sized; the two strings are stale). vision_config also carries MoE-style keys (num_experts 8, use_moe false, ...) that the shipped modeling_intern_vit.py does not read.
+- num_layers: 24
+- hidden_size: 1024
+- patch_size: 14
+- resolution_strategy: Encoder input is fixed 448x448 per tile (vision_config.image_size 448, force_image_size 448) -> 32x32 = 1024 patch tokens + 1 CLS. Higher resolution is handled outside the encoder by dynamic tiling in the caller's preprocessing: config dynamic_image_size true, min_dynamic_patch 1, max_dynamic_patch 12, use_thumbnail true; README load_image default max_num=12 (see multi_view). README:60 "dividing images into tiles of 448x448 pixels". Per-tile transform (README:270-278): convert RGB, T.Resize((448, 448), interpolation=BICUBIC), ToTensor, Normalize with IMAGENET_MEAN (0.485, 0.456, 0.406) / IMAGENET_STD (0.229, 0.224, 0.225).
+- position_encoding: Learned absolute position embedding: nn.Parameter of shape (1, 1025, 1024) = CLS + 32x32 (modeling_intern_vit.py:149-152; shape confirmed in the safetensors header). At forward time the patch part goes through _get_pos_embed, which bicubic-interpolates (F.interpolate, mode='bicubic', align_corners=False) the 32x32 grid to the actual patch grid (lines 154-173); at 448x448 this is the same size. No rotary / relative encoding in the ViT.
+
+**connector**
+
+- type: pixel_shuffle (space-to-depth, downsample_ratio 0.5, ps_version v2) followed by mlp1 = Sequential(LayerNorm(4096), Linear(4096, 3584), GELU(), Linear(3584, 3584)) (modeling_internvl_chat.py:78-83, 168-202; 4096 = 1024 * 2^2). Uses the last ViT layer (select_layer -1), CLS token dropped (line 195). README:55 "ViT-MLP-LLM" with "a randomly initialized MLP projector"; README:60 "pixel unshuffle operation, reducing the number of visual tokens to one-quarter".
+- token_merge: 2x2 patch merge by pixel_shuffle (4 ViT patch tokens -> 1 LLM token, channels concatenated 1024 -> 4096); 4x token reduction
+- tokens_per_image: 256 per 448x448 tile: num_image_token = int((448 // 14) ** 2 * (0.5 ** 2)) = 256 (modeling_internvl_chat.py:52). Per image: 256 * num_tiles, where num_tiles = n_grid_tiles + (1 thumbnail if n_grid_tiles > 1). With the README defaults (max_num=12, use_thumbnail=True): 256 (single tile) up to 13 * 256 = 3328. In the prompt each '<image>' becomes '<img>' + '<IMG_CONTEXT>' * 256 * num_tiles + '</img>' (line 284): one <img>...</img> pair per image, not per tile, no separators between tiles. Token ids (added_tokens.json): <img> 151665, </img> 151666, <IMG_CONTEXT> 151667.
+- token_to_region: Within a tile (from extract_feature + pixel_shuffle, ps_version v2, modeling_internvl_chat.py:168-202): CLS dropped, ViT tokens reshaped row-major to (tiles, 32, 32, 1024), pixel-shuffled to (tiles, 16, 16, 4096) with (row, col) order restored by the final permute, then flattened row-major. Token k (0..255) of a tile: row i = k // 16, col j = k % 16, covering tile pixels x in [28j, 28j+28), y in [28i, 28i+28). Across tiles: the n-th <IMG_CONTEXT> of an image maps to tile t = n // 256, k = n % 256 (vit_embeds.reshape(-1, C) written in order, line 334). Tile order = order along pixel_values dim 0. Tile -> original image, per the README dynamic_preprocess (lines 295-331): a grid (cols, rows) = target_aspect_ratio is chosen as the aspect ratio closest to the image among all (i, j) with min_num <= i*j <= max_num; the image is resized to (448*cols, 448*rows) WITHOUT preserving aspect ratio; tile i is the crop at column i % cols, row i // cols (row-major); so tile pixel (x, y) of tile i maps to original x_orig = (448*(i % cols) + x) * W / (448*cols), y_orig = (448*(i // cols) + y) * H / (448*rows). The thumbnail, when present, is the LAST tile and is the whole image resized to 448x448 (x…
+
+**multi_view**
+
+- default: Dynamic tiling + thumbnail, done by the caller. config.json: dynamic_image_size true, min_dynamic_patch 1, max_dynamic_patch 12, use_thumbnail true, force_image_size 448 - but the shipped modeling code never reads these flags; it consumes pixel_values of shape (total_tiles, 3, 448, 448) plus num_patches_list. Official preprocessing, quoted from README.md:295-339: def dynamic_preprocess(image, min_num=1, max_num=12, image_size=448, use_thumbnail=False): ... target_width = image_size * target_aspect_ratio[0] target_height = image_size * target_aspect_ratio[1] blocks = target_aspect_ratio[0] * target_aspect_ratio[1] resized_img = image.resize((target_width, target_height)) ... if use_thumbnail and len(processed_images) != 1: thumbnail_img = image.resize((image_size, image_size)) processed_images.append(thumbnail_img) return processed_images def load_image(image_file, input_size=448, max_num=12): image = Image.open(image_file).convert('RGB') transform = build_transform(input_size=input_size) images = dynamic_preprocess(image, image_size=input_size, use_thumbnail=True, max_num=max_num) pixel_values = [transform(image) for image in images] pixel_values = torch.stack(pixel_values) return…
+- force_single_view: Call the README's load_image(path, max_num=1): target_ratios then contains only (1, 1), so dynamic_preprocess returns exactly one tile (the whole image resized to 448x448, aspect ratio not preserved) and no thumbnail because of `if use_thumbnail and len(processed_images) != 1` (README:328). Result: pixel_values shape (1, 3, 448, 448) -> exactly 256 <IMG_CONTEXT> tokens per image. Equivalent at the model interface: one 448x448 tensor per image and num_patches_list=[1]*num_images (single image: chat() defaults num_patches_list to [pixel_values.shape[0]], modeling_internvl_chat.py:260-261).
+
+**bbox**
+
+- official_prompt: —
+- output_format: —
+- coord_range: —
+- coord_order: —
+- source: Not stated in this model card. README.md has "### Visual Grounding" (line 122) and "### GUI Grounding" (line 134) sections that contain only benchmark images; a search of the README for <ref>, <box>, 'bounding', 'coordinate' finds no prompt, example or coordinate convention. The tokenizer does define <ref> </ref> <box> </box> <quad> </quad> (added_tokens.json ids 151668-151673), vocabulary only. Web-sourced conventions are recorded separately in configs/bbox_conventions.yaml and were not copied here.
+
+**thinking**
+
+- has_thinking_mode: False
+- how_to_disable: Nothing to disable: no thinking switch in the card, the tokenizer chat_template or conversation.py, and added_tokens.json has no <think> tokens. (README:78-83 discusses Chain-of-Thought only as a training objective, MPO.) Both the tokenizer chat_template and the remote chat() insert a default Chinese InternVL system message when none is given (template internvl2_5, conversation.py:382-390; tokenizer_config.json chat_template); config.json system_message is null.
+- source: tokenizer_config.json chat_template; conversation.py:382-390; added_tokens.json; README.md:78-83
+
+**查不到 / 未确认**
+
+- env: left null by instruction.
+- bbox.official_prompt / output_format / coord_range / coord_order: no grounding prompt, <ref>/<box> example or coordinate convention anywhere in README.md (the grounding sections are benchmark images only).
+- base_model: left null because role is general, but note README front matter lines 7-9 declare `base_model: OpenGVLab/InternVL3-8B-Instruct` with `base_model_relation: finetune` (and datasets OpenGVLab/MMPR-v1.2); config _name_or_path ends in '...-MPO-try0-2'. The README body does not explain this relation in a sentence beyond the MPO section.
+- License ambiguity: front matter (apache-2.0, license_name qwen) vs README body / code headers (MIT + Apache-2.0 for the Qwen2.5 component); which governs is not resolved by local files.
+- V2PE: described in the README but absent from the shipped inference code; whether the released weights expect fractional visual position increments at inference is not stated locally.
+- Whether the remote code (written for transformers 4.48.3; requirement >=4.37.2) loads under transformers 5.24.1: read from source only, not tested (no model-dir code imported, no weights loaded).
+- PIL resample filter used by image.resize(...) in dynamic_preprocess is the PIL default (not specified in the README code).
+- vision_config strings (intern_vit_6b, InternViT-6B-448px-V1-5) contradict the 1024-dim / 24-layer numbers; the encoder identity InternViT-300M-448px-V2_5 comes from the README table only.
+
 ### InternVL3_5-8B
 
 - **hf_repo**: OpenGVLab/InternVL3_5-8B
@@ -258,6 +420,160 @@
 - Whether the remote code loads and returns attentions under the transformers versions installed locally (5.x): not tested - no weights were loaded and no code from the model directory was imported.
 - Whether the shipped HF-native processor files (InternVLProcessor) produce inputs compatible with the remote-code InternVLChatModel: not documented in the README, not tested.
 - PIL resample filter used by image.resize in dynamic_preprocess: the README code passes no resample argument, so it is whatever the installed Pillow defaults to (not stated in the card).
+
+### LLaVA-1.5-13B
+
+- **hf_repo**: llava-hf/llava-1.5-13b-hf
+- **revision**: 5dda2880bda009266dda7c4baff660b95ca64540
+- **revision_source**: configs/downloads/models.yaml (repo / sha / license pinned from the HF API on 2026-11-25; used by the download script, which also wrote SHA256SUMS in the model dir)
+- **size_bytes**: 26707298722
+- **license**: llama2
+- **license_source**: README.md front matter (`license: llama2`, line 6); same tag in configs/downloads/models.yaml (HF API). README body, section "## License" (last two lines): "Llama 2 is licensed under the LLAMA 2 Community License, Copyright (c) Meta Platforms, Inc. All Rights Reserved."
+- **role**: general
+- **base_model**: —
+
+**loader**
+
+- model_class: LlavaForConditionalGeneration
+- processor_class: LlavaProcessor
+- trust_remote_code: False
+- config_transformers_version: 4.36.0.dev0
+- notes: - Native transformers classes, no .py files in the model dir. config.json architectures = LlavaForConditionalGeneration; in transformers 5.24.1 model_type llava maps to LlavaForConditionalGeneration (MODEL_FOR_IMAGE_TEXT_TO_TEXT_MAPPING_NAMES, models/auto/modeling_auto.py:1245) and LlavaProcessor (PROCESSOR_MAPPING_NAMES, models/auto/auto_mappings.py:1311). - Image processor: preprocessor_config.json names image_processor_type CLIPImageProcessor (processor_class LlavaProcessor). The transformers 5.24.1 default for model_type llava is LlavaImageProcessor (auto_mappings.py:1466), which has an extra do_pad / pad_to_square option defaulting to False (models/llava/image_processing_llava.py:45, 120-123). Which class AutoProcessor instantiates from this file was not tested; with the shipped settings both do resize + center crop and no padding. - Tokenizer: tokenizer_class LlamaTokenizer, padding_side left, <image> id 32000, <pad> id 32001, add_bos_token true. - README requirements: "First, make sure to have `transformers >= 4.35.3`"; "From transformers>=v4.48, you can also pass image url or local path to the conversation history". README loads with torch_dtype=torch.float16, low_cpu_mem_…
+
+**language_model**
+
+- model_type: llama
+- num_layers: 40
+- hidden_size: 5120
+- num_attention_heads: 40
+- num_key_value_heads: 40
+- head_dim: 128
+- layer_mixers（逐层，0 起）: `F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F`  （F=标准自注意力，L=线性注意力/Gated DeltaNet，S=滑动窗口自注意力）
+- mixer_details: All 40 layers are standard causal full self-attention, plain multi-head (num_key_value_heads == num_attention_heads == 40, no KV sharing). The Llama architecture has no sliding-window mechanism (no sliding_window / layer_types in models/llama/configuration_llama.py or modeling_llama.py). config.json text_config states hidden_size 5120, intermediate_size 13824, num_attention_heads 40, num_hidden_layers 40, num_key_value_heads 40, max_position_embeddings 4096, vocab_size 32064; _name_or_path is "meta-llama/Llama-2-13b-hf" (not a Vicuna id, unlike the 7B config which says lmsys/vicuna-7b-v1.5). Cross-checked against the safetensors headers: 40 language_model layers, q_proj/k_proj/o_proj weight shape [5120, 5120], embed_tokens [32064, 5120]. head_dim is computed: LlamaConfig.__post_init__ sets head_dim = hidden_size // num_attention_heads = 5120 // 40 = 128 (configuration_llama.py:85-89). Position encoding: RoPE (LlamaConfig defaults; no rope settings in config.json). max_position_embeddings 4096.
+- mlp_type: dense (LlamaForCausalLM; intermediate_size 13824; hidden_act silu = LlamaConfig default)
+- head_level_analysis: All 40 layers have the same structure (40 heads x 128 dims, independent K/V per head), so head-level analysis / attention masking applies to every layer. Attention weights require attn_implementation="eager" (config.output_attentions raises otherwise, configuration_utils.py:582-592). The CLIP vision tower is also a standard transformers module (attention weights available the same way). Not run here.
+
+**vision_encoder**
+
+- type: CLIP vision transformer (vision_config.model_type clip_vision_model -> CLIPVisionModel via AutoModel.from_config, modeling_llava.py:111); 16 heads, intermediate_size 4096, projection_dim 768. The model card does not name the CLIP checkpoint.
+- num_layers: 24
+- hidden_size: 1024
+- patch_size: 14
+- resolution_strategy: fixed 336x336 (vision_config.image_size 336) -> 24x24 = 576 patches + 1 CLS (position_embedding weight shape [577, 1024] in the safetensors header). Preprocessing per preprocessor_config.json: do_convert_rgb, do_resize with size {shortest_edge: 336} (aspect ratio preserved, resample 3 = bicubic), do_center_crop with crop_size 336x336, rescale 1/255, normalize with CLIP mean [0.48145466, 0.4578275, 0.40821073] / std [0.26862954, 0.26130258, 0.27577711]. There is NO pad-to-square: the file has no do_pad key, so for non-square images the parts outside the central square along the longer side are cropped away.
+- position_encoding: Learned absolute position embedding, nn.Embedding(577, 1024) = CLS + 24x24 (models/clip/modeling_clip.py CLIPVisionEmbeddings, lines 146-159; used as-is at 336x336, lines 176-177). No rotary / relative encoding.
+
+**connector**
+
+- type: LlavaMultiModalProjector: Linear(1024, 5120) -> GELU -> Linear(5120, 5120) (modeling_llava.py:66-85; projector_hidden_act gelu; shapes confirmed in the safetensors header). Input features: vision tower hidden_states[vision_feature_layer = -2] (penultimate entry of the CLIP hidden-states tuple, so the last CLIP layer's output is not used), CLS removed because vision_feature_select_strategy = "default" (modeling_llava.py:141-144).
+- token_merge: none (1 patch -> 1 token)
+- tokens_per_image: 576, fixed. Processor: (336 // 14) * (336 // 14) + num_additional_image_tokens (1, processor_config.json) - 1 (strategy "default") = 576 (processing_llava.py:63-69). LlavaConfig.image_seq_length default is also 576. The single '<image>' in the prompt is expanded to 576 <image> tokens (id 32000); no start/end or newline tokens are added by the processor (the chat template puts a text '\n' after it).
+- token_to_region: Raster (row-major) order of the 24x24 patch grid of the 336x336 preprocessed crop (Conv2d patch embedding flattened with flatten(2), CLS at index 0 removed). Image token k (0..575): row r = k // 24, col c = k % 24, covering crop pixels x in [14c, 14c+14), y in [14r, 14r+14). Crop -> original image: scale s = 336 / min(H, W) (shortest edge resized to 336), then a centered 336x336 crop; original coords ~ ((x + off_x) / s, (y + off_y) / s) with off = (resized_long_side - 336) / 2 on the longer axis and 0 on the shorter axis. Exact rounding of the resized size / crop offset follows the torchvision backend and was not traced. Image features are written into the <image> positions by masked_scatter (modeling_llava.py:230-236).
+
+**multi_view**
+
+- default: Single view: one 336x336 image -> 576 tokens. No tiling, no thumbnail, no anyres (that is LLaVA-NeXT / OneVision, not this model).
+- force_single_view: Nothing to disable. Note the default view is a CENTER CROP of the short-side-resized image (preprocessor_config.json: do_resize shortest_edge 336 + do_center_crop 336x336), not a padded full image. To make the whole image visible, pre-process it yourself to a square before the processor (e.g. pad to square or resize to 336x336); the transformers LlavaImageProcessor has a do_pad option (pad to square with the mean colour, image_processing_llava.py:55-95, 120-123) but it is not enabled by the shipped config and the model card does not mention it.
+
+**bbox**
+
+- official_prompt: —
+- output_format: —
+- coord_range: —
+- coord_order: —
+- source: Not stated. README.md contains no grounding / bounding-box prompt, example or coordinate convention (the card covers only the chat prompt format and loading). Web-sourced conventions are recorded separately in configs/bbox_conventions.yaml and were not copied here.
+
+**thinking**
+
+- has_thinking_mode: False
+- how_to_disable: Nothing to disable: the chat template (chat_template.json) has no thinking variable or <think> text; added_tokens.json contains only <image> and <pad>.
+- source: chat_template.json line 2; added_tokens.json; README.md (no thinking mode mentioned)
+
+**查不到 / 未确认**
+
+- env: left null by instruction.
+- LLM identity: text_config._name_or_path says meta-llama/Llama-2-13b-hf while the card says "fine-tuning LLaMA/Vicuna" and points to the original liuhaotian/llava-v1.5-13b card; the exact base LLM is not stated in a local file.
+- bbox.*: no grounding prompt or coordinate convention in the model card.
+- CLIP checkpoint identity (which pretrained CLIP the tower came from): not named in the card or config; only the dimensions are known.
+- Exact layer index selected by vision_feature_layer = -2 under the transformers 5.24.1 hidden-state capture mechanism (whether hidden_states includes the embedding output) was not traced; it is the penultimate entry of the tuple.
+- Which image-processor class (CLIPImageProcessor named in the file vs LlavaImageProcessor default for model_type llava) is instantiated by AutoProcessor in 5.24.1, and exact resize/crop rounding: not tested.
+- Loading under transformers 5.24.1 (old checkpoint key layout, config written by 4.36.0.dev0) not tested (no weights loaded).
+
+### LLaVA-1.5-7B
+
+- **hf_repo**: llava-hf/llava-1.5-7b-hf
+- **revision**: b234b804b114d9e37bb655e11cbbb5f5e971b7a9
+- **revision_source**: configs/downloads/models.yaml (repo / sha / license pinned from the HF API on 2026-11-25; used by the download script, which also wrote SHA256SUMS in the model dir)
+- **size_bytes**: 14131147625
+- **license**: llama2
+- **license_source**: README.md front matter (`license: llama2`, line 8); same tag in configs/downloads/models.yaml (HF API). README body, section "## License" (last two lines): "Llama 2 is licensed under the LLAMA 2 Community License, Copyright (c) Meta Platforms, Inc. All Rights Reserved."
+- **role**: general
+- **base_model**: —
+
+**loader**
+
+- model_class: LlavaForConditionalGeneration
+- processor_class: LlavaProcessor
+- trust_remote_code: False
+- config_transformers_version: 4.36.0.dev0
+- notes: - Native transformers classes, no .py files in the model dir. config.json architectures = LlavaForConditionalGeneration; in transformers 5.24.1 model_type llava maps to LlavaForConditionalGeneration (MODEL_FOR_IMAGE_TEXT_TO_TEXT_MAPPING_NAMES, models/auto/modeling_auto.py:1245) and LlavaProcessor (PROCESSOR_MAPPING_NAMES, models/auto/auto_mappings.py:1311). - Image processor: preprocessor_config.json names image_processor_type CLIPImageProcessor (processor_class LlavaProcessor). The transformers 5.24.1 default for model_type llava is LlavaImageProcessor (auto_mappings.py:1466), which has an extra do_pad / pad_to_square option defaulting to False (models/llava/image_processing_llava.py:45, 120-123). Which class AutoProcessor instantiates from this file was not tested; with the shipped settings both do resize + center crop and no padding. - Tokenizer: tokenizer_class LlamaTokenizer, padding_side left, <image> id 32000, <pad> id 32001, add_bos_token true. - README requirements: "First, make sure to have `transformers >= 4.35.3`"; "From transformers>=v4.48, you can also pass image url or local path to the conversation history". README loads with torch_dtype=torch.float16, low_cpu_mem_…
+
+**language_model**
+
+- model_type: llama
+- num_layers: 32
+- hidden_size: 4096
+- num_attention_heads: 32
+- num_key_value_heads: 32
+- head_dim: 128
+- layer_mixers（逐层，0 起）: `F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F`  （F=标准自注意力，L=线性注意力/Gated DeltaNet，S=滑动窗口自注意力）
+- mixer_details: All 32 layers are standard causal full self-attention, plain multi-head (num_key_value_heads == num_attention_heads == 32, no KV sharing). The Llama architecture has no sliding-window mechanism (no sliding_window / layer_types in models/llama/configuration_llama.py or modeling_llama.py). config.json text_config contains ONLY _name_or_path "lmsys/vicuna-7b-v1.5", architectures [LlamaForCausalLM], max_position_embeddings 4096, model_type llama, rms_norm_eps 1e-05, torch_dtype, vocab_size 32064. num_hidden_layers / hidden_size / num_attention_heads / num_key_value_heads / intermediate_size are NOT in the file; they come from the transformers LlamaConfig class defaults (hidden_size 4096, intermediate_size 11008, num_hidden_layers 32, num_attention_heads 32, num_key_value_heads None -> = num_attention_heads; models/llama/configuration_llama.py:63-89). Cross-checked against the safetensors headers: 32 language_model layers, q_proj/k_proj/o_proj weight shape [4096, 4096], embed_tokens [32064, 4096]. The head count (32) cannot be read from tensor shapes; it rests on the LlamaConfig default. head_dim is computed: LlamaConfig.__post_init__ sets head_dim = hidden_size // num_attention_heads …
+- mlp_type: dense (LlamaForCausalLM; intermediate_size 11008 from the LlamaConfig default, not in config.json; hidden_act silu = LlamaConfig default)
+- head_level_analysis: All 32 layers have the same structure (32 heads x 128 dims, independent K/V per head), so head-level analysis / attention masking applies to every layer. Attention weights require attn_implementation="eager" (config.output_attentions raises otherwise, configuration_utils.py:582-592). The CLIP vision tower is also a standard transformers module (attention weights available the same way). Not run here.
+
+**vision_encoder**
+
+- type: CLIP vision transformer (vision_config.model_type clip_vision_model -> CLIPVisionModel via AutoModel.from_config, modeling_llava.py:111); 16 heads, intermediate_size 4096, projection_dim 768. The model card does not name the CLIP checkpoint.
+- num_layers: 24
+- hidden_size: 1024
+- patch_size: 14
+- resolution_strategy: fixed 336x336 (vision_config.image_size 336) -> 24x24 = 576 patches + 1 CLS (position_embedding weight shape [577, 1024] in the safetensors header). Preprocessing per preprocessor_config.json: do_convert_rgb, do_resize with size {shortest_edge: 336} (aspect ratio preserved, resample 3 = bicubic), do_center_crop with crop_size 336x336, rescale 1/255, normalize with CLIP mean [0.48145466, 0.4578275, 0.40821073] / std [0.26862954, 0.26130258, 0.27577711]. There is NO pad-to-square: the file has no do_pad key, so for non-square images the parts outside the central square along the longer side are cropped away.
+- position_encoding: Learned absolute position embedding, nn.Embedding(577, 1024) = CLS + 24x24 (models/clip/modeling_clip.py CLIPVisionEmbeddings, lines 146-159; used as-is at 336x336, lines 176-177). No rotary / relative encoding.
+
+**connector**
+
+- type: LlavaMultiModalProjector: Linear(1024, 4096) -> GELU -> Linear(4096, 4096) (modeling_llava.py:66-85; projector_hidden_act gelu; shapes confirmed in the safetensors header). Input features: vision tower hidden_states[vision_feature_layer = -2] (penultimate entry of the CLIP hidden-states tuple, so the last CLIP layer's output is not used), CLS removed because vision_feature_select_strategy = "default" (modeling_llava.py:141-144).
+- token_merge: none (1 patch -> 1 token)
+- tokens_per_image: 576, fixed. Processor: (336 // 14) * (336 // 14) + num_additional_image_tokens (1, processor_config.json) - 1 (strategy "default") = 576 (processing_llava.py:63-69). LlavaConfig.image_seq_length default is also 576. The single '<image>' in the prompt is expanded to 576 <image> tokens (id 32000); no start/end or newline tokens are added by the processor (the chat template puts a text '\n' after it).
+- token_to_region: Raster (row-major) order of the 24x24 patch grid of the 336x336 preprocessed crop (Conv2d patch embedding flattened with flatten(2), CLS at index 0 removed). Image token k (0..575): row r = k // 24, col c = k % 24, covering crop pixels x in [14c, 14c+14), y in [14r, 14r+14). Crop -> original image: scale s = 336 / min(H, W) (shortest edge resized to 336), then a centered 336x336 crop; original coords ~ ((x + off_x) / s, (y + off_y) / s) with off = (resized_long_side - 336) / 2 on the longer axis and 0 on the shorter axis. Exact rounding of the resized size / crop offset follows the torchvision backend and was not traced. Image features are written into the <image> positions by masked_scatter (modeling_llava.py:230-236).
+
+**multi_view**
+
+- default: Single view: one 336x336 image -> 576 tokens. No tiling, no thumbnail, no anyres (that is LLaVA-NeXT / OneVision, not this model).
+- force_single_view: Nothing to disable. Note the default view is a CENTER CROP of the short-side-resized image (preprocessor_config.json: do_resize shortest_edge 336 + do_center_crop 336x336), not a padded full image. To make the whole image visible, pre-process it yourself to a square before the processor (e.g. pad to square or resize to 336x336); the transformers LlavaImageProcessor has a do_pad option (pad to square with the mean colour, image_processing_llava.py:55-95, 120-123) but it is not enabled by the shipped config and the model card does not mention it.
+
+**bbox**
+
+- official_prompt: —
+- output_format: —
+- coord_range: —
+- coord_order: —
+- source: Not stated. README.md contains no grounding / bounding-box prompt, example or coordinate convention (the card covers only the chat prompt format and loading). Web-sourced conventions are recorded separately in configs/bbox_conventions.yaml and were not copied here.
+
+**thinking**
+
+- has_thinking_mode: False
+- how_to_disable: Nothing to disable: the chat template (chat_template.json / chat_template.jinja) has no thinking variable or <think> text; added_tokens.json contains only <image> and <pad>.
+- source: chat_template.json line 2; added_tokens.json; README.md (no thinking mode mentioned)
+
+**查不到 / 未确认**
+
+- env: left null by instruction.
+- language_model num_layers / hidden_size / heads / kv heads / intermediate_size are not written in config.json text_config; values are the transformers LlamaConfig defaults, with layers and hidden size cross-checked against safetensors headers. The head count (32) has no local confirmation other than the class default.
+- bbox.*: no grounding prompt or coordinate convention in the model card.
+- CLIP checkpoint identity (which pretrained CLIP the tower came from): not named in the card or config; only the dimensions are known.
+- Exact layer index selected by vision_feature_layer = -2 under the transformers 5.24.1 hidden-state capture mechanism (whether hidden_states includes the embedding output) was not traced; it is the penultimate entry of the tuple.
+- Which image-processor class (CLIPImageProcessor named in the file vs LlavaImageProcessor default for model_type llava) is instantiated by AutoProcessor in 5.24.1, and exact resize/crop rounding: not tested.
+- Loading under transformers 5.24.1 (old checkpoint key layout, config written by 4.36.0.dev0) not tested (no weights loaded).
 
 ### LLaVA-OneVision-7B
 
@@ -410,6 +726,157 @@
 - revision 未出现在 MANIFEST.md 或下载日志中，只能取自 .cache 的下载元数据。
 - vision encoder 是 SigLIP 还是 SigLIP2：README 说 SigLIP2-400M，config/代码标的是 siglip（so400m-14-980 navit 改写），以本地代码结构为准，权重来源无法从本地文件确认。
 - 每视图 patch 数（约 1024）与 16 倍压缩率是按 find_best_resize 公式推算，未用真实图像验证。
+
+### Qwen2.5-VL-7B-Instruct
+
+- **hf_repo**: Qwen/Qwen2.5-VL-7B-Instruct
+- **revision**: cc594898137f460bfe9f0759e9844b3ce807cfb5
+- **revision_source**: configs/downloads/models.yaml (repo / sha / license pinned from the HF API on 2026-11-25; used by the download script, which also wrote SHA256SUMS in the model dir)
+- **size_bytes**: 16595981281
+- **license**: apache-2.0
+- **license_source**: README.md front matter line 3 (`license: apache-2.0`); same value in configs/downloads/models.yaml (HF API)
+- **role**: general
+- **base_model**: —
+
+**loader**
+
+- model_class: Qwen2_5_VLForConditionalGeneration
+- processor_class: Qwen2_5_VLProcessor
+- trust_remote_code: False
+- config_transformers_version: 4.41.2
+- notes: - Native transformers classes, no .py files in the model dir. config.json architectures = Qwen2_5_VLForConditionalGeneration; in transformers 5.24.1 model_type qwen2_5_vl maps to Qwen2_5_VLForConditionalGeneration (MODEL_FOR_IMAGE_TEXT_TO_TEXT_MAPPING_NAMES, models/auto/modeling_auto.py:1271) and Qwen2_5_VLProcessor (PROCESSOR_MAPPING_NAMES, models/auto/auto_mappings.py:1359); image processor Qwen2VLImageProcessor (models/auto/image_processing_auto.py:146; preprocessor_config.json names the same class). - generation_config.json records transformers_version 4.37.0 (config.json: 4.41.2). - README requirement (lines 103-110): no version number; "we advise you to build from source with command: pip install git+https://github.com/huggingface/transformers accelerate", otherwise "KeyError: 'qwen2_5_vl'". README also uses `qwen-vl-utils[decord]==0.0.8` (process_vision_info) in its examples; that package is not in the model dir and was not read. - config.json is the old flat layout (LM fields at top level, no text_config); Qwen2_5_VLConfig.__post_init__ routes them into Qwen2_5_VLTextConfig (configuration_qwen2_5_vl.py:192-200) and rewrites the vision model_type (202-204). - torch_dtype bf…
+
+**language_model**
+
+- model_type: qwen2_5_vl_text
+- num_layers: 28
+- hidden_size: 3584
+- num_attention_heads: 28
+- num_key_value_heads: 4
+- head_dim: 128
+- layer_mixers（逐层，0 起）: `F F F F F F F F F F F F F F F F F F F F F F F F F F F F`  （F=标准自注意力，L=线性注意力/Gated DeltaNet，S=滑动窗口自注意力）
+- mixer_details: All 28 layers are plain causal self-attention with grouped-query attention (28 query heads, 4 KV heads; each KV head shared by 7 query heads; k_proj weight shape [512, 3584] in the safetensors header). Sliding window is inactive: config.json has sliding_window=32768, max_window_layers=28, use_sliding_window=false. Qwen2_5_VLTextConfig.__post_init__ sets sliding_window=None when use_sliding_window is false and builds layer_types as "sliding_attention" only if sliding_window is not None and i >= max_window_layers (configuration_qwen2_5_vl.py:129-142), so all 28 entries are "full_attention" (and i >= 28 never holds for 28 layers anyway). head_dim is computed, not stated: hidden_size // num_heads = 3584 // 28 = 128 (modeling_qwen2_5_vl.py:612). top-level model_type in config.json is qwen2_5_vl; qwen2_5_vl_text is the transformers text sub-config type. LM position encoding: multimodal RoPE, rope_scaling {type: mrope, mrope_section: [16, 24, 24]}, rope_theta 1e6. max_position_embeddings 128000.
+- mlp_type: dense (gate_proj/up_proj/down_proj, hidden_act silu, intermediate_size 18944)
+- head_level_analysis: All 28 layers share the same standard structure (q_proj -> 28 heads x 128 dims; o_proj takes the concatenated heads, modeling_qwen2_5_vl.py:625-628), so head-level analysis / attention masking applies to every layer. K/V are shared within groups of 7 query heads. Attention weights are produced by eager_attention_forward (modeling_qwen2_5_vl.py:234-256); setting config.output_attentions with a non-eager attn implementation raises (configuration_utils.py:582-592). Load with attn_implementation="eager". Not run here.
+
+**vision_encoder**
+
+- type: Qwen2.5-VL ViT (Qwen2_5_VisionTransformerPretrainedModel) with window attention; README:46 "window attention ... SwiGLU and RMSNorm"
+- num_layers: 32
+- hidden_size: 1280
+- patch_size: 14
+- resolution_strategy: dynamic (native aspect ratio, one grid per image). Qwen2VLImageProcessor.smart_resize (image_processing_qwen2_vl.py:63-89) with factor = patch 14 x merge 2 = 28: round H and W to multiples of 28; if H*W > max_pixels scale down (floor to multiple of 28); if H*W < min_pixels scale up (ceil); aspect ratio > 200 raises. Shipped preprocessor_config.json: min_pixels=3136 (56x56 -> 4 tokens), max_pixels=12845056 (= 16384 x 28 x 28 -> 16384 tokens). Resample bicubic (class default), CLIP mean/std. README:160 "The default range for the number of visual tokens per image in the model is 4-16384"; README:161-164 / 427-435 suggest e.g. min_pixels = 256*28*28, max_pixels = 1280*28*28 (token range 256-1280) "to balance performance and cost".
+- position_encoding: 2D rotary position embedding on (row, col) patch indices in every vision block (rotary_pos_emb, modeling_qwen2_5_vl.py:410, 461; position ids from vision_utils.get_vision_position_ids). No learned absolute position table. Window attention: window_size 112 px (= 8x8 patches = 4x4 merged cells); blocks 7, 15, 23, 31 (fullatt_block_indexes) attend over the whole image, the other 28 of 32 blocks attend only inside windows (modeling_qwen2_5_vl.py:466-472). 16 heads. temporal_patch_size 2: a still image is duplicated to 2 frames and embedded by a Conv3d (image_processing_qwen2_vl.py:201-209, modeling_qwen2_5_vl.py:113-114).
+
+**connector**
+
+- type: Qwen2_5_VLPatchMerger (inside the vision tower, visual.merger): RMSNorm(1280), concatenate each 2x2 patch group (4 x 1280 = 5120), MLP Linear(5120,5120) -> GELU -> Linear(5120,3584) (modeling_qwen2_5_vl.py:185-198; shapes confirmed in the safetensors header)
+- token_merge: 2x2 spatial merge (4 patches -> 1 token), spatial_merge_size 2
+- tokens_per_image: (H'/28) * (W'/28), where (H', W') is the smart_resize output. Processor: image_grid_thw.prod() // merge_size**2 with grid_t = 1 for a still image (processing_qwen2_5_vl.py:51-54). Placeholders are <|image_pad|> (id 151655) wrapped as <|vision_start|><|image_pad|>...<|vision_end|> by the chat template. With shipped limits: 4 to 16384 tokens per image.
+- token_to_region: Tokens reaching the LM are in raster (row-major) order of merged 28x28 px cells. Details: the image processor orders patches as (merged_row, merged_col, 2x2 inside the cell) (image_processing_qwen2_vl.py:187-199); the vision tower permutes merged cells into window order for window attention (permute_input_for_window_attn, modeling_qwen2_5_vl.py:422-426, 459); the merger fuses each consecutive group of 4 patches; then merged_hidden_states[argsort(window_index)] restores the original order (lines 482-484) before masked_scatter into the <|image_pad|> positions (line 1222). Rule: with gw = W'/28, image token k (0-based) is row r = k // gw, col c = k % gw and covers resized-image pixels x in [28c, 28c+28), y in [28r, 28r+28); in original-image pixels multiply x by W/W' and y by H/H'. CAVEAT for ViT internals: pre-merger hidden states (last_hidden_state / per-block outputs) stay in WINDOW order; only the merged pooler_output is un-permuted (lines 486-489).
+
+**multi_view**
+
+- default: Single view. No tiling, no thumbnail, no newline/separator tokens; one native-resolution grid per image.
+- force_single_view: Nothing to disable. To fix the token count: (a) processor/image-processor init kwargs min_pixels / max_pixels (README:162-164, 430-435), which transformers 5.24.1 maps to size shortest_edge / longest_edge (image_processing_qwen2_vl.py:109-119; passing them at call time emits a deprecation warning, lines 128-133); or (b) pre-resize the image so H and W are multiples of 28 inside the pixel range. README:437-441 also describes per-image `resized_height` / `resized_width` ("rounded to the nearest multiple of 28") and per-image min_pixels/max_pixels in the message dict; these are handled by qwen_vl_utils.process_vision_info, not by the transformers processor.
+
+**bbox**
+
+- official_prompt: —
+- output_format: —
+- coord_range: —
+- coord_order: —
+- source: Not stated in this model card. The only grounding statement is README:28: "Capable of visual localization in different formats: Qwen2.5-VL can accurately localize objects in an image by generating bounding boxes or points, and it can provide stable JSON outputs for coordinates and attributes." No prompt, no output example, no coordinate range/order. README:495 only warns that YaRN "has a significant impact on the performance of temporal and spatial localization tasks". The tokenizer defines <|object_ref_start|> <|object_ref_end|> <|box_start|> <|box_end|> (tokenizer_config.json lines 29-53), vocabulary only. Web-sourced conventions are recorded separately in configs/bbox_conventions.yaml and were not copied here.
+
+**thinking**
+
+- has_thinking_mode: False
+- how_to_disable: Nothing to disable. chat_template.json has no enable_thinking variable and no <think> text; it only inserts the default system prompt "You are a helpful assistant." when the first message is not a system message.
+- source: chat_template.json line 2; README.md (no thinking mode mentioned); tokenizer_config.json (grep for "think": no match)
+
+**查不到 / 未确认**
+
+- env: left null by instruction.
+- bbox.official_prompt / output_format / coord_range / coord_order: the model card gives no grounding prompt, example or coordinate convention (only the capability sentence at README:28).
+- Minimum transformers version: the card gives no number (only 'build from source').
+- Loading / generation under transformers 5.24.1 not tested (login node, no weights loaded); statements about attention-weight availability are from source reading only.
+- qwen_vl_utils behaviour (resized_height/resized_width, default pixel limits) is described in the README but the package source was not read.
+
+### Qwen3-VL-8B-Instruct
+
+- **hf_repo**: Qwen/Qwen3-VL-8B-Instruct
+- **revision**: 0c351dd01ed87e9c1b53cbc748cba10e6187ff3b
+- **revision_source**: configs/downloads/models.yaml (repo / sha / license pinned from the HF API on 2026-11-25; used by the download script, which also wrote SHA256SUMS in the model dir)
+- **size_bytes**: 17545915883
+- **license**: apache-2.0
+- **license_source**: README.md front matter line 2 (`license: apache-2.0`); same value in configs/downloads/models.yaml (HF API)
+- **role**: general
+- **base_model**: —
+
+**loader**
+
+- model_class: Qwen3VLForConditionalGeneration
+- processor_class: Qwen3VLProcessor
+- trust_remote_code: False
+- config_transformers_version: 4.57.0.dev0
+- notes: - Native transformers classes, no .py files in the model dir. config.json architectures = Qwen3VLForConditionalGeneration; in transformers 5.24.1 model_type qwen3_vl maps to Qwen3VLForConditionalGeneration (MODEL_FOR_IMAGE_TEXT_TO_TEXT_MAPPING_NAMES, models/auto/modeling_auto.py:1276) and Qwen3VLProcessor (PROCESSOR_MAPPING_NAMES, models/auto/auto_mappings.py:1364). - preprocessor_config.json names image_processor_type "Qwen2VLImageProcessorFast"; transformers 5.24.1 maps qwen3_vl to Qwen2VLImageProcessor / Qwen2VLImageProcessorPil (models/auto/image_processing_auto.py:150). Whether the legacy "...Fast" name resolves cleanly in 5.24.1 was not tested. video_preprocessor_config.json: Qwen3VLVideoProcessor. - generation_config.json records transformers_version 4.56.0 (config.json: 4.57.0.dev0). - README requirement (lines 71-75): "pip install git+https://github.com/huggingface/transformers" / "# pip install transformers==4.57.0 # currently, V4.57.0 is not released". The README example needs no qwen_vl_utils (processor.apply_chat_template with tokenize=True). - text_config dtype bfloat16. generation_config.json ships do_sample=true, temperature=0.7, top_p=0.8, top_k=20, repetition_pen…
+
+**language_model**
+
+- model_type: qwen3_vl_text
+- num_layers: 36
+- hidden_size: 4096
+- num_attention_heads: 32
+- num_key_value_heads: 8
+- head_dim: 128
+- layer_mixers（逐层，0 起）: `F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F F`  （F=标准自注意力，L=线性注意力/Gated DeltaNet，S=滑动窗口自注意力）
+- mixer_details: All 36 layers are plain causal self-attention with grouped-query attention (32 query heads, 8 KV heads; each KV head shared by 4 query heads; k_proj weight shape [1024, 4096]). head_dim 128 is stated in config.json text_config. No sliding window exists for this architecture: Qwen3VLTextConfig has no sliding_window / use_sliding_window / layer_types fields (configuration_qwen3_vl.py:85-106) and config.json has none; Qwen3VLTextModel.forward builds a single causal mask with create_causal_mask and passes it to every layer (modeling_qwen3_vl.py:801-823). QK-norm: q and k are RMS-normalised per head (q_norm / k_norm over head_dim) before RoPE (modeling_qwen3_vl.py:496-518). Position encoding: interleaved multimodal RoPE, rope_scaling {mrope_interleaved: true, mrope_section: [24, 20, 20], rope_type: default}, rope_theta 5000000. max_position_embeddings 262144. DeepStack makes the first 3 LM layers non-standard for patching purposes (the attention mixer itself is unchanged) - see connector.type.
+- mlp_type: dense (Qwen3VLTextMLP: gate_proj/up_proj/down_proj, hidden_act silu, intermediate_size 12288; model_type is qwen3_vl, not qwen3_vl_moe)
+- head_level_analysis: All 36 layers share the same attention structure (q_proj -> 32 heads x 128 dims, o_proj over concatenated heads, modeling_qwen3_vl.py:484-495), so head-level analysis / attention masking is structurally possible in every layer. K/V shared within groups of 4 query heads; attention logits use RMS-normalised q/k. DeepStack caveat (important for activation patching): after LM layers 0, 1 and 2, extra visual features are ADDED to the hidden states at the image-token positions (modeling_qwen3_vl.py:826-832, 841-849). So the residual stream at image positions entering layers 1-3 is not only the output of the previous layer; patching/ablating the input embeddings or layer-0..2 outputs at image positions does not remove visual information, and a hook on a decoder layer's output sees the state BEFORE the DeepStack addition (the addition happens in the Qwen3VLTextModel loop, outside the layer module). Attention weights require the eager implementation (eager_attention_forward, modeling_qwen3_vl.py:220-242; configuration_utils.py:582-592). Not run here.
+
+**vision_encoder**
+
+- type: Qwen3VLVisionModel (ViT; hidden_act gelu_pytorch_tanh, intermediate_size 4304, 16 heads). The model card does not name the vision encoder family.
+- num_layers: 27
+- hidden_size: 1152
+- patch_size: 16
+- resolution_strategy: dynamic (native aspect ratio, one grid per image). Same Qwen2VLImageProcessor.smart_resize as Qwen2.5-VL but factor = patch 16 x merge 2 = 32 (image_processing_qwen2_vl.py:63-89, 233-239). Shipped preprocessor_config.json: size.shortest_edge=65536 (min pixels = 256x256 -> 64 tokens), size.longest_edge=16777216 (max pixels = 16384 x 32 x 32 -> 16384 tokens). image_mean = image_std = [0.5, 0.5, 0.5] (not CLIP statistics). Resample bicubic (class default). The model card states no recommended pixel range. (video_preprocessor_config.json: shortest_edge 4096, longest_edge 25165824.)
+- position_encoding: Two mechanisms: (1) learned absolute table pos_embed = nn.Embedding(2304, 1152), i.e. a 48x48 grid, bilinearly interpolated (align_corners=True) to each image's patch grid and added after patch embedding (modeling_qwen3_vl.py:639-643, 683-696); (2) 2D rotary embedding on (row, col) inside every block (lines 645, 697, 708). No window attention: every block attends over the whole image (cu_seqlens per image, lines 703-710). temporal_patch_size 2 (still image duplicated to 2 frames, Conv3d patch embed, lines 99-107).
+
+**connector**
+
+- type: Qwen3VLVisionPatchMerger (visual.merger): LayerNorm(1152) per patch, concatenate each 2x2 patch group (4 x 1152 = 4608), Linear(4608,4608) -> GELU -> Linear(4608,4096) (modeling_qwen3_vl.py:171-184, 648-651). Its output replaces the <|image_pad|> input embeddings (masked_scatter, line 1186). PLUS DeepStack (README:49 "DeepStack: Fuses multi-level ViT features to capture fine-grained details and sharpen image-text alignment"): config.json vision_config.deepstack_visual_indexes = [8, 16, 24]. These are VISION block indices (0-based): after ViT blocks 8, 16 and 24 the hidden states go through a separate merger each (deepstack_merger_list[0..2], use_postshuffle_norm=True: concatenate 2x2 -> LayerNorm(4608) -> Linear -> GELU -> Linear(4608,4096)) (modeling_qwen3_vl.py:653-662, 711-715). The three feature sets are then added to the LM hidden states at the visual-token positions after LM decoder layers 0, 1 and 2 respectively: `if deepstack_visual_embeds is not None and layer_idx in range(len(deepstack_visual_embeds)): hidden_states = self._deepstack_process(...)` with `hidden_states[visual_pos_masks, :] + visual_embeds` (modeling_qwen3_vl.py:826-832, 841-849; wiring at 1197-1242). I.e. …
+- token_merge: 2x2 spatial merge (4 patches -> 1 token), spatial_merge_size 2; same merge for the 3 DeepStack streams (so they align 1:1 with the image tokens)
+- tokens_per_image: (H'/32) * (W'/32), where (H', W') is the smart_resize output (multiples of 32). Processor: image_grid_thw.prod() // merge_size**2 (processing_qwen3_vl.py:70-73). Placeholders are <|image_pad|> (id 151655) wrapped as <|vision_start|>...<|vision_end|> by the chat template. With shipped limits: 64 to 16384 tokens per image.
+- token_to_region: Tokens are in raster (row-major) order of merged 32x32 px cells. The image processor emits patches in (merged_row, merged_col, 2x2 inside the cell) order (image_processing_qwen2_vl.py:187-199); the Qwen3 vision tower applies no permutation (no window reordering), and the merger fuses each consecutive group of 4 patches (x.view(-1, 4608)). Rule: with gw = W'/32, image token k (0-based) is row r = k // gw, col c = k % gw and covers resized-image pixels x in [32c, 32c+32), y in [32r, 32r+32); in original-image pixels multiply x by W/W' and y by H/H'. The DeepStack features use the same order, so the feature added at image position k after LM layers 0-2 describes the same 32x32 px cell. ViT-internal hidden states are in merge-block order (4 consecutive patches = one cell), not plain patch raster order.
+
+**multi_view**
+
+- default: Single view. No tiling, no thumbnail, no newline/separator tokens; one native-resolution grid per image.
+- force_single_view: Nothing to disable. To fix the token count, set the image processor size {shortest_edge: min_pixels, longest_edge: max_pixels} (or legacy init kwargs min_pixels / max_pixels, image_processing_qwen2_vl.py:109-119), or pre-resize the image so H and W are multiples of 32 inside the pixel range. The model card gives no resolution-control instructions.
+
+**bbox**
+
+- official_prompt: —
+- output_format: —
+- coord_range: —
+- coord_order: —
+- source: Not stated in this model card. The only grounding statement is README:27: "Advanced Spatial Perception: Judges object positions, viewpoints, and occlusions; provides stronger 2D grounding and enables 3D grounding for spatial reasoning and embodied AI." No prompt, output example or coordinate convention. Web-sourced conventions are recorded separately in configs/bbox_conventions.yaml and were not copied here.
+
+**thinking**
+
+- has_thinking_mode: False
+- how_to_disable: Nothing to disable for this Instruct checkpoint: chat_template.json contains no enable_thinking variable and never emits <think>; no default system prompt is inserted either (a system block is rendered only if the first message is a system message or tools are passed).
+- source: chat_template.json line 2; README.md:18 ("Instruct and reasoning-enhanced Thinking editions" - the Thinking edition is a different checkpoint); tokenizer_config.json lines 198, 206 define <think> / </think> tokens (vocabulary only)
+
+**查不到 / 未确认**
+
+- env: left null by instruction.
+- bbox.official_prompt / output_format / coord_range / coord_order: the model card gives no grounding prompt, example or coordinate convention (only the capability sentence at README:27).
+- Recommended min/max pixels: not stated in the card; only the shipped preprocessor_config.json values are known.
+- Vision encoder family / pretraining origin: not named in the card or config.
+- Whether image_processor_type "Qwen2VLImageProcessorFast" (preprocessor_config.json) resolves without warnings in transformers 5.24.1: not tested.
+- Loading / generation under transformers 5.24.1 not tested (login node, no weights loaded); DeepStack behaviour is from source reading only.
 
 ### Qwen3.5-2B
 
