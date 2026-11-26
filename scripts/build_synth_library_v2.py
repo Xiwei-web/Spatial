@@ -178,11 +178,13 @@ def stage_cut():
         if str(p) not in ph_cache:
             hp = phash_img(p)
             d = (EH != hp).sum(1)
+            if str(p) in evals:                 # val 候选：它所在的图本身就是评测图像（v1 起的设计，划分沿用该图），比对时排除它自己
+                d[ek.index(str(p))] = 64
             j = int(d.argmin())
             ph_cache[str(p)] = (int(d[j]), evals[ek[j]], ek[j])
         dmin, dset, dpath = ph_cache[str(p)]
         rec = {**r, "phash_min_dist_to_eval": dmin, "phash_nearest_eval_set": dset}
-        if dmin <= th:
+        if r["src"] == "train" and dmin <= th:   # 泄漏比对只针对 train 来源；val 候选另有规则（不在留出池、沿用原划分）
             out.append({**rec, "cut_status": "leak_phash", "phash_nearest_eval_image": Path(dpath).name}); continue
         img = np.asarray(Image.open(p).convert("RGB"))
         m = cu._coco_ann_mask(anns[r["ann_id"]], img.shape[0], img.shape[1])
