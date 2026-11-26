@@ -1,0 +1,7 @@
+note: scripts/build_synth_library_v3.py tune 在 dev 标签上定的阈值（BAD 正例、OK 负例、UNSURE 不参与）；status
+  见 manifests/synth_library_v3_tune.json
+status: below_target_recall
+T_occ: 1.01
+T_edge: 99
+T_sol: 0.0
+T_sam: 0.85
