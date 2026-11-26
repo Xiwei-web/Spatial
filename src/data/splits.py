@@ -10,6 +10,7 @@ ACTIVE = {
     "coco_spatial_one": "coco_spatial_one_v2", "coco_spatial_two": "coco_spatial_two_v2",
     "coco_pairs": "coco_pairs_v2", "synth_cutouts": "synth_cutouts_v2",
     "gqa_spatial_one": "gqa_spatial_one_v2", "gqa_spatial_two": "gqa_spatial_two_v2",
+    "coco_holdout": "coco_holdout_v2",
 }
 
 

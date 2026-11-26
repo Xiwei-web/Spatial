@@ -82,7 +82,8 @@ def main():
     t0 = time.time()
 
     # ---- COCO ----
-    f_hold = paths.REPO_ROOT / "splits" / "coco_holdout.json"
+    from src.data.splits import split_path
+    f_hold = split_path("coco_holdout")      # 现行版本（2026-11-26 起为 v2）
     holdout = {int(i) for i in json.load(open(f_hold))["image_ids"]} if f_hold.is_file() else set()
     membership, mem_info = _coco_membership()
     cands, funnel_coco = cu.coco_candidates(cfg, holdout, args.limit_images, membership)

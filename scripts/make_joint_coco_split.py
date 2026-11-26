@@ -13,6 +13,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from src import paths
+from src.data.splits import read_split
 from src.data import load_dataset
 from src.data.coco_pairs import read_pair_records
 
@@ -74,7 +75,7 @@ lib_raw = (paths.get("data") / "synth" / "cutouts" / "library.jsonl").read_bytes
 lib = [json.loads(l) for l in lib_raw.decode().splitlines() if l.strip()]
 assert all(e["source"].startswith("coco") for e in lib), Counter(e["source"] for e in lib)
 cimg = {e["cutout_id"]: int(e["src"]["image_id"]) for e in lib}
-holdout = set(json.load(open(S / "coco_holdout.json"))["image_ids"])
+holdout = set(read_split("coco_holdout")["image_ids"])
 assert not holdout & (set(union) | set(cimg.values()))
 ccount = Counter(e["category"] for e in lib)
 by_img = defaultdict(set)

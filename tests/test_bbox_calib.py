@@ -56,7 +56,7 @@ def test_dev_only_and_no_test_or_holdout_image(cal):
     from src.data.splits import read_split
     test_keys |= {f"coco:{i}" for i in read_split("coco_pairs")["test"]}
     test_keys |= {f"coco:{i}" for i in json.load(open(S / "coco_images_v2.json"))["test"]}
-    hold = {f"coco:{i}" for i in json.load(open(S / "coco_holdout.json"))["image_ids"]}
+    hold = {f"coco:{i}" for i in read_split("coco_holdout")["image_ids"]}
     mine = {i["image_key"] for i in cal["items"]}
     assert not mine & test_keys and not mine & hold
 

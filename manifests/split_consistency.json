@@ -44,9 +44,5 @@
  "n_keys_in_more_than_one_dataset": 1269,
  "n_cross_side": 0,
  "cross_side": {},
- "holdout_keys_used_by_evaluation": {
-  "coco:126226": [
-   "gqa_spatial_one"
-  ]
- }
+ "holdout_keys_used_by_evaluation": {}
 }

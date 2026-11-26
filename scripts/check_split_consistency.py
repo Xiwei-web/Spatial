@@ -48,7 +48,7 @@ def run() -> dict:
     for x in ("dev", "test"):
         for c in sc[x]:
             add(f"coco:{lib[c]}", x, "synth_cutouts")
-    ho = {f"coco:{i}" for i in json.load(open(S / "coco_holdout.json"))["image_ids"]}
+    ho = {f"coco:{i}" for i in read_split("coco_holdout")["image_ids"]}
     bad = {k: {x: sorted(v) for x, v in d.items()} for k, d in where.items() if len(d) > 1}
     res.update(n_image_keys=len(where), n_keys_in_more_than_one_dataset=sum(len(set().union(*d.values())) > 1 for d in where.values()), n_cross_side=len(bad), cross_side=dict(list(bad.items())[:20]),
                holdout_keys_used_by_evaluation={k: sorted(set().union(*where[k].values())) for k in ho if k in where})

@@ -9,6 +9,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from src import paths
+from src.data.splits import read_split
 from src.data import load_dataset
 
 SEED = 20261125
@@ -26,7 +27,7 @@ assert not missing, missing[:5]
 C = json.load(open(S / "coco_images_v2.json"))
 coco_union = {i: x for x in ("dev", "test") for i in C[x]}
 coco_cut = {i: x for x in ("dev", "test") for i in C["cutout_source_images_outside_union"][x]}
-holdout = set(json.load(open(S / "coco_holdout.json"))["image_ids"])
+holdout = set(read_split("coco_holdout")["image_ids"])
 side, why, strata = {}, {}, defaultdict(list)
 for i in union:
     cid = vg[i]["coco_id"]

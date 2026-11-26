@@ -35,7 +35,7 @@ def test_same_image_same_side_everywhere():
         for x in ("dev", "test"):
             for c in sp[x]:
                 put(img[c], x)
-    assert not set(side) & set(json.load(open(S / "coco_holdout.json"))["image_ids"])
+    assert not set(side) & set(read_split("coco_holdout")["image_ids"])
 
 
 def test_splits_cover_everything_and_old_ones_are_refused(monkeypatch):

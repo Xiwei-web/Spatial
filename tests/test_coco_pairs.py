@@ -132,7 +132,8 @@ def test_split_integrity():
 
 
 def test_holdout_disjoint_from_eval_images():
-    f = cp.split_file().parent / "coco_holdout.json"
+    from src.data.splits import split_path
+    f = split_path("coco_holdout")
     if not (f.is_file() and cp.split_file().is_file()):
         pytest.skip("splits/coco_holdout.json 或 splits/coco_pairs.json 不存在")
     from pathlib import Path
