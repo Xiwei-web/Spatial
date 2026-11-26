@@ -218,7 +218,7 @@ def stage_tune():
             sel = [(cid, l) for cid, l in items if l["side"] == side and l["category"] not in excl]
             ref[f"{side}@{t}"] = L3.rates([F[cid]["any_straight_run_ref"] > t for cid, _ in sel], [l["verdict"] for _, l in sel])
     res["reference_any_straight_run"] = ref
-    res["n_labels"] = dict(Counter((l["side"], l["verdict"]) for _, l in items))
+    res["n_labels"] = {f"{k[0]}/{k[1]}": v for k, v in Counter((l["side"], l["verdict"]) for _, l in items).items()}
     res["bad_codes_dev_missed"] = None
     if best is not None:
         miss_codes = Counter(l["code"] for cid, l in items if l["side"] == "dev" and l["verdict"] == "BAD" and l["category"] not in excl
