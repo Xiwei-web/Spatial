@@ -522,7 +522,7 @@ A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50
 - 泄漏：train2017 里 image_id 等于 GQA-spatial（dev 与 test）VG coco_id 的 51 个实例已排除。下载的 3,006 张 train 图与 5,114 张评测图（What's Up A/B、COCO-spatial、COCO-Pairs、COCO 留出池、SpatialRGPT）做整图感知哈希比对，最小汉明距离 ≥ 8，阈值 ≤ 4 下没有近重复。COCO-spatial、COCO-Pairs、留出池都来自 val2017，与 train2017 的 image_id 天然不重叠；SpatialRGPT 的图像来自 SUNRGBD / hypersim / nuScenes / ARKitScenes / KITTI，不是 COCO。
 - 结果：2,976 个抠图，59 类两侧各 ≥ 3（门槛 30 类）；dev 1,486 / test 1,490；train 来源 2,706，val 来源 270；2,228 个通过 18 px 检查，56 类可进 36 px 档。逐类、逐规则的数量见 `manifests/synth_library_v2.json`。
 
-### 抠图库 v3（2026-11-26，planner 定的口径；草稿，定稿之前不得用于生成场景）
+### 抠图库 v3（2026-11-26，planner 定的口径；**已定稿，见本节末尾“定稿”**；合成场景 v2 的规格出来之前不生成场景）
 
 - **来源写法：自动规则过滤，加模型辅助逐格预审排除（两轮，未经人工复核）；人工抽查结果另报。** 不得写成人工审核。
 - 组成：v3 = v2（2,976 个）− knife、potted plant 两类 − 逐格预审排除的（`annotations/synth/library_v2_full_prereview.csv`，exclude=1；两轮预审中任一轮判 BAD 或 UNSURE 即排除）− 规则 c、d、e 剔除的；两侧达不到各 ≥ 3 的类别整类排除。不提高候选上限，不新增下载。
@@ -532,4 +532,15 @@ A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50
 - 与 v2 相比少了 5 类：knife、potted plant（整类剔除），backpack（dev 1 / test 3）、frisbee（dev 7 / test 2）、tennis racket（预审后两侧都是 0），后三类是两侧达不到各 ≥ 3。逐类数量与增减见 `manifests/synth_library_v3.json`。
 - **不用规则 a、b、f 的理由**（依据 dev 上的数字，见 `manifests/synth_library_v3_tune.json`）：a（遮挡接触）和 b（接触边长直边）在 v2 候选上不起作用，dev BAD 召回为 0，因为 v2 已要求外接框与同图其他实例不相交，切口来自未标注的遮挡物；f（SAM 2.1 重新分割的 IoU）在 T_sam = 0.85 时 dev 上召回 0.393、OK 损失 0.138，即每抓到 1 个 BAD 要误删约 1.6 个 OK，代价太高，由逐格预审替代。所有规则合起来在 OK 损失 ≤ 0.25 的约束下，dev BAD 召回最高只有 0.512（目标 0.80），没有放宽阈值。
 - 审阅材料：全量联系表 `outputs/synth_review/library_v3_full/`（54 页，附 index.csv）；人工抽查表 `outputs/synth_review/library_v3_spotcheck/`（固定种子从 v3 随机抽 150 个，不分类别；只显示编号和类别，不显示 CLIP 概率和预审结论），用来估计残余的坏格比例。
+- **定稿（2026-11-26）**：
+  - **Xiwei 人工抽查**：从 v3 草稿（1,980 个，提交 0bd0f57）里用固定种子随机抽 150 个，联系表上不显示 CLIP 概率和预审结论。结果坏 3 个（2.0%，Wilson 95% CI 0.7%–5.7%），坏加拿不准共 6 个（4.0%，CI 1.9%–8.5%），达到定稿标准（≤ 5%，即 ≤ 7 个）。
+  - **cow 类单类复核**：cow 在抽查里 6 个坏了 2 个，planner 因此对 cow 类单独复核（模型预审，未经人工复核）。
+  - **定稿时再剔除 23 个**，清单在 `annotations/synth/library_v3_final_exclusions.csv`：
+    - 抽查里的坏 3 个和拿不准 3 个，按 Xiwei 的要求一并剔除（source=human_spotcheck）；
+    - planner 的 cow 复核 17 个（source=planner_cow_review）。
+    - 按类别：cow 19、dog 1、sheep 1、cake 1、sandwich 1。
+  - **要照实注意**：这 23 个剔除是在抽查之后做的，抽查估计的是剔除前草稿的残余坏格比例，不是定稿后的比例。
+  - **定稿结果**：**1,957 个**（dev 941 / test 1,016；train 来源 1,784，val 来源 173），**54 类**，没有类别掉到两侧各 3 个以下；1,639 个通过 18 px 检查，52 类可进 36 px 档；cow 剩 dev 13 / test 12。
+  - **文件**：定稿写在 `<data>/synth/cutouts_v3/library_final.jsonl`，草稿 `library.jsonl` 保留不动；`splits/synth_library_v3.json` 与 `manifests/synth_library_v3.json` 标为 final；全量联系表 `outputs/synth_review/library_v3_full/` 已按定稿重出，页眉标 FINAL。
+  - **来源写法**：自动规则过滤，加模型辅助逐格预审排除（两轮，未经人工复核）；再按 Xiwei 人工抽查剔除 6 个，按 planner 的 cow 单类复核（模型预审，未经人工复核）剔除 17 个。
 
