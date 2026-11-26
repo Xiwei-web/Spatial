@@ -1,0 +1,29 @@
+# E1 分析参数（scripts/e1_analysis.py、src/e1_analysis.py）。
+# status: placeholder —— 判定阈值是预注册草稿里的值，尚未确认；docs/PREREGISTRATION.md 提交后按定稿填写并改 status。阈值只从这里读，代码里不写死。
+status: placeholder
+seed: 20261127
+n_boot: 10000                      # 按图像（合成集按基础场景 base_id）重抽
+variants: [base]                   # E1 只用基础场景；位置互换 / 身份互换属于 E4
+subset: main                       # 主集（不重叠）；重叠子集另报
+truncate_to_model_bins: true       # 只用该模型自己的 9 档（token_bin 不为空）；28 px 模型在 d8、d9 超过 11.3 token 的场景不进它的分析（planner 2026-11-27）
+direct_source: mcq                 # 2×2、OR、心理测量曲线：二选一的每个顺序各算一个观测；成对二元另报
+unparsed: incorrect
+or_method: mantel_haenszel_by_token_bin   # 按该模型的 token 档分层的 MH OR（每层每格加 0.5）；合并表的 Haldane OR 另报（or_pooled）。
+                                   # 理由（参数恢复模拟）：两类对错都随距离变难，不分层时“两类错误独立”的智能体合并 OR 可到 10 左右。E0 数据没有距离，只有一层                # 解析不出的框或答案按“错”计，并报告数量
+psychometric:
+  x: log2_tokens                   # 横轴：质心沿轴距离（各模型 token 为单位）取 log2
+  guess: 0.5
+  lapse: fit                       # fit：在 [0, lapse_max] 内拟合；fixed0：固定为 0
+  lapse_max: 0.05
+  target_p: 0.75
+  theta_bounds_tokens: [0.05, 64]
+  slope_bounds: [0.05, 5.0]        # log2 轴上累积高斯的标准差
+ideal_observer:
+  pool: by_token_bin               # 框中心沿轴误差（token）按该模型的档分池；某档不足 min_pool 个就并入相邻档
+  min_pool: 30
+  mc_draws: 4000                   # 每档抽 (e_target, e_reference) 对的次数
+  lapse: fixed0
+thresholds:                        # 占位（预注册草稿值）
+  ratio_equivalence: [0.8, 1.25]   # θ_dir/θ_IO 的 95% CI 完全落在区间内 → “与理想观察者等价”
+  ratio_h2_upper: 0.8              # CI 上界 < 0.8 → 直接回答比“比较两个框中心”更好（H2 型）
+  or_dependent_min: 2.0            # OR 的 95% CI 下界 > 2 → 框推关系与直接回答的对错相关
