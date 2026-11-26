@@ -22,6 +22,102 @@ def relation_mcq(dataset: str, target: str, reference: str) -> tuple[str, list[s
     return prompt, opts
 
 
+# ---------------------------------------------------------------------------------------------------------------
+# E0 用的关系问法（2026-11-26 写死，先于任何 dev 运行；planner 第 6 轮预审、Xiwei 审批前不跑）。
+# 两物体四选一沿用上面 What's Up 模板的句式；一物体四选一相对整张图；二元问法问真关系、反关系各一次。
+# 选项顺序轮换：rotation=r 时选项列表循环左移 r 位（字母始终 A–D）；rotation=0 与原 relation_mcq 逐字相同。
+
+E0_RELATION_OPTIONS = {
+    "whatsup_a": ["left", "right", "on", "under"],
+    "whatsup_b": ["left", "right", "front", "behind"],
+    "coco_spatial_two": ["left", "right", "above", "below"],
+    "coco_pairs": ["left", "right", "above", "below"],
+    "gqa_spatial_two": ["left", "right", "front", "behind"],
+    "coco_spatial_one": ["left", "right", "top", "bottom"],
+    "gqa_spatial_one": ["left", "right", "top", "bottom"],
+}
+ONE_OBJECT = {"coco_spatial_one", "gqa_spatial_one"}
+# 不在该数据集选项集合里的样本剔除，照实记录（planner 第 6 轮）：GQA one-object 的 1 条 behind（test）、GQA two-object 的 3 条 top（dev）
+PHRASE_TWO = {"left": "to the left of", "right": "to the right of", "on": "on", "under": "under", "front": "in front of", "behind": "behind",
+              "above": "above", "below": "below"}
+PHRASE_ONE = {"left": "on the left side of the image", "right": "on the right side of the image", "top": "at the top of the image", "bottom": "at the bottom of the image"}
+OPPOSITE = {"left": "right", "right": "left", "on": "under", "under": "on", "front": "behind", "behind": "front", "above": "below", "below": "above",
+            "top": "bottom", "bottom": "top"}
+ANSWER_LETTER = "Answer with the option's letter only."
+ANSWER_YES_NO = "Answer yes or no."
+
+
+def e0_mcq(dataset: str, target: str, reference: str | None, rotation: int = 0) -> tuple[str, list[str]]:
+    """→ (提示词, 本次的选项顺序 [A 对应的关系, B, C, D])。"""
+    opts = E0_RELATION_OPTIONS[dataset]
+    r = rotation % len(opts)
+    opts = opts[r:] + opts[:r]
+    if dataset in ONE_OBJECT:
+        lines = [f"{L}. The {target} is {PHRASE_ONE[o]}." for L, o in zip(LETTERS, opts)]
+        head = f"Look at the image. Where is the {target} in the image?"
+    else:
+        lines = [f"{L}. The {target} is {PHRASE_TWO[o]} the {reference}." for L, o in zip(LETTERS, opts)]
+        head = f"Look at the image. Where is the {target} relative to the {reference}?"
+    return head + "\n" + "\n".join(lines) + "\n" + ANSWER_LETTER, opts
+
+
+def binary_question(dataset: str, target: str, reference: str | None, relation: str) -> str:
+    """二元问法；relation 为被问的关系（真关系或 OPPOSITE[真关系]）。"""
+    if dataset in ONE_OBJECT:
+        return f"Is the {target} {PHRASE_ONE[relation]}? {ANSWER_YES_NO}"
+    return f"Is the {target} {PHRASE_TWO[relation]} the {reference}? {ANSWER_YES_NO}"
+
+
+def _unwrap(text: str) -> str:
+    """去掉 <think>…</think>，以及 RoboBrain 的 <answer>…</answer>、GLM 的 <|begin_of_box|>…<|end_of_box|> 包装（取包装里的内容）。"""
+    t = re.sub(r"<think>.*?</think>", "", text, flags=re.S).strip()
+    for a, b in ((r"<answer>", r"</answer>"), (r"<\|begin_of_box\|>", r"<\|end_of_box\|>")):
+        m = re.search(a + r"\s*(.*?)\s*(?:" + b + r"|$)", t, flags=re.S)
+        if m:
+            return m.group(1).strip()
+    return t
+
+
+def parse_yes_no(text: str) -> str | None:
+    """只认第一个独立的 yes / no 词（不区分大小写；“know”“nothing”“not” 不算）；先去掉 think 和包装。解析不出返回 None。"""
+    m = re.search(r"\b(yes|no)\b", _unwrap(text), flags=re.I)
+    return m.group(1).lower() if m else None
+
+
+def parse_mcq_e0(text: str) -> str | None:
+    """E0 的四选一解析：先用 parse_mcq（与冒烟相同的规则，不改）；不行时再找文中任意位置的 <|begin_of_box|>X<|end_of_box|>（GLM 先推理、最后给框起来的字母）。"""
+    r = parse_mcq(text)
+    if r is not None:
+        return r
+    m = re.search(r"<\|begin_of_box\|>\s*\(?([ABCD])\)?\.?\s*<\|end_of_box\|>", text)
+    return m.group(1) if m else None
+
+
+# 关系问法的答案获取方式，按顺序尝试；dev 解析检查（每个数据集 50 个样本）上解析率 >= 0.95 就停在当前一步，否则进入下一步。
+#   text16 = 生成 16 个新 token，parse_mcq_e0 / parse_yes_no；text64 = 生成 64 个新 token，同样的解析；letter_logit = 第一步四个字母 token 的 logit 取最大（二元问法用 Yes / No 两个 token）
+# GLM-4.6V-Flash 从 text64 开始（冒烟时 16 个 token 内多半给不出字母）。所有模型都照样保存四个字母（及 Yes/No）的第一步 logit。
+ANSWER_MODE_ORDER = {"default": ["text16", "text64", "letter_logit"], "GLM-4.6V-Flash": ["text64", "letter_logit"]}
+PARSE_RATE_MIN = 0.95
+
+
+def answer_mode_order(model: str) -> list[str]:
+    return ANSWER_MODE_ORDER.get(model, ANSWER_MODE_ORDER["default"])
+
+
+def choose_answer_mode(model: str, dev_parse_rate: dict[str, float]) -> str | None:
+    """dev_parse_rate：{方式: 解析率}，按 answer_mode_order 依次看，第一个 >= PARSE_RATE_MIN 的方式胜出；
+    letter_logit 不需要解析，总能给出答案，排在最后；前面都没测或都不过时返回 letter_logit。"""
+    for m in answer_mode_order(model):
+        if m == "letter_logit":
+            return m
+        r = dev_parse_rate.get(m)
+        if r is None:
+            return None                       # 按顺序还没测到这一步
+        if r >= PARSE_RATE_MIN:
+            return m
+    return None
+
+
 def parse_mcq(text: str) -> str | None:
     """返回 A/B/C/D 或 None（解析不出就是 None，不猜）。"""
     t = re.sub(r"<think>.*?</think>", "", text, flags=re.S).strip()
