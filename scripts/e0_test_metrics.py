@@ -41,17 +41,23 @@ def masks_for(records):
 
 res, rows = {}, []
 for name, fam in e0.FAMILY.items():
-    f = O / name / "test.jsonl"
-    if not f.is_file():
+    fe = sorted(x for x in (O / name).glob("test*.jsonl") if not x.name.endswith("_sdpa.jsonl")) if (O / name).is_dir() else []
+    if not fe:
         continue
-    R = [r for r in e0.load_records(f).values() if r["stage"] == "test"]
+    recs = {}
+    for x in fe:                        # test.jsonl（Qwen2.5-VL 的 A、B 两块）与按块命名的 test_<数据集>.jsonl 合并
+        recs.update(e0.load_records(x))
+    R = [r for r in recs.values() if r["stage"] == "test"]
     if {r["dataset"] for r in R} != set(e0.TEST_DATASETS):
         print(name, "还没跑完全部 test 数据集", sorted({r["dataset"] for r in R})); continue
     S = summarize(R, masks_for(R))
     d = {"family": fam, "test": S}
-    fs = O / name / "test_sdpa.jsonl"
-    if fs.is_file():
-        RS = [r for r in e0.load_records(fs).values() if r["stage"] == "test"]
+    fsl = sorted((O / name).glob("test*_sdpa.jsonl"))
+    if fsl:
+        rs = {}
+        for x in fsl:
+            rs.update(e0.load_records(x))
+        RS = [r for r in rs.values() if r["stage"] == "test"]
         d["default_impl_sdpa"] = summarize(RS, masks_for(RS))
         d["impl_diff_whatsup"] = impl_diff([r for r in R if r["dataset"].startswith("whatsup")], RS)
     d["seconds_total"] = sum(r.get("seconds") or 0 for r in R)

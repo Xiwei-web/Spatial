@@ -31,7 +31,9 @@ if stage in ("screen", "test") and not modes and not A.dry_run:
     raise SystemExit(f"configs/e0.yaml 里没有 {name} 的 answer_modes：先完成解析检查并提交")
 out_dir = paths.get("outputs") / "e0" / name
 out_dir.mkdir(parents=True, exist_ok=True)
-f = out_dir / (stage + ("" if A.impl == "eager" else "_" + A.impl) + ".jsonl")
+# test 切块时每块写自己的文件（同一模型的两块可能同时在不同节点上运行，NFS 上并发追加同一文件不安全）；Qwen2.5-VL 的 A、B 两块在这条规则之前写的是 test.jsonl
+chunk = ("_" + A.datasets.replace(",", "+")) if (stage == "test" and A.datasets) else ""
+f = out_dir / (stage + chunk + ("" if A.impl == "eager" else "_" + A.impl) + ".jsonl")
 if stage == "test" and A.impl == "sdpa":
     assert A.datasets and set(A.datasets.split(",")) <= {"whatsup_a", "whatsup_b"}, "默认实现那一遍只跑 What's Up A/B"
 done = set()
