@@ -9,7 +9,7 @@ PATHS="${INTERP_PATHS_FILE:-$REPO/configs/paths.yaml}"
 LOGS="$(sed -n 's/^logs:[[:space:]]*\([^[:space:]#]*\).*/\1/p' "$PATHS")"
 mkdir -p "$LOGS"
 KIND="$1"; shift
-TIME="04:00:00"; NAME="interp"
+TIME="04:00:00"; NAME="interp"; EXCLUDE="gpu-05,gpu-07,gpu-49"   # 已知坏节点，一律排除
 while [[ "${1:-}" == --* ]]; do
   case "$1" in --time=*) TIME="${1#*=}";; --name=*) NAME="${1#*=}";; *) echo "unknown $1"; exit 2;; esac; shift
 done
@@ -22,5 +22,5 @@ case "$KIND" in
   *) echo "kind must be cpu|gpu1|gpu2|gpu3|gpu4"; exit 2 ;;
 esac
 # --export=ALL：HF_TOKEN 等只经由环境变量传入作业，不落盘
-sbatch --parsable "${RES[@]}" -t "$TIME" -J "$NAME" -D "$REPO" --export=ALL \
+sbatch --parsable "${RES[@]}" --exclude="$EXCLUDE" -t "$TIME" -J "$NAME" -D "$REPO" --export=ALL \
   -o "$LOGS/%x_%j.out" --wrap "$(printf '%q ' "$@")"
