@@ -62,7 +62,7 @@ def stage_select():
     excl = CFG["exclude_categories"]
     gqa = gqa_coco_ids()
     hold = set(read_split("coco_holdout")["image_ids"])
-    imv2 = read_split("coco_images")
+    imv2 = read_split("coco_images_v2")
     val_side = {i: s for s in ("dev", "test") for i in imv2[s] + imv2["cutout_source_images_outside_union"][s]}
     funnel = {src: Counter() for src in ("train", "val")}
     pool, rows = defaultdict(list), []
