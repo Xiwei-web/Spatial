@@ -147,3 +147,25 @@ def test_missing_class_and_articles():
     assert sr.region_names(["chair"], 2) == (None, "missing_class")
     assert [sr.indefinite_article(x) for x in ("oven", "air conditioner", "chair", "utensils", "hour glass")] == \
         ["an", "an", "a", "a", "an"]
+
+
+def test_spatialrgpt_despeckle_and_box_exclusions():
+    import numpy as np
+    from pycocotools import mask as mu
+    from src.data import spatialrgpt as sr
+    m = np.zeros((100, 200), np.uint8, order="F"); m[10:60, 20:120] = 1; m[90, 190] = 1          # 5000 像素的物体 + 1 像素碎块
+    rle = mu.encode(m); rle["counts"] = rle["counts"].decode()
+    box, info = sr.despeckled_bbox(rle)
+    assert box == [20.0, 10.0, 120.0, 60.0] and info["n_specks_removed"] == 1
+    m[90:100, 150:200] = 1                                                                       # 500 像素 = 9% → 保留
+    rle = mu.encode(m); rle["counts"] = rle["counts"].decode()
+    assert sr.despeckled_bbox(rle)[0] == [20.0, 10.0, 200.0, 100.0]
+    try:
+        S = sr.depth_samples()
+    except FileNotFoundError:
+        return
+    assert len(S) == 96
+    ex = {(s.sample_id, r) for s in S for r in ("target", "reference") if s.extra[f"box_metric_exclude_{r}"]}
+    assert len(ex) == 6 and len(sr.BOX_METRIC_EXCLUDE) == 6
+    changed = sum(s.bbox_target != s.extra["bbox_target_all_pixels"] for s in S) + sum(s.bbox_reference != s.extra["bbox_reference_all_pixels"] for s in S)
+    assert changed == 32

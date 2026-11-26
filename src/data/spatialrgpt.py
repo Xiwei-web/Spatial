@@ -114,12 +114,43 @@ def depth_relation(category: str, answer: str) -> tuple[str | None, str]:
 
 _REL_TEXT = {"front": "in front of", "behind": "behind"}
 
+# ---------- 真值框：去碎块（Xiwei 2026-11-26） ----------
+# 只在计算框时去掉面积 < 1% 的碎块：8 连通的连通块，面积 < 该 mask 总面积的 1% 的去掉，用其余像素的外接框；mask 本身不改（关系问答、质心等仍用完整 mask）。
+SPECK_FRAC = 0.01
+# 从框相关的指标里排除的物体（保留在关系问答里）：(样本 id, 区域下标) → 原因
+BOX_METRIC_EXCLUDE = {
+    ("qualitative_gTR3O1nDxz", 1): "desk：Xiwei 看低 IoU 联系表后决定从框指标排除（mask 外接框与自带框 IoU 0.33）",
+    ("qualitative_iwxK9EjtZu", 1): "bowl：Xiwei 看低 IoU 联系表后决定从框指标排除（mask 外接框与自带框 IoU 0.59）",
+    ("qualitative_VeI9YjLe6d", 0): "bicycle：mask 包含骑车人（同一骑车人，nuScenes 同一序列 2 帧 × 2 题）",
+    ("qualitative_PpcxD27m3i", 0): "bicycle：mask 包含骑车人（同一骑车人，nuScenes 同一序列 2 帧 × 2 题）",
+    ("qualitative_hy3kyCRKze", 0): "bicycle：mask 包含骑车人（同一骑车人，nuScenes 同一序列 2 帧 × 2 题）",
+    ("qualitative_Dpv5s8ioRF", 0): "bicycle：mask 包含骑车人（同一骑车人，nuScenes 同一序列 2 帧 × 2 题）",
+}
+
+
+def despeckled_bbox(rle, frac: float = SPECK_FRAC) -> tuple[list[float], dict]:
+    """→ (去掉碎块后的外接框 [x1, y1, x2, y2]（右下开区间，与 rle_bbox 同一约定）, 信息)。"""
+    import numpy as np
+    from pycocotools import mask as mu
+    from scipy import ndimage
+    m = mu.decode(rle).astype(bool)
+    lab, n = ndimage.label(m, structure=np.ones((3, 3)))
+    area = np.bincount(lab.ravel())[1:]
+    small = area < frac * m.sum()
+    keep = np.isin(lab, np.nonzero(~small)[0] + 1) if small.any() else m
+    ys, xs = np.nonzero(keep)
+    box = [float(xs.min()), float(ys.min()), float(xs.max() + 1), float(ys.max() + 1)]
+    return box, {"n_components": int(n), "n_specks_removed": int(small.sum()), "speck_pixels_removed": int(area[small].sum())}
+
+
 
 def depth_samples(include_same_class: bool = False) -> list[Sample]:
     """front_predicate / behind_predicate → 统一 Sample。What's Up B 的 front/behind 与垂直位置完全混淆；本数据集也有较强的垂直位置捷径（manifests/spatialrgpt_depth_cues.json），前后关系不能只依赖它。
 
     用户 2026-11-25 的规则：
-    - 真值框 = mask 外接框（bbox_*）；数据集自带的框在 extra["provided_bbox_target" / "provided_bbox_reference"]，只作对照；
+    - 真值框 = mask 外接框（bbox_*），计算框时去掉面积 < 1% 的碎块（Xiwei 2026-11-26，despeckled_bbox）；全部像素的外接框在 extra["bbox_*_all_pixels"]；
+      数据集自带的框在 extra["provided_bbox_target" / "provided_bbox_reference"]，只作对照；
+    - 框指标排除的物体：extra["box_metric_exclude_target" / "_reference"] 为原因字符串（否则 None），这些物体仍保留在关系问答里；
     - 两个区域类名相同的 14 条跳过（include_same_class=True 时才返回）；
     - 标准答案只有 “No.” 一类、真实关系靠“否定即相反”推出的 34 条保留，extra["relation_inferred_from_bare_no"]=True，必须单独报告。
 
@@ -142,12 +173,15 @@ def depth_samples(include_same_class: bool = False) -> list[Sample]:
         out.append(Sample(
             dataset="spatialrgpt_depth", sample_id=r.id, image_path=r.image_path, target=t, reference=ref, relation=rel,
             caption_true=cap(rel), caption_options=[cap(rel), cap(_OPPOSITE[rel])],
-            bbox_target=rle_bbox(r.rles[0]), bbox_reference=rle_bbox(r.rles[1]), mask_target=r.rles[0], mask_reference=r.rles[1],
+            bbox_target=despeckled_bbox(r.rles[0])[0], bbox_reference=despeckled_bbox(r.rles[1])[0], mask_target=r.rles[0], mask_reference=r.rles[1],
             extra={"category": r.category, "question_mask": r.question_mask, "question_region": r.question_region,
                    "answer": r.answer, "gold_yes_no": parse_yes_no(r.answer), "relation_source": src,
                    "relation_inferred_from_bare_no": src == "answer_no_implied_opposite",
                    "provided_bbox_target": r.bboxes[0], "provided_bbox_reference": r.bboxes[1],
-                   "image_source": r.image_source, "same_class": same},
+                   "image_source": r.image_source, "same_class": same,
+                   "bbox_target_all_pixels": rle_bbox(r.rles[0]), "bbox_reference_all_pixels": rle_bbox(r.rles[1]),
+                   "speck_target": despeckled_bbox(r.rles[0])[1], "speck_reference": despeckled_bbox(r.rles[1])[1],
+                   "box_metric_exclude_target": BOX_METRIC_EXCLUDE.get((r.id, 0)), "box_metric_exclude_reference": BOX_METRIC_EXCLUDE.get((r.id, 1))},
         ))
     return out
 
