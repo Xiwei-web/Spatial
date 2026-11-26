@@ -1,0 +1,323 @@
+{
+ "n_base": 2880,
+ "n_failed": 0,
+ "failed": [],
+ "main": {
+  "t28": {
+   "models": [
+    "Qwen2.5-VL-7B-Instruct",
+    "RoboBrain2.0-7B",
+    "GLM-4.6V-Flash"
+   ],
+   "px": 28,
+   "bins": {
+    "0.50-0.71": {
+     "dev": 0,
+     "test": 0,
+     "geometrically_feasible": false,
+     "meets": null
+    },
+    "0.71-1.00": {
+     "dev": 0,
+     "test": 0,
+     "geometrically_feasible": false,
+     "meets": null
+    },
+    "1.00-1.41": {
+     "dev": 78,
+     "test": 155,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.41-2.00": {
+     "dev": 81,
+     "test": 161,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.00-2.83": {
+     "dev": 79,
+     "test": 159,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.83-4.00": {
+     "dev": 81,
+     "test": 164,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "4.00-5.66": {
+     "dev": 81,
+     "test": 160,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "5.66-8.00": {
+     "dev": 80,
+     "test": 161,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "8.00-11.31": {
+     "dev": 80,
+     "test": 161,
+     "geometrically_feasible": true,
+     "meets": true
+    }
+   }
+  },
+  "t32": {
+   "models": [
+    "Qwen3-VL-8B-Instruct",
+    "Qwen3.5-2B",
+    "Qwen3.5-4B",
+    "Qwen3.5-9B"
+   ],
+   "px": 32,
+   "bins": {
+    "0.50-0.71": {
+     "dev": 0,
+     "test": 0,
+     "geometrically_feasible": false,
+     "meets": null
+    },
+    "0.71-1.00": {
+     "dev": 6,
+     "test": 5,
+     "geometrically_feasible": true,
+     "meets": false
+    },
+    "1.00-1.41": {
+     "dev": 89,
+     "test": 181,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.41-2.00": {
+     "dev": 82,
+     "test": 166,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.00-2.83": {
+     "dev": 86,
+     "test": 163,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.83-4.00": {
+     "dev": 79,
+     "test": 173,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "4.00-5.66": {
+     "dev": 80,
+     "test": 160,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "5.66-8.00": {
+     "dev": 75,
+     "test": 171,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "8.00-11.31": {
+     "dev": 92,
+     "test": 165,
+     "geometrically_feasible": true,
+     "meets": true
+    }
+   }
+  },
+  "t56": {
+   "models": [
+    "InternVL3-8B",
+    "InternVL3_5-8B",
+    "SenseNova-SI-1.2-InternVL3-8B",
+    "SenseNova-SI-1.3-InternVL3-8B"
+   ],
+   "px": 56,
+   "bins": {
+    "0.50-0.71": {
+     "dev": 78,
+     "test": 155,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "0.71-1.00": {
+     "dev": 81,
+     "test": 161,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.00-1.41": {
+     "dev": 79,
+     "test": 159,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.41-2.00": {
+     "dev": 81,
+     "test": 164,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.00-2.83": {
+     "dev": 81,
+     "test": 160,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.83-4.00": {
+     "dev": 80,
+     "test": 161,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "4.00-5.66": {
+     "dev": 80,
+     "test": 161,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "5.66-8.00": {
+     "dev": 80,
+     "test": 159,
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "8.00-11.31": {
+     "dev": 80,
+     "test": 160,
+     "geometrically_feasible": true,
+     "meets": true
+    }
+   }
+  }
+ },
+ "overlap": {
+  "occ10": {
+   "dev": 80,
+   "test": 160,
+   "meets": true
+  },
+  "occ30": {
+   "dev": 80,
+   "test": 160,
+   "meets": true
+  },
+  "occ50": {
+   "dev": 80,
+   "test": 160,
+   "meets": true
+  }
+ },
+ "size_x_stratum": {
+  "d0": {
+   "36": 240,
+   "72": 0,
+   "108": 0,
+   "161": 0
+  },
+  "d1": {
+   "36": 240,
+   "72": 0,
+   "108": 0,
+   "161": 0
+  },
+  "d2": {
+   "36": 120,
+   "72": 120,
+   "108": 0,
+   "161": 0
+  },
+  "d3": {
+   "36": 80,
+   "72": 80,
+   "108": 80,
+   "161": 0
+  },
+  "d4": {
+   "36": 80,
+   "72": 80,
+   "108": 80,
+   "161": 0
+  },
+  "d5": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "d6": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "d7": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "d8": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "occ10": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "occ30": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "occ50": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  }
+ },
+ "identity_swap_flag": {
+  "main": {
+   "n": 2160,
+   "flagged": 10,
+   "rate": 0.0046
+  },
+  "overlap": {
+   "n": 720,
+   "flagged": 4,
+   "rate": 0.0056
+  }
+ },
+ "main_edge_gap_px": {
+  "min": 0,
+  "median": 37.0,
+  "max": 589
+ },
+ "main_min_distance_px": {
+  "min": 0.0,
+  "median": 40.0,
+  "max": 589.0
+ },
+ "meets_acceptance": false,
+ "n_base_by_side": {
+  "dev": 960,
+  "test": 1920
+ },
+ "within_3000": true,
+ "seconds": 60.3,
+ "estimated_images": 8640,
+ "estimated_disk_gb": 1.86
+}
