@@ -2,21 +2,21 @@
  "n_items": 600,
  "n_images": 300,
  "first": [
+  "P2",
+  "model_xyxy"
+ ],
+ "first_mean_iou": 0.6025581291290532,
+ "first_iou_at_0.5": 0.71,
+ "first_out_of_bounds": 0.009633911368015413,
+ "second": [
   "P0",
   "model_xyxy"
  ],
- "first_mean_iou": 0.4804041729930688,
- "first_iou_at_0.5": 0.5583333333333333,
- "first_out_of_bounds": 0.0,
- "second": [
-  "P1",
-  "model_xyxy"
- ],
- "second_mean_iou": 0.4097762977267459,
- "diff_mean": 0.07062787526632293,
+ "second_mean_iou": 0.4804041729930688,
+ "diff_mean": 0.12215395613598448,
  "diff_ci95": [
-  0.05182923769782633,
-  0.08976071843993061
+  0.09719441473413905,
+  0.1477992275943299
  ],
  "subset_first": {
   "coco": {
@@ -25,28 +25,32 @@
     "model_xyxy"
    ],
    "mean_iou": 0.8129091741884874,
-   "overall_first_mean_iou": 0.8129091741884874,
+   "overall_first_mean_iou": 0.787745801944197,
    "n": 200
   },
   "whatsup": {
    "first": [
-    "P0",
+    "P2",
     "model_xyxy"
    ],
-   "mean_iou": 0.3141516723953595,
-   "overall_first_mean_iou": 0.3141516723953595,
+   "mean_iou": 0.5099642927214815,
+   "overall_first_mean_iou": 0.5099642927214815,
    "n": 400
   }
  },
- "undecided": false,
- "undecided_reasons": [],
+ "undecided": true,
+ "undecided_reasons": [
+  "What's Up 与 COCO 的第一名不一致"
+ ],
  "parse_fail": {
   "P0": 0.3416666666666667,
-  "P1": 0.475
+  "P1": 0.475,
+  "P2": 0.135
  },
  "n_error": {
   "P0": 0,
-  "P1": 0
+  "P1": 0,
+  "P2": 0
  },
  "per_candidate": [
   {
@@ -228,17 +232,107 @@
    "out_of_bounds": 0.0,
    "mean_iou_coco": 0.811625025739516,
    "mean_iou_whatsup": 0.20885193372036084
+  },
+  {
+   "prompt": "P2",
+   "convention": "norm1000_xyxy",
+   "mean_iou": 0.1378504086793427,
+   "iou_at_0.5": 0.008333333333333333,
+   "out_of_bounds": 0.023121387283236993,
+   "mean_iou_coco": 0.042410703896675346,
+   "mean_iou_whatsup": 0.18557026107067634
+  },
+  {
+   "prompt": "P2",
+   "convention": "norm1000_yxyx",
+   "mean_iou": 0.08809852895022312,
+   "iou_at_0.5": 0.023333333333333334,
+   "out_of_bounds": 0.023121387283236993,
+   "mean_iou_coco": 0.02586228234724084,
+   "mean_iou_whatsup": 0.11921665225171427
+  },
+  {
+   "prompt": "P2",
+   "convention": "norm1_xyxy",
+   "mean_iou": 0.004482591087156673,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 1.0,
+   "mean_iou_coco": 0.009264732896886684,
+   "mean_iou_whatsup": 0.0020915201822916665
+  },
+  {
+   "prompt": "P2",
+   "convention": "norm1_yxyx",
+   "mean_iou": 0.004482591087156673,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 1.0,
+   "mean_iou_coco": 0.009264732896886684,
+   "mean_iou_whatsup": 0.0020915201822916665
+  },
+  {
+   "prompt": "P2",
+   "convention": "model_xyxy",
+   "mean_iou": 0.6025581291290532,
+   "iou_at_0.5": 0.71,
+   "out_of_bounds": 0.009633911368015413,
+   "mean_iou_coco": 0.787745801944197,
+   "mean_iou_whatsup": 0.5099642927214815
+  },
+  {
+   "prompt": "P2",
+   "convention": "model_yxyx",
+   "mean_iou": 0.1624115969825611,
+   "iou_at_0.5": 0.095,
+   "out_of_bounds": 0.2813102119460501,
+   "mean_iou_coco": 0.1349320509706601,
+   "mean_iou_whatsup": 0.1761513699885116
+  },
+  {
+   "prompt": "P2",
+   "convention": "orig_xyxy",
+   "mean_iou": 0.3780175008704081,
+   "iou_at_0.5": 0.31333333333333335,
+   "out_of_bounds": 0.08477842003853564,
+   "mean_iou_coco": 0.7774044856018407,
+   "mean_iou_whatsup": 0.17832400850469185
+  },
+  {
+   "prompt": "P2",
+   "convention": "orig_yxyx",
+   "mean_iou": 0.11751426723685036,
+   "iou_at_0.5": 0.035,
+   "out_of_bounds": 0.22350674373795762,
+   "mean_iou_coco": 0.1348678531157318,
+   "mean_iou_whatsup": 0.10883747429740964
+  },
+  {
+   "prompt": "P2",
+   "convention": "range_norm1_else_norm1000",
+   "mean_iou": 0.1378504086793427,
+   "iou_at_0.5": 0.008333333333333333,
+   "out_of_bounds": 0.023121387283236993,
+   "mean_iou_coco": 0.042410703896675346,
+   "mean_iou_whatsup": 0.18557026107067634
+  },
+  {
+   "prompt": "P2",
+   "convention": "range_norm1_else_model",
+   "mean_iou": 0.6025581291290532,
+   "iou_at_0.5": 0.71,
+   "out_of_bounds": 0.009633911368015413,
+   "mean_iou_coco": 0.787745801944197,
+   "mean_iou_whatsup": 0.5099642927214815
   }
  ],
  "first_subset": {
   "coco": {
-   "mean_iou": 0.8129091741884874,
-   "iou_at_0.5": 0.89,
+   "mean_iou": 0.787745801944197,
+   "iou_at_0.5": 0.875,
    "n": 200
   },
   "whatsup": {
-   "mean_iou": 0.3141516723953595,
-   "iou_at_0.5": 0.3925,
+   "mean_iou": 0.5099642927214815,
+   "iou_at_0.5": 0.6275,
    "n": 400
   }
  },
@@ -246,20 +340,24 @@
  "current_config_convention": "unknown",
  "prompts": {
   "P0": "Output the bounding box of the {object} in the image as [x1, y1, x2, y2].",
-  "P1": "Locate {object}, output its bbox coordinates using JSON format."
+  "P1": "Locate {object}, output its bbox coordinates using JSON format.",
+  "P2": "Output the bounding box of the {object} in the image as [x1, y1, x2, y2]. Output only a 2D box with four numbers. Do not output 3D boxes."
  },
  "revision": "b18ec54b43e1d0b8a171cf41d9f221fbedd803ae",
  "n_3d_output": {
   "P0": 0,
-  "P1": 0
+  "P1": 0,
+  "P2": 0
  },
  "n_hit_max_tokens": {
   "P0": 5,
-  "P1": 0
+  "P1": 0,
+  "P2": 7
  },
  "n_items_per_prompt": {
   "P0": 600,
-  "P1": 600
+  "P1": 600,
+  "P2": 600
  },
  "current_matches_first": null
 }

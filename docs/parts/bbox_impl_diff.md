@@ -257,3 +257,8 @@ bf16 列引自 DATA_REPORT 1.5（作业 435451；GLM 为 435862）；fp32 生成
 - 合并口径（cx、cy 一起算）两个模型都通过，**未用于判定**。
 - Qwen 的 cy 区间上端是 +0.0001，刚好包含 0：结果处在这条标准的边缘。
 - 覆盖：只有这两个模型、40 条框、20 张图；同族的其余模型没有测。
+
+## 8. 框坐标约定（dev 标定，2026-11-26）
+
+下游换算框坐标时，以 `configs/bbox_conventions.yaml` 末尾的 `calibrated` 块为准，它记录每个模型选定的（提示词, 约定）。依据见 `reports/round_3.md`、`reports/round_4.md` 和 `manifests/bbox_calib_*.json`。变化：RoboBrain2.0-7B 由原图像素改为模型输入像素；SenseNova-SI-1.2/1.3 使用 `range_norm1_else_norm1000`，逐条按数值范围换算；VST-7B-RL 的提示词待定。这些是 dev 标定用的数，不是结果。
+
