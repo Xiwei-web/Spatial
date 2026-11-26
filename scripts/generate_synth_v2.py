@@ -42,15 +42,18 @@ def report(metas):
     acc = CFG["acceptance"]
     rep = {"n_base": len(base), "n_failed": len(failed), "failed": failed[:20], "main": {}, "overlap": {}, "size_x_stratum": {}, "identity_swap_flag": {}}
     ok = True
+    dmin_obs = min(m["geometry"]["center_along_px"] for m in base if m["subset"] == "main")
+    rep["main_min_center_along_px_observed"] = dmin_obs
     for tk, tv in CFG["token_px"].items():
         cnt = Counter((m["geometry"]["token_bin"][tk], m["side"]) for m in base if m["subset"] == "main")
         per = {}
         for k, lab in enumerate(labels):
             dev, test = cnt[(k, "dev")], cnt[(k, "test")]
-            lo_px = edges[k + 1] * tv["px"]
-            feasible = lo_px > CFG["design"]["main_strata_px"][0]          # 档的上界高于最小层下界（28 px）才可能做到
+            tok = [m["geometry"]["center_along_tokens"][tk] for m in base if m["subset"] == "main" and m["geometry"]["token_bin"][tk] == k]
+            feasible = edges[k + 1] * tv["px"] > dmin_obs          # 档的上界高于实测能做到的最小质心距离，才算几何上可做
             meets = dev >= acc["main_per_model_bin"]["dev"] and test >= acc["main_per_model_bin"]["test"]
-            per[lab] = {"dev": dev, "test": test, "geometrically_feasible": feasible, "meets": meets if feasible else None}
+            per[lab] = {"dev": dev, "test": test, "actual_token_range": [round(min(tok), 3), round(max(tok), 3)] if tok else None,
+                        "geometrically_feasible": feasible, "meets": meets if feasible else None}
             if feasible and not meets:
                 ok = False
         rep["main"][tk] = {"models": tv["models"], "px": tv["px"], "bins": per}
@@ -72,6 +75,38 @@ def report(metas):
     rep["n_base_by_side"] = dict(Counter(m["side"] for m in base))
     rep["within_3000"] = len(base) + len(failed) <= acc["max_base_scenes_without_asking"]
     return rep
+
+
+def sheets(metas):
+    """每个分层 / 遮挡档抽 4 个场景（固定种子），每行 base | 位置互换 | 身份互换。"""
+    import random
+    from matplotlib import font_manager
+    from PIL import Image, ImageDraw, ImageFont
+    rev = paths.get("outputs") / "synth_review" / "synth_v2"
+    rev.mkdir(parents=True, exist_ok=True)
+    font = ImageFont.truetype(font_manager.findfont("DejaVu Sans"), 13)
+    by = defaultdict(dict)
+    for m in metas:
+        if m.get("variant"):
+            by[m["index"]][m["variant"]] = m
+    levels = sorted({v["base"]["level"] for v in by.values()}, key=lambda x: (x[0] != "d", int(x[1:]) if x[0] == "d" else int(x[3:])))
+    T = 300
+    for p in range(0, len(levels), 3):
+        lv = levels[p:p + 3]
+        rows = [(l, by[i]) for l in lv for i in random.Random(f"synth_v2_sheet:{l}").sample(sorted(k for k, v in by.items() if v["base"]["level"] == l), 4)]
+        im = Image.new("RGB", (3 * (T + 6) + 330, len(rows) * (T + 8) + 24), (255, 255, 255))
+        d = ImageDraw.Draw(im)
+        d.text((6, 4), "synth_v2: base | position_swap | identity_swap (4 seeded scenes per level)", fill=(0, 0, 0), font=font)
+        for k, (l, v) in enumerate(rows):
+            y = 24 + k * (T + 8)
+            for j, name in enumerate(("base", "position_swap", "identity_swap")):
+                im.paste(Image.open(OUT / v[name]["image"]).convert("RGB").resize((T, T), Image.LANCZOS), (6 + j * (T + 6), y))
+            b, g = v["base"], v["base"]["geometry"]
+            fl = v["identity_swap"]["identity_swap"]["identity_swap_flag"]
+            d.multiline_text((3 * (T + 6) + 10, y + 10), f"{b['scene_id']}\n{l} {b['side']} {b['relation']}\nsize {b['sqrt_area_px']} px\nalong {g['center_along_px']:.1f} px\n"
+                             f"tokens 28/32/56: {g['center_along_tokens']['t28']:.2f}/{g['center_along_tokens']['t32']:.2f}/{g['center_along_tokens']['t56']:.2f}\n"
+                             f"edge gap {g['edge_gap_px']} px\noccl {b['occlusion']['occluded_fraction']:.3f}\nid-swap flag {fl}", fill=(0, 0, 0), font=font)
+        im.save(rev / f"sheet_{p // 3:02d}.jpg", quality=88)
 
 
 if __name__ == "__main__":
@@ -106,7 +141,8 @@ if __name__ == "__main__":
             same += all(x["png"] == (OUT / x["meta"]["image"]).read_bytes() for x in r)
         rep["determinism"] = {"n": len(pick), "identical": same}
         rep["metadata_sha256"] = hashlib.sha256((OUT / "metadata.jsonl").read_bytes()).hexdigest()
+        sheets(metas)
         json.dump(rep, open(REPO / "manifests" / "synth_v2.json", "w"), indent=1, ensure_ascii=False)
     print(json.dumps({k: v for k, v in rep.items() if k not in ("main", "failed")}, ensure_ascii=False)[:3000])
     for tk, v in rep["main"].items():
-        print(tk, {b: (x["dev"], x["test"], x["meets"]) for b, x in v["bins"].items()})
+        print(tk, {b: (x["dev"], x["test"], x["actual_token_range"], x["meets"]) for b, x in v["bins"].items()})
