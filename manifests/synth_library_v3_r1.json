@@ -1,0 +1,1596 @@
+{
+ "provenance": "自动规则过滤，加模型辅助逐格预审排除（两轮，未经人工复核）；再按 Xiwei 人工抽查剔除 6 个、planner 的 cow 单类复核（模型预审，未经人工复核）剔除 17 个",
+ "library_sha256": "54f28477af114788b5d5559e07d529db88fbcf127f7cff1f155c941f24f0164e",
+ "v2_library_sha256": "0766afcd6555d1efe64ed1ccadffc46349c1f0ef497e44cab61223f1c6995f9b",
+ "n_v2": 2976,
+ "n_final": 1957,
+ "n_final_by_side": {
+  "dev": 941,
+  "test": 1016
+ },
+ "n_final_by_src": {
+  "train": 1784,
+  "val": 173
+ },
+ "n_categories_usable": 54,
+ "meets_min_categories": true,
+ "categories_usable": [
+  "airplane",
+  "apple",
+  "bear",
+  "bed",
+  "bench",
+  "bird",
+  "boat",
+  "book",
+  "bottle",
+  "bowl",
+  "bus",
+  "cake",
+  "car",
+  "cat",
+  "cell phone",
+  "chair",
+  "clock",
+  "couch",
+  "cow",
+  "cup",
+  "dog",
+  "elephant",
+  "fire hydrant",
+  "giraffe",
+  "horse",
+  "hot dog",
+  "keyboard",
+  "kite",
+  "laptop",
+  "microwave",
+  "mouse",
+  "orange",
+  "oven",
+  "parking meter",
+  "person",
+  "pizza",
+  "refrigerator",
+  "remote",
+  "sandwich",
+  "scissors",
+  "sheep",
+  "sink",
+  "skateboard",
+  "stop sign",
+  "suitcase",
+  "teddy bear",
+  "toilet",
+  "traffic light",
+  "train",
+  "truck",
+  "tv",
+  "umbrella",
+  "vase",
+  "zebra"
+ ],
+ "categories_dropped_lt3_per_side": {
+  "backpack": {
+   "dev": 1,
+   "test": 3
+  },
+  "frisbee": {
+   "dev": 7,
+   "test": 2
+  },
+  "tennis racket": {
+   "dev": 0,
+   "test": 0
+  }
+ },
+ "categories_class_excluded": [
+  "knife",
+  "potted plant"
+ ],
+ "categories_lost_vs_v2": [
+  "backpack",
+  "frisbee",
+  "knife",
+  "potted plant",
+  "tennis racket"
+ ],
+ "n_small36_ok": 1639,
+ "n_categories_small36": 52,
+ "categories_small36": [
+  "airplane",
+  "apple",
+  "bear",
+  "bed",
+  "bench",
+  "bird",
+  "boat",
+  "book",
+  "bottle",
+  "bowl",
+  "bus",
+  "cake",
+  "car",
+  "cat",
+  "cell phone",
+  "chair",
+  "clock",
+  "couch",
+  "cow",
+  "cup",
+  "dog",
+  "elephant",
+  "fire hydrant",
+  "giraffe",
+  "horse",
+  "hot dog",
+  "kite",
+  "laptop",
+  "microwave",
+  "mouse",
+  "orange",
+  "oven",
+  "parking meter",
+  "person",
+  "pizza",
+  "refrigerator",
+  "remote",
+  "sandwich",
+  "scissors",
+  "sheep",
+  "sink",
+  "stop sign",
+  "suitcase",
+  "teddy bear",
+  "toilet",
+  "traffic light",
+  "train",
+  "truck",
+  "tv",
+  "umbrella",
+  "vase",
+  "zebra"
+ ],
+ "removed": {
+  "prereview_excluded": 941,
+  "c_person_also_in_prereview": 33,
+  "d_pile_also_in_prereview": 26,
+  "e_neg_also_in_prereview": 24,
+  "rules_cde_extra": 12,
+  "c_person_extra": 4,
+  "d_pile_extra": 8,
+  "e_neg_extra": 0,
+  "class_excluded": 30
+ },
+ "rule_thresholds": {
+  "T_sol": 0.0,
+  "pile_prob_max": 0.5
+ },
+ "rules_not_used": {
+  "a_occ_contact": "v2 候选上不起作用（dev BAD 召回 0）",
+  "b_contact_straight_edge": "v2 候选上不起作用（dev BAD 召回 0）",
+  "f_sam_iou": "每抓到 1 个 BAD 要误删约 1.6 个 OK（dev，T_sam=0.85：召回 0.393、OK 损失 0.138），由逐格预审替代"
+ },
+ "per_category": {
+  "airplane": {
+   "dev": {
+    "v2": 31,
+    "kept": 28,
+    "prereview_excluded": 3
+   },
+   "test": {
+    "v2": 29,
+    "kept": 27,
+    "prereview_excluded": 2
+   }
+  },
+  "apple": {
+   "dev": {
+    "v2": 18,
+    "prereview_excluded": 9,
+    "kept": 9
+   },
+   "test": {
+    "v2": 18,
+    "prereview_excluded": 10,
+    "kept": 8
+   }
+  },
+  "backpack": {
+   "dev": {
+    "v2": 6,
+    "prereview_excluded": 5,
+    "kept": 1
+   },
+   "test": {
+    "v2": 4,
+    "kept": 3,
+    "prereview_excluded": 1
+   }
+  },
+  "bear": {
+   "dev": {
+    "v2": 30,
+    "prereview_excluded": 15,
+    "kept": 15
+   },
+   "test": {
+    "v2": 35,
+    "prereview_excluded": 11,
+    "kept": 24
+   }
+  },
+  "bed": {
+   "dev": {
+    "v2": 27,
+    "kept": 12,
+    "prereview_excluded": 15
+   },
+   "test": {
+    "v2": 33,
+    "prereview_excluded": 13,
+    "kept": 20
+   }
+  },
+  "bench": {
+   "dev": {
+    "v2": 32,
+    "prereview_excluded": 16,
+    "kept": 16
+   },
+   "test": {
+    "v2": 29,
+    "prereview_excluded": 12,
+    "kept": 17
+   }
+  },
+  "bird": {
+   "dev": {
+    "v2": 40,
+    "kept": 26,
+    "prereview_excluded": 14
+   },
+   "test": {
+    "v2": 31,
+    "kept": 27,
+    "prereview_excluded": 4
+   }
+  },
+  "boat": {
+   "dev": {
+    "v2": 24,
+    "kept": 16,
+    "prereview_excluded": 8
+   },
+   "test": {
+    "v2": 35,
+    "prereview_excluded": 4,
+    "kept": 31
+   }
+  },
+  "book": {
+   "dev": {
+    "v2": 21,
+    "prereview_excluded": 6,
+    "kept": 9,
+    "rules_cde_extra": 6
+   },
+   "test": {
+    "v2": 12,
+    "kept": 6,
+    "rules_cde_extra": 2,
+    "prereview_excluded": 4
+   }
+  },
+  "bottle": {
+   "dev": {
+    "v2": 10,
+    "kept": 6,
+    "prereview_excluded": 4
+   },
+   "test": {
+    "v2": 13,
+    "kept": 8,
+    "prereview_excluded": 5
+   }
+  },
+  "bowl": {
+   "dev": {
+    "v2": 23,
+    "kept": 12,
+    "prereview_excluded": 11
+   },
+   "test": {
+    "v2": 15,
+    "kept": 10,
+    "prereview_excluded": 5
+   }
+  },
+  "bus": {
+   "dev": {
+    "v2": 27,
+    "prereview_excluded": 8,
+    "kept": 19
+   },
+   "test": {
+    "v2": 32,
+    "kept": 28,
+    "prereview_excluded": 4
+   }
+  },
+  "cake": {
+   "dev": {
+    "v2": 23,
+    "prereview_excluded": 7,
+    "kept": 16
+   },
+   "test": {
+    "v2": 27,
+    "kept": 23,
+    "prereview_excluded": 4
+   }
+  },
+  "car": {
+   "dev": {
+    "v2": 25,
+    "kept": 10,
+    "prereview_excluded": 15
+   },
+   "test": {
+    "v2": 27,
+    "prereview_excluded": 13,
+    "kept": 14
+   }
+  },
+  "cat": {
+   "dev": {
+    "v2": 33,
+    "prereview_excluded": 15,
+    "kept": 18
+   },
+   "test": {
+    "v2": 32,
+    "kept": 23,
+    "prereview_excluded": 9
+   }
+  },
+  "cell phone": {
+   "dev": {
+    "v2": 27,
+    "kept": 18,
+    "prereview_excluded": 9
+   },
+   "test": {
+    "v2": 32,
+    "kept": 27,
+    "prereview_excluded": 5
+   }
+  },
+  "chair": {
+   "dev": {
+    "v2": 32,
+    "kept": 19,
+    "prereview_excluded": 13
+   },
+   "test": {
+    "v2": 27,
+    "prereview_excluded": 15,
+    "kept": 12
+   }
+  },
+  "clock": {
+   "dev": {
+    "v2": 33,
+    "kept": 24,
+    "prereview_excluded": 9
+   },
+   "test": {
+    "v2": 37,
+    "prereview_excluded": 7,
+    "kept": 30
+   }
+  },
+  "couch": {
+   "dev": {
+    "v2": 25,
+    "kept": 11,
+    "prereview_excluded": 14
+   },
+   "test": {
+    "v2": 33,
+    "prereview_excluded": 15,
+    "kept": 18
+   }
+  },
+  "cow": {
+   "dev": {
+    "v2": 27,
+    "prereview_excluded": 7,
+    "kept": 20
+   },
+   "test": {
+    "v2": 35,
+    "prereview_excluded": 11,
+    "kept": 24
+   }
+  },
+  "cup": {
+   "dev": {
+    "v2": 22,
+    "kept": 17,
+    "prereview_excluded": 5
+   },
+   "test": {
+    "v2": 19,
+    "kept": 13,
+    "prereview_excluded": 6
+   }
+  },
+  "dog": {
+   "dev": {
+    "v2": 28,
+    "prereview_excluded": 14,
+    "kept": 14
+   },
+   "test": {
+    "v2": 33,
+    "prereview_excluded": 12,
+    "kept": 21
+   }
+  },
+  "elephant": {
+   "dev": {
+    "v2": 31,
+    "prereview_excluded": 10,
+    "kept": 21
+   },
+   "test": {
+    "v2": 38,
+    "prereview_excluded": 11,
+    "kept": 27
+   }
+  },
+  "fire hydrant": {
+   "dev": {
+    "v2": 41,
+    "kept": 34,
+    "prereview_excluded": 7
+   },
+   "test": {
+    "v2": 29,
+    "prereview_excluded": 4,
+    "kept": 25
+   }
+  },
+  "frisbee": {
+   "dev": {
+    "v2": 8,
+    "kept": 7,
+    "prereview_excluded": 1
+   },
+   "test": {
+    "v2": 6,
+    "prereview_excluded": 4,
+    "kept": 2
+   }
+  },
+  "giraffe": {
+   "dev": {
+    "v2": 37,
+    "kept": 20,
+    "prereview_excluded": 17
+   },
+   "test": {
+    "v2": 28,
+    "kept": 19,
+    "prereview_excluded": 9
+   }
+  },
+  "horse": {
+   "dev": {
+    "v2": 33,
+    "kept": 20,
+    "prereview_excluded": 13
+   },
+   "test": {
+    "v2": 35,
+    "kept": 26,
+    "prereview_excluded": 9
+   }
+  },
+  "hot dog": {
+   "dev": {
+    "v2": 26,
+    "kept": 21,
+    "prereview_excluded": 5
+   },
+   "test": {
+    "v2": 26,
+    "kept": 16,
+    "prereview_excluded": 10
+   }
+  },
+  "keyboard": {
+   "dev": {
+    "v2": 17,
+    "kept": 12,
+    "prereview_excluded": 5
+   },
+   "test": {
+    "v2": 18,
+    "kept": 9,
+    "prereview_excluded": 9
+   }
+  },
+  "kite": {
+   "dev": {
+    "v2": 24,
+    "kept": 18,
+    "prereview_excluded": 6
+   },
+   "test": {
+    "v2": 14,
+    "kept": 11,
+    "prereview_excluded": 3
+   }
+  },
+  "knife": {
+   "dev": {
+    "v2": 3,
+    "class_excluded": 3
+   },
+   "test": {
+    "v2": 3,
+    "class_excluded": 3
+   }
+  },
+  "laptop": {
+   "dev": {
+    "v2": 39,
+    "kept": 28,
+    "prereview_excluded": 11
+   },
+   "test": {
+    "v2": 25,
+    "kept": 20,
+    "prereview_excluded": 5
+   }
+  },
+  "microwave": {
+   "dev": {
+    "v2": 22,
+    "kept": 18,
+    "prereview_excluded": 4
+   },
+   "test": {
+    "v2": 35,
+    "kept": 31,
+    "prereview_excluded": 4
+   }
+  },
+  "mouse": {
+   "dev": {
+    "v2": 4,
+    "kept": 4
+   },
+   "test": {
+    "v2": 9,
+    "prereview_excluded": 4,
+    "kept": 5
+   }
+  },
+  "orange": {
+   "dev": {
+    "v2": 23,
+    "prereview_excluded": 15,
+    "kept": 8
+   },
+   "test": {
+    "v2": 20,
+    "kept": 6,
+    "prereview_excluded": 14
+   }
+  },
+  "oven": {
+   "dev": {
+    "v2": 26,
+    "kept": 14,
+    "prereview_excluded": 12
+   },
+   "test": {
+    "v2": 29,
+    "prereview_excluded": 12,
+    "kept": 17
+   }
+  },
+  "parking meter": {
+   "dev": {
+    "v2": 29,
+    "kept": 23,
+    "prereview_excluded": 6
+   },
+   "test": {
+    "v2": 27,
+    "kept": 20,
+    "prereview_excluded": 7
+   }
+  },
+  "person": {
+   "dev": {
+    "v2": 32,
+    "kept": 12,
+    "prereview_excluded": 18,
+    "rules_cde_extra": 2
+   },
+   "test": {
+    "v2": 29,
+    "kept": 9,
+    "prereview_excluded": 18,
+    "rules_cde_extra": 2
+   }
+  },
+  "pizza": {
+   "dev": {
+    "v2": 36,
+    "kept": 28,
+    "prereview_excluded": 8
+   },
+   "test": {
+    "v2": 30,
+    "kept": 25,
+    "prereview_excluded": 5
+   }
+  },
+  "potted plant": {
+   "dev": {
+    "v2": 13,
+    "class_excluded": 13
+   },
+   "test": {
+    "v2": 11,
+    "class_excluded": 11
+   }
+  },
+  "refrigerator": {
+   "dev": {
+    "v2": 32,
+    "prereview_excluded": 13,
+    "kept": 19
+   },
+   "test": {
+    "v2": 33,
+    "kept": 24,
+    "prereview_excluded": 9
+   }
+  },
+  "remote": {
+   "dev": {
+    "v2": 8,
+    "prereview_excluded": 4,
+    "kept": 4
+   },
+   "test": {
+    "v2": 11,
+    "kept": 7,
+    "prereview_excluded": 4
+   }
+  },
+  "sandwich": {
+   "dev": {
+    "v2": 17,
+    "prereview_excluded": 9,
+    "kept": 8
+   },
+   "test": {
+    "v2": 32,
+    "prereview_excluded": 11,
+    "kept": 21
+   }
+  },
+  "scissors": {
+   "dev": {
+    "v2": 27,
+    "kept": 21,
+    "prereview_excluded": 6
+   },
+   "test": {
+    "v2": 28,
+    "kept": 22,
+    "prereview_excluded": 6
+   }
+  },
+  "sheep": {
+   "dev": {
+    "v2": 32,
+    "kept": 28,
+    "prereview_excluded": 4
+   },
+   "test": {
+    "v2": 30,
+    "prereview_excluded": 7,
+    "kept": 23
+   }
+  },
+  "sink": {
+   "dev": {
+    "v2": 19,
+    "prereview_excluded": 6,
+    "kept": 13
+   },
+   "test": {
+    "v2": 25,
+    "prereview_excluded": 8,
+    "kept": 17
+   }
+  },
+  "skateboard": {
+   "dev": {
+    "v2": 6,
+    "prereview_excluded": 3,
+    "kept": 3
+   },
+   "test": {
+    "v2": 4,
+    "kept": 3,
+    "prereview_excluded": 1
+   }
+  },
+  "stop sign": {
+   "dev": {
+    "v2": 40,
+    "prereview_excluded": 10,
+    "kept": 30
+   },
+   "test": {
+    "v2": 33,
+    "prereview_excluded": 8,
+    "kept": 25
+   }
+  },
+  "suitcase": {
+   "dev": {
+    "v2": 25,
+    "prereview_excluded": 6,
+    "kept": 19
+   },
+   "test": {
+    "v2": 28,
+    "kept": 16,
+    "prereview_excluded": 12
+   }
+  },
+  "teddy bear": {
+   "dev": {
+    "v2": 35,
+    "kept": 23,
+    "prereview_excluded": 12
+   },
+   "test": {
+    "v2": 31,
+    "kept": 23,
+    "prereview_excluded": 8
+   }
+  },
+  "tennis racket": {
+   "dev": {
+    "v2": 3,
+    "prereview_excluded": 3
+   },
+   "test": {
+    "v2": 3,
+    "prereview_excluded": 3
+   }
+  },
+  "toilet": {
+   "dev": {
+    "v2": 34,
+    "kept": 25,
+    "prereview_excluded": 9
+   },
+   "test": {
+    "v2": 33,
+    "kept": 23,
+    "prereview_excluded": 10
+   }
+  },
+  "traffic light": {
+   "dev": {
+    "v2": 24,
+    "prereview_excluded": 9,
+    "kept": 15
+   },
+   "test": {
+    "v2": 27,
+    "kept": 16,
+    "prereview_excluded": 11
+   }
+  },
+  "train": {
+   "dev": {
+    "v2": 35,
+    "kept": 25,
+    "prereview_excluded": 10
+   },
+   "test": {
+    "v2": 37,
+    "kept": 31,
+    "prereview_excluded": 6
+   }
+  },
+  "truck": {
+   "dev": {
+    "v2": 22,
+    "prereview_excluded": 6,
+    "kept": 16
+   },
+   "test": {
+    "v2": 29,
+    "kept": 27,
+    "prereview_excluded": 2
+   }
+  },
+  "tv": {
+   "dev": {
+    "v2": 26,
+    "prereview_excluded": 6,
+    "kept": 20
+   },
+   "test": {
+    "v2": 15,
+    "prereview_excluded": 4,
+    "kept": 11
+   }
+  },
+  "umbrella": {
+   "dev": {
+    "v2": 32,
+    "prereview_excluded": 6,
+    "kept": 26
+   },
+   "test": {
+    "v2": 21,
+    "prereview_excluded": 6,
+    "kept": 15
+   }
+  },
+  "vase": {
+   "dev": {
+    "v2": 31,
+    "kept": 20,
+    "prereview_excluded": 11
+   },
+   "test": {
+    "v2": 24,
+    "prereview_excluded": 12,
+    "kept": 12
+   }
+  },
+  "zebra": {
+   "dev": {
+    "v2": 30,
+    "kept": 20,
+    "prereview_excluded": 10
+   },
+   "test": {
+    "v2": 46,
+    "kept": 36,
+    "prereview_excluded": 10
+   }
+  }
+ },
+ "per_category_change_vs_v2": {
+  "airplane": {
+   "dev": -3,
+   "test": -2
+  },
+  "apple": {
+   "dev": -9,
+   "test": -10
+  },
+  "backpack": {
+   "dev": -6,
+   "test": -4
+  },
+  "bear": {
+   "dev": -15,
+   "test": -11
+  },
+  "bed": {
+   "dev": -15,
+   "test": -13
+  },
+  "bench": {
+   "dev": -16,
+   "test": -12
+  },
+  "bird": {
+   "dev": -14,
+   "test": -4
+  },
+  "boat": {
+   "dev": -8,
+   "test": -4
+  },
+  "book": {
+   "dev": -12,
+   "test": -6
+  },
+  "bottle": {
+   "dev": -4,
+   "test": -5
+  },
+  "bowl": {
+   "dev": -11,
+   "test": -5
+  },
+  "bus": {
+   "dev": -8,
+   "test": -4
+  },
+  "cake": {
+   "dev": -7,
+   "test": -4
+  },
+  "car": {
+   "dev": -15,
+   "test": -13
+  },
+  "cat": {
+   "dev": -15,
+   "test": -9
+  },
+  "cell phone": {
+   "dev": -9,
+   "test": -5
+  },
+  "chair": {
+   "dev": -13,
+   "test": -15
+  },
+  "clock": {
+   "dev": -9,
+   "test": -7
+  },
+  "couch": {
+   "dev": -14,
+   "test": -15
+  },
+  "cow": {
+   "dev": -7,
+   "test": -11
+  },
+  "cup": {
+   "dev": -5,
+   "test": -6
+  },
+  "dog": {
+   "dev": -14,
+   "test": -12
+  },
+  "elephant": {
+   "dev": -10,
+   "test": -11
+  },
+  "fire hydrant": {
+   "dev": -7,
+   "test": -4
+  },
+  "frisbee": {
+   "dev": -8,
+   "test": -6
+  },
+  "giraffe": {
+   "dev": -17,
+   "test": -9
+  },
+  "horse": {
+   "dev": -13,
+   "test": -9
+  },
+  "hot dog": {
+   "dev": -5,
+   "test": -10
+  },
+  "keyboard": {
+   "dev": -5,
+   "test": -9
+  },
+  "kite": {
+   "dev": -6,
+   "test": -3
+  },
+  "knife": {
+   "dev": -3,
+   "test": -3
+  },
+  "laptop": {
+   "dev": -11,
+   "test": -5
+  },
+  "microwave": {
+   "dev": -4,
+   "test": -4
+  },
+  "mouse": {
+   "dev": 0,
+   "test": -4
+  },
+  "orange": {
+   "dev": -15,
+   "test": -14
+  },
+  "oven": {
+   "dev": -12,
+   "test": -12
+  },
+  "parking meter": {
+   "dev": -6,
+   "test": -7
+  },
+  "person": {
+   "dev": -20,
+   "test": -20
+  },
+  "pizza": {
+   "dev": -8,
+   "test": -5
+  },
+  "potted plant": {
+   "dev": -13,
+   "test": -11
+  },
+  "refrigerator": {
+   "dev": -13,
+   "test": -9
+  },
+  "remote": {
+   "dev": -4,
+   "test": -4
+  },
+  "sandwich": {
+   "dev": -9,
+   "test": -11
+  },
+  "scissors": {
+   "dev": -6,
+   "test": -6
+  },
+  "sheep": {
+   "dev": -4,
+   "test": -7
+  },
+  "sink": {
+   "dev": -6,
+   "test": -8
+  },
+  "skateboard": {
+   "dev": -3,
+   "test": -1
+  },
+  "stop sign": {
+   "dev": -10,
+   "test": -8
+  },
+  "suitcase": {
+   "dev": -6,
+   "test": -12
+  },
+  "teddy bear": {
+   "dev": -12,
+   "test": -8
+  },
+  "tennis racket": {
+   "dev": -3,
+   "test": -3
+  },
+  "toilet": {
+   "dev": -9,
+   "test": -10
+  },
+  "traffic light": {
+   "dev": -9,
+   "test": -11
+  },
+  "train": {
+   "dev": -10,
+   "test": -6
+  },
+  "truck": {
+   "dev": -6,
+   "test": -2
+  },
+  "tv": {
+   "dev": -6,
+   "test": -4
+  },
+  "umbrella": {
+   "dev": -6,
+   "test": -6
+  },
+  "vase": {
+   "dev": -11,
+   "test": -12
+  },
+  "zebra": {
+   "dev": -10,
+   "test": -10
+  }
+ },
+ "status": "final",
+ "draft": {
+  "library_sha256": "f1600371e6c8aaa8d660a38610b099502f75dd6ce2361f6be9dfd0f06a22b9bc",
+  "n": 1980,
+  "commit": "0bd0f57"
+ },
+ "final_exclusions": {
+  "file": "annotations/synth/library_v3_final_exclusions.csv",
+  "n": 23,
+  "by_source": {
+   "human_spotcheck": 6,
+   "planner_cow_review": 17
+  },
+  "by_category": {
+   "cow": 19,
+   "dog": 1,
+   "sheep": 1,
+   "cake": 1,
+   "sandwich": 1
+  }
+ },
+ "spotcheck": {
+  "n": 150,
+  "bad": 3,
+  "unsure": 3,
+  "bad_rate": 0.02,
+  "bad_wilson95": [
+   0.0068,
+   0.0571
+  ],
+  "bad_or_unsure_rate": 0.04,
+  "bad_or_unsure_wilson95": [
+   0.0185,
+   0.0845
+  ],
+  "criterion": "<= 5%（<= 7 个）",
+  "meets": true,
+  "note": "抽查估计的是剔除前草稿的残余比例；定稿时的 23 个剔除是在抽查之后做的"
+ },
+ "library_file": "library_final.jsonl",
+ "categories_dropped_at_final": {},
+ "per_category_final": {
+  "airplane": {
+   "test": 27,
+   "dev": 28
+  },
+  "apple": {
+   "dev": 9,
+   "test": 8
+  },
+  "bear": {
+   "test": 24,
+   "dev": 15
+  },
+  "bed": {
+   "test": 20,
+   "dev": 12
+  },
+  "bench": {
+   "dev": 16,
+   "test": 17
+  },
+  "bird": {
+   "dev": 26,
+   "test": 27
+  },
+  "boat": {
+   "dev": 16,
+   "test": 31
+  },
+  "book": {
+   "test": 6,
+   "dev": 9
+  },
+  "bottle": {
+   "dev": 6,
+   "test": 8
+  },
+  "bowl": {
+   "test": 10,
+   "dev": 12
+  },
+  "bus": {
+   "test": 28,
+   "dev": 19
+  },
+  "cake": {
+   "test": 23,
+   "dev": 15
+  },
+  "car": {
+   "dev": 10,
+   "test": 14
+  },
+  "cat": {
+   "test": 23,
+   "dev": 18
+  },
+  "cell phone": {
+   "dev": 18,
+   "test": 27
+  },
+  "chair": {
+   "dev": 19,
+   "test": 12
+  },
+  "clock": {
+   "dev": 24,
+   "test": 30
+  },
+  "couch": {
+   "dev": 11,
+   "test": 18
+  },
+  "cow": {
+   "dev": 13,
+   "test": 12
+  },
+  "cup": {
+   "dev": 17,
+   "test": 13
+  },
+  "dog": {
+   "test": 21,
+   "dev": 13
+  },
+  "elephant": {
+   "dev": 21,
+   "test": 27
+  },
+  "fire hydrant": {
+   "test": 25,
+   "dev": 34
+  },
+  "giraffe": {
+   "dev": 20,
+   "test": 19
+  },
+  "horse": {
+   "test": 26,
+   "dev": 20
+  },
+  "hot dog": {
+   "test": 16,
+   "dev": 21
+  },
+  "keyboard": {
+   "dev": 12,
+   "test": 9
+  },
+  "kite": {
+   "dev": 18,
+   "test": 11
+  },
+  "laptop": {
+   "test": 20,
+   "dev": 28
+  },
+  "microwave": {
+   "test": 31,
+   "dev": 18
+  },
+  "mouse": {
+   "test": 5,
+   "dev": 4
+  },
+  "orange": {
+   "test": 6,
+   "dev": 8
+  },
+  "oven": {
+   "dev": 14,
+   "test": 17
+  },
+  "parking meter": {
+   "test": 20,
+   "dev": 23
+  },
+  "person": {
+   "dev": 12,
+   "test": 9
+  },
+  "pizza": {
+   "test": 25,
+   "dev": 28
+  },
+  "refrigerator": {
+   "test": 24,
+   "dev": 19
+  },
+  "remote": {
+   "test": 7,
+   "dev": 4
+  },
+  "sandwich": {
+   "test": 20,
+   "dev": 8
+  },
+  "scissors": {
+   "dev": 21,
+   "test": 22
+  },
+  "sheep": {
+   "dev": 27,
+   "test": 23
+  },
+  "sink": {
+   "test": 17,
+   "dev": 13
+  },
+  "skateboard": {
+   "test": 3,
+   "dev": 3
+  },
+  "stop sign": {
+   "test": 25,
+   "dev": 30
+  },
+  "suitcase": {
+   "test": 16,
+   "dev": 19
+  },
+  "teddy bear": {
+   "test": 23,
+   "dev": 23
+  },
+  "toilet": {
+   "dev": 25,
+   "test": 23
+  },
+  "traffic light": {
+   "test": 16,
+   "dev": 15
+  },
+  "train": {
+   "dev": 25,
+   "test": 31
+  },
+  "truck": {
+   "test": 27,
+   "dev": 16
+  },
+  "tv": {
+   "dev": 20,
+   "test": 11
+  },
+  "umbrella": {
+   "dev": 26,
+   "test": 15
+  },
+  "vase": {
+   "dev": 20,
+   "test": 12
+  },
+  "zebra": {
+   "test": 36,
+   "dev": 20
+  }
+ },
+ "per_category_draft": {
+  "airplane": {
+   "test": 27,
+   "dev": 28
+  },
+  "apple": {
+   "dev": 9,
+   "test": 8
+  },
+  "bear": {
+   "test": 24,
+   "dev": 15
+  },
+  "bed": {
+   "test": 20,
+   "dev": 12
+  },
+  "bench": {
+   "dev": 16,
+   "test": 17
+  },
+  "bird": {
+   "dev": 26,
+   "test": 27
+  },
+  "boat": {
+   "dev": 16,
+   "test": 31
+  },
+  "book": {
+   "test": 6,
+   "dev": 9
+  },
+  "bottle": {
+   "dev": 6,
+   "test": 8
+  },
+  "bowl": {
+   "test": 10,
+   "dev": 12
+  },
+  "bus": {
+   "test": 28,
+   "dev": 19
+  },
+  "cake": {
+   "test": 23,
+   "dev": 16
+  },
+  "car": {
+   "dev": 10,
+   "test": 14
+  },
+  "cat": {
+   "test": 23,
+   "dev": 18
+  },
+  "cell phone": {
+   "dev": 18,
+   "test": 27
+  },
+  "chair": {
+   "dev": 19,
+   "test": 12
+  },
+  "clock": {
+   "dev": 24,
+   "test": 30
+  },
+  "couch": {
+   "dev": 11,
+   "test": 18
+  },
+  "cow": {
+   "test": 24,
+   "dev": 20
+  },
+  "cup": {
+   "dev": 17,
+   "test": 13
+  },
+  "dog": {
+   "test": 21,
+   "dev": 14
+  },
+  "elephant": {
+   "dev": 21,
+   "test": 27
+  },
+  "fire hydrant": {
+   "test": 25,
+   "dev": 34
+  },
+  "giraffe": {
+   "dev": 20,
+   "test": 19
+  },
+  "horse": {
+   "test": 26,
+   "dev": 20
+  },
+  "hot dog": {
+   "test": 16,
+   "dev": 21
+  },
+  "keyboard": {
+   "dev": 12,
+   "test": 9
+  },
+  "kite": {
+   "dev": 18,
+   "test": 11
+  },
+  "laptop": {
+   "test": 20,
+   "dev": 28
+  },
+  "microwave": {
+   "test": 31,
+   "dev": 18
+  },
+  "mouse": {
+   "test": 5,
+   "dev": 4
+  },
+  "orange": {
+   "test": 6,
+   "dev": 8
+  },
+  "oven": {
+   "dev": 14,
+   "test": 17
+  },
+  "parking meter": {
+   "test": 20,
+   "dev": 23
+  },
+  "person": {
+   "dev": 12,
+   "test": 9
+  },
+  "pizza": {
+   "test": 25,
+   "dev": 28
+  },
+  "refrigerator": {
+   "test": 24,
+   "dev": 19
+  },
+  "remote": {
+   "test": 7,
+   "dev": 4
+  },
+  "sandwich": {
+   "test": 21,
+   "dev": 8
+  },
+  "scissors": {
+   "dev": 21,
+   "test": 22
+  },
+  "sheep": {
+   "dev": 28,
+   "test": 23
+  },
+  "sink": {
+   "test": 17,
+   "dev": 13
+  },
+  "skateboard": {
+   "test": 3,
+   "dev": 3
+  },
+  "stop sign": {
+   "test": 25,
+   "dev": 30
+  },
+  "suitcase": {
+   "test": 16,
+   "dev": 19
+  },
+  "teddy bear": {
+   "test": 23,
+   "dev": 23
+  },
+  "toilet": {
+   "dev": 25,
+   "test": 23
+  },
+  "traffic light": {
+   "test": 16,
+   "dev": 15
+  },
+  "train": {
+   "dev": 25,
+   "test": 31
+  },
+  "truck": {
+   "test": 27,
+   "dev": 16
+  },
+  "tv": {
+   "dev": 20,
+   "test": 11
+  },
+  "umbrella": {
+   "dev": 26,
+   "test": 15
+  },
+  "vase": {
+   "dev": 20,
+   "test": 12
+  },
+  "zebra": {
+   "test": 36,
+   "dev": 20
+  }
+ }
+}

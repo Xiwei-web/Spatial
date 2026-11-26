@@ -1,16 +1,16 @@
 {
- "provenance": "自动规则过滤，加模型辅助逐格预审排除（两轮，未经人工复核）；人工抽查结果另报",
- "library_sha256": "f1600371e6c8aaa8d660a38610b099502f75dd6ce2361f6be9dfd0f06a22b9bc",
+ "provenance": "自动规则过滤，加模型辅助逐格预审排除（两轮，未经人工复核）；第一轮定稿按 Xiwei 人工抽查剔除 6 个、planner 的 cow 单类复核剔除 17 个（其中 2 个在第二轮恢复）；第二轮按类复核（planner 子代理放大 2 倍逐格看，模型预审，未经人工复核）剔除 85 个",
+ "library_sha256": "439a5f8bc779fbe0bc40dca41579b0f90c1dfc4ba60e50fed090b025d747550d",
  "v2_library_sha256": "0766afcd6555d1efe64ed1ccadffc46349c1f0ef497e44cab61223f1c6995f9b",
  "n_v2": 2976,
- "n_final": 1980,
+ "n_final": 1874,
  "n_final_by_side": {
-  "dev": 951,
-  "test": 1029
+  "dev": 903,
+  "test": 971
  },
  "n_final_by_src": {
-  "train": 1807,
-  "val": 173
+  "train": 1708,
+  "val": 166
  },
  "n_categories_usable": 54,
  "meets_min_categories": true,
@@ -95,7 +95,7 @@
   "potted plant",
   "tennis racket"
  ],
- "n_small36_ok": 1657,
+ "n_small36_ok": 1571,
  "n_categories_small36": 52,
  "categories_small36": [
   "airplane",
@@ -1115,5 +1115,568 @@
    "dev": -10,
    "test": -10
   }
- }
+ },
+ "status": "final",
+ "draft": {
+  "library_sha256": "f1600371e6c8aaa8d660a38610b099502f75dd6ce2361f6be9dfd0f06a22b9bc",
+  "n": 1980,
+  "commit": "0bd0f57"
+ },
+ "final_exclusions": {
+  "file": "annotations/synth/library_v3_final_exclusions.csv",
+  "n": 23,
+  "by_source": {
+   "human_spotcheck": 6,
+   "planner_cow_review": 17
+  },
+  "by_category": {
+   "cow": 19,
+   "dog": 1,
+   "sheep": 1,
+   "cake": 1,
+   "sandwich": 1
+  }
+ },
+ "spotcheck": {
+  "n": 150,
+  "bad": 3,
+  "unsure": 3,
+  "bad_rate": 0.02,
+  "bad_wilson95": [
+   0.0068,
+   0.0571
+  ],
+  "bad_or_unsure_rate": 0.04,
+  "bad_or_unsure_wilson95": [
+   0.0185,
+   0.0845
+  ],
+  "criterion": "<= 5%（<= 7 个）",
+  "meets": true,
+  "note": "抽查估计的是剔除前草稿的残余比例；定稿时的 23 个剔除是在抽查之后做的"
+ },
+ "library_file": "library_final_r2.jsonl",
+ "categories_dropped_at_final": {},
+ "per_category_final": {
+  "airplane": {
+   "test": 27,
+   "dev": 28
+  },
+  "apple": {
+   "dev": 9,
+   "test": 8
+  },
+  "bear": {
+   "test": 20,
+   "dev": 13
+  },
+  "bed": {
+   "test": 20,
+   "dev": 12
+  },
+  "bench": {
+   "dev": 10,
+   "test": 9
+  },
+  "bird": {
+   "dev": 22,
+   "test": 26
+  },
+  "boat": {
+   "dev": 16,
+   "test": 31
+  },
+  "book": {
+   "test": 6,
+   "dev": 9
+  },
+  "bottle": {
+   "dev": 6,
+   "test": 8
+  },
+  "bowl": {
+   "test": 10,
+   "dev": 12
+  },
+  "bus": {
+   "test": 28,
+   "dev": 19
+  },
+  "cake": {
+   "test": 23,
+   "dev": 15
+  },
+  "car": {
+   "dev": 10,
+   "test": 14
+  },
+  "cat": {
+   "test": 19,
+   "dev": 15
+  },
+  "cell phone": {
+   "dev": 18,
+   "test": 27
+  },
+  "chair": {
+   "dev": 19,
+   "test": 12
+  },
+  "clock": {
+   "dev": 24,
+   "test": 30
+  },
+  "couch": {
+   "dev": 11,
+   "test": 18
+  },
+  "cow": {
+   "dev": 13,
+   "test": 13
+  },
+  "cup": {
+   "dev": 17,
+   "test": 13
+  },
+  "dog": {
+   "test": 18,
+   "dev": 11
+  },
+  "elephant": {
+   "dev": 15,
+   "test": 16
+  },
+  "fire hydrant": {
+   "test": 23,
+   "dev": 30
+  },
+  "giraffe": {
+   "dev": 19,
+   "test": 17
+  },
+  "horse": {
+   "test": 21,
+   "dev": 16
+  },
+  "hot dog": {
+   "test": 16,
+   "dev": 21
+  },
+  "keyboard": {
+   "dev": 12,
+   "test": 9
+  },
+  "kite": {
+   "dev": 18,
+   "test": 11
+  },
+  "laptop": {
+   "test": 20,
+   "dev": 28
+  },
+  "microwave": {
+   "test": 31,
+   "dev": 18
+  },
+  "mouse": {
+   "test": 5,
+   "dev": 4
+  },
+  "orange": {
+   "test": 6,
+   "dev": 8
+  },
+  "oven": {
+   "dev": 14,
+   "test": 17
+  },
+  "parking meter": {
+   "test": 20,
+   "dev": 23
+  },
+  "person": {
+   "dev": 12,
+   "test": 9
+  },
+  "pizza": {
+   "test": 25,
+   "dev": 28
+  },
+  "refrigerator": {
+   "test": 24,
+   "dev": 19
+  },
+  "remote": {
+   "test": 7,
+   "dev": 4
+  },
+  "sandwich": {
+   "test": 20,
+   "dev": 8
+  },
+  "scissors": {
+   "dev": 21,
+   "test": 22
+  },
+  "sheep": {
+   "dev": 25,
+   "test": 20
+  },
+  "sink": {
+   "test": 17,
+   "dev": 13
+  },
+  "skateboard": {
+   "test": 3,
+   "dev": 3
+  },
+  "stop sign": {
+   "test": 25,
+   "dev": 30
+  },
+  "suitcase": {
+   "test": 16,
+   "dev": 19
+  },
+  "teddy bear": {
+   "test": 23,
+   "dev": 23
+  },
+  "toilet": {
+   "dev": 25,
+   "test": 23
+  },
+  "traffic light": {
+   "test": 16,
+   "dev": 15
+  },
+  "train": {
+   "dev": 25,
+   "test": 31
+  },
+  "truck": {
+   "test": 27,
+   "dev": 16
+  },
+  "tv": {
+   "dev": 20,
+   "test": 11
+  },
+  "umbrella": {
+   "dev": 26,
+   "test": 15
+  },
+  "vase": {
+   "dev": 20,
+   "test": 12
+  },
+  "zebra": {
+   "test": 33,
+   "dev": 16
+  }
+ },
+ "per_category_draft": {
+  "airplane": {
+   "test": 27,
+   "dev": 28
+  },
+  "apple": {
+   "dev": 9,
+   "test": 8
+  },
+  "bear": {
+   "test": 24,
+   "dev": 15
+  },
+  "bed": {
+   "test": 20,
+   "dev": 12
+  },
+  "bench": {
+   "dev": 16,
+   "test": 17
+  },
+  "bird": {
+   "dev": 26,
+   "test": 27
+  },
+  "boat": {
+   "dev": 16,
+   "test": 31
+  },
+  "book": {
+   "test": 6,
+   "dev": 9
+  },
+  "bottle": {
+   "dev": 6,
+   "test": 8
+  },
+  "bowl": {
+   "test": 10,
+   "dev": 12
+  },
+  "bus": {
+   "test": 28,
+   "dev": 19
+  },
+  "cake": {
+   "test": 23,
+   "dev": 16
+  },
+  "car": {
+   "dev": 10,
+   "test": 14
+  },
+  "cat": {
+   "test": 23,
+   "dev": 18
+  },
+  "cell phone": {
+   "dev": 18,
+   "test": 27
+  },
+  "chair": {
+   "dev": 19,
+   "test": 12
+  },
+  "clock": {
+   "dev": 24,
+   "test": 30
+  },
+  "couch": {
+   "dev": 11,
+   "test": 18
+  },
+  "cow": {
+   "test": 24,
+   "dev": 20
+  },
+  "cup": {
+   "dev": 17,
+   "test": 13
+  },
+  "dog": {
+   "test": 21,
+   "dev": 14
+  },
+  "elephant": {
+   "dev": 21,
+   "test": 27
+  },
+  "fire hydrant": {
+   "test": 25,
+   "dev": 34
+  },
+  "giraffe": {
+   "dev": 20,
+   "test": 19
+  },
+  "horse": {
+   "test": 26,
+   "dev": 20
+  },
+  "hot dog": {
+   "test": 16,
+   "dev": 21
+  },
+  "keyboard": {
+   "dev": 12,
+   "test": 9
+  },
+  "kite": {
+   "dev": 18,
+   "test": 11
+  },
+  "laptop": {
+   "test": 20,
+   "dev": 28
+  },
+  "microwave": {
+   "test": 31,
+   "dev": 18
+  },
+  "mouse": {
+   "test": 5,
+   "dev": 4
+  },
+  "orange": {
+   "test": 6,
+   "dev": 8
+  },
+  "oven": {
+   "dev": 14,
+   "test": 17
+  },
+  "parking meter": {
+   "test": 20,
+   "dev": 23
+  },
+  "person": {
+   "dev": 12,
+   "test": 9
+  },
+  "pizza": {
+   "test": 25,
+   "dev": 28
+  },
+  "refrigerator": {
+   "test": 24,
+   "dev": 19
+  },
+  "remote": {
+   "test": 7,
+   "dev": 4
+  },
+  "sandwich": {
+   "test": 21,
+   "dev": 8
+  },
+  "scissors": {
+   "dev": 21,
+   "test": 22
+  },
+  "sheep": {
+   "dev": 28,
+   "test": 23
+  },
+  "sink": {
+   "test": 17,
+   "dev": 13
+  },
+  "skateboard": {
+   "test": 3,
+   "dev": 3
+  },
+  "stop sign": {
+   "test": 25,
+   "dev": 30
+  },
+  "suitcase": {
+   "test": 16,
+   "dev": 19
+  },
+  "teddy bear": {
+   "test": 23,
+   "dev": 23
+  },
+  "toilet": {
+   "dev": 25,
+   "test": 23
+  },
+  "traffic light": {
+   "test": 16,
+   "dev": 15
+  },
+  "train": {
+   "dev": 25,
+   "test": 31
+  },
+  "truck": {
+   "test": 27,
+   "dev": 16
+  },
+  "tv": {
+   "dev": 20,
+   "test": 11
+  },
+  "umbrella": {
+   "dev": 26,
+   "test": 15
+  },
+  "vase": {
+   "dev": 20,
+   "test": 12
+  },
+  "zebra": {
+   "test": 36,
+   "dev": 20
+  }
+ },
+ "round": 2,
+ "round1": {
+  "library_file": "library_final.jsonl",
+  "library_sha256": "54f28477af114788b5d5559e07d529db88fbcf127f7cff1f155c941f24f0164e",
+  "n": 1957,
+  "manifest_copy": "manifests/synth_library_v3_r1.json"
+ },
+ "round2": {
+  "exclusions_file": "annotations/synth/library_v3_round2_exclusions.csv",
+  "n_excluded": 85,
+  "restored": [
+   "train_70384",
+   "train_73187"
+  ],
+  "restored_reason": "按第二轮的宽标准不该剔除（Xiwei 决定）",
+  "categories_reviewed": [
+   "sheep",
+   "horse",
+   "zebra",
+   "giraffe",
+   "elephant",
+   "bear",
+   "dog",
+   "cat",
+   "bird",
+   "bench",
+   "fire hydrant",
+   "cow"
+  ],
+  "n_reviewed_cells": 523,
+  "criterion": "只在缺失明显（没头、没腿、直线切口）或背景成片进入 mask 时剔除；蹄下、脚边少量的草不剔除",
+  "excluded_by_category": {
+   "bear": {
+    "dev": 2,
+    "test": 4
+   },
+   "bench": {
+    "dev": 6,
+    "test": 8
+   },
+   "bird": {
+    "dev": 4,
+    "test": 1
+   },
+   "cat": {
+    "dev": 3,
+    "test": 4
+   },
+   "cow": {
+    "dev": 1,
+    "test": 0
+   },
+   "dog": {
+    "dev": 2,
+    "test": 3
+   },
+   "elephant": {
+    "dev": 6,
+    "test": 11
+   },
+   "fire hydrant": {
+    "dev": 4,
+    "test": 2
+   },
+   "giraffe": {
+    "dev": 1,
+    "test": 2
+   },
+   "horse": {
+    "dev": 4,
+    "test": 5
+   },
+   "sheep": {
+    "dev": 2,
+    "test": 3
+   },
+   "zebra": {
+    "dev": 4,
+    "test": 3
+   }
+  },
+  "kept_despite_subagent": [
+   "train_586407（bear，Xiwei 明确保留）"
+  ]
+ },
+ "spotcheck_note": "人工抽查（150 个，坏 2.0%）是在两轮剔除之前、对 v3 草稿做的"
 }

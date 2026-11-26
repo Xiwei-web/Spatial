@@ -543,4 +543,13 @@ A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50
   - **定稿结果**：**1,957 个**（dev 941 / test 1,016；train 来源 1,784，val 来源 173），**54 类**，没有类别掉到两侧各 3 个以下；1,639 个通过 18 px 检查，52 类可进 36 px 档；cow 剩 dev 13 / test 12。
   - **文件**：定稿写在 `<data>/synth/cutouts_v3/library_final.jsonl`，草稿 `library.jsonl` 保留不动；`splits/synth_library_v3.json` 与 `manifests/synth_library_v3.json` 标为 final；全量联系表 `outputs/synth_review/library_v3_full/` 已按定稿重出，页眉标 FINAL。
   - **来源写法**：自动规则过滤，加模型辅助逐格预审排除（两轮，未经人工复核）；再按 Xiwei 人工抽查剔除 6 个，按 planner 的 cow 单类复核（模型预审，未经人工复核）剔除 17 个。
+- **第二轮按类复核（2026-11-26，Xiwei 要求，标准比 cow 那次宽）**：
+  - **范围**：站在草地或地面上的动物类。Xiwei 指定 sheep、horse、zebra、giraffe、elephant、bear、dog；planner 加了 cat、bird、bench、fire hydrant；cow 剩下的 25 个也按同一标准复核。共 523 格，由 planner 的子代理放大 2 倍逐格看（模型预审，未经人工复核）。
+  - **标准**：只有两种情况剔除——缺失明显（没头、没腿、直线切口），或背景成片进入 mask；蹄下、脚边少量的草不剔除。
+  - **剔除 85 个**，清单在 `annotations/synth/library_v3_round2_exclusions.csv`。各类 dev / test 的剔除数：elephant 6/11、bench 6/8、horse 4/5、zebra 4/3、cat 3/4、bear 2/4、sheep 2/3、dog 2/3、fire hydrant 4/2、bird 4/1、giraffe 1/2、cow 1/0。
+  - train_586407（bear）子代理判了剔除，但 Xiwei 明确保留，没有剔除。
+  - **恢复 2 个**：train_73187、train_70384（cow）。它们在第一轮 cow 复核里被剔除，按第二轮的宽标准不该剔除，Xiwei 决定恢复。`library_v3_final_exclusions.csv` 里这两行保留，status 标为 restored，其余为 excluded。
+  - **结果**：1,957 + 2 − 85 = **1,874 个**（dev 903 / test 971），54 类，每类每侧都 ≥ 3；1,571 个通过 18 px 检查，52 类可进 36 px 档。各类余量与 planner 的计算逐一一致。
+  - **版本**：第二轮定稿写在 `library_final_r2.jsonl`，第一轮的 `library_final.jsonl` 保留不动。第一轮的清单另存为 `manifests/synth_library_v3_r1.json`，第一轮的联系表另存在 `outputs/synth_review/library_v3_full_r1/`。`library_v3_full/` 已按第二轮重出，页眉标 "FINAL (round2)"。
+  - **人工抽查**（150 个，坏 2.0%）是在两轮剔除之前、对 v3 草稿做的。
 
