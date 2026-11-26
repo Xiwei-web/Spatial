@@ -1,0 +1,19 @@
+{
+ "n": 400,
+ "by_size": {
+  "36": 100,
+  "72": 100,
+  "108": 100,
+  "161": 100
+ },
+ "n_categories": 54,
+ "by_background": {
+  "solid": 100,
+  "linear_gradient": 100,
+  "radial_gradient": 100,
+  "noise": 100
+ },
+ "determinism_identical": 20,
+ "metadata_sha256": "695d78ac6dcfe67117434696fbfc878be4c478d7e87ec7140257671d3a486cd6",
+ "library_sha256": "439a5f8bc779fbe0bc40dca41579b0f90c1dfc4ba60e50fed090b025d747550d"
+}
