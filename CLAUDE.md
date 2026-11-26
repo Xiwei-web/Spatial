@@ -15,7 +15,7 @@
 - 发现新的坏节点就加进 `configs/slurm.yaml`，并在汇报里告诉 planner 和 Xiwei。
 
 ## GitHub 推送（Xiwei 2026-11-26 确认）
-- 远程仓库 origin = `git@github-spatial:Xiwei-web/Spatial.git`（私有），分支 main。认证只用 deploy key `~/.ssh/spatial_deploy`（`~/.ssh/config` 的 Host github-spatial），不用 token。
+- 远程仓库 origin = `git@github-spatial:Xiwei-web/Spatial.git`（私有）。本地 main 推到远程分支 **hpc-main**；远程 main 上是 Xiwei 之前的旧项目（exp1–exp7），不动（Xiwei 2026-11-26 选择）。认证只用 deploy key `~/.ssh/spatial_deploy`（`~/.ssh/config` 的 Host github-spatial），不用 token。
 - 私钥只存在 `~/.ssh/`，不得复制到仓库、日志、输出目录或任何其它位置，也不得显示在任何消息里。
-- 每次 commit 之后都推送。禁止 force push；除 Xiwei 要求外，禁止推送到其它仓库或分支。推送失败就在汇报里写明原因，不换认证方式绕过。
+- 每次 commit 之后都推送（`git push origin main:hpc-main`）。禁止 force push；除 Xiwei 要求外，禁止推送到其它仓库或分支。推送失败就在汇报里写明原因，不换认证方式绕过。
 - 不改写已推送的历史。仓库里不放密钥、超过 10 MB 的文件、只允许评测而不允许再分发的数据原文（例如 SpatialRGPT 的图像和题目原文）；清单和划分文件可以放。
