@@ -1,0 +1,470 @@
+{
+ "Qwen2.5-VL-7B-Instruct": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  }
+ },
+ "Qwen3-VL-8B-Instruct": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  }
+ },
+ "VST-7B-RL": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  }
+ },
+ "RoboBrain2.0-7B": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  }
+ },
+ "GLM-4.6V-Flash": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 0.84,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text64",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 0.74,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 0.54,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 0.84,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 0.96,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 0.86,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 0.94,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 0.022857142857142857,
+    "text64": 0.9485714285714286,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "letter_logit",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 0.03,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 0.01,
+     "text64": 0.99
+    },
+    "coco_spatial_one": {
+     "text16": 0.02,
+     "text64": 0.97
+    },
+    "coco_spatial_two": {
+     "text16": 0.02,
+     "text64": 0.9
+    },
+    "gqa_spatial_one": {
+     "text16": 0.06,
+     "text64": 0.97
+    },
+    "gqa_spatial_two": {
+     "text16": 0.0,
+     "text64": 0.96
+    },
+    "coco_pairs": {
+     "text16": 0.02,
+     "text64": 0.85
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 69
+  }
+ }
+}

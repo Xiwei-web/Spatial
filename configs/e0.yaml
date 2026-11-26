@@ -1,0 +1,18 @@
+answer_modes:
+  Qwen2.5-VL-7B-Instruct:
+    mcq: text16
+    binary: text16
+  Qwen3-VL-8B-Instruct:
+    mcq: text16
+    binary: text16
+  VST-7B-RL:
+    mcq: text16
+    binary: text16
+  RoboBrain2.0-7B:
+    mcq: text16
+    binary: text16
+  GLM-4.6V-Flash:
+    mcq: text64
+    binary: letter_logit
+answer_modes_note: dev 解析检查（manifests/e0_parse_check.json）按 ANSWER_MODE_ORDER 与 0.95
+  自动选出；全部方式都不到 0.95 的模型不列入（不跑筛选）
