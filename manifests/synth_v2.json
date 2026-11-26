@@ -1,0 +1,508 @@
+{
+ "n_base": 3180,
+ "n_failed": 0,
+ "failed": [],
+ "main": {
+  "t28": {
+   "models": [
+    "Qwen2.5-VL-7B-Instruct",
+    "RoboBrain2.0-7B",
+    "GLM-4.6V-Flash"
+   ],
+   "px": 28,
+   "bins": {
+    "0.50-0.71": {
+     "dev": 0,
+     "test": 0,
+     "actual_token_range": null,
+     "geometrically_feasible": false,
+     "meets": null
+    },
+    "0.71-1.00": {
+     "dev": 83,
+     "test": 157,
+     "actual_token_range": [
+      0.839,
+      1.0
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.00-1.41": {
+     "dev": 78,
+     "test": 172,
+     "actual_token_range": [
+      1.001,
+      1.414
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.41-2.00": {
+     "dev": 85,
+     "test": 161,
+     "actual_token_range": [
+      1.414,
+      2.0
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.00-2.83": {
+     "dev": 78,
+     "test": 162,
+     "actual_token_range": [
+      2.0,
+      2.826
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.83-4.00": {
+     "dev": 82,
+     "test": 158,
+     "actual_token_range": [
+      2.833,
+      3.995
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "4.00-5.66": {
+     "dev": 80,
+     "test": 163,
+     "actual_token_range": [
+      4.001,
+      5.656
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "5.66-8.00": {
+     "dev": 80,
+     "test": 159,
+     "actual_token_range": [
+      5.664,
+      7.997
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "8.00-11.31": {
+     "dev": 88,
+     "test": 174,
+     "actual_token_range": [
+      8.003,
+      11.289
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    }
+   }
+  },
+  "t32": {
+   "models": [
+    "Qwen3-VL-8B-Instruct",
+    "Qwen3.5-2B",
+    "Qwen3.5-4B",
+    "Qwen3.5-9B"
+   ],
+   "px": 32,
+   "bins": {
+    "0.50-0.71": {
+     "dev": 0,
+     "test": 0,
+     "actual_token_range": null,
+     "geometrically_feasible": false,
+     "meets": null
+    },
+    "0.71-1.00": {
+     "dev": 91,
+     "test": 178,
+     "actual_token_range": [
+      0.735,
+      0.999
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.00-1.41": {
+     "dev": 87,
+     "test": 194,
+     "actual_token_range": [
+      1.006,
+      1.414
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.41-2.00": {
+     "dev": 82,
+     "test": 152,
+     "actual_token_range": [
+      1.419,
+      1.994
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.00-2.83": {
+     "dev": 83,
+     "test": 158,
+     "actual_token_range": [
+      2.001,
+      2.82
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.83-4.00": {
+     "dev": 86,
+     "test": 181,
+     "actual_token_range": [
+      2.847,
+      3.995
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "4.00-5.66": {
+     "dev": 79,
+     "test": 162,
+     "actual_token_range": [
+      4.005,
+      5.65
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "5.66-8.00": {
+     "dev": 91,
+     "test": 170,
+     "actual_token_range": [
+      5.669,
+      7.98
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "8.00-11.31": {
+     "dev": 81,
+     "test": 174,
+     "actual_token_range": [
+      8.005,
+      11.305
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    }
+   }
+  },
+  "t56": {
+   "models": [
+    "InternVL3-8B",
+    "InternVL3_5-8B",
+    "SenseNova-SI-1.2-InternVL3-8B",
+    "SenseNova-SI-1.3-InternVL3-8B"
+   ],
+   "px": 56,
+   "bins": {
+    "0.50-0.71": {
+     "dev": 78,
+     "test": 172,
+     "actual_token_range": [
+      0.5,
+      0.707
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "0.71-1.00": {
+     "dev": 85,
+     "test": 161,
+     "actual_token_range": [
+      0.707,
+      1.0
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.00-1.41": {
+     "dev": 78,
+     "test": 162,
+     "actual_token_range": [
+      1.0,
+      1.413
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "1.41-2.00": {
+     "dev": 82,
+     "test": 158,
+     "actual_token_range": [
+      1.416,
+      1.998
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.00-2.83": {
+     "dev": 80,
+     "test": 163,
+     "actual_token_range": [
+      2.001,
+      2.828
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "2.83-4.00": {
+     "dev": 80,
+     "test": 159,
+     "actual_token_range": [
+      2.832,
+      3.998
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "4.00-5.66": {
+     "dev": 88,
+     "test": 174,
+     "actual_token_range": [
+      4.002,
+      5.644
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "5.66-8.00": {
+     "dev": 86,
+     "test": 172,
+     "actual_token_range": [
+      5.662,
+      7.998
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    },
+    "8.00-11.31": {
+     "dev": 80,
+     "test": 162,
+     "actual_token_range": [
+      8.001,
+      11.305
+     ],
+     "geometrically_feasible": true,
+     "meets": true
+    }
+   }
+  }
+ },
+ "overlap": {
+  "occ10": {
+   "dev": 80,
+   "test": 160,
+   "meets": true
+  },
+  "occ30": {
+   "dev": 80,
+   "test": 160,
+   "meets": true
+  },
+  "occ50": {
+   "dev": 80,
+   "test": 160,
+   "meets": true
+  }
+ },
+ "size_x_stratum": {
+  "d0": {
+   "36": 260,
+   "72": 0,
+   "108": 0,
+   "161": 0
+  },
+  "d1": {
+   "36": 240,
+   "72": 0,
+   "108": 0,
+   "161": 0
+  },
+  "d2": {
+   "36": 240,
+   "72": 0,
+   "108": 0,
+   "161": 0
+  },
+  "d3": {
+   "36": 120,
+   "72": 120,
+   "108": 0,
+   "161": 0
+  },
+  "d4": {
+   "36": 80,
+   "72": 80,
+   "108": 80,
+   "161": 0
+  },
+  "d5": {
+   "36": 80,
+   "72": 80,
+   "108": 80,
+   "161": 0
+  },
+  "d6": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "d7": {
+   "36": 65,
+   "72": 65,
+   "108": 65,
+   "161": 65
+  },
+  "d8": {
+   "36": 65,
+   "72": 65,
+   "108": 65,
+   "161": 65
+  },
+  "d9": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "occ10": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "occ30": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  },
+  "occ50": {
+   "36": 60,
+   "72": 60,
+   "108": 60,
+   "161": 60
+  }
+ },
+ "identity_swap_flag": {
+  "main": {
+   "n": 2460,
+   "flagged": 51,
+   "rate": 0.0207
+  },
+  "overlap": {
+   "n": 720,
+   "flagged": 2,
+   "rate": 0.0028
+  }
+ },
+ "main_min_center_along_px_observed": 23.5045,
+ "main_edge_gap_px": {
+  "min": 0,
+  "median": 26.0,
+  "max": 593
+ },
+ "main_min_distance_px": {
+  "min": 0.0,
+  "median": 31.0156,
+  "max": 593.0682
+ },
+ "distractor_size_by_level": {
+  "d0": {
+   "36": 770
+  },
+  "d1": {
+   "36": 720
+  },
+  "d2": {
+   "36": 720
+  },
+  "d3": {
+   "36": 520,
+   "72": 200
+  },
+  "d4": {
+   "36": 441,
+   "72": 197,
+   "108": 82
+  },
+  "d5": {
+   "36": 439,
+   "72": 199,
+   "108": 82
+  },
+  "d6": {
+   "36": 330,
+   "72": 204,
+   "108": 127,
+   "161": 59
+  },
+  "d7": {
+   "36": 351,
+   "72": 227,
+   "108": 139,
+   "161": 63
+  },
+  "d8": {
+   "36": 357,
+   "72": 218,
+   "108": 143,
+   "161": 72
+  },
+  "d9": {
+   "36": 327,
+   "72": 210,
+   "108": 127,
+   "161": 56
+  },
+  "occ10": {
+   "36": 324,
+   "72": 211,
+   "108": 126,
+   "161": 59
+  },
+  "occ30": {
+   "36": 324,
+   "72": 201,
+   "108": 130,
+   "161": 65
+  },
+  "occ50": {
+   "36": 329,
+   "72": 203,
+   "108": 126,
+   "161": 62
+  }
+ },
+ "distractor_le_pair_violations": 0,
+ "n_extra_by_round": {
+  "round1": 60
+ },
+ "meets_acceptance": true,
+ "n_base_by_side": {
+  "dev": 1060,
+  "test": 2120
+ },
+ "within_3000": false,
+ "seconds": 185.9,
+ "n_images": 9540,
+ "disk_gb": 1.221,
+ "determinism": {
+  "n": 20,
+  "identical": 20
+ },
+ "metadata_sha256": "ea7cb119c887ab4df7bb4c85622f11d10b722f33ae544462559d2b01ad276f9e"
+}

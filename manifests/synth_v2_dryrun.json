@@ -1,5 +1,5 @@
 {
- "n_base": 3120,
+ "n_base": 3180,
  "n_failed": 0,
  "failed": [],
  "main": {
@@ -19,18 +19,18 @@
      "meets": null
     },
     "0.71-1.00": {
-     "dev": 77,
-     "test": 145,
+     "dev": 83,
+     "test": 157,
      "actual_token_range": [
       0.839,
       1.0
      ],
      "geometrically_feasible": true,
-     "meets": false
+     "meets": true
     },
     "1.00-1.41": {
-     "dev": 77,
-     "test": 171,
+     "dev": 78,
+     "test": 172,
      "actual_token_range": [
       1.001,
       1.414
@@ -89,8 +89,8 @@
      "meets": true
     },
     "8.00-11.31": {
-     "dev": 81,
-     "test": 161,
+     "dev": 88,
+     "test": 174,
      "actual_token_range": [
       8.003,
       11.289
@@ -117,8 +117,8 @@
      "meets": null
     },
     "0.71-1.00": {
-     "dev": 84,
-     "test": 165,
+     "dev": 91,
+     "test": 178,
      "actual_token_range": [
       0.735,
       0.999
@@ -177,8 +177,8 @@
      "meets": true
     },
     "5.66-8.00": {
-     "dev": 89,
-     "test": 167,
+     "dev": 91,
+     "test": 170,
      "actual_token_range": [
       5.669,
       7.98
@@ -187,14 +187,14 @@
      "meets": true
     },
     "8.00-11.31": {
-     "dev": 74,
-     "test": 160,
+     "dev": 81,
+     "test": 174,
      "actual_token_range": [
       8.005,
       11.305
      ],
      "geometrically_feasible": true,
-     "meets": false
+     "meets": true
     }
    }
   },
@@ -208,8 +208,8 @@
    "px": 56,
    "bins": {
     "0.50-0.71": {
-     "dev": 77,
-     "test": 171,
+     "dev": 78,
+     "test": 172,
      "actual_token_range": [
       0.5,
       0.707
@@ -268,8 +268,8 @@
      "meets": true
     },
     "4.00-5.66": {
-     "dev": 81,
-     "test": 161,
+     "dev": 88,
+     "test": 174,
      "actual_token_range": [
       4.002,
       5.644
@@ -278,8 +278,8 @@
      "meets": true
     },
     "5.66-8.00": {
-     "dev": 80,
-     "test": 159,
+     "dev": 86,
+     "test": 172,
      "actual_token_range": [
       5.662,
       7.998
@@ -289,9 +289,9 @@
     },
     "8.00-11.31": {
      "dev": 80,
-     "test": 161,
+     "test": 162,
      "actual_token_range": [
-      8.005,
+      8.001,
       11.305
      ],
      "geometrically_feasible": true,
@@ -319,7 +319,7 @@
  },
  "size_x_stratum": {
   "d0": {
-   "36": 240,
+   "36": 260,
    "72": 0,
    "108": 0,
    "161": 0
@@ -361,16 +361,16 @@
    "161": 60
   },
   "d7": {
-   "36": 60,
-   "72": 60,
-   "108": 60,
-   "161": 60
+   "36": 65,
+   "72": 65,
+   "108": 65,
+   "161": 65
   },
   "d8": {
-   "36": 60,
-   "72": 60,
-   "108": 60,
-   "161": 60
+   "36": 65,
+   "72": 65,
+   "108": 65,
+   "161": 65
   },
   "d9": {
    "36": 60,
@@ -399,9 +399,9 @@
  },
  "identity_swap_flag": {
   "main": {
-   "n": 2400,
-   "flagged": 46,
-   "rate": 0.0192
+   "n": 2460,
+   "flagged": 51,
+   "rate": 0.0207
   },
   "overlap": {
    "n": 720,
@@ -412,17 +412,17 @@
  "main_min_center_along_px_observed": 23.5045,
  "main_edge_gap_px": {
   "min": 0,
-  "median": 25.0,
+  "median": 26.0,
   "max": 593
  },
  "main_min_distance_px": {
   "min": 0.0,
-  "median": 30.0,
+  "median": 31.0156,
   "max": 593.0682
  },
  "distractor_size_by_level": {
   "d0": {
-   "36": 720
+   "36": 770
   },
   "d1": {
    "36": 720
@@ -451,16 +451,16 @@
    "161": 59
   },
   "d7": {
-   "36": 324,
-   "72": 209,
-   "108": 129,
-   "161": 58
+   "36": 351,
+   "72": 227,
+   "108": 139,
+   "161": 63
   },
   "d8": {
-   "36": 325,
-   "72": 198,
-   "108": 131,
-   "161": 66
+   "36": 357,
+   "72": 218,
+   "108": 143,
+   "161": 72
   },
   "d9": {
    "36": 327,
@@ -488,14 +488,16 @@
   }
  },
  "distractor_le_pair_violations": 0,
- "n_extra_by_round": {},
- "meets_acceptance": false,
+ "n_extra_by_round": {
+  "round1": 60
+ },
+ "meets_acceptance": true,
  "n_base_by_side": {
-  "dev": 1040,
-  "test": 2080
+  "dev": 1060,
+  "test": 2120
  },
  "within_3000": false,
- "seconds": 74.7,
- "estimated_images": 9360,
- "estimated_disk_gb": 2.01
+ "seconds": 77.3,
+ "estimated_images": 9540,
+ "estimated_disk_gb": 2.05
 }
