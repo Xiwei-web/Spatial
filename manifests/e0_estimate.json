@@ -1,0 +1,492 @@
+{
+ "counts_test": {
+  "whatsup_a": {
+   "samples": 206,
+   "images": 206,
+   "relations": {
+    "under": 52,
+    "left": 51,
+    "right": 51,
+    "on": 52
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 412,
+   "mcq": 824,
+   "binary": 412
+  },
+  "whatsup_b": {
+   "samples": 204,
+   "images": 204,
+   "relations": {
+    "behind": 51,
+    "front": 51,
+    "left": 51,
+    "right": 51
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 408,
+   "mcq": 816,
+   "binary": 408
+  },
+  "coco_spatial_one": {
+   "samples": 1125,
+   "images": 726,
+   "relations": {
+    "bottom": 382,
+    "right": 268,
+    "top": 174,
+    "left": 301
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 896,
+   "mcq": 4500,
+   "binary": 2250
+  },
+  "coco_spatial_two": {
+   "samples": 232,
+   "images": 148,
+   "relations": {
+    "left": 81,
+    "right": 66,
+    "below": 38,
+    "above": 47
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 346,
+   "mcq": 928,
+   "binary": 464
+  },
+  "gqa_spatial_one": {
+   "samples": 579,
+   "images": 524,
+   "relations": {
+    "left": 201,
+    "top": 95,
+    "right": 199,
+    "bottom": 83,
+    "behind": 1
+   },
+   "excluded_relation_not_in_options": 1,
+   "box": 557,
+   "mcq": 2312,
+   "binary": 1156
+  },
+  "gqa_spatial_two": {
+   "samples": 152,
+   "images": 131,
+   "relations": {
+    "front": 11,
+    "behind": 3,
+    "right": 70,
+    "left": 68
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 278,
+   "mcq": 608,
+   "binary": 304
+  },
+  "coco_pairs": {
+   "samples": 2574,
+   "images": 637,
+   "relations": {
+    "below": 538,
+    "above": 538,
+    "right": 749,
+    "left": 749
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 1552,
+   "mcq": 10296,
+   "binary": 5148
+  }
+ },
+ "counts_dev": {
+  "whatsup_a": {
+   "samples": 204,
+   "images": 204,
+   "relations": {
+    "left": 51,
+    "on": 51,
+    "right": 51,
+    "under": 51
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 408,
+   "mcq": 816,
+   "binary": 408
+  },
+  "whatsup_b": {
+   "samples": 204,
+   "images": 204,
+   "relations": {
+    "behind": 51,
+    "front": 51,
+    "left": 51,
+    "right": 51
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 408,
+   "mcq": 816,
+   "binary": 408
+  },
+  "coco_spatial_one": {
+   "samples": 1122,
+   "images": 725,
+   "relations": {
+    "bottom": 362,
+    "left": 275,
+    "top": 189,
+    "right": 296
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 898,
+   "mcq": 4488,
+   "binary": 2244
+  },
+  "coco_spatial_two": {
+   "samples": 208,
+   "images": 147,
+   "relations": {
+    "left": 69,
+    "below": 37,
+    "right": 63,
+    "above": 39
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 334,
+   "mcq": 832,
+   "binary": 416
+  },
+  "gqa_spatial_one": {
+   "samples": 581,
+   "images": 519,
+   "relations": {
+    "right": 177,
+    "left": 191,
+    "bottom": 115,
+    "top": 97,
+    "behind": 1
+   },
+   "excluded_relation_not_in_options": 1,
+   "box": 557,
+   "mcq": 2320,
+   "binary": 1160
+  },
+  "gqa_spatial_two": {
+   "samples": 139,
+   "images": 127,
+   "relations": {
+    "behind": 2,
+    "right": 67,
+    "front": 8,
+    "left": 59,
+    "top": 3
+   },
+   "excluded_relation_not_in_options": 3,
+   "box": 260,
+   "mcq": 544,
+   "binary": 272
+  },
+  "coco_pairs": {
+   "samples": 2550,
+   "images": 637,
+   "relations": {
+    "above": 518,
+    "below": 518,
+    "left": 757,
+    "right": 757
+   },
+   "excluded_relation_not_in_options": 0,
+   "box": 1549,
+   "mcq": 10200,
+   "binary": 5100
+  }
+ },
+ "speeds_seconds": {
+  "Qwen2.5-VL-7B-Instruct": {
+   "box_whatsup": 1.7445425,
+   "box_other": 1.27484,
+   "rel_whatsup": 0.72765,
+   "rel_other": 0.531736730976746,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "Qwen3-VL-8B-Instruct": {
+   "box_whatsup": 2.0385524999999998,
+   "box_other": 1.745595,
+   "rel_whatsup": 0.44489999999999996,
+   "rel_other": 0.38096404949099916,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "InternVL3-8B": {
+   "box_whatsup": 0.88333,
+   "box_other": 0.8499,
+   "rel_whatsup": 0.1603,
+   "rel_other": 0.15423337823916317,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "InternVL3_5-8B": {
+   "box_whatsup": 1.24553,
+   "box_other": 1.20233,
+   "rel_whatsup": 0.163,
+   "rel_other": 0.15734650309506795,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "SenseNova-SI-1.2-InternVL3-8B": {
+   "box_whatsup": 0.883475,
+   "box_other": 0.832435,
+   "rel_whatsup": 0.47375,
+   "rel_other": 0.4463805781148307,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "SenseNova-SI-1.3-InternVL3-8B": {
+   "box_whatsup": 0.8974675,
+   "box_other": 0.710645,
+   "rel_whatsup": 0.4591,
+   "rel_other": 0.36353084596378143,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "GLM-4.6V-Flash": {
+   "box_whatsup": 1.82859,
+   "box_other": 1.418295,
+   "rel_whatsup": 0.86875,
+   "rel_other": 0.673821786868571,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "VST-7B-RL": {
+   "box_whatsup": 1.40397,
+   "box_other": 0.669315,
+   "rel_whatsup": 0.6961499999999999,
+   "rel_other": 0.3318757788627962,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "RoboBrain2.0-7B": {
+   "box_whatsup": 1.2035875,
+   "box_other": 0.723105,
+   "rel_whatsup": 0.95295,
+   "rel_other": 0.5725241494698142,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "Qwen3.5-2B": {
+   "box_whatsup": 1.8138875,
+   "box_other": 1.605535,
+   "rel_whatsup": 0.46225,
+   "rel_other": 0.4091535741604702,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "Qwen3.5-4B": {
+   "box_whatsup": 2.437,
+   "box_other": 2.217645,
+   "rel_whatsup": 0.9468,
+   "rel_other": 0.8615782872384079,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "Qwen3.5-9B": {
+   "box_whatsup": 2.499815,
+   "box_other": 2.231615,
+   "rel_whatsup": 0.6149,
+   "rel_other": 0.548928646119813,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "InternVL3-2B": {
+   "box_whatsup": 0.8451299999999999,
+   "box_other": 0.81196,
+   "rel_whatsup": 0.10225,
+   "rel_other": 0.0982368511353283,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "SenseNova-SI-1.1-InternVL3-2B": {
+   "box_whatsup": 0.9269275,
+   "box_other": 0.89113,
+   "rel_whatsup": 0.42595,
+   "rel_other": 0.40950001321570456,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "LLaVA-1.5-7B": {
+   "box_whatsup": 0.762085,
+   "box_other": 0.73586,
+   "rel_whatsup": 0.14554999999999998,
+   "rel_other": 0.14054130838423531,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  },
+  "LLaVA-1.5-13B": {
+   "box_whatsup": 1.0076275,
+   "box_other": 0.98061,
+   "rel_whatsup": 0.2223,
+   "rel_other": 0.2163394736646231,
+   "n_box_calib": 600,
+   "n_rel_smoke": 20
+  }
+ },
+ "plans_gpu_hours_per_model": {
+  "full_main": {
+   "Qwen2.5-VL-7B-Instruct": 6.360413230137688,
+   "Qwen3-VL-8B-Instruct": 5.537464420295912,
+   "InternVL3-8B": 2.415623987732343,
+   "InternVL3_5-8B": 2.8794229098768525,
+   "SenseNova-SI-1.2-InternVL3-8B": 4.881738989599819,
+   "SenseNova-SI-1.3-InternVL3-8B": 4.108539914784198,
+   "GLM-4.6V-Flash": 7.724350401824017,
+   "VST-7B-RL": 4.098324046299155,
+   "RoboBrain2.0-7B": 6.151821433075784,
+   "Qwen3.5-2B": 5.575943922214363,
+   "Qwen3.5-4B": 10.180611134974809,
+   "Qwen3.5-9B": 7.553436570107413,
+   "InternVL3-2B": 1.8940100607918309,
+   "SenseNova-SI-1.1-InternVL3-2B": 4.631640469330664,
+   "LLaVA-1.5-7B": 2.15660468618709,
+   "LLaVA-1.5-13B": 3.1005266556957913
+  },
+  "full_default_impl": {
+   "Qwen2.5-VL-7B-Instruct": 6.360413230137688,
+   "Qwen3-VL-8B-Instruct": 5.537464420295912,
+   "InternVL3-8B": 2.415623987732343,
+   "InternVL3_5-8B": 2.8794229098768525,
+   "SenseNova-SI-1.2-InternVL3-8B": 4.881738989599819,
+   "SenseNova-SI-1.3-InternVL3-8B": 4.108539914784198,
+   "GLM-4.6V-Flash": 7.724350401824017,
+   "VST-7B-RL": 4.098324046299155,
+   "RoboBrain2.0-7B": 6.151821433075784,
+   "Qwen3.5-2B": 5.575943922214363,
+   "Qwen3.5-4B": 10.180611134974809,
+   "Qwen3.5-9B": 7.553436570107413,
+   "InternVL3-2B": 1.8940100607918309,
+   "SenseNova-SI-1.1-InternVL3-2B": 4.631640469330664,
+   "LLaVA-1.5-7B": 2.15660468618709,
+   "LLaVA-1.5-13B": 3.1005266556957913
+  },
+  "lean_main": {
+   "Qwen2.5-VL-7B-Instruct": 1.5058792883806729,
+   "Qwen3-VL-8B-Instruct": 1.3647387500075727,
+   "InternVL3-8B": 0.6067666398508422,
+   "InternVL3_5-8B": 0.754193017536399,
+   "SenseNova-SI-1.2-InternVL3-8B": 1.0049374422157138,
+   "SenseNova-SI-1.3-InternVL3-8B": 0.9239796941945979,
+   "GLM-4.6V-Flash": 1.7372417435958853,
+   "VST-7B-RL": 1.173910765138856,
+   "RoboBrain2.0-7B": 1.467086641771792,
+   "Qwen3.5-2B": 1.3191851180182568,
+   "Qwen3.5-4B": 2.187876348277025,
+   "Qwen3.5-9B": 1.7777115724055692,
+   "InternVL3-2B": 0.5159839847266101,
+   "SenseNova-SI-1.1-InternVL3-2B": 0.9687418612358287,
+   "LLaVA-1.5-7B": 0.5405406984770218,
+   "LLaVA-1.5-13B": 0.7398498159231366
+  },
+  "lean_default_impl_whatsup_only": {
+   "Qwen2.5-VL-7B-Instruct": 0.944595513888889,
+   "Qwen3-VL-8B-Instruct": 0.8183519583333333,
+   "InternVL3-8B": 0.36074127777777776,
+   "InternVL3_5-8B": 0.4450873888888889,
+   "SenseNova-SI-1.2-InternVL3-8B": 0.5749651388888889,
+   "SenseNova-SI-1.3-InternVL3-8B": 0.5681414861111111,
+   "GLM-4.6V-Flash": 1.0601580000000002,
+   "VST-7B-RL": 0.8454956666666665,
+   "RoboBrain2.0-7B": 0.9753329861111111,
+   "Qwen3.5-2B": 0.7790340972222223,
+   "Qwen3.5-4B": 1.2520744444444445,
+   "Qwen3.5-9B": 1.0395839722222222,
+   "InternVL3-2B": 0.3123726666666667,
+   "SenseNova-SI-1.1-InternVL3-2B": 0.5521993194444446,
+   "LLaVA-1.5-7B": 0.3230451944444444,
+   "LLaVA-1.5-13B": 0.43142015277777773
+  },
+  "screen_dev_whatsup": {
+   "Qwen2.5-VL-7B-Instruct": 0.9402316333333334,
+   "Qwen3-VL-8B-Instruct": 0.8146038999999999,
+   "InternVL3-8B": 0.3592254666666666,
+   "InternVL3_5-8B": 0.4431601333333334,
+   "SenseNova-SI-1.2-InternVL3-8B": 0.5724043333333334,
+   "SenseNova-SI-1.3-InternVL3-8B": 0.5656139666666667,
+   "GLM-4.6V-Flash": 1.0552304000000001,
+   "VST-7B-RL": 0.8416151999999999,
+   "RoboBrain2.0-7B": 0.9708191666666666,
+   "Qwen3.5-2B": 0.7754778333333333,
+   "Qwen3.5-4B": 1.2462106666666666,
+   "Qwen3.5-9B": 1.0347567333333334,
+   "InternVL3-2B": 0.3110928,
+   "SenseNova-SI-1.1-InternVL3-2B": 0.5497495666666666,
+   "LLaVA-1.5-7B": 0.3217132666666666,
+   "LLaVA-1.5-13B": 0.42955956666666667
+  },
+  "dev_parse_check": {
+   "Qwen2.5-VL-7B-Instruct": 0.22141598562015546,
+   "Qwen3-VL-8B-Instruct": 0.1664425103106248,
+   "InternVL3-8B": 0.09549028713315899,
+   "InternVL3_5-8B": 0.0963638548114725,
+   "SenseNova-SI-1.2-InternVL3-8B": 0.18247512044058972,
+   "SenseNova-SI-1.3-InternVL3-8B": 0.1639939262424545,
+   "GLM-4.6V-Flash": 0.2627753722642856,
+   "VST-7B-RL": 0.17715328726308255,
+   "RoboBrain2.0-7B": 0.2486883644728779,
+   "Qwen3.5-2B": 0.17376116128343133,
+   "Qwen3.5-4B": 0.30839547650800164,
+   "Qwen3.5-9B": 0.21560180127496104,
+   "InternVL3-2B": 0.07898684398652674,
+   "SenseNova-SI-1.1-InternVL3-2B": 0.17080833608660512,
+   "LLaVA-1.5-7B": 0.09140860591338236,
+   "LLaVA-1.5-13B": 0.11359572368012982
+  },
+  "synthetic_per_1000_images": {
+   "Qwen2.5-VL-7B-Instruct": 2.1819402777777777,
+   "Qwen3-VL-8B-Instruct": 1.8740291666666666,
+   "InternVL3-8B": 0.7579055555555554,
+   "InternVL3_5-8B": 0.9636277777777777,
+   "SenseNova-SI-1.2-InternVL3-8B": 1.2804027777777778,
+   "SenseNova-SI-1.3-InternVL3-8B": 1.263759722222222,
+   "GLM-4.6V-Flash": 2.4638,
+   "VST-7B-RL": 1.9402333333333335,
+   "RoboBrain2.0-7B": 2.2569097222222223,
+   "Qwen3.5-2B": 1.7781319444444443,
+   "Qwen3.5-4B": 2.931888888888889,
+   "Qwen3.5-9B": 2.413619444444444,
+   "InternVL3-2B": 0.6399333333333332,
+   "SenseNova-SI-1.1-InternVL3-2B": 1.2248763888888887,
+   "LLaVA-1.5-7B": 0.6659638888888888,
+   "LLaVA-1.5-13B": 0.9302930555555555
+  },
+  "depth_per_100_items": {
+   "Qwen2.5-VL-7B-Instruct": 0.21819402777777774,
+   "Qwen3-VL-8B-Instruct": 0.1874029166666667,
+   "InternVL3-8B": 0.07579055555555557,
+   "InternVL3_5-8B": 0.09636277777777778,
+   "SenseNova-SI-1.2-InternVL3-8B": 0.12804027777777777,
+   "SenseNova-SI-1.3-InternVL3-8B": 0.12637597222222224,
+   "GLM-4.6V-Flash": 0.24638,
+   "VST-7B-RL": 0.19402333333333333,
+   "RoboBrain2.0-7B": 0.22569097222222223,
+   "Qwen3.5-2B": 0.1778131944444445,
+   "Qwen3.5-4B": 0.29318888888888883,
+   "Qwen3.5-9B": 0.24136194444444448,
+   "InternVL3-2B": 0.06399333333333333,
+   "SenseNova-SI-1.1-InternVL3-2B": 0.12248763888888888,
+   "LLaVA-1.5-7B": 0.06659638888888889,
+   "LLaVA-1.5-13B": 0.09302930555555554
+  }
+ },
+ "plans_gpu_hours_total": {
+  "full_main": 79.25047283292773,
+  "full_default_impl": 79.25047283292773,
+  "lean_main": 18.588623381755777,
+  "lean_default_impl_whatsup_only": 11.282599263888889,
+  "screen_dev_whatsup": 11.231464633333333,
+  "dev_parse_check": 2.7673566572917405,
+  "synthetic_per_1000_images": 25.567315277777773,
+  "depth_per_100_items": 2.5567315277777776
+ },
+ "load_hours_per_model_job": 0.05
+}
