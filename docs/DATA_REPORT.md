@@ -489,10 +489,10 @@ A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50
 
 1. **深度检验的数据**（已定，Xiwei 2026-11-26：前后关系降级为描述性分析，见 3.3）：SpatialRGPT（88.5%）、CV-Bench 3D（85.3%）都有垂直位置捷径，What's Up B 完全混淆。CV-Bench 与捷径相反的只有 88 条（< 150），没有构造子集。需要你定数据来源。
 2. **框预测精度**：teacher-forced 对比已完成（`docs/parts/bbox_impl_diff.md` 第 4–6 节，作业 435836）。InternVL3-8B：fp32 下两种实现期望坐标最大差 0.0064（0–1000），bf16 下均值 0.45、最大 5.0；bf16 对 fp32 均值约 0.8、最大约 14。Qwen2.5-VL-7B 也已测（作业 436204，第 7 节）：fp32 下两种实现期望坐标最大差 3.9e-4 像素、自由生成 40/40 框逐 token 相同；bf16 对 fp32 框中心差的 95% 分位 0.012 个视觉 token（n=80）。按 planner 2026-11-26 的固定标准：Qwen2.5-VL-7B 通过（边缘），InternVL3-8B 不通过（cx 偏移约 0.004 个 token，区间不含 0）。其它模型没有测 fp32 的实现一致性。Qwen2.5-VL-7B 的 float32 + eager 单卡 40 GB 能跑但没有余量。请你定。
-3. **SpatialRGPT 改写规则**：20 条对照（`docs/parts/F7_spatialrgpt.md`）等你确认。
+3. **SpatialRGPT 改写规则**（已定，Xiwei 2026-11-26）：只改写 96 条深度样本，同名物体的配对跳过，按 F7 的规则全量改写，原文保留。结果：96 条状态全部为 ok；25 条含复数类名，按规则改了动词；30 条答案含代词，没有改。含原文的文件在 `<data>/depth/spatialrgpt_derived/depth_rewritten_v1.jsonl`，因为只允许评测、不得再分发，所以不进仓库；不含原文的清单在 `manifests/spatialrgpt_depth_rewrite_v1.json`。
 4. **合成场景**：请看 `outputs/synth_review/trial_v1/` 与 `library_v1/`；要定：抠图库是否需要比 CLIP 更严的筛选；身份互换孪生的边缘间距不受控是否可接受（5.2）；自然背景用哪个来源。
-5. **留出池里有 1 张与 GQA-spatial 重叠的图**（COCO 126226）：是否从留出池剔除（剩 999 张）。
-6. **SpatialRGPT 真值框是否去碎点**：碎点让 19 / 192 个框明显变大（3.2）。
+5. **留出池里有 1 张与 GQA-spatial 重叠的图**（已定，Xiwei 2026-11-26：剔除，剩 999 张，不补；新文件 `splits/coco_holdout_v2.json`，旧文件保留，标为作废，读取时报错；一致性检查里评测数据与留出池的重叠变为 0）（COCO 126226）：是否从留出池剔除（剩 999 张）。
+6. **SpatialRGPT 真值框是否去碎点**（已定，Xiwei 2026-11-26）：只在计算框时去掉面积 < 1% 的碎块（8 连通的连通块，按该 mask 总面积算；mask 本身不改）。96 条深度样本的 192 个物体里，57 个有碎块，**32 个的框随之改变**（其中 19 个与原框 IoU < 0.95，6 个 < 0.8）。另有 **6 个物体从框相关的指标里排除**，但保留在关系问答里，原因写在 `extra["box_metric_exclude_*"]`：desk（gTR3O1nDxz）、bowl（iwxK9EjtZu），以及含骑车人的自行车（同一骑车人出现在 2 帧，各 2 道题，共 4 个区域）。代码在 `src/data/spatialrgpt.py`。
 7. **没有官方框约定的模型**：下一阶段用带真值框的 dev 子集标定；Qwen3-VL-8B 的 3D 框输出也留到那时。
    - 2026-11-26 已在 dev 上标定（`reports/round_3.md`，清单 `splits/bbox_calib_v1.json`，结果 `manifests/bbox_calib_*.json`）：14 个模型选出约定，Qwen3-VL-8B、RoboBrain2.0-7B 为“未定”；RoboBrain 与配置不一致（未改配置）。这些是 dev 标定用的数，不是结果。
    - 2026-11-26 第 4 轮（`reports/round_4.md`）：planner 裁定 Qwen3-VL-8B 用 (P1, norm1000_xyxy)、RoboBrain2.0-7B 用 (P0, abs_model_xyxy)（配置已改）；SenseNova-1.2/1.3 用逐条按数值范围换算；VST 补测 P2 后仍判“未定”（提示词 pending）。各模型选定的（提示词, 约定）在 `configs/bbox_conventions.yaml` 的 `calibrated` 块。
