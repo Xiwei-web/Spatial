@@ -1,0 +1,44 @@
+# 合成场景抠图库 v3（planner 2026-11-26，依据 v2 预审 /home/xiwei.liu/planner/review_library_v2.md 与 annotations/synth/library_v2_prereview.csv）。
+# 沿用 v2（configs/synth/library_v2.yaml）的全部规则（a 外接框不相交、b 离边 2 px、c fill 分位、d 尺寸、e CLIP、18/36 px、g 整类排除、泄漏排除、划分），另加下列规则。
+# 阈值只用预审标签里 side=dev 的格子定（BAD 为正例、OK 为负例、UNSURE 不参与），先提交阈值与定阈值的脚本，再重建。v2 原样保留。
+version: library_v3
+base: configs/synth/library_v2.yaml
+exclude_categories_extra:          # 整类剔除（planner 预审）
+  knife: 只剩刀刃，没有刀柄；dev 3/3 坏
+  potted plant: mask 是粗多边形，带进大块背景；23 个里只有 3 个干净
+category_definitions:              # 类别口径（planner 定），用下面的规则实现，不做逐个手工挑选
+  traffic light: 不含行人信号灯（规则 e 的负类）
+  stop sign: 只要八角形的 STOP 牌，不要其他圆形禁令牌（规则 e 的负类）
+  fruit: 水果切开的半个、橙瓣、咬过的都算残缺（规则 e 的负类）
+  pizza / cake: 单片允许（单片本身就是常见的独立物体），不加负类
+  person: 必须是全身（规则 c）
+rules:
+  a_occ_contact:                   # mask 边界上落在同图其他任何实例（含 crowd）mask 膨胀 dilate_px 范围内的像素比例 > T_occ → 剔除
+    dilate_px: 3
+  b_contact_straight_edge:         # 与其他实例接触的边界里最长的连续直线段 / sqrt(mask 面积) > T_edge → 剔除
+    angle_tol_deg: 5               # COCO 多边形里相邻线段方向差 <= 5° 视为同一条直线，长度相加
+    min_contact: 0.5               # 线段上采样点（每 1 px）至少一半落在其他实例的膨胀范围内，才算“接触”
+    dilate_px: 3
+  c_person_keypoints:              # COCO 关键点：鼻子或双眼至少一个 v >= 1，且双脚踝 v >= 1；没有关键点标注（num_keypoints=0）也剔除
+    categories: [person]
+  d_pile:                          # 连通块数 > 1（只数面积 >= 1% 的块）或凸度 < T_sol → 剔除；另用 CLIP 比较两句话，pile 概率 > 0.5 → 剔除
+    categories: [apple, orange, banana, carrot, broccoli, donut, book]   # banana、carrot、broccoli、donut 在 v2 已整类排除，实际只作用于 apple、orange、book
+    component_min_frac: 0.01
+    clip_prompts: ["a pile of {c}", "a single {c}"]
+    clip_pile_max_prob: 0.5
+  e_clip_negatives:                # 把负类加进 CLIP 标签（88 个 + 负类），负类概率最高 → 剔除
+    traffic light: ["a pedestrian crossing signal"]
+    stop sign: ["a round prohibition traffic sign"]
+    apple: ["a slice of apple", "a half of apple"]
+    orange: ["a slice of orange", "a half of orange"]
+  f_sam_iou:                       # SAM 2.1（hiera-large）以 COCO 框为提示重新分割，与 COCO mask 的 IoU < T_sam → 剔除
+    model: sam2.1-hiera-large
+threshold_search:                  # 只用 dev 标签；四个阈值在网格上联合搜索：先满足 OK 损失 <= 0.25，再取 BAD 召回最高者，平手取 OK 损失最低、再取阈值更宽松者
+  target_bad_recall: 0.80
+  max_ok_loss: 0.25
+  grid:
+    T_occ: [0.02, 0.05, 0.10, 0.15, 0.20, 0.30, 1.01]       # 1.01 = 不用这条
+    T_edge: [0.3, 0.5, 0.75, 1.0, 1.5, 99]                  # 99 = 不用
+    T_sol: [0.0, 0.6, 0.7, 0.8, 0.85, 0.9]                  # 0 = 不用
+    T_sam: [0.0, 0.5, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9]       # 0 = 不用
+  primary_scope: 去掉 knife、potted plant 两个整类剔除的类别后，在其余类别的标签上计算（整类剔除另行计数）
