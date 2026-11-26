@@ -83,6 +83,7 @@ def summarize(rows, th):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--models", default=",".join(MODELS)); ap.add_argument("--reps", type=int, default=100)
     ap.add_argument("--boot", type=int, default=300); ap.add_argument("--workers", type=int, default=8); ap.add_argument("--merge", action="store_true")
+    ap.add_argument("--timing", action="store_true", help="只跑 1 个（真值类型, 重复）计时，不写结果")
     a = ap.parse_args()
     if a.merge:
         res = {"config_status": CFG["status"], "thresholds": CFG["thresholds"], "or_method": CFG.get("or_method"), "models": {}}
@@ -105,15 +106,32 @@ if __name__ == "__main__":
         px, py, nf, nb = noise_pool(m)
         x, ax, tk = design(m)
         tasks = [(m, ag, r, a.boot, x, ax, px, py) for ag in ("H1", "H2", "H3") for r in range(a.reps)]
-        rows, t0 = [], time.time()
-        with Pool(a.workers) as p:
-            for r in p.imap_unordered(one, tasks, chunksize=1):
-                rows.append(r)
-                if len(rows) % 10 == 0:
-                    print(m, "progress", len(rows), "/", len(tasks), round(time.time() - t0), "s", flush=True)
-        rows.sort(key=lambda r: (r["agent"], r["rep"]))
+        prog = OUT / f"{m}.progress.jsonl"          # 按（模型, 真值类型, 重复）逐条追加；重交或撞上时限后从这里接着跑
+        done = {}
+        if prog.is_file():
+            for l in open(prog):
+                try:
+                    r = json.loads(l)
+                except json.JSONDecodeError:          # 被时限打断时最后一行可能不完整
+                    continue
+                if r.get("boot") == a.boot:
+                    done[(r["agent"], r["rep"])] = r
+        tasks = [t for t in tasks if (t[1], t[2]) not in done]
+        if a.timing:
+            t0 = time.time(); one(tasks[0]); print(m, "timing one (agent, rep):", round(time.time() - t0, 1), "s, boot", a.boot, "items", len(x), flush=True)
+            continue
+        t0 = time.time()
+        with Pool(a.workers) as p, open(prog, "a") as fo:
+            for k, r in enumerate(p.imap_unordered(one, tasks, chunksize=1)):
+                r = {**r, "model": m, "boot": a.boot}
+                fo.write(json.dumps(r) + "\n"); fo.flush()
+                done[(r["agent"], r["rep"])] = r
+                if (k + 1) % 10 == 0:
+                    print(m, "progress", len(done), "/", 3 * a.reps, round(time.time() - t0), "s", flush=True)
+        rows = sorted((r for r in done.values() if r["rep"] < a.reps), key=lambda r: (r["agent"], r["rep"]))
+        assert len(rows) == 3 * a.reps, (m, len(rows))
         q = lambda v: [float(np.percentile(v, k)) for k in (5, 25, 50, 75, 95)]      # noqa: E731
-        rep = {"model": m, "token_key": tk, "n_items": int(len(x)), "reps": a.reps, "boot": a.boot, "k_h2": 0.5,
+        rep = {"model": m, "token_key": tk, "n_items": int(len(x)), "reps": a.reps, "boot": a.boot, "boot_note": "功效模拟内部 bootstrap 用 300 次，正式分析用 10,000 次", "k_h2": 0.5,
                "noise": {"source": "E0 What's Up dev (screen.jsonl) box records", "n_box": nb, "n_unparsed": nf, "sd_x": float(px.std()), "sd_y": float(py.std()),
                          "mad_x": float(np.median(np.abs(px - np.median(px)))), "mad_y": float(np.median(np.abs(py - np.median(py)))), "pct_x": q(px), "pct_y": q(py)},
                "summary": summarize(rows, CFG["thresholds"]), "rows": rows}
