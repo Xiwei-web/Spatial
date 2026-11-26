@@ -100,7 +100,10 @@ def test_qwen35_hooks_only_full_attention_layers_and_patch_applies():
     path = paths.get("existing_models") / "Qwen3.5-2B"
     if not path.exists():
         path = paths.get("new_models") / "Qwen3.5-2B"
-    cfg = tr.AutoConfig.from_pretrained(path).text_config
+    try:
+        cfg = tr.AutoConfig.from_pretrained(path).text_config
+    except (KeyError, ValueError):
+        pytest.skip("当前环境的 transformers 不支持 qwen3_5（只有 tf5 环境支持）")
     _tiny_text(cfg, 8, linear_num_key_heads=2, linear_num_value_heads=2, linear_key_head_dim=16, linear_value_head_dim=16)
     cfg.layer_types = ["linear_attention" if i % 4 != 3 else "full_attention" for i in range(8)]
     from transformers import AutoModel
