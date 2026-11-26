@@ -1328,5 +1328,9 @@
    }
   }
  },
- "n_categories_used": 53
+ "n_categories_used": 53,
+ "identity_swap_edge_gap_uncontrolled": {
+  "accepted_by": "Xiwei 2026-11-26",
+  "note": "身份互换孪生图只对齐质心与面积，两个物体之间的边缘间距不受控（例如 gap0 档实际间距中位数 14 px、范围 0–69 px（DATA_REPORT 的表））；实际值在每个场景的元数据里。合成集 v2 的规格另定，生成器未改。"
+ }
 }
