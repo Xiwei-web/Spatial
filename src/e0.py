@@ -86,6 +86,15 @@ def dev_samples(dataset: str):
     return [s for s in S if s.relation in E0_RELATION_OPTIONS[dataset]]
 
 
+TEST_DATASETS = ["whatsup_a", "whatsup_b", "coco_spatial_one", "coco_spatial_two", "gqa_spatial_one", "gqa_spatial_two"]      # 第二段不含 COCO-Pairs（留给 E6）
+
+
+def test_samples(dataset: str):
+    """test 主跑的样本：test 划分里关系在该数据集选项集合内的样本（GQA one-object 的 1 条 behind 剔除，照实记录）。"""
+    from src.data import load_split
+    return [s for s in load_split(dataset, "test") if s.relation in E0_RELATION_OPTIONS[dataset]]
+
+
 def parse_check_samples(dataset: str, n: int = 50):
     S = sorted(dev_samples(dataset), key=lambda s: s.sample_id)
     return sorted(random.Random(f"{SEED}:e0_parse_check:{dataset}").sample(S, n), key=lambda s: s.sample_id)

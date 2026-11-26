@@ -17,7 +17,8 @@ from src.models.attn_switch import AttnSwitch
 from src.prompts import OPPOSITE, binary_question, e0_mcq, n_choices, parse_four_numbers
 
 ap = argparse.ArgumentParser()
-ap.add_argument("name"); ap.add_argument("stage", choices=["parse_check", "screen"]); ap.add_argument("--impl", default="eager", choices=["eager", "sdpa"])
+ap.add_argument("name"); ap.add_argument("stage", choices=["parse_check", "screen", "test"]); ap.add_argument("--impl", default="eager", choices=["eager", "sdpa"])
+ap.add_argument("--datasets", default=None, help="test 阶段只跑这些数据集（逗号分隔），用于切块；默认全部 6 个")
 ap.add_argument("--dry-run", action="store_true", help="只列任务清单（CPU），不加载模型")
 A = ap.parse_args()
 frozen = e0.check_frozen() if not A.dry_run else {"dry_run": True}
@@ -26,11 +27,13 @@ if not A.dry_run and not torch.cuda.is_available():
 name, stage = A.name, A.stage
 cal = e0.calibrated(name)
 modes = e0.answer_modes(name)
-if stage == "screen" and not modes and not A.dry_run:
+if stage in ("screen", "test") and not modes and not A.dry_run:
     raise SystemExit(f"configs/e0.yaml 里没有 {name} 的 answer_modes：先完成解析检查并提交")
 out_dir = paths.get("outputs") / "e0" / name
 out_dir.mkdir(parents=True, exist_ok=True)
 f = out_dir / (stage + ("" if A.impl == "eager" else "_" + A.impl) + ".jsonl")
+if stage == "test" and A.impl == "sdpa":
+    assert A.datasets and set(A.datasets.split(",")) <= {"whatsup_a", "whatsup_b"}, "默认实现那一遍只跑 What's Up A/B"
 done = set()
 if f.is_file():
     for k, r in e0.load_records(f).items():
@@ -46,6 +49,39 @@ if stage == "parse_check":
             jobs.append(dict(s=s, task="mcq", role=None, rotation=0, asked_relation=None, options=o, prompt=p, max_new=64))
             for rel in (s.relation, OPPOSITE[s.relation]):
                 jobs.append(dict(s=s, task="binary", role=None, rotation=None, asked_relation=rel, options=None, prompt=binary_question(ds, s.target, s.reference, rel), max_new=64))
+elif stage == "test":
+    from src.data.whatsup_annotations import load_annotations
+    ann = {(a["dataset"], a["sample_id"]): a for a in load_annotations("auto_v3")}
+    for ds in (A.datasets.split(",") if A.datasets else e0.TEST_DATASETS):
+        assert ds in e0.TEST_DATASETS, ds
+        seen_box = set()
+        for s in sorted(e0.test_samples(ds), key=lambda s: s.sample_id):
+            roles = ("target",) if s.reference is None else ("target", "reference")
+            for role in roles:                     # 框：每张图里的同一个物体只问一次（按 图像 + 物体名 去重），只问有真值的
+                obj = getattr(s, role)
+                if ds.startswith("whatsup"):
+                    a = ann.get((ds, s.sample_id))
+                    if a is None:
+                        continue
+                    o = a["objects"][role]
+                    assert o["name"] == obj
+                    truth = o["box_gt_xyxy"]
+                else:
+                    truth = getattr(s, f"bbox_{role}")
+                    if truth is None:
+                        continue
+                k = (s.image_path, obj)
+                if k in seen_box:
+                    continue
+                seen_box.add(k)
+                jobs.append(dict(s=s, task="box", role=role, rotation=None, asked_relation=None, options=None, prompt=cal["prompt_template"].format(object=obj),
+                                 max_new=e0.BOX_MAX_NEW, truth_xyxy=[float(v) for v in truth]))
+            for r in range(n_choices(ds)):
+                p, opts = e0_mcq(ds, s.target, s.reference, r, s.relation)
+                jobs.append(dict(s=s, task="mcq", role=None, rotation=r, asked_relation=None, options=opts, prompt=p, max_new=e0.MAX_NEW[(modes or {}).get("mcq", "text16")]))
+            for rel in (s.relation, OPPOSITE[s.relation]):
+                jobs.append(dict(s=s, task="binary", role=None, rotation=None, asked_relation=rel, options=None, prompt=binary_question(ds, s.target, s.reference, rel),
+                                 max_new=e0.MAX_NEW[(modes or {}).get("binary", "text16")]))
 else:
     from src.data.whatsup_annotations import load_annotations
     ann = {(a["dataset"], a["sample_id"]): a for a in load_annotations("auto_v3")}
@@ -88,7 +124,7 @@ if todo:
             s = j["s"]
             rec = {**meta, "dataset": s.dataset, "sample_id": s.sample_id, "image_key": e0.image_key(s), "relation": s.relation, "target": s.target, "reference": s.reference,
                    "task": j["task"], "role": j["role"], "rotation": j["rotation"], "asked_relation": j["asked_relation"], "options": j["options"], "prompt": j["prompt"],
-                   "max_new_tokens": j["max_new"], "truth_xyxy": j.get("truth_xyxy"), "error": None}
+                   "max_new_tokens": j["max_new"], "truth_xyxy": j.get("truth_xyxy"), "box_object": getattr(s, j["role"]) if j["role"] else None, "error": None}
             try:
                 t = time.time()
                 if s.image_path != cur_img:
