@@ -93,8 +93,8 @@
 
 两个类别的问题模板共 15 种，全部是 “Region [0] 是否在 Region [1] 的前面 / 后面”，主语都是 Region [0]：
 
-- `front_predicate`（8 种）：“Is Region [0] in front of Region [1]?”、“Does Region [0] come in front of Region [1]?”、“Does Region [0] lie in front of Region [1]?”、“Is Region [0] positioned in front of Region [1]?”、“Is Region [0] positioned before Region [1]?”、“Is Region [0] closer to camera compared to Region [1]?”、“Is Region [0] closer to the viewer compared to Region [1]?”、“Is the position of Region [0] less distant than that of Region [1]?”
-- `behind_predicate`（7 种）：“Is Region [0] behind Region [1]?”、“Does Region [0] come behind Region [1]?”、“Does Region [0] lie behind Region [1]?”、“Is Region [0] positioned behind Region [1]?”、“Is Region [0] further to camera compared to Region [1]?”、“Is Region [0] further to the viewer compared to Region [1]?”、“Is the position of Region [0] more distant than that of Region [1]?”
+- `front_predicate`（8 种）：直接问“在…前面”，或用 come / lie / positioned 等动词，或问“离相机 / 观察者更近”“距离更小”。
+- `behind_predicate`（7 种）：与上面对称（“在…后面”“更远”“距离更大”）。模板原文不在仓库里转录（SpatialRGPT 只允许评测、不得再分发）；格式示意（手写）：`Is Region [0] nearer to us than Region [1]?`。
 
 因此：
 
@@ -102,8 +102,8 @@
 - 标准答案是 yes/no（`extra['gold_yes_no']`）：以 “Yes / That is True” 开头为 yes，以 “No / That is False” 开头为 no；110 条全部能认出（所有 `*_predicate` 类别 493 条也全部能认出）。
 - `relation`（Region [0] 相对 Region [1] 的真实关系）取决于答案，依据记在 `extra['relation_source']`：
   - **yes** → 就是该类别问的关系（`answer_yes`）；
-  - **no，且答案原文说了相反关系**（“No, it is in front of Region [1].”、“No, Region [0] is closer to the viewer.”、“No, Region [0] is behind Region [1].”、“No, Region [0] is further to the viewer.”）→ 取反（`answer_no_explicit_opposite`）；
-  - **no，但答案只有 “No.” / “That is False.” / “No, it is not.”** → 也取反，但标成 `answer_no_implied_opposite`。这一步是推断：同一批模板里凡是展开回答的 no 都给了相反关系，所以基准是按深度二分的；但严格地说 “不在后面” 不等于 “在前面”（可能深度相近）。**如果你不接受这个推断，过滤掉这 34 条即可。**
+  - **no，且答案说了相反关系**（例如说明它在另一个物体前面 / 后面，或更近 / 更远；手写示意：“No, it sits in front of the other one.”）→ 取反（`answer_no_explicit_opposite`）；
+  - **no，但答案只有一个否定词、没有说明**（“No.” 这类）→ 也取反，但标成 `answer_no_implied_opposite`。这一步是推断：同一批模板里凡是展开回答的 no 都给了相反关系，所以基准是按深度二分的；但严格地说 “不在后面” 不等于 “在前面”（可能深度相近）。**如果你不接受这个推断，过滤掉这 34 条即可。**
 - `caption_true / caption_options` 用区域写法（“Region [0] is behind Region [1]”及其反面），没有用物体名。
 - 注意 “closer to camera / less distant” 这类模板问的是离相机的远近，和 “in front of” 被当成同一个关系处理（数据集自己把它们放在同一类别里）。
 
@@ -144,28 +144,16 @@
 
 由 `python scripts/spatialrgpt_rewrite_preview.py` 打印（固定种子，重复运行输出相同）。分层：front_predicate 4 条、behind_predicate 4 条（各含 1 条同类名）；height_data 1 条（class 有 2 个名字）、width_data 1 条；双区域定量题 3 个类别各 1 条；`*_choice` 3 个类别各 1 条；其它 `*_predicate` 4 个类别各 1 条。Q = `text_q`，M = `<mask>` 写法，A = 答案。
 
-| # | id / 类别 / class | 改写前（text_q ‖ &lt;mask&gt; 写法 ‖ 答案） | 改写后（问题 ‖ 答案） | 状态与备注 |
+> **2026-11-26 更正（Xiwei）**：原先这里是 20 条真实样本的改写前后对照，含 SpatialRGPT 的题目和答案原文。SpatialRGPT 只允许评测、不得再分发，所以换成下面的**手写格式示例**（不是数据集原文）。真实的 20 条对照可以在集群上运行 `python scripts/spatialrgpt_rewrite_preview.py` 重新打印；96 条深度样本的全量改写在 `<data>/depth/spatialrgpt_derived/`，不进仓库。
+
+| # | 情形 | 改写前（手写示例） | 改写后 | 状态 |
 |---|---|---|---|---|
-| 1 | `qualitative_OZcH0216f7`<br>front_predicate<br>['bookcase', 'books'] | Q: Is Region [0] positioned before Region [1]?<br>M: Is &lt;mask> positioned before &lt;mask>?<br>A: No, Region [0] is behind Region [1]. | Q: Is the bookcase positioned before the books?<br>A: No, the bookcase is behind the books. | ok；含复数类名（紧邻的 is/does/has 按规则改成复数） |
-| 2 | `qualitative_hyvV0qnSJ6`<br>front_predicate<br>['shelves', 'table'] | Q: Does Region [0] lie in front of Region [1]?<br>M: Does &lt;mask> lie in front of &lt;mask>?<br>A: Yes. | Q: Do the shelves lie in front of the table?<br>A: Yes. | ok；含复数类名（紧邻的 is/does/has 按规则改成复数） |
-| 3 | `qualitative_Mbfutq82tX`<br>front_predicate<br>['traffic cone', 'barrier'] | Q: Is the position of Region [0] less distant than that of Region [1]?<br>M: Is the position of &lt;mask> less distant than that of &lt;mask>?<br>A: That is True. | Q: Is the position of the traffic cone less distant than that of the barrier?<br>A: That is True. | ok |
-| 4 | `qualitative_zbpJNgLMer`<br>front_predicate<br>['car', 'car'] | Q: Is the position of Region [0] less distant than that of Region [1]?<br>M: Is the position of &lt;mask> less distant than that of &lt;mask>?<br>A: Yes, it is in front of Region [1]. | 默认（skip）：不改写<br>可选（position）：Q: Is the position of the car on the left less distant than that of the car on the right?<br>A: Yes, it is in front of the car on the right. | ambiguous_same_class → position: ok_position |
-| 5 | `qualitative_owIPR7rMKZ`<br>behind_predicate<br>['ladder', 'shelves'] | Q: Is Region [0] behind Region [1]?<br>M: Is &lt;mask> behind &lt;mask>?<br>A: No. | Q: Is the ladder behind the shelves?<br>A: No. | ok；含复数类名（紧邻的 is/does/has 按规则改成复数） |
-| 6 | `qualitative_hlkyNstkY1`<br>behind_predicate<br>['lamp', 'window'] | Q: Is Region [0] further to camera compared to Region [1]?<br>M: Is &lt;mask> further to camera compared to &lt;mask>?<br>A: That is False. | Q: Is the lamp further to camera compared to the window?<br>A: That is False. | ok |
-| 7 | `qualitative_OOrmssQECn`<br>behind_predicate<br>['blinds', 'bed'] | Q: Is Region [0] positioned behind Region [1]?<br>M: Is &lt;mask> positioned behind &lt;mask>?<br>A: Yes, it is. | Q: Are the blinds positioned behind the bed?<br>A: Yes, it is. | ok；含复数类名（紧邻的 is/does/has 按规则改成复数）；答案含代词（it/They），未改 |
-| 8 | `qualitative_eTkCyEi53s`<br>behind_predicate<br>['car', 'car'] | Q: Does Region [0] lie behind Region [1]?<br>M: Does &lt;mask> lie behind &lt;mask>?<br>A: No. | 默认（skip）：不改写<br>可选（position）：Q: Does the car on the left lie behind the car on the right?<br>A: No. | ambiguous_same_class → position: ok_position |
-| 9 | `quantitative_dyZV3mLHXR`<br>height_data<br>['towel', 'bicycle'] | Q: Find out how tall Region [0] is.<br>M: Find out how tall &lt;mask> is.<br>A: Region [0] is 31.14 inches in height. | Q: Find out how tall the towel is.<br>A: The towel is 31.14 inches in height. | ok；class 有 2 个、区域只有 1 个：按 class[0] 取 |
-| 10 | `quantitative_qUFTM80Zcw`<br>width_data<br>['box'] | Q: How wide is Region [0]?<br>M: How wide is &lt;mask>?<br>A: Region [0] is 16.98 inches wide. | Q: How wide is the box?<br>A: The box is 16.98 inches wide. | ok |
-| 11 | `quantitative_qpnlE7Tt0M`<br>vertical_distance_data<br>['vase', 'potted plant'] | Q: Estimate the vertical distance between Region [0] and Region [1].<br>M: Estimate the vertical distance between &lt;mask> and &lt;mask>.<br>A: Region [0] and Region [1] are 4.28 feet apart vertically from each other. | Q: Estimate the vertical distance between the vase and the potted plant.<br>A: The vase and the potted plant are 4.28 feet apart vertically from each other. | ok |
-| 12 | `quantitative_5NcMxWLcwc`<br>direction<br>['bag', 'chair'] | Q: If you are at Region [0], where will you find Region [1]?<br>M: If you are at &lt;mask>, where will you find &lt;mask>?<br>A: Region [1] is roughly at 8 o'clock from Region [0]. | Q: If you are at the bag, where will you find the chair?<br>A: The chair is roughly at 8 o'clock from the bag. | ok |
-| 13 | `quantitative_cd343Eqzr4`<br>horizontal_distance_data<br>['picture', 'chair'] | Q: Measure the horizontal distance from Region [0] to Region [1].<br>M: Measure the horizontal distance from &lt;mask> to &lt;mask>.<br>A: It is approximately 1.59 meters. | Q: Measure the horizontal distance from the picture to the chair.<br>A: It is approximately 1.59 meters. | ok；答案含代词（it/They），未改 |
-| 14 | `qualitative_bLCFcfghLn`<br>short_choice<br>['barrier', 'car'] | Q: Between Region [0] and Region [1], which one has less height?<br>M: Between &lt;mask> and &lt;mask>, which one has less height?<br>A: With less height is Region [0]. | Q: Between the barrier and the car, which one has less height?<br>A: With less height is the barrier. | ok |
-| 15 | `qualitative_RAUW48oN9s`<br>left_choice<br>['bed', 'chair'] | Q: Which is more to the left, Region [0] or Region [1]?<br>M: Which is more to the left, &lt;mask> or &lt;mask>?<br>A: From the viewer's perspective, Region [0] appears more on the left side. | Q: Which is more to the left, the bed or the chair?<br>A: From the viewer's perspective, the bed appears more on the left side. | ok |
-| 16 | `qualitative_JDWFfzJm3v`<br>above_choice<br>['vase', 'chair'] | Q: Who is higher up, Region [0] or Region [1]?<br>M: Who is higher up, &lt;mask> or &lt;mask>?<br>A: Region [0] is higher up. | Q: Who is higher up, the vase or the chair?<br>A: The vase is higher up. | ok |
-| 17 | `qualitative_9oFKQkMuys`<br>big_predicate<br>['board', 'box'] | Q: Does Region [0] have a larger size compared to Region [1]?<br>M: Does &lt;mask> have a larger size compared to &lt;mask>?<br>A: Incorrect, Region [0] is not larger than Region [1]. | Q: Does the board have a larger size compared to the box?<br>A: Incorrect, the board is not larger than the box. | ok |
-| 18 | `qualitative_zeTCw7A2ui`<br>above_predicate<br>['vase', 'pillow'] | Q: Is Region [0] above Region [1]?<br>M: Is &lt;mask> above &lt;mask>?<br>A: Indeed, Region [0] is positioned over Region [1]. | Q: Is the vase above the pillow?<br>A: Indeed, the vase is positioned over the pillow. | ok |
-| 19 | `qualitative_mLV378P9pA`<br>short_predicate<br>['bookcase', 'books'] | Q: Is Region [0] shorter than Region [1]?<br>M: Is &lt;mask> shorter than &lt;mask>?<br>A: In fact, Region [0] may be taller than Region [1]. | Q: Is the bookcase shorter than the books?<br>A: In fact, the bookcase may be taller than the books. | ok；含复数类名（紧邻的 is/does/has 按规则改成复数） |
-| 20 | `qualitative_EQxT6UcYtU`<br>right_predicate<br>['person', 'pedestrian'] | Q: Does Region [0] appear on the right side of Region [1]?<br>M: Does &lt;mask> appear on the right side of &lt;mask>?<br>A: Yes, Region [0] is to the right of Region [1]. | Q: Does the person appear on the right side of the pedestrian?<br>A: Yes, the person is to the right of the pedestrian. | ok |
+| 1 | 两个区域，单数 | Q: Is Region [0] nearer to us than Region [1]?<br>A: No, Region [0] sits behind Region [1]. | Q: Is the lamp nearer to us than the sofa?<br>A: No, the lamp sits behind the sofa. | ok |
+| 2 | 复数类名作主语 | Q: Does Region [0] stand in front of Region [1]?<br>A: Yes. | Q: Do the shelves stand in front of the table?<br>A: Yes. | ok；复数，紧邻动词改复数 |
+| 3 | 同类名 | Q: Is Region [0] nearer to us than Region [1]?（两个都是 car） | 默认（skip）：不改写<br>可选（position）：Q: Is the car on the left nearer to us than the car on the right? | ambiguous_same_class → position: ok_position |
+| 4 | 单区域、句首大写 | Q: Roughly how wide is Region [0]?<br>A: Region [0] spans about 20 inches. | Q: Roughly how wide is the box?<br>A: The box spans about 20 inches. | ok |
+| 5 | 答案只提 Region [1] | Q: Standing at Region [0], where is Region [1]?<br>A: Region [1] is around 2 o'clock. | Q: Standing at the bag, where is the chair?<br>A: The chair is around 2 o'clock. | ok |
+| 6 | 答案含代词 | Q: How far apart horizontally are Region [0] and Region [1]?<br>A: It is about 2 meters. | Q: How far apart horizontally are the picture and the chair?<br>A: It is about 2 meters. | ok；代词不改 |
 
 ### 规则处理不了的情况
 

@@ -95,8 +95,8 @@ def depth_relation(category: str, answer: str) -> tuple[str | None, str]:
 
     问题模板都是「Region [0] 是否在 Region [1] 的 前面/后面（或更近/更远）」，答案是 yes/no：
       yes → 关系就是该类别问的那个（front_predicate → front，behind_predicate → behind），依据 'answer_yes'；
-      no  → 取反。答案原文明说了相反关系（"No, it is in front of Region [1]."、"No, Region [0] is closer to the viewer."）
-            时依据为 'answer_no_explicit_opposite'；只有 "No." / "That is False." / "No, it is not." 时依据为
+      no  → 取反。答案明说了相反关系（例如手写示例 "No, it sits in front of the other one."，或含 closer / further 的说法）
+            时依据为 'answer_no_explicit_opposite'；只有一个否定词、没有说明（例如 "No." 这类）时依据为
             'answer_no_implied_opposite'（基准按深度二分，但原文没有明说；严格地说 “不在后面” 不等于 “在前面”）。
     yes/no 认不出时返回 (None, 'unparsed')。
     """

@@ -8,3 +8,14 @@
 - 作业运行期间，后台命令最多每 30 分钟退出一次，用来看一眼日志是否正常；排队期间不用中途醒来。
 - 已知坏节点 gpu-05、gpu-07、gpu-49，提交作业时一律加 --exclude。
 - 同一个作业因坏节点失败，可以加 --exclude 后直接重新提交。修改数据集，先等 Xiwei 确认。
+
+## 作业提交（Xiwei 2026-11-26 确认）
+- 所有 Slurm 作业（sbatch、srun）一律经 `scripts/submit.sh` 提交，不得绕过（`tests/test_slurm.py` 会检查）。
+- 坏节点列表只在 `configs/slurm.yaml` 里维护，submit.sh 从这里读取并对每个作业加 `--exclude`；当前为 gpu-05、gpu-07、gpu-49，永久不用。
+- 发现新的坏节点就加进 `configs/slurm.yaml`，并在汇报里告诉 planner 和 Xiwei。
+
+## GitHub 推送（Xiwei 2026-11-26 确认）
+- 远程仓库 origin = `git@github-spatial:Xiwei-web/Spatial.git`（私有），分支 main。认证只用 deploy key `~/.ssh/spatial_deploy`（`~/.ssh/config` 的 Host github-spatial），不用 token。
+- 私钥只存在 `~/.ssh/`，不得复制到仓库、日志、输出目录或任何其它位置，也不得显示在任何消息里。
+- 每次 commit 之后都推送。禁止 force push；除 Xiwei 要求外，禁止推送到其它仓库或分支。推送失败就在汇报里写明原因，不换认证方式绕过。
+- 不改写已推送的历史。仓库里不放密钥、超过 10 MB 的文件、只允许评测而不允许再分发的数据原文（例如 SpatialRGPT 的图像和题目原文）；清单和划分文件可以放。
