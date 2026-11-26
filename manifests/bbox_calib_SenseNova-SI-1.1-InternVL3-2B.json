@@ -1,0 +1,265 @@
+{
+ "n_items": 600,
+ "n_images": 300,
+ "first": [
+  "P1",
+  "norm1_xyxy"
+ ],
+ "first_mean_iou": 0.8105628386658522,
+ "first_iou_at_0.5": 0.9033333333333333,
+ "first_out_of_bounds": 0.0,
+ "second": [
+  "P0",
+  "norm1_xyxy"
+ ],
+ "second_mean_iou": 0.7983587977229526,
+ "diff_mean": 0.012204040942899749,
+ "diff_ci95": [
+  0.004710376558370609,
+  0.019982351221907863
+ ],
+ "subset_first": {
+  "coco": {
+   "first": [
+    "P1",
+    "norm1_xyxy"
+   ],
+   "mean_iou": 0.8117115249963434,
+   "overall_first_mean_iou": 0.8117115249963434,
+   "n": 200
+  },
+  "whatsup": {
+   "first": [
+    "P1",
+    "norm1_xyxy"
+   ],
+   "mean_iou": 0.8099884955006067,
+   "overall_first_mean_iou": 0.8099884955006067,
+   "n": 400
+  }
+ },
+ "undecided": false,
+ "undecided_reasons": [],
+ "parse_fail": {
+  "P0": 0.0,
+  "P1": 0.0
+ },
+ "n_error": {
+  "P0": 0,
+  "P1": 0
+ },
+ "per_candidate": [
+  {
+   "prompt": "P0",
+   "convention": "norm1000_xyxy",
+   "mean_iou": 1.9243986254295533e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 5.77319587628866e-09,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1000_yxyx",
+   "mean_iou": 1.9243986254295533e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 5.77319587628866e-09,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_xyxy",
+   "mean_iou": 0.7983587977229526,
+   "iou_at_0.5": 0.8966666666666666,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.7923844608886157,
+   "mean_iou_whatsup": 0.8013459661401208
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_yxyx",
+   "mean_iou": 0.15766490561512703,
+   "iou_at_0.5": 0.07166666666666667,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.17284945646045544,
+   "mean_iou_whatsup": 0.1500726301924628
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_xyxy",
+   "mean_iou": 9.588242513500245e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 2.8764727540500735e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_yxyx",
+   "mean_iou": 9.588242513500245e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 2.8764727540500735e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_xyxy",
+   "mean_iou": 1.0263459335624285e-08,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 3.079037800687285e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_yxyx",
+   "mean_iou": 1.0263459335624285e-08,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 3.079037800687285e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_norm1000",
+   "mean_iou": 0.7983587977229526,
+   "iou_at_0.5": 0.8966666666666666,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.7923844608886157,
+   "mean_iou_whatsup": 0.8013459661401208
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_model",
+   "mean_iou": 0.7983587977229526,
+   "iou_at_0.5": 0.8966666666666666,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.7923844608886157,
+   "mean_iou_whatsup": 0.8013459661401208
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1000_xyxy",
+   "mean_iou": 1.9176287331278566e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 5.75288619938357e-09,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1000_yxyx",
+   "mean_iou": 1.917628733127856e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 5.752886199383569e-09,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1_xyxy",
+   "mean_iou": 0.8105628386658522,
+   "iou_at_0.5": 0.9033333333333333,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.8117115249963434,
+   "mean_iou_whatsup": 0.8099884955006067
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1_yxyx",
+   "mean_iou": 0.1577914040102403,
+   "iou_at_0.5": 0.07166666666666667,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.17549404201434504,
+   "mean_iou_whatsup": 0.14894008500818792
+  },
+  {
+   "prompt": "P1",
+   "convention": "model_xyxy",
+   "mean_iou": 9.554511784159043e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 2.866353535247713e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "model_yxyx",
+   "mean_iou": 9.554511784159041e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 2.8663535352477126e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "orig_xyxy",
+   "mean_iou": 1.0227353243348567e-08,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 3.0682059730045705e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "orig_yxyx",
+   "mean_iou": 1.0227353243348567e-08,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 3.0682059730045705e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "range_norm1_else_norm1000",
+   "mean_iou": 0.8105628386658522,
+   "iou_at_0.5": 0.9033333333333333,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.8117115249963434,
+   "mean_iou_whatsup": 0.8099884955006067
+  },
+  {
+   "prompt": "P1",
+   "convention": "range_norm1_else_model",
+   "mean_iou": 0.8105628386658522,
+   "iou_at_0.5": 0.9033333333333333,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.8117115249963434,
+   "mean_iou_whatsup": 0.8099884955006067
+  }
+ ],
+ "first_subset": {
+  "coco": {
+   "mean_iou": 0.8117115249963434,
+   "iou_at_0.5": 0.885,
+   "n": 200
+  },
+  "whatsup": {
+   "mean_iou": 0.8099884955006067,
+   "iou_at_0.5": 0.9125,
+   "n": 400
+  }
+ },
+ "model": "SenseNova-SI-1.1-InternVL3-2B",
+ "current_config_convention": "unknown",
+ "prompts": {
+  "P0": "Output the bounding box of the {object} in the image as [x1, y1, x2, y2].",
+  "P1": "Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>"
+ },
+ "revision": "81c0e4c513cb44a6f6defc8b03983aa97ab32567",
+ "n_3d_output": {
+  "P0": 0,
+  "P1": 0
+ },
+ "n_hit_max_tokens": {
+  "P0": 0,
+  "P1": 0
+ },
+ "n_items_per_prompt": {
+  "P0": 600,
+  "P1": 600
+ },
+ "current_matches_first": null
+}

@@ -1,0 +1,267 @@
+{
+ "n_items": 600,
+ "n_images": 300,
+ "first": [
+  "P1",
+  "norm1000_xyxy"
+ ],
+ "first_mean_iou": 0.8929079461709455,
+ "first_iou_at_0.5": 0.955,
+ "first_out_of_bounds": 0.0,
+ "second": [
+  "P0",
+  "norm1000_xyxy"
+ ],
+ "second_mean_iou": 0.7193204315781425,
+ "diff_mean": 0.173587514592803,
+ "diff_ci95": [
+  0.1352015525446085,
+  0.21455837592774277
+ ],
+ "subset_first": {
+  "coco": {
+   "first": [
+    "P0",
+    "norm1000_xyxy"
+   ],
+   "mean_iou": 0.8306728551716509,
+   "overall_first_mean_iou": 0.8276452656597572,
+   "n": 200
+  },
+  "whatsup": {
+   "first": [
+    "P1",
+    "norm1000_xyxy"
+   ],
+   "mean_iou": 0.9255392864265397,
+   "overall_first_mean_iou": 0.9255392864265397,
+   "n": 400
+  }
+ },
+ "undecided": true,
+ "undecided_reasons": [
+  "What's Up 与 COCO 的第一名不一致"
+ ],
+ "parse_fail": {
+  "P0": 0.195,
+  "P1": 0.006666666666666667
+ },
+ "n_error": {
+  "P0": 0,
+  "P1": 0
+ },
+ "per_candidate": [
+  {
+   "prompt": "P0",
+   "convention": "norm1000_xyxy",
+   "mean_iou": 0.7193204315781425,
+   "iou_at_0.5": 0.7666666666666667,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.8306728551716509,
+   "mean_iou_whatsup": 0.6636442197813883
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1000_yxyx",
+   "mean_iou": 0.1267222556480292,
+   "iou_at_0.5": 0.06666666666666667,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.17452159665945857,
+   "mean_iou_whatsup": 0.10282258514231452
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_xyxy",
+   "mean_iou": 0.0032059088901592223,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 1.0,
+   "mean_iou_coco": 0.009617726670477666,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_yxyx",
+   "mean_iou": 0.0032059088901592223,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 1.0,
+   "mean_iou_coco": 0.009617726670477666,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_xyxy",
+   "mean_iou": 0.14617668763415564,
+   "iou_at_0.5": 0.06,
+   "out_of_bounds": 0.6521739130434783,
+   "mean_iou_coco": 0.09604396629831659,
+   "mean_iou_whatsup": 0.17124304830207518
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_yxyx",
+   "mean_iou": 0.08518506925683124,
+   "iou_at_0.5": 0.015,
+   "out_of_bounds": 0.3830227743271222,
+   "mean_iou_coco": 0.04658570089828411,
+   "mean_iou_whatsup": 0.10448475343610482
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_xyxy",
+   "mean_iou": 0.12879781994855885,
+   "iou_at_0.5": 0.023333333333333334,
+   "out_of_bounds": 0.3995859213250518,
+   "mean_iou_coco": 0.09599212081079106,
+   "mean_iou_whatsup": 0.14520066951744273
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_yxyx",
+   "mean_iou": 0.06538395961854711,
+   "iou_at_0.5": 0.005,
+   "out_of_bounds": 0.37888198757763975,
+   "mean_iou_coco": 0.04663984274298222,
+   "mean_iou_whatsup": 0.07475601805632956
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_norm1000",
+   "mean_iou": 0.7193204315781425,
+   "iou_at_0.5": 0.7666666666666667,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.8306728551716509,
+   "mean_iou_whatsup": 0.6636442197813883
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_model",
+   "mean_iou": 0.14617668763415564,
+   "iou_at_0.5": 0.06,
+   "out_of_bounds": 0.6521739130434783,
+   "mean_iou_coco": 0.09604396629831659,
+   "mean_iou_whatsup": 0.17124304830207518
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1000_xyxy",
+   "mean_iou": 0.8929079461709455,
+   "iou_at_0.5": 0.955,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.8276452656597572,
+   "mean_iou_whatsup": 0.9255392864265397
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1000_yxyx",
+   "mean_iou": 0.1593809813149555,
+   "iou_at_0.5": 0.07333333333333333,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.17449671988154195,
+   "mean_iou_whatsup": 0.1518231120316623
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1_xyxy",
+   "mean_iou": 0.0032059088901592223,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 1.0,
+   "mean_iou_coco": 0.009617726670477666,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1_yxyx",
+   "mean_iou": 0.0032059088901592223,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 1.0,
+   "mean_iou_coco": 0.009617726670477666,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "model_xyxy",
+   "mean_iou": 0.19529440762071074,
+   "iou_at_0.5": 0.09333333333333334,
+   "out_of_bounds": 0.6291946308724832,
+   "mean_iou_coco": 0.09473156702239255,
+   "mean_iou_whatsup": 0.24557582791986982
+  },
+  {
+   "prompt": "P1",
+   "convention": "model_yxyx",
+   "mean_iou": 0.12426696164975545,
+   "iou_at_0.5": 0.05333333333333334,
+   "out_of_bounds": 0.313758389261745,
+   "mean_iou_coco": 0.046515009265271245,
+   "mean_iou_whatsup": 0.16314293784199754
+  },
+  {
+   "prompt": "P1",
+   "convention": "orig_xyxy",
+   "mean_iou": 0.16608848078620123,
+   "iou_at_0.5": 0.056666666666666664,
+   "out_of_bounds": 0.3238255033557047,
+   "mean_iou_coco": 0.09468660176924754,
+   "mean_iou_whatsup": 0.20178942029467808
+  },
+  {
+   "prompt": "P1",
+   "convention": "orig_yxyx",
+   "mean_iou": 0.09853120790430347,
+   "iou_at_0.5": 0.03833333333333333,
+   "out_of_bounds": 0.3053691275167785,
+   "mean_iou_coco": 0.04657002011597355,
+   "mean_iou_whatsup": 0.12451180179846844
+  },
+  {
+   "prompt": "P1",
+   "convention": "range_norm1_else_norm1000",
+   "mean_iou": 0.8929079461709455,
+   "iou_at_0.5": 0.955,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.8276452656597572,
+   "mean_iou_whatsup": 0.9255392864265397
+  },
+  {
+   "prompt": "P1",
+   "convention": "range_norm1_else_model",
+   "mean_iou": 0.19529440762071074,
+   "iou_at_0.5": 0.09333333333333334,
+   "out_of_bounds": 0.6291946308724832,
+   "mean_iou_coco": 0.09473156702239255,
+   "mean_iou_whatsup": 0.24557582791986982
+  }
+ ],
+ "first_subset": {
+  "coco": {
+   "mean_iou": 0.8276452656597572,
+   "iou_at_0.5": 0.905,
+   "n": 200
+  },
+  "whatsup": {
+   "mean_iou": 0.9255392864265397,
+   "iou_at_0.5": 0.98,
+   "n": 400
+  }
+ },
+ "model": "Qwen3-VL-8B-Instruct",
+ "current_config_convention": "norm1000_xyxy",
+ "prompts": {
+  "P0": "Locate {object}, output its bbox coordinates using JSON format.",
+  "P1": "Locate {object}, output its bbox coordinates using JSON format. Output only bbox_2d in JSON. Do not output 3D boxes."
+ },
+ "revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+ "n_3d_output": {
+  "P0": 111,
+  "P1": 0
+ },
+ "n_hit_max_tokens": {
+  "P0": 0,
+  "P1": 0
+ },
+ "n_items_per_prompt": {
+  "P0": 600,
+  "P1": 600
+ },
+ "current_matches_first": true
+}

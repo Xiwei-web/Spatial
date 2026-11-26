@@ -492,6 +492,7 @@ A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50
 5. **留出池里有 1 张与 GQA-spatial 重叠的图**（COCO 126226）：是否从留出池剔除（剩 999 张）。
 6. **SpatialRGPT 真值框是否去碎点**：碎点让 19 / 192 个框明显变大（3.2）。
 7. **没有官方框约定的模型**：下一阶段用带真值框的 dev 子集标定；Qwen3-VL-8B 的 3D 框输出也留到那时。
+   - 2026-11-26 已在 dev 上标定（`reports/round_3.md`，清单 `splits/bbox_calib_v1.json`，结果 `manifests/bbox_calib_*.json`）：14 个模型选出约定，Qwen3-VL-8B、RoboBrain2.0-7B 为“未定”；RoboBrain 与配置不一致（未改配置）。这些是 dev 标定用的数，不是结果。
 
 2026-11-25 已决定并落实：真值框（mask 外接框）；COCO 划分统一；What's Up B 的 front / behind 保留并注明混淆；SpatialRGPT 的同名跳过与 “No.” 标记；合成场景暂不扩量；GLM-4.6V 的像素预算；GQA 同义词不补；眼镜口径；坏节点由你上报；GQA 按图像划分；COCO-Pairs 几何按 mask 外接框重算；trial_v1。此前了结的：F1 审核与 v2 / v3、质检阈值、四个大模型的冒烟（未做，让位给数据作业）。
 

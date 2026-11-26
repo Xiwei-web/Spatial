@@ -1,0 +1,169 @@
+{
+ "n_items": 600,
+ "n_images": 300,
+ "first": [
+  "P0",
+  "norm1000_xyxy"
+ ],
+ "first_mean_iou": 0.6978240972475412,
+ "first_iou_at_0.5": 0.7533333333333333,
+ "first_out_of_bounds": 0.0,
+ "second": [
+  "P0",
+  "orig_xyxy"
+ ],
+ "second_mean_iou": 0.1582194201275402,
+ "diff_mean": 0.539604677120001,
+ "diff_ci95": [
+  0.5126960970630636,
+  0.5665330561099884
+ ],
+ "subset_first": {
+  "coco": {
+   "first": [
+    "P0",
+    "norm1000_xyxy"
+   ],
+   "mean_iou": 0.8070350804311679,
+   "overall_first_mean_iou": 0.8070350804311679,
+   "n": 200
+  },
+  "whatsup": {
+   "first": [
+    "P0",
+    "norm1000_xyxy"
+   ],
+   "mean_iou": 0.6432186056557279,
+   "overall_first_mean_iou": 0.6432186056557279,
+   "n": 400
+  }
+ },
+ "undecided": false,
+ "undecided_reasons": [],
+ "parse_fail": {
+  "P0": 0.0
+ },
+ "n_error": {
+  "P0": 0
+ },
+ "per_candidate": [
+  {
+   "prompt": "P0",
+   "convention": "norm1000_xyxy",
+   "mean_iou": 0.6978240972475412,
+   "iou_at_0.5": 0.7533333333333333,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.8070350804311679,
+   "mean_iou_whatsup": 0.6432186056557279
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1000_yxyx",
+   "mean_iou": 0.1532603132016708,
+   "iou_at_0.5": 0.06166666666666667,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.1745661394815764,
+   "mean_iou_whatsup": 0.14260740006171801
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_xyxy",
+   "mean_iou": 0.002451057782817568,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 1.0,
+   "mean_iou_coco": 0.007197729012515205,
+   "mean_iou_whatsup": 7.772216796875e-05
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_yxyx",
+   "mean_iou": 0.002451057782817568,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 1.0,
+   "mean_iou_coco": 0.007197729012515205,
+   "mean_iou_whatsup": 7.772216796875e-05
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_xyxy",
+   "mean_iou": 0.022470975412626396,
+   "iou_at_0.5": 0.0016666666666666668,
+   "out_of_bounds": 0.98,
+   "mean_iou_coco": 0.060833688961852046,
+   "mean_iou_whatsup": 0.0032896186380135667
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_yxyx",
+   "mean_iou": 0.011550393601332837,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.98,
+   "mean_iou_coco": 0.032571849754636166,
+   "mean_iou_whatsup": 0.001039665524681173
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_xyxy",
+   "mean_iou": 0.1582194201275402,
+   "iou_at_0.5": 0.04833333333333333,
+   "out_of_bounds": 0.37666666666666665,
+   "mean_iou_coco": 0.09478936995268286,
+   "mean_iou_whatsup": 0.18993444521496886
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_yxyx",
+   "mean_iou": 0.08918319341287366,
+   "iou_at_0.5": 0.03333333333333333,
+   "out_of_bounds": 0.325,
+   "mean_iou_coco": 0.04227327425391586,
+   "mean_iou_whatsup": 0.11263815299235257
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_norm1000",
+   "mean_iou": 0.6978240972475412,
+   "iou_at_0.5": 0.7533333333333333,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.8070350804311679,
+   "mean_iou_whatsup": 0.6432186056557279
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_model",
+   "mean_iou": 0.022470975412626396,
+   "iou_at_0.5": 0.0016666666666666668,
+   "out_of_bounds": 0.98,
+   "mean_iou_coco": 0.060833688961852046,
+   "mean_iou_whatsup": 0.0032896186380135667
+  }
+ ],
+ "first_subset": {
+  "coco": {
+   "mean_iou": 0.8070350804311679,
+   "iou_at_0.5": 0.89,
+   "n": 200
+  },
+  "whatsup": {
+   "mean_iou": 0.6432186056557279,
+   "iou_at_0.5": 0.685,
+   "n": 400
+  }
+ },
+ "model": "InternVL3-2B",
+ "current_config_convention": "norm1000_xyxy",
+ "prompts": {
+  "P0": "Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>"
+ },
+ "revision": "899155015275a9b7338c7f4677e19c784e0e5a21",
+ "n_3d_output": {
+  "P0": 0
+ },
+ "n_hit_max_tokens": {
+  "P0": 0
+ },
+ "n_items_per_prompt": {
+  "P0": 600
+ },
+ "current_matches_first": true
+}

@@ -1,0 +1,265 @@
+{
+ "n_items": 600,
+ "n_images": 300,
+ "first": [
+  "P0",
+  "range_norm1_else_norm1000"
+ ],
+ "first_mean_iou": 0.7763812493158947,
+ "first_iou_at_0.5": 0.8683333333333333,
+ "first_out_of_bounds": 0.0,
+ "second": [
+  "P0",
+  "range_norm1_else_model"
+ ],
+ "second_mean_iou": 0.7688533961936274,
+ "diff_mean": 0.007527853122267307,
+ "diff_ci95": [
+  0.0031161369623669403,
+  0.012894920172229226
+ ],
+ "subset_first": {
+  "coco": {
+   "first": [
+    "P0",
+    "range_norm1_else_norm1000"
+   ],
+   "mean_iou": 0.715204390247091,
+   "overall_first_mean_iou": 0.715204390247091,
+   "n": 200
+  },
+  "whatsup": {
+   "first": [
+    "P0",
+    "range_norm1_else_norm1000"
+   ],
+   "mean_iou": 0.8069696788502965,
+   "overall_first_mean_iou": 0.8069696788502965,
+   "n": 400
+  }
+ },
+ "undecided": false,
+ "undecided_reasons": [],
+ "parse_fail": {
+  "P0": 0.0,
+  "P1": 0.09666666666666666
+ },
+ "n_error": {
+  "P0": 0,
+  "P1": 0
+ },
+ "per_candidate": [
+  {
+   "prompt": "P0",
+   "convention": "norm1000_xyxy",
+   "mean_iou": 0.009431746121375616,
+   "iou_at_0.5": 0.011666666666666667,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.012749033259592257,
+   "mean_iou_whatsup": 0.007773102552267294
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1000_yxyx",
+   "mean_iou": 0.002556068232855156,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.0008303656378018122,
+   "mean_iou_whatsup": 0.003418919530381828
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_xyxy",
+   "mean_iou": 0.7669495050273165,
+   "iou_at_0.5": 0.8566666666666667,
+   "out_of_bounds": 0.05333333333333334,
+   "mean_iou_coco": 0.7024553624858914,
+   "mean_iou_whatsup": 0.7991965762980291
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_yxyx",
+   "mean_iou": 0.1490593174567887,
+   "iou_at_0.5": 0.07333333333333333,
+   "out_of_bounds": 0.05333333333333334,
+   "mean_iou_coco": 0.16977922069039295,
+   "mean_iou_whatsup": 0.13869936583998654
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_xyxy",
+   "mean_iou": 0.0019039002981542153,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.051666666666666666,
+   "mean_iou_coco": 0.0009182176431961823,
+   "mean_iou_whatsup": 0.0023967416256332314
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_yxyx",
+   "mean_iou": 0.00042483879051468477,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.051666666666666666,
+   "mean_iou_coco": 2.7395530216367686e-08,
+   "mean_iou_whatsup": 0.0006372444880069189
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_xyxy",
+   "mean_iou": 0.0031518034050095106,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.02,
+   "mean_iou_coco": 0.0007694582843327552,
+   "mean_iou_whatsup": 0.004342975965347887
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_yxyx",
+   "mean_iou": 0.003520208589153073,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.016666666666666666,
+   "mean_iou_coco": 0.000823812436026268,
+   "mean_iou_whatsup": 0.004868406665716476
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_norm1000",
+   "mean_iou": 0.7763812493158947,
+   "iou_at_0.5": 0.8683333333333333,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.715204390247091,
+   "mean_iou_whatsup": 0.8069696788502965
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_model",
+   "mean_iou": 0.7688533961936274,
+   "iou_at_0.5": 0.8566666666666667,
+   "out_of_bounds": 0.051666666666666666,
+   "mean_iou_coco": 0.7033735527335574,
+   "mean_iou_whatsup": 0.8015933179236623
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1000_xyxy",
+   "mean_iou": 0.0033621248120183603,
+   "iou_at_0.5": 0.0033333333333333335,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.010086374436055081,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1000_yxyx",
+   "mean_iou": 0.00025932230113549987,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.0007779669034064997,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1_xyxy",
+   "mean_iou": 0.7159214034661858,
+   "iou_at_0.5": 0.805,
+   "out_of_bounds": 0.00922509225092251,
+   "mean_iou_coco": 0.6264272418661128,
+   "mean_iou_whatsup": 0.7606684842662221
+  },
+  {
+   "prompt": "P1",
+   "convention": "norm1_yxyx",
+   "mean_iou": 0.14127735698617347,
+   "iou_at_0.5": 0.06166666666666667,
+   "out_of_bounds": 0.00922509225092251,
+   "mean_iou_coco": 0.15126374881519955,
+   "mean_iou_whatsup": 0.13628416107166047
+  },
+  {
+   "prompt": "P1",
+   "convention": "model_xyxy",
+   "mean_iou": 0.0,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.00922509225092251,
+   "mean_iou_coco": 0.0,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "model_yxyx",
+   "mean_iou": 0.0,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.00922509225092251,
+   "mean_iou_coco": 0.0,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "orig_xyxy",
+   "mean_iou": 0.0,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.00922509225092251,
+   "mean_iou_coco": 0.0,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "orig_yxyx",
+   "mean_iou": 0.0002725248503002676,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.00922509225092251,
+   "mean_iou_coco": 0.0008175745509008028,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P1",
+   "convention": "range_norm1_else_norm1000",
+   "mean_iou": 0.7192835282782041,
+   "iou_at_0.5": 0.8083333333333333,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 0.6365136163021679,
+   "mean_iou_whatsup": 0.7606684842662221
+  },
+  {
+   "prompt": "P1",
+   "convention": "range_norm1_else_model",
+   "mean_iou": 0.7159214034661858,
+   "iou_at_0.5": 0.805,
+   "out_of_bounds": 0.00922509225092251,
+   "mean_iou_coco": 0.6264272418661128,
+   "mean_iou_whatsup": 0.7606684842662221
+  }
+ ],
+ "first_subset": {
+  "coco": {
+   "mean_iou": 0.715204390247091,
+   "iou_at_0.5": 0.81,
+   "n": 200
+  },
+  "whatsup": {
+   "mean_iou": 0.8069696788502965,
+   "iou_at_0.5": 0.8975,
+   "n": 400
+  }
+ },
+ "model": "SenseNova-SI-1.2-InternVL3-8B",
+ "current_config_convention": "unknown",
+ "prompts": {
+  "P0": "Output the bounding box of the {object} in the image as [x1, y1, x2, y2].",
+  "P1": "Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>"
+ },
+ "revision": "57bfba82ed67dc27cf6607626362ee48391ecaa4",
+ "n_3d_output": {
+  "P0": 0,
+  "P1": 0
+ },
+ "n_hit_max_tokens": {
+  "P0": 1,
+  "P1": 0
+ },
+ "n_items_per_prompt": {
+  "P0": 600,
+  "P1": 600
+ },
+ "current_matches_first": null
+}

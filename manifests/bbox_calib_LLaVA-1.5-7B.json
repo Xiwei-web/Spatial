@@ -1,0 +1,169 @@
+{
+ "n_items": 600,
+ "n_images": 300,
+ "first": [
+  "P0",
+  "norm1_xyxy"
+ ],
+ "first_mean_iou": 0.5700856214287099,
+ "first_iou_at_0.5": 0.6633333333333333,
+ "first_out_of_bounds": 0.02666666666666667,
+ "second": [
+  "P0",
+  "norm1_yxyx"
+ ],
+ "second_mean_iou": 0.16168252815791598,
+ "diff_mean": 0.4084030932707938,
+ "diff_ci95": [
+  0.3910555880462376,
+  0.4254607991498426
+ ],
+ "subset_first": {
+  "coco": {
+   "first": [
+    "P0",
+    "norm1_xyxy"
+   ],
+   "mean_iou": 0.6289663330284146,
+   "overall_first_mean_iou": 0.6289663330284146,
+   "n": 200
+  },
+  "whatsup": {
+   "first": [
+    "P0",
+    "norm1_xyxy"
+   ],
+   "mean_iou": 0.5406452656288575,
+   "overall_first_mean_iou": 0.5406452656288575,
+   "n": 400
+  }
+ },
+ "undecided": false,
+ "undecided_reasons": [],
+ "parse_fail": {
+  "P0": 0.0
+ },
+ "n_error": {
+  "P0": 0
+ },
+ "per_candidate": [
+  {
+   "prompt": "P0",
+   "convention": "norm1000_xyxy",
+   "mean_iou": 0.0,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.9833333333333333,
+   "mean_iou_coco": 0.0,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1000_yxyx",
+   "mean_iou": 0.0,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.9833333333333333,
+   "mean_iou_coco": 0.0,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_xyxy",
+   "mean_iou": 0.5700856214287099,
+   "iou_at_0.5": 0.6633333333333333,
+   "out_of_bounds": 0.02666666666666667,
+   "mean_iou_coco": 0.6289663330284146,
+   "mean_iou_whatsup": 0.5406452656288575
+  },
+  {
+   "prompt": "P0",
+   "convention": "norm1_yxyx",
+   "mean_iou": 0.16168252815791598,
+   "iou_at_0.5": 0.058333333333333334,
+   "out_of_bounds": 0.26666666666666666,
+   "mean_iou_coco": 0.14439983712209037,
+   "mean_iou_whatsup": 0.17032387367582877
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_xyxy",
+   "mean_iou": 0.0,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.9833333333333333,
+   "mean_iou_coco": 0.0,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "model_yxyx",
+   "mean_iou": 0.0,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.9833333333333333,
+   "mean_iou_coco": 0.0,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_xyxy",
+   "mean_iou": 7.262550040741134e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 2.17876501222234e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "orig_yxyx",
+   "mean_iou": 7.262550040741134e-09,
+   "iou_at_0.5": 0.0,
+   "out_of_bounds": 0.0,
+   "mean_iou_coco": 2.17876501222234e-08,
+   "mean_iou_whatsup": 0.0
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_norm1000",
+   "mean_iou": 0.5700856214287099,
+   "iou_at_0.5": 0.6633333333333333,
+   "out_of_bounds": 0.02666666666666667,
+   "mean_iou_coco": 0.6289663330284146,
+   "mean_iou_whatsup": 0.5406452656288575
+  },
+  {
+   "prompt": "P0",
+   "convention": "range_norm1_else_model",
+   "mean_iou": 0.5700856214287099,
+   "iou_at_0.5": 0.6633333333333333,
+   "out_of_bounds": 0.02666666666666667,
+   "mean_iou_coco": 0.6289663330284146,
+   "mean_iou_whatsup": 0.5406452656288575
+  }
+ ],
+ "first_subset": {
+  "coco": {
+   "mean_iou": 0.6289663330284146,
+   "iou_at_0.5": 0.78,
+   "n": 200
+  },
+  "whatsup": {
+   "mean_iou": 0.5406452656288575,
+   "iou_at_0.5": 0.605,
+   "n": 400
+  }
+ },
+ "model": "LLaVA-1.5-7B",
+ "current_config_convention": "norm1_xyxy",
+ "prompts": {
+  "P0": "Please provide the bounding box coordinate of the region this sentence describes: {object}."
+ },
+ "revision": "b234b804b114d9e37bb655e11cbbb5f5e971b7a9",
+ "n_3d_output": {
+  "P0": 0
+ },
+ "n_hit_max_tokens": {
+  "P0": 0
+ },
+ "n_items_per_prompt": {
+  "P0": 600
+ },
+ "current_matches_first": true
+}
