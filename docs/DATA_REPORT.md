@@ -513,3 +513,11 @@ A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50
 | `data/synth`（抠图库 + 试生成） | 308 MB |
 | `outputs/`（含 v1、v2 联系表、候选图、v3 确认图、诊断记录） | 246 MB |
 | **本项目合计**（models 91 G、envs 24 G、cache 8.7 G、data 6.8 G、其余很小） | **约 131 G** |
+
+### 抠图库 v2（2026-11-26，Xiwei 决定，planner 转达；预审中，结论出来之前不用于生成场景）
+
+- 来源：COCO val2017（沿用原图像级划分）+ COCO train2017（按图像、固定种子分 dev/test）；v1 库保留不动，v2 存为 `<data>/synth/cutouts_v2`。规则 a–g 与泄漏排除见 `configs/synth/library_v2.yaml`、`src/synth/library_v2.py`，在看任何图之前提交。
+- **每类最多 60 个 train 候选**（下载前按固定种子随机抽）：这是 runner 为控制下载量定的参数，不是 Xiwei / planner 给的，planner 已认可。它截掉了 8,528 个已通过 a–d 预筛的 train 候选。
+- 下载：只下载候选所在的 3,006 张 train2017 图像（477 MB），标注包复用已有的。
+- 泄漏：train2017 里 image_id 等于 GQA-spatial（dev 与 test）VG coco_id 的 51 个实例已排除。下载的 3,006 张 train 图与 5,114 张评测图（What's Up A/B、COCO-spatial、COCO-Pairs、COCO 留出池、SpatialRGPT）做整图感知哈希比对，最小汉明距离 ≥ 8，阈值 ≤ 4 下没有近重复。COCO-spatial、COCO-Pairs、留出池都来自 val2017，与 train2017 的 image_id 天然不重叠；SpatialRGPT 的图像来自 SUNRGBD / hypersim / nuScenes / ARKitScenes / KITTI，不是 COCO。
+- 结果：2,976 个抠图，59 类两侧各 ≥ 3（门槛 30 类）；dev 1,486 / test 1,490；train 来源 2,706，val 来源 270；2,228 个通过 18 px 检查，56 类可进 36 px 档。逐类、逐规则的数量见 `manifests/synth_library_v2.json`。
