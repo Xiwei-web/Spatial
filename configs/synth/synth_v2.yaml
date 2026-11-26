@@ -1,0 +1,62 @@
+# 合成场景 v2（planner 2026-11-27，依据 Xiwei 11-26 批复第 7、8、14 条）。完全由「本文件 + 抠图库 v3 r2 定稿 + 场景序号」决定。生成器 src/synth/generator_v2.py。
+# 用途：E1 的心理测量曲线 / 理想观察者，E4 的位置互换对。横轴 = 质心沿轴距离（按各模型 token 边长换算）；边缘间距是协变量；重叠单独成子集。
+# 只用于入选的 11 个模型；不在合成集上做任何关系或框的正式评测（属于 E1，预注册之后）。
+version: synth_v2
+library: synth_library_v3          # splits/synth_library_v3.json（status final round2，library_final_r2.jsonl）；场景继承抠图所在的一侧
+global_seed: 20261127
+canvas: 896
+token_px:                          # 896 画布上的 token 边长（沿用 trial_v1 的实算 token_cell_px）
+  t28: {px: 28, models: [Qwen2.5-VL-7B-Instruct, RoboBrain2.0-7B, GLM-4.6V-Flash]}
+  t32: {px: 32, models: [Qwen3-VL-8B-Instruct, Qwen3.5-2B, Qwen3.5-4B, Qwen3.5-9B]}
+  t56: {px: 56, models: [InternVL3-8B, InternVL3_5-8B, SenseNova-SI-1.2-InternVL3-8B, SenseNova-SI-1.3-InternVL3-8B]}
+token_bins: {base: 0.5, ratio: 1.41421356, n_edges: 10}   # 边界 0.5×√2^k，k=0..9 → 9 档（0.5–0.71、…、8–11.3 个 token）
+sizes_px: [36, 72, 108, 161]       # sqrt(mask 面积)；36 px 档只用 small36_ok=True 的抠图
+design:
+  # 主集（不重叠，边缘间距 >= 0）：按质心沿轴距离分层，层的边界 = 28 px token 的档边界 0.5×√2^k×28（k = 2..11），覆盖 28 px 模型的第 3–9 档与 56 px 模型的全部 9 档；
+  # 层内在 [max(层下界, 该对抠图能做到的最小质心距离), 层上界) 上按对数均匀采样（不是全局对数均匀：全局对数均匀要 5,000 个以上的场景才能让最窄的档达到 150）。
+  # 28 px 模型的 0.5–1 token 档（14–28 px）在不重叠条件下几何上做不到，不设层。超过 633 px（56 px token 的 11.3 档上界）的距离不在任何档里，不采样。
+  main_strata_px: [28.0, 39.598, 56.0, 79.196, 112.0, 158.392, 224.0, 316.784, 448.0, 633.568]
+  main_scenes_per_stratum: 240     # dev 80 / test 160（目标 dev >= 75、test >= 150，留一点余量给 32 px 模型跨层的档）
+  sizes_allowed_rule: "尺寸 <= 层上界 的尺寸轮流分配；该对抠图的最小质心距离仍 >= 层上界时重抽抠图，多次失败再换更小的尺寸"
+  overlap_tiers: [[0.005, 0.10], [0.10, 0.30], [0.30, 0.50]]
+  overlap_scenes_per_tier: 240
+  side_ratio: {dev: 1, test: 2}
+  axis: [horizontal, vertical]
+  n_distractors: [0, 2, 4, 6]
+  background: [solid, linear_gradient, radial_gradient, noise]
+jitter: {max_frac_of_distance: 0.25, max_px: 32}
+placement:
+  canvas_margin_px: 16
+  distractor_gap_px: 8
+  max_distractor_tries: 200
+  max_attempts: 800
+  max_swap_candidates: 60
+max_upscale: 1.5
+identity_swap:
+  max_centroid_dev_px: 2.0
+  flag_gap_dev_px: 28              # 主集：身份互换图的边缘间距偏离 base 超过 1 个 token（按 28 px）或发生重叠 → identity_swap_flag=true；重叠子集：遮挡比例出了本档 → flag。图照常生成，不进主对照分析（Xiwei 第 14 条）
+overlap: {min_axis_over_perp: 2.0}
+alpha_threshold: 128
+png_compress_level: 6
+acceptance:                        # Xiwei 第 8 条
+  main_per_model_bin: {test: 150, dev: 75}
+  overlap_per_tier: {test: 150, dev: 75}
+  max_base_scenes_without_asking: 3000
+single_object_check:               # Xiwei 第 7 条 (b)：只用 dev 抠图，4 个尺寸档各 >= 100 张单物体图（程序背景、无干扰物），11 个入选模型各问一次框
+  per_size: 100
+  center_in_mask_min: 0.80         # 某模型某尺寸档没达到 → 这一档在该模型的 E1 分析里排除，不重新生成数据；按 Wilson 区间报告
+confusable_groups:                 # 按 v3 现有类别更新（不在 v3 里的名字不影响）
+  - [cup, wine glass, bowl]
+  - [bottle, vase]
+  - [chair, couch, bench, bed]
+  - [orange, apple]
+  - [cell phone, remote, mouse]
+  - [book, laptop, keyboard]
+  - [tv, laptop, microwave, oven]
+  - [car, truck, bus, train]
+  - [cow, sheep, horse, dog, cat, bear, zebra, giraffe, elephant, teddy bear]
+  - [sandwich, hot dog, cake, pizza]
+  - [refrigerator, oven, microwave, sink, toilet]
+  - [traffic light, stop sign, parking meter, fire hydrant]
+  - [airplane, bird, kite]
+  - [skateboard, suitcase]
