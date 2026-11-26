@@ -4,9 +4,13 @@
 对每个模型 × 真值类型（H1 / H2 / H3）模拟 R 次，每次走与真实数据相同的分析代码（bootstrap B 次），统计判定结果与 CI 宽度。
 用法：python scripts/e1_power_sim.py --models A,B --reps 100 --boot 300 --workers 8   → <outputs>/e1_power/<模型>.json
       python scripts/e1_power_sim.py --merge                                         → manifests/e1_power_sim.json + 说明表（markdown，打印）"""
-import argparse
-import json
-from multiprocessing import Pool
+import os
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):      # 每个进程单线程：多进程并行时 BLAS 多线程会在 8 核上严重超订
+    os.environ.setdefault(_v, "1")
+import argparse      # noqa: E402
+import json      # noqa: E402
+import time      # noqa: E402
+from multiprocessing import Pool      # noqa: E402
 
 import numpy as np
 import yaml
@@ -101,8 +105,13 @@ if __name__ == "__main__":
         px, py, nf, nb = noise_pool(m)
         x, ax, tk = design(m)
         tasks = [(m, ag, r, a.boot, x, ax, px, py) for ag in ("H1", "H2", "H3") for r in range(a.reps)]
+        rows, t0 = [], time.time()
         with Pool(a.workers) as p:
-            rows = p.map(one, tasks, chunksize=1)
+            for r in p.imap_unordered(one, tasks, chunksize=1):
+                rows.append(r)
+                if len(rows) % 10 == 0:
+                    print(m, "progress", len(rows), "/", len(tasks), round(time.time() - t0), "s", flush=True)
+        rows.sort(key=lambda r: (r["agent"], r["rep"]))
         q = lambda v: [float(np.percentile(v, k)) for k in (5, 25, 50, 75, 95)]      # noqa: E731
         rep = {"model": m, "token_key": tk, "n_items": int(len(x)), "reps": a.reps, "boot": a.boot, "k_h2": 0.5,
                "noise": {"source": "E0 What's Up dev (screen.jsonl) box records", "n_box": nb, "n_unparsed": nf, "sd_x": float(px.std()), "sd_y": float(py.std()),
