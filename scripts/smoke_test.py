@@ -27,7 +27,8 @@ GENERIC_BBOX_PROMPT = "Output the bounding box of the {object} in the image as [
 def git_commit() -> str:
     try:
         sha = subprocess.check_output(["git", "-C", str(paths.REPO_ROOT), "rev-parse", "HEAD"], text=True).strip()
-        dirty = subprocess.check_output(["git", "-C", str(paths.REPO_ROOT), "status", "--porcelain"], text=True).strip()
+        # 只看已跟踪文件（2026-11-26 起；之前的记录里未跟踪文件也会标 -dirty，例如未提交的 CLAUDE.md）
+        dirty = subprocess.check_output(["git", "-C", str(paths.REPO_ROOT), "status", "--porcelain", "--untracked-files=no"], text=True).strip()
         return sha + ("-dirty" if dirty else "")
     except Exception:
         return "unknown"

@@ -140,3 +140,19 @@ def test_bootstrap_groups_by_image():
     assert a == [1.0, 1.0]
     with pytest.raises(AssertionError):
         select([_rec("a", None, [1, 1, 2, 2])] + [_rec("b", None, [1, 1, 2, 2], p="P1")], ["P0", "P1"])
+
+
+def test_calibrated_block_and_prompts():
+    import yaml
+
+    from scripts.bbox_calib_run import prompt_set
+    from src.prompts import to_original_xyxy
+    cal = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "bbox_conventions.yaml"))["calibrated"]
+    assert len(cal) == 16
+    for m, c in cal.items():
+        if c["prompt_id"] != "pending":
+            assert prompt_set(m)[c["prompt_id"]] == c["prompt_template"], m
+    assert list(prompt_set("VST-7B-RL")) == ["P0", "P1", "P2"] and prompt_set("VST-7B-RL")["P2"].startswith(prompt_set("VST-7B-RL")["P0"] + " ")
+    assert "P2" not in prompt_set("Qwen3-VL-8B-Instruct")
+    assert to_original_xyxy([0.1, 0.2, 0.3, 0.4], "range_norm1_else_norm1000", (200, 100)) == to_original_xyxy([0.1, 0.2, 0.3, 0.4], "norm1_xyxy", (200, 100))
+    assert to_original_xyxy([0.284, 301, 732, 938], "range_norm1_else_norm1000", (1000, 1000)) == to_original_xyxy([0.284, 301, 732, 938], "norm1000_xyxy", (1000, 1000))

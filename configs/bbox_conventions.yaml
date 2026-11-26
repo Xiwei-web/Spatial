@@ -10,7 +10,11 @@
 #   norm1_xyxy     - [x1,y1,x2,y2] floats in 0..1 (LLaVA-1.5: of the PADDED-TO-SQUARE image, see notes)
 #   abs_model_xyxy - absolute pixels on the model's RESIZED input image (rescale to original yourself)
 #   abs_orig_xyxy  - absolute pixels on the original image
+#   range_norm1_else_norm1000 - per output: all four numbers <= 1 -> norm1_xyxy, otherwise norm1000_xyxy (dev-calibrated, SenseNova-SI-1.2/1.3)
 #   unknown        - not documented
+#
+# 2026-11-26: the `calibrated` block at the end holds the dev-calibrated (prompt, convention) per model (reports/round_3.md, round_4.md);
+# family entries above keep the official prompt/convention as documented (only RoboBrain2.0's convention was changed, see its comment).
 # prompt_template uses {object} as the placeholder for the referring phrase / object name.
 qwen2_5_vl:
   applies_to:
@@ -185,7 +189,7 @@ robobrain2_0:
   prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: {object}.'
   output_format: '[x1, y1, x2, y2] plain text; official regex r''\[\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]''. With thinking enabled the raw reply contains
     a ''<think>...</think>'' section before the answer; the official wrapper strips the think/answer tags and returns e.g. ''[0, 193, 226, 640]''.'
-  convention: abs_orig_xyxy
+  convention: abs_model_xyxy   # 2026-11-26 由 abs_orig_xyxy 改为 abs_model_xyxy：dev 标定（manifests/bbox_calib_RoboBrain2.0-7B.json；规则判“未定”，planner 裁定，见 reports/round_4.md）
   notes: 'IMPORTANT version trap: the repo main branch is now RoboBrain 2.5, whose inference.py rescales by /1000 (''coords are relative (0~1000)''). For RoboBrain
     2.0 use the 2.0-era inference.py (commit a4f9450, 2025-08-03): it parses integers and draws them DIRECTLY on the cv2-loaded original image with no rescaling,
     i.e. absolute pixels treated as original-image coordinates (README example answer ''[0, 193, 226, 640]''). No doc sentence states original-vs-resized explicitly;
@@ -392,3 +396,85 @@ gemma_3:
     quote: MODEL_ID = "google/gemma-4-E2B-it"
   - url: https://gemma.ai/models/gemma-3/
     quote: (no bounding box / object detection / coordinate text; checked by grep)
+
+calibrated:   # dev 框坐标约定标定（只用 dev；标定用，不是结果）。prompt_id 对应 scripts/bbox_calib_run.py 的 prompt_set；manifest: manifests/bbox_calib_<模型>.json
+  Qwen2.5-VL-7B-Instruct:
+    prompt_id: P0
+    prompt_template: 'Locate {object}, output its bbox coordinates using JSON format.'
+    convention: abs_model_xyxy
+    basis: '规则选出'
+  InternVL3-8B:
+    prompt_id: P0
+    prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>'
+    convention: norm1000_xyxy
+    basis: '规则选出'
+  InternVL3_5-8B:
+    prompt_id: P0
+    prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>'
+    convention: norm1000_xyxy
+    basis: '规则选出'
+  InternVL3-2B:
+    prompt_id: P0
+    prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>'
+    convention: norm1000_xyxy
+    basis: '规则选出'
+  GLM-4.6V-Flash:
+    prompt_id: P0
+    prompt_template: 'Please pinpoint the bounding box [[x1,y1,x2,y2], …] in the image as per the given description. {object}'
+    convention: norm1000_xyxy
+    basis: '规则选出'
+  Qwen3.5-2B:
+    prompt_id: P0
+    prompt_template: 'Locate {object}, output its bbox coordinates using JSON format.'
+    convention: norm1000_xyxy
+    basis: '规则选出'
+  Qwen3.5-4B:
+    prompt_id: P0
+    prompt_template: 'Locate {object}, output its bbox coordinates using JSON format.'
+    convention: norm1000_xyxy
+    basis: '规则选出'
+  Qwen3.5-9B:
+    prompt_id: P0
+    prompt_template: 'Locate {object}, output its bbox coordinates using JSON format.'
+    convention: norm1000_xyxy
+    basis: '规则选出'
+  LLaVA-1.5-7B:
+    prompt_id: P0
+    prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: {object}.'
+    convention: norm1_xyxy
+    basis: '规则选出'
+  LLaVA-1.5-13B:
+    prompt_id: P0
+    prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: {object}.'
+    convention: norm1_xyxy
+    basis: '规则选出'
+  Qwen3-VL-8B-Instruct:
+    prompt_id: P1
+    prompt_template: 'Locate {object}, output its bbox coordinates using JSON format. Output only bbox_2d in JSON. Do not output 3D boxes.'
+    convention: norm1000_xyxy
+    basis: '规则判未定，planner 裁定（round_4）'
+  RoboBrain2.0-7B:
+    prompt_id: P0
+    prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: {object}.'
+    convention: abs_model_xyxy
+    basis: '规则判未定，planner 裁定（round_4）'
+  SenseNova-SI-1.1-InternVL3-2B:
+    prompt_id: P1
+    prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>'
+    convention: norm1_xyxy
+    basis: '规则选出'
+  SenseNova-SI-1.2-InternVL3-8B:
+    prompt_id: P0
+    prompt_template: 'Output the bounding box of the {object} in the image as [x1, y1, x2, y2].'
+    convention: range_norm1_else_norm1000
+    basis: '规则选出；同一框里混用两种尺度的输出照样按规则换算，算作模型错误（planner round_4）'
+  SenseNova-SI-1.3-InternVL3-8B:
+    prompt_id: P0
+    prompt_template: 'Output the bounding box of the {object} in the image as [x1, y1, x2, y2].'
+    convention: range_norm1_else_norm1000
+    basis: '规则选出；同一框里混用两种尺度的输出照样按规则换算，算作模型错误（planner round_4）'
+  VST-7B-RL:
+    prompt_id: pending
+    prompt_template: null
+    convention: abs_model_xyxy
+    basis: '约定按第 3 轮规则选出；提示词等 P2 补测（round_4）后按原规则在 P0/P1/P2 里重选'

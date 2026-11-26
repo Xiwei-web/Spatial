@@ -20,6 +20,8 @@ INTERNVL_OFFICIAL = "Please provide the bounding box coordinate of the region th
 P1 = {**{m: INTERNVL_OFFICIAL for m in ("SenseNova-SI-1.1-InternVL3-2B", "SenseNova-SI-1.2-InternVL3-8B", "SenseNova-SI-1.3-InternVL3-8B")},
       "VST-7B-RL": QWEN_OFFICIAL, "RoboBrain2.0-7B": QWEN_OFFICIAL,
       "Qwen3-VL-8B-Instruct": QWEN_OFFICIAL + " Output only bbox_2d in JSON. Do not output 3D boxes."}
+# P2：只给 VST-7B-RL，是看到第 3 轮结果（What's Up 上有大量 9 个数的 3D 框输出）之后才加的（planner round_4）；= P0 + 一句话
+P2 = {"VST-7B-RL": GENERIC_BBOX_PROMPT + " Output only a 2D box with four numbers. Do not output 3D boxes."}
 
 
 def prompt_set(name):
@@ -28,6 +30,8 @@ def prompt_set(name):
     out = {"P0": p0}
     if name in P1 and P1[name] != p0:
         out["P1"] = P1[name]
+    if name in P2 and P2[name] not in out.values():
+        out["P2"] = P2[name]
     return out
 
 

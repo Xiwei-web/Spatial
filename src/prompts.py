@@ -70,9 +70,12 @@ def to_original_xyxy(nums: list[float], convention: str, orig_wh: tuple[int, int
       norm1_xyxy     —— 0-1 归一化
       abs_model_xyxy —— 模型实际看到的（缩放后）图像上的绝对像素，需要 model_wh
       abs_orig_xyxy  —— 原图绝对像素
+      range_norm1_else_norm1000 —— 逐条按数值范围：都 <= 1 按 norm1_xyxy，否则 norm1000_xyxy
     """
     W, H = orig_wh
     a, b, c, d = nums
+    if convention == "range_norm1_else_norm1000":     # 逐条：四个数都 <= 1 按 0-1 归一，否则按 0-1000 归一（dev 标定，SenseNova-SI-1.2/1.3）
+        convention = "norm1_xyxy" if all(v <= 1 for v in nums) else "norm1000_xyxy"
     if convention == "norm1000_xyxy":
         return [a / 1000 * W, b / 1000 * H, c / 1000 * W, d / 1000 * H]
     if convention == "norm1000_yxyx":
