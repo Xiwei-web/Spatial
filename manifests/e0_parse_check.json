@@ -375,6 +375,288 @@
    "n_hit_64": 0
   }
  },
+ "Qwen3.5-2B": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  }
+ },
+ "Qwen3.5-4B": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  }
+ },
+ "Qwen3.5-9B": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  }
+ },
  "InternVL3-8B": {
   "mcq": {
    "n": 350,
@@ -1029,6 +1311,194 @@
    },
    "n_errors": 0,
    "n_hit_64": 69
+  }
+ },
+ "LLaVA-1.5-7B": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  }
+ },
+ "LLaVA-1.5-13B": {
+  "mcq": {
+   "n": 350,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
+  },
+  "binary": {
+   "n": 700,
+   "parse_rate": {
+    "text16": 1.0,
+    "text64": 1.0,
+    "letter_logit": 1.0
+   },
+   "order": [
+    "text16",
+    "text64",
+    "letter_logit"
+   ],
+   "chosen": "text16",
+   "per_dataset": {
+    "whatsup_a": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "whatsup_b": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_one": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "gqa_spatial_two": {
+     "text16": 1.0,
+     "text64": 1.0
+    },
+    "coco_pairs": {
+     "text16": 1.0,
+     "text64": 1.0
+    }
+   },
+   "n_errors": 0,
+   "n_hit_64": 0
   }
  }
 }

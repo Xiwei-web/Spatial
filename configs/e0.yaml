@@ -11,6 +11,15 @@ answer_modes:
   RoboBrain2.0-7B:
     mcq: text16
     binary: text16
+  Qwen3.5-2B:
+    mcq: text16
+    binary: text16
+  Qwen3.5-4B:
+    mcq: text16
+    binary: text16
+  Qwen3.5-9B:
+    mcq: text16
+    binary: text16
   InternVL3-8B:
     mcq: text16
     binary: text16
@@ -32,5 +41,11 @@ answer_modes:
   GLM-4.6V-Flash:
     mcq: text64
     binary: letter_logit
+  LLaVA-1.5-7B:
+    mcq: text16
+    binary: text16
+  LLaVA-1.5-13B:
+    mcq: text16
+    binary: text16
 answer_modes_note: dev 解析检查（manifests/e0_parse_check.json）按 ANSWER_MODE_ORDER 与 0.95
   自动选出；全部方式都不到 0.95 的模型不列入（不跑筛选）
