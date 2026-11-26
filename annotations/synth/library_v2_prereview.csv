@@ -1,0 +1,1405 @@
+# 抠图库 v2 预审标签：planner 的模型预审（3 个子代理逐格看图，planner 复核了 apple、car、potted plant 三页），未经人工复核。来源：/home/xiwei.liu/planner/library_v2_labels_{p001_021,p022_041,p042_059,lowclip}.csv；同一 ID 同时出现在类别页和 lowclip 页时以类别页为准。2026-11-26
+cutout_id,category,side,verdict,code,note
+train_100352,chair,test,UNSURE,quality,washed-out white plastic
+train_101998,chair,dev,OK,,
+train_10215,dog,dev,OK,,
+train_102656,chair,dev,OK,,
+train_102741,chair,dev,BAD,bg,floor tiles and background included
+train_103423,chair,dev,OK,,
+train_1038868,bowl,test,OK,,
+train_1040472,bowl,dev,UNSURE,unrec,looks like a plate
+train_104084,chair,test,UNSURE,bg,jacket draped over it
+train_104335,chair,test,BAD,trunc,white chair with a chunk missing
+train_1047864,apple,dev,OK,,
+train_1047925,apple,dev,UNSURE,trunc,ragged lower-left edge
+train_1048021,apple,dev,OK,,
+train_1048028,apple,test,BAD,multi,pile of green apples
+train_1048053,apple,dev,BAD,trunc,vertical strip and top chunk missing
+train_1048131,apple,dev,UNSURE,trunc,notch missing at the top
+train_1048176,apple,test,OK,,
+train_1048250,apple,test,BAD,multi,group of apples and pears
+train_1048671,apple,test,UNSURE,unrec,looks peeled or flat-cut
+train_1048939,apple,dev,UNSURE,trunc,white occluder gaps on the apple
+train_1049020,apple,test,BAD,unrec,"looks like red potato, straight cut"
+train_1049021,apple,test,OK,,
+train_1049034,apple,dev,OK,,
+train_1049043,apple,test,BAD,multi/unrec,printed mesh bag of apples
+train_1049610,apple,dev,BAD,unrec,cartoon apple with a face
+train_1049944,apple,test,BAD,multi,cluster of apples
+train_1050691,orange,test,OK,,
+train_1050728,orange,dev,UNSURE,trunc,"partly peeled, heavy shadow"
+train_1050850,orange,test,BAD,unrec,ring of peel or rind
+train_1050871,orange,test,UNSURE,quality,"dark brown, barely orange"
+train_1050873,orange,dev,UNSURE,quality,"dark, dappled shadows"
+train_1050950,orange,dev,UNSURE,bg,dark green edge on left
+train_1051077,orange,dev,OK,,
+train_1051234,orange,test,BAD,multi,pile of oranges in net
+train_1051259,orange,dev,OK,,
+train_1051280,orange,dev,BAD,trunc,"yellow wedge, straight cut"
+train_1051360,orange,dev,OK,,
+train_1051736,orange,test,BAD,trunc,half-slice wedge
+train_1051907,orange,test,OK,,
+train_1051921,orange,test,BAD,multi,three oranges
+train_1052112,orange,dev,BAD,multi,two cut halves
+train_1052268,orange,dev,UNSURE,trunc,"peeled notch, sticker"
+train_1052343,orange,test,OK,,
+train_1052348,orange,test,BAD,trunc,single wedge slice
+train_1052351,orange,test,OK,,
+train_1052845,orange,test,BAD,multi,two grapefruit halves
+train_1053516,orange,test,BAD,multi,cluster of mandarins
+train_1053815,orange,dev,OK,,
+train_1054026,orange,dev,BAD,multi,two blood oranges
+train_106068,chair,dev,UNSURE,bg,grass through the back
+train_106077,chair,test,UNSURE,trunc,"dark recliner, partly cut"
+train_1066825,hot dog,dev,OK,,
+train_1066928,hot dog,test,OK,,
+train_1067053,hot dog,test,UNSURE,trunc,bun cut straight
+train_1067063,hot dog,dev,OK,,
+train_1067075,hot dog,test,BAD,multi,two hot dogs side by side
+train_1067201,hot dog,test,UNSURE,trunc,bun fragment with sausage only
+train_1067261,hot dog,dev,UNSURE,bg,blue/white reflection over it
+train_1067379,hot dog,test,OK,,
+train_1067632,hot dog,test,OK,,
+train_1067749,hot dog,test,OK,,
+train_1067851,hot dog,dev,OK,,
+train_1068059,hot dog,dev,OK,,
+train_1068189,hot dog,dev,OK,,
+train_1068201,hot dog,dev,OK,,
+train_1068596,hot dog,dev,OK,,
+train_1068747,hot dog,dev,OK,,
+train_1069106,hot dog,test,BAD,unrec,messy brown strip
+train_1069191,hot dog,test,BAD,trunc,"straight cut, only toppings visible"
+train_1069537,hot dog,test,OK,,
+train_1071143,pizza,test,OK,,
+train_1071497,pizza,test,OK,,
+train_1071588,pizza,dev,UNSURE,trunc,"slices missing, gaps"
+train_1072160,pizza,test,OK,,
+train_1072226,pizza,test,UNSURE,trunc,irregular cut
+train_1072680,pizza,test,UNSURE,trunc,missing wedge
+train_1072707,pizza,dev,OK,,
+train_1073123,pizza,test,UNSURE,trunc,irregular outline
+train_1073197,pizza,dev,OK,,
+train_1073483,pizza,test,UNSURE,unrec,"dark, irregular, greens on top"
+train_1073601,pizza,test,OK,,
+train_1073761,pizza,dev,OK,,
+train_1074208,pizza,dev,UNSURE,quality,"dark, irregular"
+train_1074228,pizza,dev,OK,,
+train_1074229,pizza,dev,OK,,
+train_1074344,pizza,dev,OK,,
+train_1074805,pizza,test,OK,,
+train_1075737,pizza,dev,OK,,
+train_1075916,pizza,test,OK,,
+train_1075924,pizza,dev,OK,,
+train_1076229,pizza,test,OK,,
+train_1076562,pizza,dev,OK,,
+train_1077730,pizza,dev,OK,,
+train_10803,dog,test,OK,,
+train_1083721,cake,test,OK,,
+train_1083926,cake,dev,UNSURE,unrec,white ring that looks like a donut
+train_1084080,cake,test,UNSURE,quality,blurry brownie piece
+train_1084603,cake,test,OK,,
+train_1084803,cake,dev,OK,,
+train_1084850,cake,test,OK,,
+train_1084880,cake,dev,OK,,
+train_1085087,cake,test,OK,,
+train_1085112,cake,dev,OK,,
+train_1085653,cake,dev,UNSURE,unrec,dog-face novelty cake
+train_1085764,cake,test,OK,,
+train_1086093,cake,dev,UNSURE,unrec,cartoon mouse-face cake
+train_1087039,cake,test,OK,,
+train_1087125,cake,dev,OK,,
+train_1087138,cake,test,OK,,
+train_1087167,cake,dev,BAD,unrec,Thomas-train cake that looks like a toy train
+train_1087929,cake,dev,OK,,
+train_1088699,cake,test,OK,,
+train_1089483,cake,test,OK,,
+train_1089516,cake,dev,OK,,
+train_1092146,toilet,dev,OK,,
+train_1092318,toilet,test,OK,,
+train_1092465,toilet,dev,OK,,
+train_1092842,toilet,dev,OK,,
+train_1092890,toilet,dev,BAD,unrec,orange bedpan-like object
+train_1092978,toilet,dev,UNSURE,bg,dark strip down left side
+train_1093272,toilet,dev,OK,,
+train_1093477,toilet,test,OK,,
+train_1094058,toilet,test,UNSURE,trunc,"lid only, base missing"
+train_1094319,toilet,test,UNSURE,bg,strip of wall or pipe included
+train_1094939,toilet,dev,OK,,
+train_1095110,toilet,dev,UNSURE,trunc,straight cut at top
+train_1095196,toilet,test,OK,,
+train_1095575,toilet,test,OK,,
+train_1095750,toilet,dev,OK,,
+train_1096219,toilet,dev,OK,,
+train_1096656,toilet,dev,UNSURE,quality,"dark greyscale, jagged edge"
+train_1097123,toilet,test,OK,,
+train_1098353,laptop,test,OK,,
+train_1098440,laptop,dev,UNSURE,unrec,closed lid only
+train_109856,chair,dev,BAD,bg,books or boxes on the seat
+train_1098579,laptop,dev,OK,,
+train_1098822,laptop,dev,OK,,
+train_1099087,laptop,test,OK,,
+train_1099147,laptop,test,OK,,
+train_1099180,laptop,dev,OK,,
+train_1099620,laptop,dev,UNSURE,quality,"dark, odd outline"
+train_1099742,laptop,dev,OK,,
+train_1099792,laptop,test,OK,,
+train_1100340,laptop,test,OK,,
+train_1100585,laptop,dev,UNSURE,bg,headphones on keyboard
+train_1100805,laptop,test,UNSURE,unrec,"closed Vaio lid, looks like slab"
+train_1101104,laptop,test,OK,,
+train_1101415,laptop,dev,OK,,
+train_1101695,laptop,test,OK,,
+train_1102439,laptop,dev,OK,,
+train_1102472,laptop,dev,OK,,
+train_1102612,laptop,dev,UNSURE,trunc,keyboard part missing
+train_1102818,laptop,dev,UNSURE,trunc,notch in top of screen
+train_1102894,laptop,dev,OK,,
+train_1104778,mouse,test,UNSURE,quality,very dark close-up
+train_1104942,mouse,test,UNSURE,unrec,dark brown blob
+train_1105088,mouse,test,OK,,
+train_1105731,mouse,dev,OK,,
+train_1105748,mouse,test,OK,,
+train_1105873,mouse,dev,OK,,
+train_1105891,mouse,test,OK,,
+train_1106049,mouse,test,UNSURE,unrec,patterned black/white blob
+train_1106414,mouse,dev,OK,,
+train_1107147,mouse,test,OK,,
+train_1107403,mouse,test,OK,,
+train_1107536,mouse,dev,OK,,
+train_1107950,remote,test,OK,,
+train_1108019,remote,test,OK,,
+train_110813,chair,dev,UNSURE,unrec,odd blurry green armchair
+train_1108160,remote,dev,OK,,
+train_1108232,remote,test,OK,,
+train_1108368,remote,test,BAD,trunc,"close-up crop of buttons, straight edges"
+train_1108550,remote,dev,OK,,
+train_1108563,remote,test,OK,,
+train_1108801,remote,test,UNSURE,quality,washed-out side view of Wii remote
+train_1109108,remote,dev,OK,,
+train_1109553,remote,test,OK,,
+train_1109602,remote,test,OK,,
+train_1109703,remote,dev,OK,,
+train_1110559,remote,dev,OK,,
+train_1111166,remote,test,OK,,
+train_1111321,remote,dev,UNSURE,unrec,fuzzy blue cover with cartoon face
+train_1111986,remote,dev,OK,,
+train_1112226,remote,test,OK,,
+train_1113100,remote,test,OK,,
+train_1114606,keyboard,dev,OK,,
+train_1114660,keyboard,dev,OK,,
+train_1115120,keyboard,dev,BAD,quality,"blurry orange-brown, unreadable"
+train_1115141,keyboard,test,OK,,
+train_1115146,keyboard,test,UNSURE,trunc,straight cut edges
+train_1115172,keyboard,test,UNSURE,quality,"dark, thin, at an angle"
+train_1115174,keyboard,dev,UNSURE,bg,yellow desk edge around it
+train_1115347,keyboard,dev,OK,,
+train_1115378,keyboard,dev,UNSURE,quality,dark
+train_1115551,keyboard,dev,BAD,quality,"blurry perspective, keys unreadable"
+train_1115702,keyboard,dev,OK,,
+train_1115787,keyboard,test,UNSURE,quality,dark
+train_1115800,keyboard,test,BAD,trunc,"corner close-up, triangular cut"
+train_1115961,keyboard,dev,OK,,
+train_1116245,keyboard,test,OK,,
+train_1116409,keyboard,test,OK,,
+train_1116553,keyboard,dev,OK,,
+train_1116677,keyboard,test,UNSURE,bg,extra wedge and stickers
+train_1116829,keyboard,test,OK,,
+train_1116836,keyboard,test,OK,,
+train_1116959,keyboard,test,UNSURE,trunc,"dark, straight top edge"
+train_1117396,keyboard,dev,OK,,
+train_1117655,keyboard,dev,OK,,
+train_1117658,keyboard,test,OK,,
+train_1117822,keyboard,test,UNSURE,quality,"dark, partial"
+train_1118402,microwave,test,OK,,
+train_1118525,microwave,test,OK,,
+train_1118698,microwave,dev,OK,,
+train_1118818,microwave,test,OK,,
+train_1118896,microwave,dev,UNSURE,bg,cable on top
+train_1118962,microwave,dev,OK,,
+train_1119003,microwave,test,OK,,
+train_1119301,microwave,dev,OK,,
+train_1119364,microwave,test,OK,,
+train_1119593,microwave,dev,OK,,
+train_1119604,microwave,dev,OK,,
+train_1119751,microwave,dev,BAD,trunc,notch cut out of right side
+train_1120019,microwave,test,OK,,
+train_1120082,microwave,test,OK,,
+train_1120118,microwave,dev,OK,,
+train_1120208,microwave,dev,OK,,
+train_1120351,microwave,test,OK,,
+train_1120483,microwave,test,OK,,
+train_1120651,microwave,test,OK,,
+train_1120855,microwave,dev,OK,,
+train_1120937,microwave,test,OK,,
+train_1120995,microwave,dev,OK,,
+train_1121151,oven,dev,OK,,
+train_1121523,oven,dev,OK,,
+train_1121585,oven,test,OK,,
+train_112175,couch,test,BAD,bg,plant in front
+train_1121768,oven,dev,OK,,
+train_1121938,oven,test,UNSURE,unrec,angled wall oven with towel
+train_1122176,oven,dev,OK,,
+train_1122696,oven,test,UNSURE,unrec,"black door only, dark"
+train_112299,couch,dev,UNSURE,trunc,one end cut
+train_1123076,oven,dev,UNSURE,unrec,"wall broiler, hood-like"
+train_1123269,oven,dev,BAD,unrec,black rectangle with text
+train_1123280,oven,test,OK,,
+train_1123541,oven,test,UNSURE,trunc,"narrow, angled, partial"
+train_1123596,oven,test,UNSURE,trunc,bottom cut
+train_1123837,oven,dev,UNSURE,unrec,front looks like pizza oven
+train_1123867,oven,test,OK,,
+train_1124071,oven,dev,UNSURE,trunc/bg,"open door, ragged bottom"
+train_1125068,oven,test,BAD,trunc,"stepped cut-outs, partial"
+train_112551,couch,test,OK,,
+train_1126428,oven,test,UNSURE,trunc,cooktop part only
+train_1127056,oven,test,BAD,unrec,cooktop with kettle only
+train_1127509,oven,dev,UNSURE,trunc,straight top and bottom cuts
+train_1127641,oven,test,OK,,
+train_112819,couch,dev,UNSURE,trunc,odd cut shape
+train_1129398,sink,test,OK,,
+train_1129914,sink,test,OK,,
+train_1129999,sink,test,OK,,
+train_113016,couch,test,OK,,
+train_1130388,sink,test,OK,,
+train_1130404,sink,dev,OK,,
+train_1130606,sink,test,OK,,
+train_1130626,sink,dev,BAD,bg,orange cabinet front and faucet included
+train_1130673,sink,test,UNSURE,trunc,"partial, dark edges"
+train_1130779,sink,dev,OK,,
+train_1130926,sink,test,OK,,
+train_1130936,sink,dev,UNSURE,trunc,notched and partial
+train_1131430,sink,dev,OK,,
+train_1132026,sink,test,OK,,
+train_113204,couch,test,UNSURE,trunc,thin strip of the back only
+train_1132359,sink,dev,OK,,
+train_1132670,sink,dev,OK,,
+train_1132923,sink,test,UNSURE,trunc,notch cut at top left
+train_1133635,sink,dev,OK,,
+train_1133855,sink,test,OK,,
+train_1134764,sink,dev,OK,,
+train_1135258,sink,test,OK,,
+train_113529,couch,test,UNSURE,bg,possible floor included
+train_113615,couch,dev,OK,,
+train_113648,couch,test,OK,,
+train_1137368,book,dev,UNSURE,trunc,chunk cut at top-right
+train_1138021,book,test,OK,,
+train_1138579,book,test,OK,,
+train_1138810,book,dev,OK,,
+train_1138944,book,dev,OK,,
+train_1140011,book,dev,UNSURE,trunc,notch missing
+train_1141413,book,dev,OK,,
+train_1141815,book,test,OK,,
+train_1142074,book,dev,OK,,
+train_1142547,book,test,OK,,
+train_1142773,book,dev,BAD,unrec,blank white sheet
+train_1142819,book,dev,OK,,
+train_1142908,book,test,OK,,
+train_1143498,book,test,BAD,multi,blurred row of shelved books
+train_1145134,book,dev,OK,,
+train_1145279,book,dev,OK,,
+train_1146319,book,test,BAD,multi,stack of several books
+train_1151989,vase,test,UNSURE,trunc,straight cut sides
+train_115226,couch,test,UNSURE,trunc,end cut diagonally
+train_1152482,vase,dev,OK,,
+train_1152810,vase,dev,OK,,
+train_1153204,vase,dev,OK,,
+train_1153242,vase,test,OK,,
+train_1153257,vase,test,UNSURE,trunc,straight sides
+train_1153460,vase,test,UNSURE,trunc,jagged rim
+train_1153531,vase,dev,UNSURE,trunc,straight cut on left
+train_1153771,vase,dev,BAD,trunc,partial grey shape
+train_1153802,vase,dev,OK,,
+train_1154103,vase,dev,OK,,
+train_1154179,vase,test,UNSURE,trunc,top may be cut off
+train_1154307,vase,test,BAD,trunc,"dark glass fragment, straight cut"
+train_1154323,vase,dev,BAD,trunc,"fragment, straight cuts top and bottom"
+train_1154503,vase,dev,OK,,
+train_1154810,vase,test,BAD,unrec,pinkish blob with jagged top
+train_1155402,vase,dev,BAD,trunc,straight cuts on top and side
+train_1157588,scissors,dev,UNSURE,unrec,"twisted, with string, hard to read"
+train_1157744,scissors,dev,OK,,
+train_1157772,scissors,dev,UNSURE,trunc,blades appear cut off at left
+train_1157834,scissors,test,UNSURE,trunc,blades mostly missing
+train_1157899,scissors,test,OK,,
+train_1157930,scissors,test,BAD,trunc,"large handles only, blades missing"
+train_1157934,scissors,dev,BAD,unrec,"dark curved object, maybe faucet"
+train_1158016,scissors,test,OK,,
+train_1158017,scissors,dev,OK,,
+train_1158098,scissors,dev,OK,,
+train_1158104,scissors,dev,OK,,
+train_1158129,scissors,dev,OK,,
+train_1158165,scissors,test,UNSURE,unrec,looks like pruning shears or other tool
+train_1158243,scissors,dev,OK,,
+train_1158261,scissors,dev,OK,,
+train_1158266,scissors,test,OK,,
+train_1158296,scissors,dev,OK,,
+train_1158455,scissors,test,OK,,
+train_1158560,scissors,test,OK,,
+train_1158644,scissors,dev,BAD,bg,lavender sprigs included in mask
+train_1158754,scissors,test,OK,,
+train_1158941,scissors,test,OK,,
+train_1158966,scissors,test,OK,,
+train_1159037,scissors,dev,OK,,
+train_1159178,teddy bear,test,UNSURE,unrec,"long ears, looks like a rabbit"
+train_1159258,teddy bear,dev,OK,,
+train_1159408,teddy bear,test,OK,,
+train_1159515,teddy bear,dev,OK,,
+train_1159662,teddy bear,dev,OK,,
+train_1159950,teddy bear,test,BAD,unrec,orange blob with no features
+train_1159984,teddy bear,test,OK,,
+train_1160042,teddy bear,dev,OK,,
+train_1160414,teddy bear,test,OK,,
+train_1160428,teddy bear,dev,OK,,
+train_1160795,teddy bear,test,OK,,
+train_1161087,teddy bear,dev,OK,,
+train_1161092,teddy bear,dev,BAD,unrec,"greyscale, looks like a rabbit"
+train_1161381,teddy bear,dev,OK,,
+train_1161523,teddy bear,dev,OK,,
+train_1161550,teddy bear,dev,OK,,
+train_1161578,teddy bear,test,OK,,
+train_1161739,teddy bear,test,OK,,
+train_1161938,teddy bear,test,OK,,
+train_1162214,teddy bear,dev,OK,,
+train_1162453,teddy bear,dev,UNSURE,trunc,straight cut edges
+train_116262,couch,test,OK,,
+train_1163132,teddy bear,test,OK,,
+train_1165098,backpack,dev,UNSURE,unrec,shapeless black blob
+train_1166919,backpack,test,OK,,
+train_1167065,backpack,dev,OK,,
+train_1168038,backpack,dev,OK,,
+train_116924,couch,test,OK,,
+train_1169317,backpack,dev,UNSURE,bg,grass strip at the bottom
+train_1169510,backpack,dev,UNSURE,bg,white background fringe around edges
+train_1169730,backpack,dev,OK,,
+train_1170161,backpack,test,OK,,
+train_1171135,backpack,test,UNSURE,quality,dark and blurry black bag
+train_117554,couch,dev,UNSURE,trunc,straight bottom cut
+train_117566,couch,test,OK,,
+train_117687,couch,dev,BAD,bg,greenery behind the wicker couch
+train_11776,dog,test,OK,,
+train_117856,couch,dev,OK,,
+train_1182874,suitcase,test,UNSURE,quality,very dark
+train_1182934,suitcase,dev,OK,,
+train_1183070,suitcase,test,OK,,
+train_1183088,suitcase,test,OK,,
+train_1183129,suitcase,dev,OK,,
+train_1183417,suitcase,test,UNSURE,trunc,grey chunk missing from middle
+train_1183546,suitcase,dev,OK,,
+train_1183691,suitcase,test,OK,,
+train_1183816,suitcase,dev,OK,,
+train_1183872,suitcase,dev,OK,,
+train_1183904,suitcase,dev,UNSURE,unrec,"flat thin case, unclear"
+train_1184112,suitcase,test,OK,,
+train_1184282,suitcase,test,OK,,
+train_1184601,suitcase,dev,UNSURE,unrec,open case with metal rods inside
+train_1184666,suitcase,dev,OK,,
+train_1184754,suitcase,test,OK,,
+train_1184929,suitcase,dev,OK,,
+train_1185241,suitcase,test,UNSURE,trunc,straight cut along right edge
+train_1185485,suitcase,test,BAD,bg,orange plush toy sitting on top
+train_1186110,suitcase,test,OK,,
+train_1186924,suitcase,dev,OK,,
+train_1187065,suitcase,test,OK,,
+train_11954,dog,test,UNSURE,quality,blurry head
+train_1197855,truck,dev,OK,,
+train_1198716,traffic light,dev,OK,,
+train_1223607,person,dev,OK,,
+train_1247089,person,test,OK,,
+train_12521,dog,dev,UNSURE,unrec,"head down, face hidden by hair"
+train_1319841,person,test,BAD,trunc,waist up
+train_135088,car,test,UNSURE,trunc,rear view with lower part cut
+train_1364657,bus,dev,OK,,
+train_137022,car,dev,OK,,
+train_1376681,boat,test,UNSURE,trunc,"straight cut edges, partial"
+train_1387836,fire hydrant,test,BAD,bg,weeds growing over body
+train_1387963,fire hydrant,test,OK,,
+train_1408127,cow,test,BAD,unrec,painted bright-red cow statue
+train_14150,dog,test,OK,,
+train_1418121,backpack,test,OK,,
+train_14212,dog,test,BAD,trunc,"head and chest only, straight edge"
+train_1423819,umbrella,dev,OK,,
+train_1426881,umbrella,dev,OK,,
+train_1428081,umbrella,test,OK,,
+train_143013,car,dev,BAD,trunc,interior fragment with straight edges
+train_144306,car,test,BAD,trunc,"front corner only, straight cut"
+train_1445336,suitcase,dev,UNSURE,unrec,looks like a duffel bag
+train_14479,dog,dev,BAD,quality,"blurry face, pink smeared body"
+train_1463558,kite,dev,OK,,
+train_1463613,kite,test,OK,,
+train_1463641,kite,test,OK,,
+train_1464129,kite,dev,UNSURE,unrec,cartoon fairy-figure kite
+train_1464195,kite,dev,OK,,
+train_1465463,kite,test,OK,,
+train_1465886,kite,test,OK,,
+train_1477507,skateboard,dev,OK,,
+train_1484906,bottle,dev,OK,,
+train_1487059,bottle,dev,UNSURE,trunc,"milk jug cut, pinkish blob"
+train_1504915,cup,dev,OK,,
+train_1507294,cup,dev,UNSURE,bg,saucer or background at the bottom-left
+train_1507325,cup,dev,UNSURE,unrec,Pyrex measuring jug
+train_1510181,cup,dev,OK,,
+train_1510301,cup,test,OK,,
+train_1510687,cup,dev,OK,,
+train_1533499,bowl,test,BAD,unrec,mosaic ring with the centre missing
+train_1538094,bowl,dev,UNSURE,multi,stacked dark pots
+train_1539383,bowl,dev,UNSURE,unrec,plastic container of mushrooms
+train_1540544,bowl,dev,BAD,trunc,bottom half cut straight
+train_1548832,apple,dev,OK,,
+train_1549217,apple,dev,BAD,multi,bunch of about 8 apples
+train_1549579,apple,dev,OK,,
+train_1549890,apple,dev,BAD,multi,crate of many apples
+train_1550363,apple,test,OK,,
+train_1551259,apple,test,BAD,quality,heavily blurred
+train_1551404,apple,test,OK,,
+train_1551623,apple,test,OK,,
+train_1553241,sandwich,test,UNSURE,quality,blurry
+train_1555037,sandwich,test,OK,,
+train_1555538,sandwich,dev,UNSURE,unrec,looks like plain pastry or pie
+train_1555887,orange,dev,BAD,multi,pile of oranges with leaves
+train_156300,airplane,test,OK,,
+train_156348,airplane,dev,OK,,
+train_156606,airplane,dev,OK,,
+train_1567787,hot dog,test,OK,,
+train_1568509,hot dog,test,OK,,
+train_1570933,pizza,test,BAD,unrec,"plain grey dough, no toppings"
+train_157195,airplane,dev,OK,,
+train_157396,airplane,dev,OK,,
+train_157409,airplane,test,OK,,
+train_157586,airplane,test,OK,,
+train_157771,airplane,test,OK,,
+train_1580387,chair,dev,OK,,
+train_158373,airplane,dev,OK,,
+train_158456,airplane,test,OK,,
+train_158519,airplane,test,OK,,
+train_1587935,chair,test,OK,,
+train_158912,airplane,dev,OK,,
+train_159091,airplane,dev,OK,,
+train_159165,airplane,dev,OK,,
+train_159391,airplane,dev,OK,,
+train_159399,airplane,test,OK,,
+train_159456,airplane,test,OK,,
+train_159834,airplane,test,OK,,
+train_159920,airplane,test,OK,,
+train_160060,airplane,dev,OK,,
+train_160223,airplane,dev,OK,,
+train_160248,airplane,test,UNSURE,quality,very faded and hazy
+train_160376,airplane,dev,OK,,
+train_1605219,couch,dev,OK,,
+train_1607931,potted plant,dev,UNSURE,bg,dark chunks
+train_1608223,potted plant,dev,OK,,
+train_1611161,bed,test,UNSURE,unrec,bare quilted mattress pad
+train_1616,dog,test,OK,,
+train_162811,bus,test,OK,,
+train_162909,bus,test,OK,,
+train_163015,bus,test,OK,,
+train_163123,bus,dev,UNSURE,trunc,front looks occluded or missing
+train_163163,bus,dev,BAD,quality,dark blurred unreadable blob
+train_163683,bus,dev,UNSURE,trunc,lower body and wheels cut
+train_1640158,microwave,test,UNSURE,unrec,"odd angle, looks like white panel"
+train_1641181,microwave,dev,OK,,
+train_1642471,oven,test,OK,,
+train_16427,dog,dev,OK,,
+train_164316,bus,dev,OK,,
+train_164332,bus,test,UNSURE,bg,odd white top (snow?)
+train_1643512,sink,test,OK,,
+train_1645714,sink,dev,OK,,
+train_164730,bus,dev,OK,,
+train_164779,bus,dev,OK,,
+train_1649801,book,test,OK,,
+train_1650948,book,test,OK,,
+train_165183,bus,test,UNSURE,quality,small and faded
+train_1652477,book,dev,UNSURE,unrec,magazine rather than a book
+train_165607,bus,dev,OK,,
+train_1656469,book,dev,BAD,bg,cables and markers on top
+train_1656648,book,dev,OK,,
+train_165782,bus,test,OK,,
+train_166296,bus,dev,OK,,
+train_166649,bus,dev,OK,,
+train_1668611,vase,dev,UNSURE,trunc,chunk missing on right side
+train_167062,bus,dev,UNSURE,unrec,looks like a motorhome
+train_167369,bus,dev,OK,,
+train_1673695,teddy bear,test,OK,,
+train_168016,bus,test,OK,,
+train_168076,bus,test,OK,,
+train_168148,bus,test,OK,,
+train_168187,bus,test,OK,,
+train_169550,train,test,OK,,
+train_169711,train,dev,OK,,
+train_169718,train,test,OK,,
+train_169741,train,dev,OK,,
+train_169782,train,dev,OK,,
+train_170015,train,dev,OK,,
+train_170140,train,dev,OK,,
+train_170180,train,test,OK,,
+train_170372,train,dev,OK,,
+train_171430,train,test,OK,,
+train_171742,train,test,OK,,
+train_172113,train,dev,OK,,
+train_172140,train,test,OK,,
+train_172154,train,dev,UNSURE,unrec,"rear end only, blob-like"
+train_172785,train,dev,OK,,
+train_172962,train,dev,OK,,
+train_173230,train,test,OK,,
+train_173309,train,dev,UNSURE,trunc,gap missing in middle of body
+train_173769,train,dev,OK,,
+train_173806,train,dev,OK,,
+train_1738082,person,test,BAD,trunc,waist up
+train_1738248,person,dev,BAD,trunc,"bent-over upper body, no legs"
+train_174118,train,test,OK,,
+train_174159,train,test,OK,,
+train_174272,train,test,BAD,unrec,"dark wedge, impossible to read"
+train_174516,train,dev,UNSURE,unrec,distorted tall perspective
+train_175217,train,test,OK,,
+train_175402,boat,test,OK,,
+train_175584,boat,dev,OK,,
+train_175802,boat,dev,OK,,
+train_175897,boat,test,OK,,
+train_176044,boat,test,OK,,
+train_176102,boat,test,UNSURE,quality,washed-out low contrast
+train_176203,boat,dev,OK,,
+train_176213,boat,dev,OK,,
+train_176502,boat,dev,OK,,
+train_176753,boat,dev,UNSURE,trunc,may be partially cut
+train_1771027,car,dev,BAD,trunc,"rear half only, front cut"
+train_177243,boat,test,OK,,
+train_177390,boat,dev,UNSURE,unrec,looks like a model pirate ship
+train_1774928,car,dev,BAD,trunc,windshield close-up with straight cut edges
+train_177513,boat,dev,BAD,bg,sail triangle filled with background scene
+train_177653,boat,dev,UNSURE,trunc,"hull only, top cut straight"
+train_177808,boat,test,OK,,
+train_177908,boat,test,OK,,
+train_177945,boat,test,OK,,
+train_178574,boat,test,OK,,
+train_178930,boat,dev,OK,,
+train_179392,boat,test,OK,,
+train_179603,boat,test,OK,,
+train_1800055,truck,dev,UNSURE,unrec,dark blue flatbed fragment
+train_1808979,fire hydrant,test,OK,,
+train_1808980,fire hydrant,dev,OK,,
+train_1809420,stop sign,test,BAD,unrec,round no-motorcycles sign
+train_1810073,parking meter,dev,OK,,
+train_1810529,bench,dev,BAD,bg,sandy ground patches included
+train_1812622,bench,dev,OK,,
+train_181500,boat,test,OK,,
+train_1817257,dog,dev,UNSURE,quality,very dark lying dog
+train_1817436,dog,test,OK,,
+train_1817956,sheep,test,UNSURE,bg,"grass at bottom, straight cut edges"
+train_1817973,sheep,dev,OK,,
+train_181829,boat,dev,OK,,
+train_1841660,suitcase,dev,OK,,
+train_1843,dog,dev,OK,,
+train_1864792,bottle,test,UNSURE,unrec,sauce jar rather than a bottle
+train_1865469,bottle,test,BAD,unrec,jar of red sauce
+train_1868132,bottle,dev,OK,,
+train_1869587,bottle,test,BAD,unrec,sippy cup with handles
+train_1882429,cup,test,OK,,
+train_18865,potted plant,test,UNSURE,bg,gravel on left
+train_1892361,knife,dev,BAD,trunc,"blade only, straight cut, handle missing"
+train_1892717,knife,dev,BAD,trunc,"blade only, straight cut, handle missing"
+train_1899338,bowl,dev,BAD,unrec,steel pot or bin with a label
+train_1900791,bowl,test,UNSURE,unrec,plate of food with a label
+train_1901231,bowl,dev,UNSURE,unrec,casserole baking dish
+train_19081,potted plant,test,UNSURE,bg,minor background
+train_1910194,sandwich,dev,BAD,unrec,"fish-shaped taiyaki pastry, not sandwich"
+train_1911051,sandwich,dev,UNSURE,unrec,looks like a hot dog
+train_19205,potted plant,test,UNSURE,bg,pale and dark polygons
+train_1922103,hot dog,dev,OK,,
+train_1927613,cake,dev,OK,,
+train_19295,potted plant,test,BAD,bg,sepia plant in big background polygon
+train_1936226,chair,dev,BAD,trunc,slatted back close-up only
+train_19400,potted plant,dev,OK,,
+train_19403,potted plant,test,UNSURE,bg,pale background on left
+train_1941815,chair,test,OK,,
+train_1943051,chair,test,BAD,trunc,chunk missing from the armchair seat
+train_1943373,chair,test,OK,,
+train_1949939,couch,dev,OK,,
+train_1957245,bed,test,OK,,
+train_1971840,mouse,test,OK,,
+train_1973210,remote,dev,BAD,unrec,orange plush cover with cartoon face
+train_1976171,cell phone,test,OK,,
+train_1976987,cell phone,dev,BAD,trunc,"screen close-up, edges cut"
+train_1979812,oven,dev,UNSURE,unrec,"toaster oven, microwave-like"
+train_1984951,book,test,BAD,multi,blurred row of shelved books
+train_1987566,book,test,BAD,unrec,"yellow autumn image, not a book"
+train_1990931,clock,test,UNSURE,unrec,barometer or hygrometer
+train_1992601,vase,test,UNSURE,trunc,straight sides and top
+train_1993190,vase,test,OK,,
+train_1994793,scissors,test,OK,,
+train_1994800,scissors,dev,OK,,
+train_20112,potted plant,test,UNSURE,bg,minor white halo
+train_20255,potted plant,dev,BAD,bg,white wall or railing included
+train_20724,potted plant,dev,UNSURE,bg,pale green patches
+train_20801,potted plant,dev,UNSURE,bg,pale grey polygons
+train_209157,person,dev,BAD,trunc,"dark head and shoulders, straight cuts"
+train_2093799,bottle,dev,UNSURE,trunc,"jug top only, cut below"
+train_2095677,bottle,test,OK,,
+train_2095983,bottle,dev,OK,,
+train_2096812,bottle,test,OK,,
+train_2107646,bowl,test,UNSURE,quality,"dark glass bowl, hard to read"
+train_211327,person,test,BAD,trunc,"back view, head and shoulders"
+train_21518,potted plant,test,UNSURE,bg,dark patches
+train_2162797,person,dev,OK,,
+train_2167694,person,dev,BAD,trunc,waist up
+train_2169880,car,dev,UNSURE,trunc,front-right possibly cut
+train_2171494,airplane,dev,BAD,unrec,"a military helicopter, not an airplane"
+train_2171798,truck,test,OK,,
+train_2172706,traffic light,dev,OK,,
+train_2177044,cow,dev,OK,,
+train_2177186,cow,dev,OK,,
+train_2177244,cow,test,UNSURE,trunc,greyscale with parts missing
+train_21803,potted plant,test,BAD,bg,brick wall included
+train_21846,potted plant,dev,BAD,bg,"white/window background, no pot"
+train_2189495,cake,test,UNSURE,trunc,left part may be missing
+train_2198094,fire hydrant,test,OK,,
+train_2203704,cake,test,OK,,
+train_2204260,sandwich,test,BAD,unrec,blurry white and green blob
+train_2209822,stop sign,dev,BAD,unrec,round no-entry sign
+train_2215610,cup,test,BAD,trunc,close-up with the right side cut off
+train_2217843,sandwich,test,OK,,
+train_2218908,sandwich,dev,UNSURE,trunc,"straight cut top edge, paper wrap"
+train_2218977,sandwich,test,UNSURE,unrec,"plain bread loaf, no filling visible"
+train_2219043,sandwich,test,BAD,unrec,slice of meat
+train_2227595,cell phone,dev,OK,,
+train_2227794,microwave,dev,OK,,
+train_2228034,microwave,test,OK,,
+train_2231181,hot dog,test,UNSURE,trunc,both ends cut straight
+train_223794,person,dev,OK,,
+train_22546,potted plant,dev,BAD,bg,"mostly dark background, pot at bottom"
+train_2287,dog,test,UNSURE,bg,grass rim around lying dog
+train_23728,potted plant,test,UNSURE,bg,white patches
+train_24263,potted plant,test,OK,,
+train_243362,car,test,BAD,unrec,washed out behind a grille or fence
+train_247193,airplane,test,UNSURE,unrec,"blended-wing concept plane, possibly a model"
+train_248537,bus,test,OK,,
+train_24856,potted plant,test,BAD,quality,almost completely black
+train_25789,potted plant,dev,UNSURE,bg,background inside polygon
+train_26065,potted plant,dev,BAD,bg,window light behind dark silhouette
+train_268791,stop sign,test,OK,,
+train_268808,stop sign,test,OK,,
+train_269079,stop sign,test,OK,,
+train_269341,stop sign,dev,OK,,
+train_269423,stop sign,test,OK,,
+train_269479,stop sign,dev,OK,,
+train_269492,stop sign,dev,UNSURE,quality,very dark
+train_269675,stop sign,dev,OK,,
+train_269706,stop sign,dev,OK,,
+train_269741,stop sign,test,UNSURE,quality,"dark, narrow and distorted"
+train_269939,stop sign,test,OK,,
+train_270031,stop sign,test,OK,,
+train_270223,stop sign,dev,OK,,
+train_270332,stop sign,test,OK,,
+train_270500,stop sign,dev,OK,,
+train_270724,stop sign,dev,OK,,
+train_270739,stop sign,test,OK,,
+train_271188,stop sign,dev,OK,,
+train_271190,stop sign,dev,OK,,
+train_271226,stop sign,test,OK,,
+train_271345,stop sign,test,OK,,
+train_271445,stop sign,dev,OK,,
+train_279398,umbrella,dev,OK,,
+train_279901,umbrella,test,OK,,
+train_280038,umbrella,dev,OK,,
+train_280544,umbrella,test,OK,,
+train_280622,umbrella,test,OK,,
+train_280720,umbrella,test,UNSURE,bg,grass inside lower part
+train_281483,umbrella,test,OK,,
+train_281654,umbrella,test,OK,,
+train_281725,umbrella,dev,OK,,
+train_281915,umbrella,dev,OK,,
+train_282207,umbrella,dev,OK,,
+train_282309,umbrella,test,OK,,
+train_282417,umbrella,dev,OK,,
+train_282801,umbrella,dev,OK,,
+train_282907,umbrella,test,OK,,
+train_28383,tv,dev,OK,,
+train_284477,umbrella,test,UNSURE,unrec,"fringed parasol, lamp-like"
+train_284676,umbrella,dev,OK,,
+train_284829,umbrella,dev,UNSURE,quality,dark and crumpled
+train_28495,tv,dev,OK,,
+train_284989,umbrella,dev,OK,,
+train_28540,tv,test,UNSURE,bg,cardboard surround included
+train_285484,umbrella,test,UNSURE,unrec,"flat and gold, lotus-like"
+train_285809,umbrella,dev,OK,,
+train_285909,umbrella,test,OK,,
+train_28646,tv,dev,OK,,
+train_28715,tv,dev,OK,,
+train_28779,tv,test,OK,,
+train_288498,bottle,test,OK,,
+train_28948,tv,test,OK,,
+train_2910,dog,dev,BAD,unrec,mop-like white heap (komondor)
+train_291105,couch,dev,BAD,trunc,brown fragment
+train_292796,potted plant,dev,UNSURE,bg,grey wall spikes
+train_292932,potted plant,dev,UNSURE,bg,grey wall spikes
+train_29735,tv,dev,OK,,
+train_29747,tv,test,OK,,
+train_29857,tv,test,OK,,
+train_30484,tv,test,OK,,
+train_3065,dog,test,BAD,unrec,dark brown shape
+train_308364,sandwich,test,UNSURE,multi,two halves side by side
+train_308374,sandwich,dev,UNSURE,unrec,"messy pastry, unclear"
+train_309016,sandwich,test,OK,,
+train_309231,sandwich,dev,OK,,
+train_309252,sandwich,test,OK,,
+train_309684,sandwich,dev,OK,,
+train_30973,tv,test,OK,,
+train_309778,sandwich,test,OK,,
+train_310610,sandwich,dev,OK,,
+train_310687,sandwich,test,OK,,
+train_311455,sandwich,test,OK,,
+train_311942,sandwich,dev,OK,,
+train_311948,sandwich,dev,OK,,
+train_312468,sandwich,test,OK,,
+train_312618,sandwich,dev,OK,,
+train_312918,sandwich,dev,OK,,
+train_314285,bed,test,OK,,
+train_314465,bed,test,OK,,
+train_314767,bed,test,OK,,
+train_314885,bed,test,OK,,
+train_315178,bed,dev,BAD,unrec,dark blue cut shape
+train_315339,bed,test,BAD,unrec,crumpled sheet blob
+train_315740,bed,test,OK,,
+train_315742,bed,dev,OK,,
+train_316248,bed,test,OK,,
+train_316527,bed,dev,UNSURE,unrec,flat sheet with no frame
+train_316730,bed,test,BAD,bg,canopy bed with room interior inside
+train_317160,bed,dev,BAD,unrec/bg,"window and iron railing, not a bed"
+train_317195,bed,dev,OK,,
+train_317752,bed,dev,OK,,
+train_317890,bed,test,OK,,
+train_317939,bed,test,OK,,
+train_318119,bed,test,OK,,
+train_318302,bed,dev,OK,,
+train_31835,tv,test,OK,,
+train_318716,bed,dev,BAD,bg,canopy bed with room wall and doorway
+train_318774,bed,dev,UNSURE,trunc,straight cut left edge
+train_318958,bed,dev,OK,,
+train_319449,bed,dev,OK,,
+train_32133,tv,dev,OK,,
+train_32146,tv,test,OK,,
+train_322327,cell phone,dev,OK,,
+train_322406,cell phone,dev,OK,,
+train_322696,cell phone,dev,UNSURE,bg,extra object (ring or headset) on the phone
+train_322968,cell phone,dev,OK,,
+train_323586,cell phone,dev,OK,,
+train_323671,cell phone,test,OK,,
+train_323783,cell phone,dev,OK,,
+train_324019,cell phone,test,OK,,
+train_324346,cell phone,dev,OK,,
+train_324461,cell phone,test,OK,,
+train_324996,cell phone,test,OK,,
+train_325323,cell phone,test,OK,,
+train_325514,cell phone,test,OK,,
+train_325565,cell phone,dev,BAD,bg,toy figures included on the phone
+train_32589,tv,dev,UNSURE,bg,"stand, cabinet and wall included"
+train_325922,cell phone,test,OK,,
+train_326122,cell phone,dev,OK,,
+train_326233,cell phone,test,OK,,
+train_326384,cell phone,test,UNSURE,unrec,dark distorted shape
+train_326391,cell phone,test,OK,,
+train_3269,dog,dev,OK,,
+train_327342,cell phone,dev,OK,,
+train_32780,tv,dev,OK,,
+train_328122,cell phone,test,OK,,
+train_32854,tv,dev,OK,,
+train_330502,cell phone,test,UNSURE,quality,dark and hard to read
+train_330557,refrigerator,dev,UNSURE,unrec,plain grey slab
+train_330620,refrigerator,test,OK,,
+train_330630,refrigerator,dev,BAD,trunc,rectangular chunk missing on right
+train_330719,refrigerator,dev,OK,,
+train_330738,refrigerator,test,OK,,
+train_330759,refrigerator,dev,BAD,trunc,notch cut at top left
+train_330836,refrigerator,test,OK,,
+train_331287,refrigerator,test,UNSURE,trunc,"tapered, odd shape"
+train_331447,refrigerator,dev,OK,,
+train_331536,refrigerator,test,BAD,unrec,grey slab
+train_331710,refrigerator,test,OK,,
+train_332196,refrigerator,test,OK,,
+train_332402,refrigerator,dev,UNSURE,unrec,rear view showing coils
+train_332425,refrigerator,test,OK,,
+train_332494,refrigerator,test,UNSURE,trunc,right part cut
+train_332552,refrigerator,test,UNSURE,unrec,plain pink slab
+train_332671,refrigerator,dev,OK,,
+train_332733,refrigerator,dev,UNSURE,unrec,plain two-door face only
+train_332826,refrigerator,dev,OK,,
+train_332866,refrigerator,dev,OK,,
+train_333030,refrigerator,test,OK,,
+train_333281,refrigerator,dev,OK,,
+train_333384,refrigerator,test,UNSURE,trunc,"close-up, top cut"
+train_3341,dog,test,UNSURE,bg,green grass patches at edges
+train_334428,clock,dev,OK,,
+train_336002,clock,test,UNSURE,unrec,wristwatch face
+train_33674,tv,dev,OK,,
+train_336846,clock,dev,UNSURE,unrec,flower-bed clock
+train_336878,clock,dev,OK,,
+train_336906,clock,test,OK,,
+train_336927,clock,test,OK,,
+train_336997,clock,dev,OK,,
+train_337021,clock,test,OK,,
+train_337823,clock,test,OK,,
+train_338202,clock,dev,OK,,
+train_338745,clock,test,OK,,
+train_338808,clock,dev,BAD,trunc,chunk missing left and bottom
+train_338955,clock,dev,OK,,
+train_339,hot dog,dev,BAD,unrec,"bun only, looks like bread roll"
+train_339180,clock,dev,OK,,
+train_339419,clock,dev,OK,,
+train_339462,clock,dev,OK,,
+train_339734,clock,dev,OK,,
+train_340605,clock,test,OK,,
+train_34076,tv,dev,OK,,
+train_340897,clock,test,OK,,
+train_341188,clock,dev,OK,,
+train_34451,tv,dev,OK,,
+train_345359,car,test,OK,,
+train_345660,car,dev,BAD,trunc,"white front fragment, top and side cut"
+train_345745,car,dev,OK,,
+train_346736,car,dev,OK,,
+train_346858,car,test,OK,,
+train_347169,car,test,OK,,
+train_34723,tv,test,OK,,
+train_348739,car,test,BAD,trunc,"front only, rear missing"
+train_353608,car,test,OK,,
+train_354216,car,dev,OK,,
+train_354976,car,dev,OK,,
+train_355297,car,test,BAD,quality,blurry night rear view
+train_355353,car,test,OK,,
+train_356044,car,test,OK,,
+train_358065,car,test,OK,,
+train_358353,car,dev,BAD,trunc,"dark SUV rear fragment, straight cut"
+train_36314,bird,dev,OK,,
+train_365867,bus,test,OK,,
+train_366107,bus,test,OK,,
+train_366124,bus,dev,OK,,
+train_366680,train,dev,OK,,
+train_37046,bird,dev,OK,,
+train_37064,bird,dev,OK,,
+train_37066,bird,dev,UNSURE,bg,water and dark fringe around the swan
+train_371108,bottle,test,OK,,
+train_372662,chair,dev,UNSURE,trunc,straight cut
+train_372686,chair,test,UNSURE,bg,background in the frame
+train_372875,chair,test,UNSURE,unrec,draped and blurry
+train_37518,bird,test,OK,,
+train_375358,chair,test,BAD,bg,desk items through the chair back
+train_37886,bird,dev,OK,,
+train_378918,chair,test,OK,,
+train_37928,bird,test,OK,,
+train_379694,chair,dev,OK,,
+train_380010,chair,dev,BAD,trunc,"blue chair fragment, occluded"
+train_38024,bird,dev,OK,,
+train_38052,bird,dev,OK,,
+train_38126,bird,dev,OK,,
+train_38188,bird,dev,OK,,
+train_38273,bird,test,OK,,
+train_38530,bird,dev,BAD,trunc,body split and tail detached by a gap
+train_38939,bird,test,OK,,
+train_38989,bird,test,UNSURE,unrec,odd white bird with parts missing
+train_394028,truck,dev,UNSURE,unrec,rear of a trailer only
+train_394284,truck,test,OK,,
+train_394431,truck,test,OK,,
+train_394466,truck,test,OK,,
+train_394518,truck,test,OK,,
+train_394701,truck,dev,OK,,
+train_395088,truck,test,OK,,
+train_395124,truck,dev,OK,,
+train_395286,truck,test,OK,,
+train_395512,truck,dev,OK,,
+train_39638,bird,dev,OK,,
+train_397018,truck,dev,OK,,
+train_397052,truck,test,OK,,
+train_39721,bird,test,OK,,
+train_397644,truck,dev,OK,,
+train_397729,truck,dev,OK,,
+train_398388,truck,test,OK,,
+train_398654,truck,dev,UNSURE,trunc,front with straight cut edges
+train_398838,truck,dev,OK,,
+train_39913,bird,dev,OK,,
+train_399729,truck,test,OK,,
+train_400539,truck,dev,OK,,
+train_402077,traffic light,test,OK,,
+train_402149,traffic light,test,OK,,"pedestrian signal, category decision needed"
+train_402675,traffic light,test,OK,,
+train_402825,traffic light,dev,OK,,
+train_402931,traffic light,dev,OK,,
+train_402932,traffic light,test,OK,,
+train_403500,traffic light,test,OK,,
+train_403794,traffic light,dev,OK,,"pedestrian signal, category decision needed"
+train_403883,traffic light,dev,OK,,
+train_404596,traffic light,test,OK,,"pedestrian signal, category decision needed"
+train_404822,traffic light,dev,OK,,
+train_404856,traffic light,test,OK,,
+train_40504,bird,dev,UNSURE,bg,ragged outline with background bits
+train_405143,traffic light,test,OK,,
+train_405255,traffic light,dev,OK,,
+train_405402,traffic light,test,OK,,"pedestrian signal, category decision needed"
+train_405887,traffic light,dev,UNSURE,quality,very dark silhouette
+train_40626,bird,test,OK,,
+train_406295,traffic light,dev,UNSURE,quality,very dark silhouette
+train_406428,traffic light,dev,OK,,
+train_406770,traffic light,test,OK,,
+train_407762,traffic light,test,OK,,
+train_408542,traffic light,test,OK,,
+train_409182,traffic light,dev,OK,,
+train_410972,traffic light,dev,OK,,
+train_41190,bird,test,OK,,
+train_415635,fire hydrant,test,OK,,
+train_415671,fire hydrant,dev,OK,,
+train_415705,fire hydrant,dev,OK,,
+train_415834,fire hydrant,dev,UNSURE,trunc,left side flat edge
+train_415997,fire hydrant,test,OK,,
+train_416069,fire hydrant,test,OK,,
+train_416084,fire hydrant,dev,OK,,
+train_416128,fire hydrant,dev,UNSURE,trunc,ragged irregular bottom
+train_416164,fire hydrant,test,OK,,
+train_416360,fire hydrant,dev,OK,,
+train_416463,fire hydrant,dev,OK,,
+train_416504,fire hydrant,test,UNSURE,trunc,"close-up, bottom cut"
+train_416583,fire hydrant,dev,BAD,trunc,odd diagonal wedge shape
+train_416820,fire hydrant,test,OK,,
+train_417214,fire hydrant,dev,OK,,
+train_417819,fire hydrant,dev,OK,,
+train_418088,fire hydrant,test,OK,,
+train_418116,parking meter,test,UNSURE,multi,"double-head meter, probably one object"
+train_418209,parking meter,test,OK,,
+train_418259,parking meter,test,OK,,
+train_418260,parking meter,dev,UNSURE,quality,posterized black and white
+train_418286,parking meter,test,OK,,
+train_418342,parking meter,test,OK,,
+train_418480,parking meter,test,UNSURE,quality,posterized black and white
+train_41853,bird,dev,UNSURE,bg,grass on the goose
+train_418722,parking meter,test,OK,,
+train_418842,parking meter,test,OK,,
+train_418909,parking meter,test,BAD,unrec,dark blue-purple blob
+train_418932,parking meter,test,OK,,
+train_419018,parking meter,dev,OK,,
+train_419031,parking meter,dev,UNSURE,unrec,narrow dark panel
+train_419049,parking meter,dev,OK,,
+train_419051,parking meter,test,OK,,
+train_419067,parking meter,dev,OK,,
+train_419087,parking meter,dev,OK,,
+train_419100,parking meter,dev,OK,,
+train_419321,parking meter,dev,OK,,
+train_419359,parking meter,dev,UNSURE,quality/bg,"posterized, background bits"
+train_419373,parking meter,test,OK,,
+train_419553,parking meter,dev,OK,,
+train_42063,bird,test,OK,,
+train_42133,bird,test,OK,,
+train_4232,dog,dev,UNSURE,trunc,lower body seems missing
+train_432461,person,dev,UNSURE,quality,black silhouette
+train_436844,person,test,UNSURE,trunc/bg,"cut at thighs, green halo"
+train_443462,person,dev,OK,,
+train_446170,person,test,OK,,
+train_448911,person,dev,OK,,
+train_449,hot dog,test,OK,,
+train_455243,person,test,OK,,
+train_457608,person,test,OK,,
+train_461562,person,test,UNSURE,trunc,"head partly cut, cut at knees"
+train_46711,cat,dev,OK,,
+train_46811,cat,dev,OK,,
+train_468847,person,test,UNSURE,trunc,cut at thighs
+train_47229,cat,test,OK,,
+train_47494,cat,test,OK,,
+train_47778,cat,test,OK,,
+train_479405,person,test,BAD,trunc,waist up
+train_48331,cat,dev,OK,,
+train_48481,cat,test,OK,,
+train_487110,person,dev,OK,,
+train_488,hot dog,dev,OK,,
+train_49055,cat,test,BAD,bg,large cream blanket area included
+train_49135,cat,dev,OK,,
+train_49271,cat,dev,BAD,bg,vertical background strip attached
+train_49346,cat,test,UNSURE,bg,grey block at the top
+train_49565,cat,dev,UNSURE,bg,background patches
+train_495670,person,test,BAD,trunc,"back view, waist up"
+train_49683,cat,test,UNSURE,quality,featureless black blob
+train_50139,cat,dev,BAD,bg,white border and green object included
+train_50320,cat,dev,OK,,
+train_50410,cat,test,OK,,
+train_50564,cat,dev,UNSURE,bg,red blanket merged with the body
+train_51074,cat,dev,OK,,
+train_51394,cat,dev,OK,,
+train_51607,cat,dev,UNSURE,trunc,straight cut right side
+train_51843,cat,test,OK,,
+train_51944,cat,test,OK,,
+train_52054,cat,test,UNSURE,bg,blanket around the cat
+train_52156,cat,dev,OK,,
+train_52283,cat,test,OK,,
+train_53783,horse,dev,OK,,
+train_53823,horse,dev,OK,,
+train_53832,horse,dev,BAD,trunc/bg,"rectangular body, red fence rails"
+train_54187,horse,test,UNSURE,trunc,head possibly missing
+train_54188,horse,dev,UNSURE,unrec,"front view, head down, unclear"
+train_54367,horse,dev,BAD,bg,fence bars across black horse
+train_54383,horse,test,OK,,
+train_54411,horse,test,BAD,unrec,looks like a donkey
+train_55293,horse,dev,OK,,
+train_55335,horse,dev,OK,,
+train_55602,horse,dev,BAD,trunc,"head/neck only, blanket, straight edges"
+train_55635,horse,test,OK,,
+train_55736,horse,dev,UNSURE,bg,"wire across body, pink tint"
+train_56052,horse,test,OK,,
+train_56295,horse,test,OK,,
+train_56317,horse,test,OK,,
+train_56527,horse,test,OK,,
+train_57079,horse,test,OK,,
+train_57141,horse,dev,OK,,
+train_571511,bench,dev,OK,,
+train_571530,bench,test,OK,,
+train_571900,bench,test,BAD,bg,background visible through the slats
+train_572401,bench,dev,UNSURE,bg,dark ground bits
+train_572759,bench,test,UNSURE,quality,black bench hard to read
+train_572800,bench,dev,OK,,
+train_572872,bench,dev,UNSURE,bg,green grass between the slats
+train_573295,bench,test,OK,,
+train_573537,bench,test,OK,,
+train_573616,bench,dev,UNSURE,bg,ground at the bottom
+train_574035,bench,dev,OK,,
+train_574104,bench,dev,OK,,
+train_57415,horse,test,OK,,
+train_574335,bench,test,BAD,bg,ground with leaves included
+train_574658,bench,test,BAD,bg,water or foliage through the backrest
+train_575233,bench,dev,OK,,
+train_575459,bench,dev,BAD,bg,foliage filling the backrest
+train_575861,bench,dev,OK,,
+train_576558,bench,test,UNSURE,bg,grass between the slats
+train_577324,bench,dev,OK,,
+train_577427,bench,test,BAD,bg,plants and a table cluttered in
+train_578124,bench,test,OK,,
+train_578540,bench,test,OK,,
+train_579506,bench,dev,OK,,
+train_579743,bench,test,OK,,
+train_580305,elephant,dev,OK,,
+train_580552,elephant,dev,OK,,
+train_580660,elephant,test,OK,,
+train_580793,elephant,test,UNSURE,bg,vegetation at legs
+train_581314,elephant,dev,OK,,
+train_582427,elephant,dev,BAD,bg,lots of vegetation over lower body
+train_582607,elephant,test,OK,,
+train_582827,elephant,dev,UNSURE,trunc,"lying, dark, flat lower edge"
+train_583143,elephant,dev,OK,,
+train_583250,elephant,dev,OK,,
+train_583298,elephant,test,OK,,
+train_583951,elephant,test,OK,,
+train_584267,elephant,test,UNSURE,unrec,small reddish lying calf
+train_584297,elephant,dev,BAD,bg,fence rails across body
+train_584364,elephant,test,OK,,
+train_584781,elephant,dev,OK,,
+train_585062,elephant,test,BAD,trunc,"head close-up, straight cut edges"
+train_585068,elephant,dev,UNSURE,bg,minor grass on legs
+train_585330,elephant,test,OK,,
+train_585345,elephant,dev,OK,,
+train_586087,bear,test,BAD,bg,log or water included under the bear
+train_586100,bear,dev,OK,,
+train_586188,bear,test,OK,,
+train_586385,bear,dev,BAD,trunc,head only with a flat cut bottom
+train_586570,bear,dev,OK,,
+train_586661,bear,test,UNSURE,unrec,dark silhouette with a blue patch
+train_586699,bear,dev,OK,,
+train_586832,bear,dev,OK,,
+train_586903,bear,dev,OK,,
+train_586987,bear,test,OK,,
+train_587097,bear,dev,OK,,
+train_587179,bear,test,UNSURE,trunc,back view with a flat-cut bottom
+train_587186,bear,dev,OK,,
+train_587230,bear,dev,OK,,
+train_587235,bear,dev,BAD,unrec,grey occluded blob with green fringe
+train_587345,bear,dev,UNSURE,bg,plants at the bottom
+train_587356,bear,test,OK,,
+train_587388,bear,test,BAD,trunc,panda with large missing chunks
+train_587417,bear,test,OK,,
+train_587577,bear,dev,OK,,
+train_587649,bear,dev,UNSURE,trunc,"fence wires across, straight right edge"
+train_587711,bear,test,OK,,
+train_587769,bear,test,OK,,
+train_587892,bear,test,BAD,unrec,blue-grey shapeless blob
+train_58803,horse,test,OK,,
+train_588061,bear,test,OK,,
+train_588290,zebra,dev,OK,,
+train_588374,zebra,test,BAD,trunc,"head only, straight edges"
+train_588528,zebra,dev,OK,,
+train_589011,zebra,test,OK,,
+train_589359,zebra,test,OK,,
+train_589377,zebra,test,OK,,
+train_589494,zebra,test,OK,,
+train_590243,zebra,test,OK,,
+train_590333,zebra,dev,OK,,
+train_591372,zebra,dev,UNSURE,multi,looks like two overlapping zebras
+train_591458,zebra,test,OK,,
+train_591711,zebra,test,OK,,
+train_592055,zebra,dev,UNSURE,bg,grass at the bottom
+train_592124,zebra,test,OK,,
+train_592333,zebra,test,UNSURE,trunc,legs missing
+train_592790,zebra,dev,OK,,
+train_592883,zebra,test,BAD,bg,behind fence
+train_594916,giraffe,test,OK,,
+train_595108,giraffe,test,OK,,
+train_595153,giraffe,dev,UNSURE,trunc,"rear view, legs cut"
+train_595528,giraffe,dev,OK,,
+train_595538,giraffe,dev,UNSURE,bg,green patches on legs
+train_595609,giraffe,test,OK,,
+train_595634,giraffe,test,OK,,
+train_595671,giraffe,dev,OK,,
+train_595822,giraffe,test,OK,,
+train_595961,giraffe,test,UNSURE,bg,vegetation between legs
+train_596359,giraffe,dev,OK,,
+train_596421,giraffe,test,OK,,
+train_597010,giraffe,dev,OK,,
+train_597035,giraffe,test,OK,,
+train_597218,giraffe,dev,OK,,
+train_597554,giraffe,test,OK,,
+train_597987,giraffe,dev,OK,,
+train_598645,giraffe,test,OK,,
+train_599705,giraffe,dev,UNSURE,trunc,straight vertical left edge
+train_599817,giraffe,test,OK,,
+train_599861,giraffe,dev,OK,,
+train_601005,giraffe,dev,OK,,
+train_602148,frisbee,test,UNSURE,unrec,"frog-print disc, hard to read"
+train_602249,frisbee,dev,OK,,
+train_602429,frisbee,dev,OK,,
+train_602666,frisbee,dev,OK,,
+train_602801,frisbee,dev,OK,,
+train_602986,frisbee,dev,OK,,
+train_602987,frisbee,dev,OK,,
+train_603503,frisbee,dev,UNSURE,bg,grey/blue region at bottom
+train_603649,frisbee,dev,OK,,
+train_604139,frisbee,test,UNSURE,bg,dark background in corners
+train_605373,frisbee,test,UNSURE,quality,motion blur
+train_605532,frisbee,test,OK,,
+train_61015,sheep,test,UNSURE,trunc,head not visible
+train_61492,sheep,test,OK,,
+train_61624,sheep,test,OK,,
+train_61697,sheep,test,BAD,bg,behind wire fence
+train_61821,sheep,test,OK,,
+train_621205,kite,test,OK,,
+train_621347,kite,dev,OK,,
+train_621602,kite,dev,OK,,
+train_621651,kite,test,UNSURE,unrec,grey fish-shaped object
+train_621806,kite,dev,OK,,
+train_621901,kite,test,OK,,
+train_622048,kite,dev,OK,,
+train_62225,sheep,dev,OK,,
+train_622329,kite,test,OK,,
+train_622423,kite,test,OK,,
+train_622441,kite,dev,BAD,bg,sky and sea visible through frame
+train_623303,kite,dev,OK,,
+train_623719,kite,dev,OK,,
+train_623806,kite,dev,UNSURE,unrec,ambiguous grey shape
+train_62432,sheep,dev,UNSURE,trunc,"lying down, legs unclear"
+train_625046,kite,dev,OK,,
+train_625151,kite,test,OK,,
+train_625413,kite,test,UNSURE,unrec,looks like a jet airplane
+train_62755,sheep,dev,OK,,
+train_63296,sheep,dev,BAD,trunc,"close-up of head only, no body"
+train_63302,sheep,dev,OK,,
+train_63305,sheep,test,OK,,
+train_63598,sheep,test,UNSURE,bg,grass or sticks under body
+train_63612,sheep,dev,OK,,
+train_63645,sheep,test,OK,,
+train_638347,skateboard,test,OK,,
+train_638563,skateboard,test,OK,,
+train_638727,skateboard,dev,OK,,
+train_639171,skateboard,dev,UNSURE,quality,dark and featureless
+train_639182,skateboard,test,OK,,
+train_63969,sheep,test,UNSURE,bg,"straight vertical lines across body, possibly fence"
+train_63986,sheep,dev,OK,,
+train_640615,skateboard,dev,OK,,
+train_64074,sheep,test,OK,,
+train_641284,skateboard,dev,UNSURE,quality,"dark, odd shape"
+train_643736,skateboard,dev,OK,,
+train_64449,sheep,dev,OK,,
+train_6495,dog,test,OK,,
+train_65188,sheep,dev,OK,,
+train_656464,tennis racket,test,OK,,
+train_656604,tennis racket,test,OK,,
+train_656630,tennis racket,dev,UNSURE,bg,"blue sky through strings, blurry"
+train_656776,tennis racket,dev,OK,,
+train_658650,tennis racket,test,OK,,
+train_659285,tennis racket,dev,BAD,trunc,"close-up of head, handle missing"
+train_66043,sheep,test,OK,,
+train_66377,sheep,test,OK,,
+train_668851,cup,dev,OK,,
+train_668968,cup,test,UNSURE,quality,grainy and dark
+train_669054,cup,test,BAD,trunc,"white holes, chunks missing"
+train_669106,cup,test,UNSURE,bg,white gap in the handle region
+train_670581,cup,test,OK,,
+train_671079,cup,test,OK,,
+train_672773,cup,test,OK,,
+train_673195,cup,dev,OK,,
+train_673368,cup,dev,OK,,
+train_675639,cup,test,OK,,
+train_676201,cup,dev,OK,,
+train_676508,cup,test,OK,,
+train_677833,cup,dev,OK,,
+train_677956,cup,dev,OK,,
+train_678471,cup,test,OK,,
+train_678687,cup,dev,UNSURE,unrec,looks like a blender jar
+train_682963,cup,test,OK,,
+train_694266,knife,test,BAD,trunc,blade with partial handle only
+train_696087,knife,test,BAD,trunc,"blade only, straight cut, handle missing"
+train_696899,knife,test,OK,,
+train_697101,knife,dev,BAD,trunc,"blade only, straight cut, handle missing"
+train_70384,cow,dev,OK,,
+train_70421,cow,test,OK,,
+train_70592,cow,test,OK,,
+train_70879,cow,test,OK,,
+train_709183,bowl,test,UNSURE,bg,upside-down bowl with wood at the bottom
+train_709302,bowl,test,BAD,trunc,large piece missing from the bowl
+train_709582,bowl,test,OK,,
+train_709721,bowl,test,OK,,
+train_710813,bowl,dev,OK,,
+train_71101,cow,test,OK,,
+train_711664,bowl,dev,UNSURE,unrec,food heap with no rim visible
+train_711886,bowl,test,OK,,
+train_714053,bowl,dev,OK,,
+train_714974,bowl,dev,OK,,
+train_71514,cow,dev,OK,,
+train_71535,cow,test,OK,,
+train_715944,bowl,dev,OK,,
+train_717865,bowl,dev,OK,,
+train_718359,bowl,test,OK,,
+train_71884,cow,dev,OK,,
+train_7256,dog,dev,BAD,trunc,rear body straight rectangular cut
+train_72791,cow,dev,OK,,
+train_73158,cow,test,UNSURE,bg,green background at the sides
+train_73752,cow,dev,OK,,
+train_73943,cow,dev,OK,,
+train_73961,cow,test,OK,,
+train_74406,cow,test,UNSURE,bg,fence wire across the cow
+train_7515,dog,test,OK,,
+train_75188,cow,test,OK,,
+train_76283,cow,dev,OK,,
+train_76347,cow,dev,BAD,trunc,"tight crop with straight edges, legs missing"
+train_76984,cow,test,OK,,
+train_79239,bottle,dev,OK,,
+train_80583,bottle,dev,OK,,
+train_84179,bottle,test,UNSURE,quality,glowing and overexposed
+train_85527,bottle,test,OK,,
+train_87008,bottle,test,OK,,
+train_88111,bottle,dev,OK,,
+train_91655,bottle,dev,OK,,
+train_92695,bottle,dev,OK,,
+train_97920,couch,dev,BAD,trunc,fragment with a straight bottom edge
+train_9827,dog,test,OK,,
+train_98468,couch,dev,BAD,trunc,irregular partial fragment
+train_98573,couch,test,OK,,
+train_99274,couch,dev,OK,,
+train_99601,couch,test,OK,,
+train_99776,couch,test,UNSURE,bg,odd fragments
+val_1048287,apple,test,UNSURE,unrec,half-eaten apple
+val_1051688,orange,test,UNSURE,trunc,bite or cut at bottom right
+val_1073023,pizza,dev,UNSURE,quality,"pale, blurry slice"
+val_1073604,pizza,dev,OK,,
+val_1085770,cake,dev,OK,,
+val_1086678,cake,test,OK,,
+val_1092887,toilet,dev,OK,,
+val_1093171,toilet,test,OK,,
+val_1093807,toilet,test,OK,,
+val_1094576,toilet,test,UNSURE,trunc,straight top edge
+val_1094693,toilet,test,BAD,trunc,right half cut off vertically
+val_1095087,toilet,test,OK,,
+val_1095737,toilet,dev,OK,,
+val_1100252,laptop,test,UNSURE,unrec/bg,"closed, orange object on lid"
+val_1100507,laptop,test,OK,,
+val_1100798,laptop,test,OK,,
+val_1103650,laptop,test,OK,,
+val_1124124,oven,dev,UNSURE,trunc,diagonal bottom edge
+val_1124968,oven,dev,UNSURE,bg,pans on partial cooktop
+val_1135074,sink,dev,UNSURE,trunc,notches cut into counter
+val_1139705,book,test,OK,,
+val_114321,couch,dev,OK,,
+val_1152710,vase,dev,OK,,
+val_1153295,vase,test,OK,,
+val_1153655,vase,dev,BAD,trunc,fragment of green glass
+val_1154625,vase,test,OK,,
+val_1156773,vase,test,BAD,trunc,glass with straight-cut edges
+val_1159670,teddy bear,test,UNSURE,quality,overexposed
+val_1161337,teddy bear,dev,UNSURE,bg/trunc,"heart pillow included, straight top cut"
+val_1184273,suitcase,test,UNSURE,quality,blurry blue shape
+val_1185557,suitcase,test,OK,,
+val_1196296,truck,dev,OK,,
+val_1369993,truck,test,UNSURE,unrec,"blurry SUV rear, looks like a car"
+val_138917,car,dev,BAD,trunc,door or side fragment only
+val_1464082,kite,dev,UNSURE,unrec,box kite with printed Toy Story picture
+val_1484842,bottle,test,UNSURE,unrec,"top-down oil bottle, hard to read"
+val_1557820,orange,dev,OK,,
+val_1586242,chair,dev,OK,,
+val_1638183,cell phone,dev,OK,,
+val_1673881,teddy bear,test,OK,,
+val_1726371,person,test,BAD,unrec,painting of a man
+val_17520,dog,dev,OK,,
+val_177075,boat,dev,OK,,
+val_1822509,zebra,dev,OK,,
+val_1855595,kite,test,OK,,
+val_1967561,toilet,test,OK,,
+val_1982690,sink,dev,UNSURE,unrec,looks like corner shower tray
+val_1983627,refrigerator,test,BAD,unrec,looks like a dishwasher
+val_213600,person,test,BAD,trunc,"back view, head and torso"
+val_2197091,clock,test,OK,,
+val_2197929,fire hydrant,test,OK,,
+val_270680,stop sign,dev,OK,,
+val_271470,stop sign,dev,OK,,
+val_271630,stop sign,test,OK,,
+val_31070,tv,dev,OK,,
+val_317141,bed,dev,UNSURE,trunc,top-down bedspread with head end cut
+val_319793,bed,dev,UNSURE,unrec,messy outline
+val_32126,tv,test,OK,,
+val_330872,refrigerator,dev,OK,,
+val_333904,clock,dev,OK,,
+val_335745,clock,test,OK,,
+val_337109,clock,dev,OK,,
+val_337572,clock,test,OK,,
+val_33906,tv,test,OK,,
+val_346662,car,dev,BAD,trunc,thin sliver of a minivan rear
+val_366789,train,test,OK,,
+val_37047,bird,test,OK,,
+val_379310,chair,dev,OK,,
+val_38752,bird,dev,UNSURE,unrec,blob seen from behind
+val_39194,bird,test,OK,,
+val_397803,truck,test,OK,,
+val_415617,fire hydrant,dev,OK,,
+val_416415,fire hydrant,test,BAD,unrec,looks like rusty barrel
+val_416562,fire hydrant,dev,OK,,
+val_417693,fire hydrant,test,OK,,
+val_418176,parking meter,dev,OK,,
+val_418340,parking meter,dev,UNSURE,quality,"dark, low contrast"
+val_435735,person,dev,UNSURE,trunc,legs partly missing
+val_455962,person,test,UNSURE,bg,yellow strip at side
+val_47894,cat,test,OK,,
+val_49931,cat,dev,UNSURE,bg,black blanket on the left
+val_53901,horse,test,BAD,trunc,head and neck only
+val_54194,horse,dev,BAD,trunc,"head and neck, body cut off"
+val_55484,horse,dev,OK,,
+val_564585,person,dev,BAD,trunc,"head and shoulder, straight cuts"
+val_57011,horse,dev,UNSURE,bg,wire fence over horse
+val_572215,bench,test,UNSURE,bg,grass at the bottom
+val_57346,horse,dev,UNSURE,bg,wire fence over horse
+val_580632,elephant,test,UNSURE,bg,dark object at head
+val_581504,elephant,test,UNSURE,bg,white rod across legs
+val_582118,elephant,dev,OK,,
+val_582214,elephant,test,UNSURE,bg,extra saddle/decoration at top
+val_582578,elephant,dev,BAD,trunc,"head behind fence, straight edges"
+val_584767,elephant,test,OK,,
+val_588303,zebra,test,OK,,
+val_589002,zebra,test,OK,,
+val_589250,zebra,dev,OK,,
+val_589586,zebra,dev,OK,,
+val_589616,zebra,dev,UNSURE,bg,bushes around the legs
+val_589717,zebra,test,OK,,
+val_589793,zebra,dev,OK,,
+val_590311,zebra,test,OK,,
+val_590407,zebra,dev,BAD,trunc,head and neck only
+val_595485,giraffe,test,OK,,
+val_597839,giraffe,test,BAD,trunc,"head only, cut off"
+val_600293,giraffe,dev,BAD,trunc,"neck/head close-up, straight cuts"
+val_603860,frisbee,test,UNSURE,bg,grass along bottom edge
+val_604064,frisbee,test,OK,,
+val_622133,kite,dev,OK,,
+val_63303,sheep,dev,OK,,
+val_638392,skateboard,test,BAD,bg/trunc,broken board with grey shards included
+val_64257,sheep,dev,OK,,
+val_675904,cup,test,OK,,
+val_70522,cow,dev,OK,,
+val_711935,bowl,test,OK,,
+val_712177,bowl,test,OK,,
+val_7188,dog,dev,OK,,
+val_72614,cow,dev,OK,,
+val_91883,bottle,test,OK,,
