@@ -62,7 +62,7 @@ def clip_decision(probs, labels: list[str], true_label: str, min_prob: float) ->
     k = labels.index(true_label)
     rank = int((probs > probs[k]).sum())
     top = int(probs.argmax())
-    return {"pass": rank == 0 and probs[k] >= min_prob, "prob_true": float(probs[k]), "rank_true": rank, "top1": labels[top], "top1_prob": float(probs[top])}
+    return {"pass": bool(rank == 0 and probs[k] >= min_prob), "prob_true": float(probs[k]), "rank_true": rank, "top1": labels[top], "top1_prob": float(probs[top])}
 
 
 def small_tier_scale(mask_area: float, rendered_px: float) -> float:

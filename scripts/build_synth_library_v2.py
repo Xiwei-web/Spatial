@@ -241,6 +241,7 @@ def stage_clip():
     path = paths.get("new_models") / CFG["clip"]["model"]
     proc, clip = CLIPProcessor.from_pretrained(path), CLIPModel.from_pretrained(path).eval()
     res = []
+    fo = open(OUT / "clip.jsonl.part", "w")                   # 每批算完就写盘，出错时不丢已算的结果
     with torch.no_grad():
         tin = proc(text=texts, return_tensors="pt", padding=True)
         for i in range(0, len(ok), 32):
@@ -252,10 +253,12 @@ def stage_clip():
             for r, a, s in zip(b, pn, ps):
                 res.append({"cutout_id": r["cutout_id"], "normal": L.clip_decision(a, labels, r["category"], CFG["clip"]["min_prob"]),
                             "small18": L.clip_decision(s, labels, r["category"], CFG["clip"]["min_prob"])})
+                fo.write(json.dumps(res[-1]) + "\n")
+            fo.flush()
             if i % 640 == 0:
                 print(i, len(ok), flush=True)
-    with open(OUT / "clip.jsonl", "w") as fo:
-        fo.writelines(json.dumps(r) + "\n" for r in res)
+    fo.close()
+    (OUT / "clip.jsonl.part").rename(OUT / "clip.jsonl")
     print("clip done", len(res), "labels", len(labels))
 
 

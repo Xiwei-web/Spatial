@@ -63,3 +63,9 @@ def test_config_excluded_categories_and_thresholds():
     assert all(cfg["exclude_categories"].values())
     assert cfg["min_categories"] == 30 and cfg["min_per_side"] == 3 and cfg["small_tier_check"]["rendered_px"] == 18
     assert {"urinal", "computer monitor", "trailer", "van", "plate", "wok", "pitcher", "ATV", "wine glass"} <= set(cfg["clip"]["confusable_labels"])
+
+
+def test_clip_decision_is_json_serializable():
+    import json
+    d = L.clip_decision(np.array([0.1, 0.7, 0.2]), ["a", "b", "c"], "b", 0.5)
+    assert json.loads(json.dumps(d))["pass"] is True
