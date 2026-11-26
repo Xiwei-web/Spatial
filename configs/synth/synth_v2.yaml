@@ -17,7 +17,10 @@ design:
   # 28 px 模型的 0.5–1 token 档（14–28 px）在不重叠条件下几何上做不到，不设层。超过 633 px（56 px token 的 11.3 档上界）的距离不在任何档里，不采样。
   # 2026-11-27 planner 选 (a)：加一层 22.627–28 px（32 px token 的 0.71–1.00 档下半），基础场景共 3,120 个（planner 放宽了 3,000 的线）。
   # 干跑探针：这一层实际只能做到约 26.6–32.3 px，22.6–26.5 px 基本做不到；32 px 模型的 0.71–1.00 档实际只覆盖约 0.83–1.00 token，28 px 模型落在 0.95–1.00 一带，照实归档。
+  # 新层取 22.627–28 px 而不是 22.6–32 px：这样各层边界都对齐 28 px token 的档边界、互不重叠（planner 同意）。
   main_strata_px: [22.627, 28.0, 39.598, 56.0, 79.196, 112.0, 158.392, 224.0, 316.784, 448.0, 633.568]
+  # 补场景（planner 2026-11-27）：先按改动后的规则重算覆盖表，再给不达标的档所涉及的层各加 20 个；新场景序号接在后面，已有序号与设计不变；最多 3 轮
+  extra_scenes: {}
   main_scenes_per_stratum: 240     # dev 80 / test 160（目标 dev >= 75、test >= 150，留一点余量给 32 px 模型跨层的档）
   sizes_allowed_rule: "尺寸 <= 层上界 的尺寸轮流分配；该对抠图的最小质心距离仍 >= 层上界时重抽抠图，多次失败再换更小的尺寸"
   overlap_tiers: [[0.005, 0.10], [0.10, 0.30], [0.30, 0.50]]
@@ -25,6 +28,9 @@ design:
   side_ratio: {dev: 1, test: 2}
   axis: [horizontal, vertical]
   n_distractors: [0, 2, 4, 6]
+  # 干扰物尺寸档 <= 主物体对里较大那个的尺寸档，在允许的档里轮流分配（planner 2026-11-27）。理由：最小的几层里主物体对只有 36 px，
+  # 原规则下周围可能是 161 px 的干扰物，“间距档”和“干扰物相对显著度”会混在一起，联系表上也看不清主物体。E1 尚未开始，改动不影响任何结果。
+  distractor_size_rule: le_pair
   background: [solid, linear_gradient, radial_gradient, noise]
 jitter: {max_frac_of_distance: 0.25, max_px: 32}
 placement:

@@ -69,6 +69,7 @@ def build_design(cfg):
     for lo, hi in D["overlap_tiers"]:
         for i in range(D["overlap_scenes_per_tier"]):
             rows.append({"subset": "overlap", "level": f"occ{int(round(hi * 100))}", "stratum_px": None, "tier": [lo, hi], "sqrt_area_px": cfg["sizes_px"][i % len(cfg["sizes_px"])]})
+    n_base_rows = len(rows)
     rng = np.random.default_rng([cfg["global_seed"], 0xF42])
     for i, r in enumerate(rows):
         r["index"] = i
@@ -85,6 +86,35 @@ def build_design(cfg):
     _balanced_assign(strata(lambda r: r["level"]), list(D["background"]), rng, rows, "background")
     _balanced_assign(strata(lambda r: (r["level"], r["sqrt_area_px"])), ["target", "reference"], rng, rows, "top")
     _balanced_assign(strata(lambda r: (r["axis"], r["level"])), [-1, 1], rng, rows, "sign")
+    # 补场景：按轮次、按层追加，序号接在已有行之后；只在新加的行里均衡分配，已有行不受影响
+    for rd in sorted(D.get("extra_scenes") or {}):
+        new = []
+        for lv, n in sorted(D["extra_scenes"][rd].items()):
+            j = int(lv[1:])
+            lo, hi = S[j], S[j + 1]
+            sizes = [x for x in cfg["sizes_px"] if x <= hi] or [min(cfg["sizes_px"])]
+            for i in range(n):
+                new.append({"subset": "main", "level": lv, "stratum_px": [lo, hi], "tier": None, "sqrt_area_px": sizes[i % len(sizes)], "extra_round": rd})
+        r2 = np.random.default_rng([cfg["global_seed"], 0xF43, int(rd.replace("round", ""))])
+        for i, r in enumerate(new):
+            r["index"] = len(rows) + i
+            r["n_distractors"] = D["n_distractors"][(i // 3) % len(D["n_distractors"])]
+            r["axis"] = D["axis"][i % 2]
+        rows.extend(new)
+        sub = {r["index"]: r for r in new}
+
+        def st(fn):
+            s_ = {}
+            for r in new:
+                s_.setdefault(fn(r), []).append(r["index"])
+            return s_
+        tmp = [None] * len(rows)
+        for r in rows:
+            tmp[r["index"]] = r
+        _balanced_assign(st(lambda r: (r["level"], r["axis"])), sides, r2, tmp, "side")
+        _balanced_assign(st(lambda r: r["level"]), list(D["background"]), r2, tmp, "background")
+        _balanced_assign(st(lambda r: (r["level"], r["sqrt_area_px"])), ["target", "reference"], r2, tmp, "top")
+        _balanced_assign(st(lambda r: (r["axis"], r["level"])), [-1, 1], r2, tmp, "sign")
     for r in rows:
         r["relation"] = RELATIONS[r["axis"]][0 if r["sign"] < 0 else 1]
     _CACHE[key] = rows
@@ -151,12 +181,17 @@ def _try(cfg, lib, row, sseed, attempt, dry_run):
     T, R = P(pick(cats, chosen[0]), size), P(pick(cats, chosen[1]), size)
     sizes = cfg["sizes_px"]
     dis = []
-    for c in chosen[2:]:
-        s = sizes[int(rng.integers(len(sizes)))]
+    allowed = [x for x in sizes if x <= size] if cfg["design"].get("distractor_size_rule") == "le_pair" else list(sizes)
+    off = int(rng.integers(len(allowed)))
+    for i, c in enumerate(chosen[2:]):
+        s = allowed[(off + i) % len(allowed)]
         pool = lib.categories(row["side"], small36=(s == 36))
-        if c not in pool:
-            s = 72
-            pool = allc
+        if c not in pool:                      # 这一类没有 small36_ok 的抠图：换一个允许的更大尺寸档；都不行就用 36 px 档里有的类别
+            bigger = [x for x in allowed if x > s]
+            if bigger:
+                s, pool = bigger[0], allc
+            else:
+                continue
         dis.append((P(pick(pool, c), s), s))
     gap_set = None
     if row["subset"] == "main":
@@ -247,7 +282,7 @@ def _try(cfg, lib, row, sseed, attempt, dry_run):
                           "area": o.area, "sqrt_area": round(math.sqrt(o.area), 4), "upscale": round(o.scale, 4),
                           **({} if dry_run else {"mask_rle": _rle(full), "visible_box_xyxy": mask_bbox(vis[role]), "visible_area": int(vis[role].sum()), "visible_mask_rle": _rle(vis[role])})}
         meta = {"variant": name, "side": row["side"], "subset": row["subset"], "level": row["level"], "relation": relation, "axis": axis,
-                "design": {k: row[k] for k in ("level", "subset", "stratum_px", "tier", "sqrt_area_px", "axis", "n_distractors", "background", "top", "side")}, "sqrt_area_px": size,
+                "design": {**{k: row[k] for k in ("level", "subset", "stratum_px", "tier", "sqrt_area_px", "axis", "n_distractors", "background", "top", "side")}, "extra_round": row.get("extra_round")}, "sqrt_area_px": size,
                 "geometry": {"edge_gap_px": pg, "edge_gap_set_px": gap_set, "min_distance_px": round(md, 4), "center_along_px": round(abs(along), 4), "center_perp_px": round(perp, 4),
                              "center_euclidean_px": round(math.hypot(dx, dy), 4), "jitter_px": jit, "jitter_max_px": J,
                              "center_along_tokens": {k: round(abs(along) / p, 4) for k, p in TP.items()}, "token_bin": {k: token_bin(abs(along), p, edges) for k, p in TP.items()}},

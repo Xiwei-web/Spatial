@@ -71,7 +71,14 @@ def report(metas):
     md = [m["geometry"]["min_distance_px"] for m in base if m["subset"] == "main"]
     rep["main_edge_gap_px"] = {"min": int(min(eg)), "median": float(np.median(eg)), "max": int(max(eg))}
     rep["main_min_distance_px"] = {"min": float(min(md)), "median": float(np.median(md)), "max": float(max(md))}
-    rep["meets_acceptance"] = ok and not failed
+    dz = defaultdict(Counter)
+    for m in base:
+        for x in m["distractors"]:
+            dz[m["level"]][x["sqrt_area_px"]] += 1
+    rep["distractor_size_by_level"] = {lv: {str(k): v for k, v in sorted(c.items())} for lv, c in sorted(dz.items())}
+    rep["distractor_le_pair_violations"] = sum(1 for m in base for x in m["distractors"] if x["sqrt_area_px"] > m["sqrt_area_px"])
+    rep["n_extra_by_round"] = dict(Counter(m["design"].get("extra_round") for m in base if m["design"].get("extra_round")))
+        rep["meets_acceptance"] = ok and not failed
     rep["n_base_by_side"] = dict(Counter(m["side"] for m in base))
     rep["within_3000"] = len(base) + len(failed) <= acc["max_base_scenes_without_asking"]
     return rep
@@ -91,12 +98,12 @@ def sheets(metas):
             by[m["index"]][m["variant"]] = m
     levels = sorted({v["base"]["level"] for v in by.values()}, key=lambda x: (x[0] != "d", int(x[1:]) if x[0] == "d" else int(x[3:])))
     T = 300
-    for p in range(0, len(levels), 3):
-        lv = levels[p:p + 3]
-        rows = [(l, by[i]) for l in lv for i in random.Random(f"synth_v2_sheet:{l}").sample(sorted(k for k, v in by.items() if v["base"]["level"] == l), 4)]
+    for p in range(0, len(levels), 4):
+        lv = levels[p:p + 4]
+        rows = [(l, by[i]) for l in lv for i in random.Random(f"synth_v2_sheet:{l}").sample(sorted(k for k, v in by.items() if v["base"]["level"] == l), 2)]
         im = Image.new("RGB", (3 * (T + 6) + 330, len(rows) * (T + 8) + 24), (255, 255, 255))
         d = ImageDraw.Draw(im)
-        d.text((6, 4), "synth_v2: base | position_swap | identity_swap (4 seeded scenes per level)", fill=(0, 0, 0), font=font)
+        d.text((6, 4), "synth_v2: base | position_swap | identity_swap (2 seeded scenes per level)", fill=(0, 0, 0), font=font)
         for k, (l, v) in enumerate(rows):
             y = 24 + k * (T + 8)
             for j, name in enumerate(("base", "position_swap", "identity_swap")):
@@ -106,7 +113,7 @@ def sheets(metas):
             d.multiline_text((3 * (T + 6) + 10, y + 10), f"{b['scene_id']}\n{l} {b['side']} {b['relation']}\nsize {b['sqrt_area_px']} px\nalong {g['center_along_px']:.1f} px\n"
                              f"tokens 28/32/56: {g['center_along_tokens']['t28']:.2f}/{g['center_along_tokens']['t32']:.2f}/{g['center_along_tokens']['t56']:.2f}\n"
                              f"edge gap {g['edge_gap_px']} px\noccl {b['occlusion']['occluded_fraction']:.3f}\nid-swap flag {fl}", fill=(0, 0, 0), font=font)
-        im.save(rev / f"sheet_{p // 3:02d}.jpg", quality=88)
+        im.save(rev / f"sheet_{p // 4:02d}.jpg", quality=88)
 
 
 if __name__ == "__main__":
