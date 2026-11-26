@@ -39,7 +39,7 @@
    },
    "excluded_relation_not_in_options": 0,
    "box": 896,
-   "mcq": 4500,
+   "mcq": 2250,
    "binary": 2250
   },
   "coco_spatial_two": {
@@ -53,7 +53,7 @@
    },
    "excluded_relation_not_in_options": 0,
    "box": 346,
-   "mcq": 928,
+   "mcq": 464,
    "binary": 464
   },
   "gqa_spatial_one": {
@@ -68,7 +68,7 @@
    },
    "excluded_relation_not_in_options": 1,
    "box": 557,
-   "mcq": 2312,
+   "mcq": 1156,
    "binary": 1156
   },
   "gqa_spatial_two": {
@@ -82,7 +82,7 @@
    },
    "excluded_relation_not_in_options": 0,
    "box": 278,
-   "mcq": 608,
+   "mcq": 304,
    "binary": 304
   },
   "coco_pairs": {
@@ -96,7 +96,7 @@
    },
    "excluded_relation_not_in_options": 0,
    "box": 1552,
-   "mcq": 10296,
+   "mcq": 5148,
    "binary": 5148
   }
  },
@@ -140,7 +140,7 @@
    },
    "excluded_relation_not_in_options": 0,
    "box": 898,
-   "mcq": 4488,
+   "mcq": 2244,
    "binary": 2244
   },
   "coco_spatial_two": {
@@ -154,7 +154,7 @@
    },
    "excluded_relation_not_in_options": 0,
    "box": 334,
-   "mcq": 832,
+   "mcq": 416,
    "binary": 416
   },
   "gqa_spatial_one": {
@@ -169,7 +169,7 @@
    },
    "excluded_relation_not_in_options": 1,
    "box": 557,
-   "mcq": 2320,
+   "mcq": 1160,
    "binary": 1160
   },
   "gqa_spatial_two": {
@@ -184,7 +184,7 @@
    },
    "excluded_relation_not_in_options": 3,
    "box": 260,
-   "mcq": 544,
+   "mcq": 272,
    "binary": 272
   },
   "coco_pairs": {
@@ -198,7 +198,7 @@
    },
    "excluded_relation_not_in_options": 0,
    "box": 1549,
-   "mcq": 10200,
+   "mcq": 5100,
    "binary": 5100
   }
  },
@@ -334,58 +334,58 @@
  },
  "plans_gpu_hours_per_model": {
   "full_main": {
-   "Qwen2.5-VL-7B-Instruct": 6.360413230137688,
-   "Qwen3-VL-8B-Instruct": 5.537464420295912,
-   "InternVL3-8B": 2.415623987732343,
-   "InternVL3_5-8B": 2.8794229098768525,
-   "SenseNova-SI-1.2-InternVL3-8B": 4.881738989599819,
-   "SenseNova-SI-1.3-InternVL3-8B": 4.108539914784198,
-   "GLM-4.6V-Flash": 7.724350401824017,
-   "VST-7B-RL": 4.098324046299155,
-   "RoboBrain2.0-7B": 6.151821433075784,
-   "Qwen3.5-2B": 5.575943922214363,
-   "Qwen3.5-4B": 10.180611134974809,
-   "Qwen3.5-9B": 7.553436570107413,
-   "InternVL3-2B": 1.8940100607918309,
-   "SenseNova-SI-1.1-InternVL3-2B": 4.631640469330664,
-   "LLaVA-1.5-7B": 2.15660468618709,
-   "LLaVA-1.5-13B": 3.1005266556957913
+   "Qwen2.5-VL-7B-Instruct": 4.9835105062029035,
+   "Qwen3-VL-8B-Instruct": 4.550979178808386,
+   "InternVL3-8B": 2.0162452233030437,
+   "InternVL3_5-8B": 2.4719828815845686,
+   "SenseNova-SI-1.2-InternVL3-8B": 3.7258612814924725,
+   "SenseNova-SI-1.3-InternVL3-8B": 3.1671969853190944,
+   "GLM-4.6V-Flash": 5.979526319271566,
+   "VST-7B-RL": 3.238950154477214,
+   "RoboBrain2.0-7B": 4.6693019549208925,
+   "Qwen3.5-2B": 4.516463472679947,
+   "Qwen3.5-4B": 7.949602025631354,
+   "Qwen3.5-9B": 6.132016337016054,
+   "InternVL3-2B": 1.6396311923797393,
+   "SenseNova-SI-1.1-InternVL3-2B": 3.5712629351093312,
+   "LLaVA-1.5-7B": 1.7926807759765784,
+   "LLaVA-1.5-13B": 2.540327607500898
   },
   "full_default_impl": {
-   "Qwen2.5-VL-7B-Instruct": 6.360413230137688,
-   "Qwen3-VL-8B-Instruct": 5.537464420295912,
-   "InternVL3-8B": 2.415623987732343,
-   "InternVL3_5-8B": 2.8794229098768525,
-   "SenseNova-SI-1.2-InternVL3-8B": 4.881738989599819,
-   "SenseNova-SI-1.3-InternVL3-8B": 4.108539914784198,
-   "GLM-4.6V-Flash": 7.724350401824017,
-   "VST-7B-RL": 4.098324046299155,
-   "RoboBrain2.0-7B": 6.151821433075784,
-   "Qwen3.5-2B": 5.575943922214363,
-   "Qwen3.5-4B": 10.180611134974809,
-   "Qwen3.5-9B": 7.553436570107413,
-   "InternVL3-2B": 1.8940100607918309,
-   "SenseNova-SI-1.1-InternVL3-2B": 4.631640469330664,
-   "LLaVA-1.5-7B": 2.15660468618709,
-   "LLaVA-1.5-13B": 3.1005266556957913
+   "Qwen2.5-VL-7B-Instruct": 4.9835105062029035,
+   "Qwen3-VL-8B-Instruct": 4.550979178808386,
+   "InternVL3-8B": 2.0162452233030437,
+   "InternVL3_5-8B": 2.4719828815845686,
+   "SenseNova-SI-1.2-InternVL3-8B": 3.7258612814924725,
+   "SenseNova-SI-1.3-InternVL3-8B": 3.1671969853190944,
+   "GLM-4.6V-Flash": 5.979526319271566,
+   "VST-7B-RL": 3.238950154477214,
+   "RoboBrain2.0-7B": 4.6693019549208925,
+   "Qwen3.5-2B": 4.516463472679947,
+   "Qwen3.5-4B": 7.949602025631354,
+   "Qwen3.5-9B": 6.132016337016054,
+   "InternVL3-2B": 1.6396311923797393,
+   "SenseNova-SI-1.1-InternVL3-2B": 3.5712629351093312,
+   "LLaVA-1.5-7B": 1.7926807759765784,
+   "LLaVA-1.5-13B": 2.540327607500898
   },
   "lean_main": {
-   "Qwen2.5-VL-7B-Instruct": 1.5058792883806729,
-   "Qwen3-VL-8B-Instruct": 1.3647387500075727,
-   "InternVL3-8B": 0.6067666398508422,
-   "InternVL3_5-8B": 0.754193017536399,
-   "SenseNova-SI-1.2-InternVL3-8B": 1.0049374422157138,
-   "SenseNova-SI-1.3-InternVL3-8B": 0.9239796941945979,
-   "GLM-4.6V-Flash": 1.7372417435958853,
-   "VST-7B-RL": 1.173910765138856,
-   "RoboBrain2.0-7B": 1.467086641771792,
-   "Qwen3.5-2B": 1.3191851180182568,
-   "Qwen3.5-4B": 2.187876348277025,
-   "Qwen3.5-9B": 1.7777115724055692,
-   "InternVL3-2B": 0.5159839847266101,
-   "SenseNova-SI-1.1-InternVL3-2B": 0.9687418612358287,
-   "LLaVA-1.5-7B": 0.5405406984770218,
-   "LLaVA-1.5-13B": 0.7398498159231366
+   "Qwen2.5-VL-7B-Instruct": 1.3924421191056335,
+   "Qwen3-VL-8B-Instruct": 1.2834664194494927,
+   "InternVL3-8B": 0.5738635191598207,
+   "InternVL3_5-8B": 0.7206257635427845,
+   "SenseNova-SI-1.2-InternVL3-8B": 0.9097095855512166,
+   "SenseNova-SI-1.3-InternVL3-8B": 0.8464264470556581,
+   "GLM-4.6V-Flash": 1.5934930957305902,
+   "VST-7B-RL": 1.1031105989814596,
+   "RoboBrain2.0-7B": 1.344948156551565,
+   "Qwen3.5-2B": 1.2318990221973563,
+   "Qwen3.5-4B": 2.004072980332831,
+   "Qwen3.5-9B": 1.6606067945666758,
+   "InternVL3-2B": 0.49502678981773995,
+   "SenseNova-SI-1.1-InternVL3-2B": 0.8813818584164784,
+   "LLaVA-1.5-7B": 0.5105585526883848,
+   "LLaVA-1.5-13B": 0.6936973948746835
   },
   "lean_default_impl_whatsup_only": {
    "Qwen2.5-VL-7B-Instruct": 0.944595513888889,
@@ -479,9 +479,9 @@
   }
  },
  "plans_gpu_hours_total": {
-  "full_main": 79.25047283292773,
-  "full_default_impl": 79.25047283292773,
-  "lean_main": 18.588623381755777,
+  "full_main": 62.94553883167404,
+  "full_default_impl": 62.94553883167404,
+  "lean_main": 17.245329098022367,
   "lean_default_impl_whatsup_only": 11.282599263888889,
   "screen_dev_whatsup": 11.231464633333333,
   "dev_parse_check": 2.7673566572917405,

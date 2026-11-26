@@ -23,11 +23,13 @@ def relation_mcq(dataset: str, target: str, reference: str) -> tuple[str, list[s
 
 
 # ---------------------------------------------------------------------------------------------------------------
-# E0 用的关系问法（2026-11-26 写死，先于任何 dev 运行；planner 第 6 轮预审、Xiwei 审批前不跑）。
-# 两物体四选一沿用上面 What's Up 模板的句式；一物体四选一相对整张图；二元问法问真关系、反关系各一次。
-# 选项顺序轮换：rotation=r 时选项列表循环左移 r 位（字母始终 A–D）；rotation=0 与原 relation_mcq 逐字相同。
+# E0 用的关系问法（2026-11-26 写死，先于任何 dev 运行；planner 第 6 轮预审、第 7 轮修改；Xiwei 审批前不跑）。
+# What's Up A/B：四选一（四个互斥选项）。COCO-spatial、GQA-spatial、COCO-Pairs：二选一——原始数据每条只标了一个轴
+#（真关系与同轴反关系两个选项），四选一会出现两个正确答案（例如左上角的物体标 top，但 left 也成立），所以只给同轴的两个选项。
+# 句式相同；选项顺序轮换：rotation=r 时选项列表循环左移 r 位（四选一 4 种、二选一 2 种），字母从 A 起；
+# What's Up rotation=0 与原 relation_mcq 逐字相同。二选一的选项列表取该轴的固定顺序（见 AXES），不按真关系排，避免真答案总在 A。
 
-E0_RELATION_OPTIONS = {
+E0_RELATION_OPTIONS = {        # 每个数据集允许的关系；不在其中的样本剔除
     "whatsup_a": ["left", "right", "on", "under"],
     "whatsup_b": ["left", "right", "front", "behind"],
     "coco_spatial_two": ["left", "right", "above", "below"],
@@ -36,8 +38,11 @@ E0_RELATION_OPTIONS = {
     "coco_spatial_one": ["left", "right", "top", "bottom"],
     "gqa_spatial_one": ["left", "right", "top", "bottom"],
 }
+FOUR_WAY = {"whatsup_a", "whatsup_b"}
 ONE_OBJECT = {"coco_spatial_one", "gqa_spatial_one"}
+AXES = [("left", "right"), ("above", "below"), ("top", "bottom"), ("front", "behind"), ("on", "under")]
 # 不在该数据集选项集合里的样本剔除，照实记录（planner 第 6 轮）：GQA one-object 的 1 条 behind（test）、GQA two-object 的 3 条 top（dev）
+# GQA 的物体名照原样用（例如 "black trees" 这类复数带来的语法瑕疵不修，planner 第 7 轮）
 PHRASE_TWO = {"left": "to the left of", "right": "to the right of", "on": "on", "under": "under", "front": "in front of", "behind": "behind",
               "above": "above", "below": "below"}
 PHRASE_ONE = {"left": "on the left side of the image", "right": "on the right side of the image", "top": "at the top of the image", "bottom": "at the bottom of the image"}
@@ -47,9 +52,22 @@ ANSWER_LETTER = "Answer with the option's letter only."
 ANSWER_YES_NO = "Answer yes or no."
 
 
-def e0_mcq(dataset: str, target: str, reference: str | None, rotation: int = 0) -> tuple[str, list[str]]:
-    """→ (提示词, 本次的选项顺序 [A 对应的关系, B, C, D])。"""
-    opts = E0_RELATION_OPTIONS[dataset]
+def n_choices(dataset: str) -> int:
+    return 4 if dataset in FOUR_WAY else 2
+
+
+def e0_options(dataset: str, relation: str | None = None) -> list[str]:
+    """rotation=0 时的选项列表：What's Up 为四个关系；其余为真关系所在轴的两个关系（固定顺序）。"""
+    if dataset in FOUR_WAY:
+        return list(E0_RELATION_OPTIONS[dataset])
+    if relation not in E0_RELATION_OPTIONS[dataset]:
+        raise ValueError(f"{dataset}: 关系 {relation!r} 不在选项集合里（应已剔除）")
+    return list(next(ax for ax in AXES if relation in ax))
+
+
+def e0_mcq(dataset: str, target: str, reference: str | None, rotation: int = 0, relation: str | None = None) -> tuple[str, list[str]]:
+    """→ (提示词, 本次的选项顺序 [A 对应的关系, B, …])。二选一的数据集必须给 relation（只用来确定轴）。"""
+    opts = e0_options(dataset, relation)
     r = rotation % len(opts)
     opts = opts[r:] + opts[:r]
     if dataset in ONE_OBJECT:
@@ -79,8 +97,10 @@ def _unwrap(text: str) -> str:
 
 
 def parse_yes_no(text: str) -> str | None:
-    """只认第一个独立的 yes / no 词（不区分大小写；“know”“nothing”“not” 不算）；先去掉 think 和包装。解析不出返回 None。"""
-    m = re.search(r"\b(yes|no)\b", _unwrap(text), flags=re.I)
+    """只认第一个独立的 yes / no 词（不区分大小写；“know”“nothing”“not” 不算）；先去掉 think 和包装，
+    再删掉字面短语 “yes or no”（不区分大小写；模型复述问题时不会被判成 yes，planner 第 7 轮）。解析不出返回 None。"""
+    t = re.sub(r"\byes\s+or\s+no\b", " ", _unwrap(text), flags=re.I)
+    m = re.search(r"\b(yes|no)\b", t, flags=re.I)
     return m.group(1).lower() if m else None
 
 
@@ -94,10 +114,47 @@ def parse_mcq_e0(text: str) -> str | None:
 
 
 # 关系问法的答案获取方式，按顺序尝试；dev 解析检查（每个数据集 50 个样本）上解析率 >= 0.95 就停在当前一步，否则进入下一步。
-#   text16 = 生成 16 个新 token，parse_mcq_e0 / parse_yes_no；text64 = 生成 64 个新 token，同样的解析；letter_logit = 第一步四个字母 token 的 logit 取最大（二元问法用 Yes / No 两个 token）
+#   text16 = 生成 16 个新 token，parse_mcq_e0 / parse_yes_no；text64 = 生成 64 个新 token，同样的解析；
+#   letter_logit = 第一步的 logit：每个字母取 "A"/" A" 变体的最大值后比较（letter_logit_answer）；二元比较 Yes 类与 No 类变体的最大值（yes_no_logit_answer）
 # GLM-4.6V-Flash 从 text64 开始（冒烟时 16 个 token 内多半给不出字母）。所有模型都照样保存四个字母（及 Yes/No）的第一步 logit。
 ANSWER_MODE_ORDER = {"default": ["text16", "text64", "letter_logit"], "GLM-4.6V-Flash": ["text64", "letter_logit"]}
 PARSE_RATE_MIN = 0.95
+
+
+YES_VARIANTS, NO_VARIANTS = ("Yes", "yes", " Yes", " yes"), ("No", "no", " No", " no")
+
+
+def letter_variants(letter: str) -> tuple[str, str]:
+    return (letter, " " + letter)
+
+
+def variant_token_ids(tokenizer, variants) -> list[int]:
+    """每个变体在分词器里恰好是一个 token 时取其 id；不存在（编码成多个 token）的变体跳过。去重，保持顺序。"""
+    out = []
+    for v in variants:
+        ids = tokenizer.encode(v, add_special_tokens=False)
+        if len(ids) == 1 and ids[0] not in out:
+            out.append(ids[0])
+    return out
+
+
+def letter_logit_answer(first_logits, tokenizer, letters) -> str | None:
+    """letter_logit 方式（四选一 / 二选一）：每个字母取 "A"、" A" 两种变体里 logit 最大的，再在字母之间取最大。某个字母一个变体都没有时返回 None。"""
+    best = {}
+    for L in letters:
+        ids = variant_token_ids(tokenizer, letter_variants(L))
+        if not ids:
+            return None
+        best[L] = max(float(first_logits[i]) for i in ids)
+    return max(letters, key=lambda L: best[L])
+
+
+def yes_no_logit_answer(first_logits, tokenizer) -> str | None:
+    """letter_logit 方式（二元）：比较 {Yes, yes, " Yes", " yes"} 的最大 logit 与 {No, no, " No", " no"} 的最大 logit（不存在的变体跳过）。"""
+    y, n = variant_token_ids(tokenizer, YES_VARIANTS), variant_token_ids(tokenizer, NO_VARIANTS)
+    if not y or not n:
+        return None
+    return "yes" if max(float(first_logits[i]) for i in y) >= max(float(first_logits[i]) for i in n) else "no"
 
 
 def answer_mode_order(model: str) -> list[str]:

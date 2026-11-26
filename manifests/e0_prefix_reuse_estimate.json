@@ -10,10 +10,10 @@
    "t_tok_s": 0.026452298887949532,
    "t_prefix_s": 0.674745402224101,
    "prefix_fraction_of_rel": 0.9272938943504445,
-   "rel_hours_full": 4.627935671804355,
-   "saved_hours_full": 3.5762137432590007,
-   "rel_hours_lean": 0.8375390078251174,
-   "saved_hours_lean": 0.6472040068638004
+   "rel_hours_full": 3.2510329478695703,
+   "saved_hours_full": 2.512219169076316,
+   "rel_hours_lean": 0.7241018385500784,
+   "saved_hours_lean": 0.5595460114795159
   },
   "Qwen3-VL-8B-Instruct": {
    "n_input_tokens": 1056,
@@ -25,10 +25,10 @@
    "t_tok_s": 0.041455485465305315,
    "t_prefix_s": 0.36198902906938935,
    "prefix_fraction_of_rel": 0.8136413330397604,
-   "rel_hours_full": 3.263470724462578,
-   "saved_hours_full": 2.2127455588233036,
-   "rel_hours_lean": 0.5478319916742395,
-   "saved_hours_lean": 0.3714489599897126
+   "rel_hours_full": 2.276985482975052,
+   "saved_hours_full": 1.5438745864000036,
+   "rel_hours_lean": 0.46655966111615965,
+   "saved_hours_lean": 0.3163435205109425
   },
   "InternVL3-8B": {
    "n_input_tokens": 341,
@@ -40,10 +40,10 @@
    "t_tok_s": 0.02963541346449431,
    "t_prefix_s": 0.10102917307101138,
    "prefix_fraction_of_rel": 0.6302506117967023,
-   "rel_hours_full": 1.3076746266212325,
-   "saved_hours_full": 0.6868022778825468,
-   "rel_hours_lean": 0.20824769540639776,
-   "saved_hours_lean": 0.10937353119594624
+   "rel_hours_full": 0.9082958621919328,
+   "saved_hours_full": 0.477045019032399,
+   "rel_hours_lean": 0.17534457471537626,
+   "saved_hours_lean": 0.09209252124133205
   },
   "InternVL3_5-8B": {
    "n_input_tokens": 341,
@@ -55,10 +55,10 @@
    "t_tok_s": 0.04435235071187135,
    "t_prefix_s": 0.0742952985762573,
    "prefix_fraction_of_rel": 0.4557993777684497,
-   "rel_hours_full": 1.3337034182101863,
-   "saved_hours_full": 0.5065843234565478,
-   "rel_hours_lean": 0.2120850953141768,
-   "saved_hours_lean": 0.08055687873180344
+   "rel_hours_full": 0.9262633899179018,
+   "saved_hours_full": 0.3518252306452288,
+   "rel_hours_lean": 0.17851784132056234,
+   "saved_hours_lean": 0.06780693416206596
   },
   "SenseNova-SI-1.2-InternVL3-8B": {
    "n_input_tokens": 341,
@@ -70,10 +70,10 @@
    "t_tok_s": 0.028487745524074397,
    "t_prefix_s": 0.13189705371110727,
    "prefix_fraction_of_rel": 0.27841066746407866,
-   "rel_hours_full": 3.7913622909887095,
-   "saved_hours_full": 0.8796297550269209,
-   "rel_hours_lean": 0.6094127366601583,
-   "saved_hours_lean": 0.14138917231222123
+   "rel_hours_full": 2.6354845828813622,
+   "saved_hours_full": 0.6114558515094075,
+   "rel_hours_lean": 0.5141848799956611,
+   "saved_hours_lean": 0.11929546303294099
   },
   "SenseNova-SI-1.3-InternVL3-8B": {
    "n_input_tokens": 341,
@@ -85,10 +85,10 @@
    "t_tok_s": 0.029574464496542413,
    "t_prefix_s": 0.10420642604149105,
    "prefix_fraction_of_rel": 0.22697979969830331,
-   "rel_hours_full": 3.137747121728642,
-   "saved_hours_full": 0.5935043443282457,
-   "rel_hours_lean": 0.5463780747501534,
-   "saved_hours_lean": 0.103347321638612
+   "rel_hours_full": 2.196404192263539,
+   "saved_hours_full": 0.4154494863470765,
+   "rel_hours_lean": 0.46882482761121336,
+   "saved_hours_lean": 0.08867813788732065
   },
   "GLM-4.6V-Flash": {
    "n_input_tokens": 1316,
@@ -100,10 +100,10 @@
    "t_tok_s": 0.04884060552092609,
    "t_prefix_s": 0.46825703472840613,
    "prefix_fraction_of_rel": 0.5390009032844962,
-   "rel_hours_full": 5.828118080990682,
-   "saved_hours_full": 2.617800758418902,
-   "rel_hours_lean": 1.0248917769292187,
-   "saved_hours_lean": 0.4603479946114178
+   "rel_hours_full": 4.083293998438233,
+   "saved_hours_full": 1.834082627945308,
+   "rel_hours_lean": 0.8811431290639236,
+   "saved_hours_lean": 0.3957807854069852
   },
   "VST-7B-RL": {
    "n_input_tokens": 1325,
@@ -115,10 +115,10 @@
    "t_tok_s": 0.028026925361314594,
    "t_prefix_s": 0.638694803009305,
    "prefix_fraction_of_rel": 0.9174672168488186,
-   "rel_hours_full": 3.0538241754658215,
-   "saved_hours_full": 2.334819639175221,
-   "rel_hours_lean": 0.6881029984721896,
-   "saved_hours_lean": 0.526093285761339
+   "rel_hours_full": 2.194450283643881,
+   "saved_hours_full": 1.6777801618732102,
+   "rel_hours_lean": 0.6173028323147931,
+   "saved_hours_lean": 0.47196259293062187
   },
   "RoboBrain2.0-7B": {
    "n_input_tokens": 1325,
@@ -130,10 +130,10 @@
    "t_tok_s": 0.025051224387806107,
    "t_prefix_s": 0.6773865317341328,
    "prefix_fraction_of_rel": 0.7108311367166512,
-   "rel_hours_full": 5.098740934464673,
-   "saved_hours_full": 3.0202865118910367,
-   "rel_hours_lean": 1.0175979556606811,
-   "saved_hours_lean": 0.6027835929523521
+   "rel_hours_full": 3.616221456309782,
+   "saved_hours_full": 2.142102340339855,
+   "rel_hours_lean": 0.895459470440454,
+   "saved_hours_lean": 0.5304337277140654
   },
   "Qwen3.5-2B": {
    "n_input_tokens": 1065,
@@ -145,10 +145,10 @@
    "t_tok_s": 0.033514443342424996,
    "t_prefix_s": 0.28629917245226877,
    "prefix_fraction_of_rel": 0.6193600269383857,
-   "rel_hours_full": 3.494312181936586,
-   "saved_hours_full": 1.803531072612811,
-   "rel_hours_lean": 0.5777291207960343,
-   "saved_hours_lean": 0.2981852698494347
+   "rel_hours_full": 2.4348317324021687,
+   "saved_hours_full": 1.2566978728092029,
+   "rel_hours_lean": 0.4904430249751339,
+   "saved_hours_lean": 0.25313400430028526
   },
   "Qwen3.5-4B": {
    "n_input_tokens": 1065,
@@ -160,10 +160,10 @@
    "t_tok_s": 0.04559975520195838,
    "t_prefix_s": 0.3585631578947369,
    "prefix_fraction_of_rel": 0.3787105596691349,
-   "rel_hours_full": 7.3400073280303655,
-   "saved_hours_full": 2.3164485693116093,
-   "rel_hours_lean": 1.1983901038325808,
-   "saved_hours_lean": 0.3782024891036578
+   "rel_hours_full": 5.10899821868691,
+   "saved_hours_full": 1.6123596456229443,
+   "rel_hours_lean": 1.0145867358883873,
+   "saved_hours_lean": 0.3201955921509766
   },
   "Qwen3.5-9B": {
    "n_input_tokens": 1065,
@@ -175,10 +175,10 @@
    "t_tok_s": 0.04632094366283713,
    "t_prefix_s": 0.3925594704183818,
    "prefix_fraction_of_rel": 0.6384118887922944,
-   "rel_hours_full": 4.684442365940746,
-   "saved_hours_full": 2.4921697489823966,
-   "rel_hours_lean": 0.771496000183347,
-   "saved_hours_lean": 0.4104435155606257
+   "rel_hours_full": 3.2630221328493865,
+   "saved_hours_full": 1.7359601025028646,
+   "rel_hours_lean": 0.6543912223444535,
+   "saved_hours_lean": 0.34814261355501736
   },
   "InternVL3-2B": {
    "n_input_tokens": 341,
@@ -190,10 +190,10 @@
    "t_tok_s": 0.030424081089382615,
    "t_prefix_s": 0.041401837821234765,
    "prefix_fraction_of_rel": 0.40490794935192925,
-   "rel_hours_full": 0.8330074385696088,
-   "saved_hours_full": 0.28107611145510286,
-   "rel_hours_lean": 0.13274241805994344,
-   "saved_hours_lean": 0.04479038357389017
+   "rel_hours_full": 0.5786285701575169,
+   "saved_hours_full": 0.19524275648243258,
+   "rel_hours_lean": 0.1117852231510734,
+   "saved_hours_lean": 0.03771893789495745
   },
   "SenseNova-SI-1.1-InternVL3-2B": {
    "n_input_tokens": 341,
@@ -205,10 +205,10 @@
    "t_tok_s": 0.03056138477962483,
    "t_prefix_s": 0.0454607594936709,
    "prefix_fraction_of_rel": 0.10672792462418336,
-   "rel_hours_full": 3.472198435997332,
-   "saved_hours_full": 0.3088171107977755,
-   "rel_hours_lean": 0.5531458417913843,
-   "saved_hours_lean": 0.049196756424076095
+   "rel_hours_full": 2.411820901775999,
+   "saved_hours_full": 0.2145071995098156,
+   "rel_hours_lean": 0.4657858389720339,
+   "saved_hours_lean": 0.0414269632606827
   },
   "LLaVA-1.5-7B": {
    "n_input_tokens": 683,
@@ -220,10 +220,10 @@
    "t_tok_s": 0.027684553210597217,
    "t_prefix_s": 0.09018089357880554,
    "prefix_fraction_of_rel": 0.6195870393597084,
-   "rel_hours_full": 1.1912308972982015,
-   "saved_hours_full": 0.6150593540423347,
-   "rel_hours_lean": 0.18940560403257725,
-   "saved_hours_lean": 0.09779438120056816
+   "rel_hours_full": 0.8273069870876898,
+   "saved_hours_full": 0.42715723897605185,
+   "rel_hours_lean": 0.15942345824394039,
+   "saved_hours_lean": 0.0823139237482076
   },
   "LLaVA-1.5-13B": {
    "n_input_tokens": 683,
@@ -235,17 +235,17 @@
    "t_tok_s": 0.034822192661567455,
    "t_prefix_s": 0.1526556146768651,
    "prefix_fraction_of_rel": 0.6867099175747418,
-   "rel_hours_full": 1.8325021445846805,
-   "saved_hours_full": 1.048664497219403,
-   "rel_hours_lean": 0.2903622631453588,
-   "saved_hours_lean": 0.16616220482613733
+   "rel_hours_full": 1.2723030963897872,
+   "saved_hours_full": 0.7280859620432661,
+   "rel_hours_lean": 0.24420984209690585,
+   "saved_hours_lean": 0.13975110044775577
   }
  },
  "total": {
-  "rel_hours_full": 54.29027783709441,
-  "saved_hours_full": 25.294153376683152,
-  "rel_hours_lean": 9.405358684533557,
-  "saved_hours_lean": 4.487319744595596
+  "rel_hours_full": 37.98534383584071,
+  "saved_hours_full": 17.735845251115382,
+  "rel_hours_lean": 8.06206440080015,
+  "saved_hours_lean": 3.8646228297236735
  },
  "questions_used": [
   "Look at the image. Where is the beer bottle relative to the armchair?\nA. The beer bottle is to the left of the armchair.\nB. The beer bottle is to the right of the armchair.\nC. The beer bottle is on the armchair.\nD. The beer bottle is under the armchair.\nAnswer with the option's letter only.",
