@@ -1,25 +1,26 @@
 # 抠图库 v3 定稿时在 v3 草稿（0bd0f57）上再剔除的 23 个。source=human_spotcheck：Xiwei 人工抽查（150 个随机样本里的坏 3 个与拿不准 3 个，按 Xiwei 要求一并剔除）；source=planner_cow_review：planner 对 cow 类的单类复核（模型预审，未经人工复核）。2026-11-26
-cutout_id,category,side,source,reason
-train_71535,cow,test,human_spotcheck,坏：后半身缺失，带草地
-train_73033,cow,test,human_spotcheck,坏：疑似模型或雕塑，腿间带草地
-train_1817157,dog,dev,human_spotcheck,坏：带进大块毯子
-train_61063,sheep,dev,human_spotcheck,拿不准：腿埋在草里
-train_1084803,cake,dev,human_spotcheck,拿不准：近景模糊
-train_2112223,sandwich,test,human_spotcheck,拿不准：类别存疑
-train_73752,cow,dev,planner_cow_review,被截断：没有头
-train_72737,cow,dev,planner_cow_review,被截断：尾部是一条竖直的直切口
-train_71101,cow,test,planner_cow_review,被截断：腿被截掉
-train_1819679,cow,test,planner_cow_review,被截断：姿态难认，下部残缺
-train_70384,cow,dev,planner_cow_review,草地或背景进了 mask
-train_70470,cow,dev,planner_cow_review,草地或背景进了 mask
-train_71514,cow,dev,planner_cow_review,草地或背景进了 mask
-train_73943,cow,dev,planner_cow_review,草地或背景进了 mask
-train_76317,cow,dev,planner_cow_review,草地或背景进了 mask
-train_71786,cow,test,planner_cow_review,草地或背景进了 mask
-train_72261,cow,test,planner_cow_review,草地或背景进了 mask
-train_72547,cow,test,planner_cow_review,草地或背景进了 mask
-train_72676,cow,test,planner_cow_review,草地或背景进了 mask
-train_73187,cow,test,planner_cow_review,草地或背景进了 mask
-train_74863,cow,test,planner_cow_review,草地或背景进了 mask
-train_75638,cow,test,planner_cow_review,草地或背景进了 mask
-train_76984,cow,test,planner_cow_review,草地或背景进了 mask
+# 2026-11-26 第二轮：train_73187、train_70384（cow）按第二轮的宽标准不该剔除，Xiwei 决定恢复，status=restored（行保留）
+cutout_id,category,side,source,reason,status
+train_71535,cow,test,human_spotcheck,坏：后半身缺失，带草地,excluded
+train_73033,cow,test,human_spotcheck,坏：疑似模型或雕塑，腿间带草地,excluded
+train_1817157,dog,dev,human_spotcheck,坏：带进大块毯子,excluded
+train_61063,sheep,dev,human_spotcheck,拿不准：腿埋在草里,excluded
+train_1084803,cake,dev,human_spotcheck,拿不准：近景模糊,excluded
+train_2112223,sandwich,test,human_spotcheck,拿不准：类别存疑,excluded
+train_73752,cow,dev,planner_cow_review,被截断：没有头,excluded
+train_72737,cow,dev,planner_cow_review,被截断：尾部是一条竖直的直切口,excluded
+train_71101,cow,test,planner_cow_review,被截断：腿被截掉,excluded
+train_1819679,cow,test,planner_cow_review,被截断：姿态难认，下部残缺,excluded
+train_70384,cow,dev,planner_cow_review,草地或背景进了 mask,restored
+train_70470,cow,dev,planner_cow_review,草地或背景进了 mask,excluded
+train_71514,cow,dev,planner_cow_review,草地或背景进了 mask,excluded
+train_73943,cow,dev,planner_cow_review,草地或背景进了 mask,excluded
+train_76317,cow,dev,planner_cow_review,草地或背景进了 mask,excluded
+train_71786,cow,test,planner_cow_review,草地或背景进了 mask,excluded
+train_72261,cow,test,planner_cow_review,草地或背景进了 mask,excluded
+train_72547,cow,test,planner_cow_review,草地或背景进了 mask,excluded
+train_72676,cow,test,planner_cow_review,草地或背景进了 mask,excluded
+train_73187,cow,test,planner_cow_review,草地或背景进了 mask,restored
+train_74863,cow,test,planner_cow_review,草地或背景进了 mask,excluded
+train_75638,cow,test,planner_cow_review,草地或背景进了 mask,excluded
+train_76984,cow,test,planner_cow_review,草地或背景进了 mask,excluded

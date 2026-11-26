@@ -1,0 +1,87 @@
+# 抠图库 v3 第二轮按类复核的剔除清单（planner 的子代理放大 2 倍逐格看，模型预审，未经人工复核），2026-11-26。只在两种情况剔除：缺失明显（没头、没腿、直线切口），或背景成片进入 mask；蹄下、脚边少量的草不剔除。train_586407（bear）子代理判了剔除，但 Xiwei 明确保留，不在清单里。
+cutout_id,category,side,code,note,source
+train_597987,giraffe,dev,bg,grass patches on back and between legs,planner_round2_category_review
+train_597035,giraffe,test,bg,grass patch between front legs,planner_round2_category_review
+train_597554,giraffe,test,bg,grass strips between and along legs,planner_round2_category_review
+train_55017,horse,dev,trunc,lower legs end in straight cut edges,planner_round2_category_review
+train_55335,horse,dev,bg,grass patches around legs and head,planner_round2_category_review
+train_59300,horse,dev,bg,green grass patch under belly,planner_round2_category_review
+val_54366,horse,dev,bg,grass strips between legs and neck,planner_round2_category_review
+train_53424,horse,test,bg,grass and ground patch between legs,planner_round2_category_review
+train_54606,horse,test,trunc,lower legs largely missing,planner_round2_category_review
+train_55070,horse,test,bg,thick grass band along back outline,planner_round2_category_review
+train_55194,horse,test,bg,large grass patch around tail,planner_round2_category_review
+train_59992,horse,test,bg,fence rails across body and legs,planner_round2_category_review
+train_64527,sheep,dev,bg,grass band around whole outline,planner_round2_category_review
+train_64837,sheep,dev,bg,"grass band along left side, legs",planner_round2_category_review
+train_62405,sheep,test,bg,grass between legs and along outline,planner_round2_category_review
+train_63744,sheep,test,bg,grass patch along bottom edge,planner_round2_category_review
+train_66377,sheep,test,bg,grass band along outline,planner_round2_category_review
+train_588204,zebra,dev,trunc,legs end in straight cut edges,planner_round2_category_review
+train_588528,zebra,dev,bg,grass band along mane and back,planner_round2_category_review
+train_590333,zebra,dev,bg,grass patch around muzzle and hooves,planner_round2_category_review
+val_589250,zebra,dev,bg,"background block above back, between legs",planner_round2_category_review
+train_588903,zebra,test,bg,grass patches behind hind legs,planner_round2_category_review
+train_589801,zebra,test,bg,grass patch between tail and leg,planner_round2_category_review
+train_591480,zebra,test,bg,grass strip along left leg outline,planner_round2_category_review
+train_586547,bear,dev,trunc,hind legs missing below rump,planner_round2_category_review
+val_587130,bear,dev,bg,grass patches along belly and legs,planner_round2_category_review
+train_586188,bear,test,bg,dark background band along back outline,planner_round2_category_review
+train_587175,bear,test,bg,grass strip along top of back,planner_round2_category_review
+train_587417,bear,test,bg,grass blades and patches across body,planner_round2_category_review
+train_587582,bear,test,bg,plants and grass inside mask,planner_round2_category_review
+train_47242,cat,dev,bg,olive background band along back outline,planner_round2_category_review
+train_49601,cat,dev,bg,dark angular patch at right side,planner_round2_category_review
+train_50516,cat,dev,bg,brown object bars at lower left,planner_round2_category_review
+train_46689,cat,test,bg,green grass patches beside body and feet,planner_round2_category_review
+train_48183,cat,test,bg,brown ground patches along lower outline,planner_round2_category_review
+train_48481,cat,test,trunc,straight vertical cut at rear end,planner_round2_category_review
+train_52655,cat,test,bg,"pink patches at ears, light bottom strip",planner_round2_category_review
+train_11841,dog,dev,trunc,straight polygon edges cut head and back,planner_round2_category_review
+train_16427,dog,dev,trunc,straight vertical cut along rump,planner_round2_category_review
+train_13790,dog,test,bg,green grass patch between legs,planner_round2_category_review
+train_14150,dog,test,bg,light strip along lower left outline,planner_round2_category_review
+train_2225,dog,test,trunc,"straight vertical cut, hind body missing",planner_round2_category_review
+train_580637,elephant,dev,bg,blue and red background strip right side,planner_round2_category_review
+train_580764,elephant,dev,bg,grass patches across front legs,planner_round2_category_review
+train_583167,elephant,dev,bg,tan ground band around belly and legs,planner_round2_category_review
+train_583192,elephant,dev,bg,thick grass band along back and legs,planner_round2_category_review
+train_583259,elephant,dev,bg,light ground patch between hind legs,planner_round2_category_review
+train_583934,elephant,dev,trunc,straight vertical cut along right side,planner_round2_category_review
+train_580791,elephant,test,bg,grass band along back and legs,planner_round2_category_review
+train_581036,elephant,test,trunc,straight vertical cut through head,planner_round2_category_review
+train_581062,elephant,test,bg,ground and grass patch under belly,planner_round2_category_review
+train_581536,elephant,test,bg,grass band along top of back,planner_round2_category_review
+train_581875,elephant,test,bg,large grass patch around body and legs,planner_round2_category_review
+train_582091,elephant,test,bg,yellow ground band and white top band,planner_round2_category_review
+train_582607,elephant,test,bg,white background band along legs and rump,planner_round2_category_review
+train_582678,elephant,test,bg,green band along entire outline,planner_round2_category_review
+train_584235,elephant,test,bg,tall grass across legs and trunk,planner_round2_category_review
+val_581352,elephant,test,bg,white background patches between legs,planner_round2_category_review
+val_584767,elephant,test,bg,green patch and ground band on sides,planner_round2_category_review
+train_36226,bird,dev,bg,brown background block behind neck,planner_round2_category_review
+train_36257,bird,dev,bg,dark green strip along belly,planner_round2_category_review
+train_37484,bird,dev,trunc,"tail missing, straight vertical cut",planner_round2_category_review
+train_41354,bird,dev,bg,green grass band along belly,planner_round2_category_review
+train_37258,bird,test,bg,white block under owl feet,planner_round2_category_review
+train_571618,bench,dev,bg,"white fills backrest gaps, right half",planner_round2_category_review
+train_572586,bench,dev,bg,red flowers fill backrest gaps,planner_round2_category_review
+train_574035,bench,dev,bg,green grass block through backrest gap,planner_round2_category_review
+train_574483,bench,dev,bg,dark brown fills gaps between slats,planner_round2_category_review
+train_577479,bench,dev,bg,green foliage fills backrest gaps,planner_round2_category_review
+val_575179,bench,dev,bg,pale block fills backrest-seat gap,planner_round2_category_review
+train_571422,bench,test,bg,patterned floor fills backrest gap,planner_round2_category_review
+train_571530,bench,test,bg,ground between slats and along footbar,planner_round2_category_review
+train_573976,bench,test,bg,"mulch fills rail gaps, ground under seat",planner_round2_category_review
+train_574602,bench,test,bg,brown ground fills backrest slat gaps,planner_round2_category_review
+train_575564,bench,test,bg,dark block fills backrest-seat gap,planner_round2_category_review
+train_575645,bench,test,bg,orange leaves block under backrest,planner_round2_category_review
+train_576151,bench,test,trunc,"left backrest slats missing, straight edge",planner_round2_category_review
+train_578540,bench,test,trunc,"lower-left section missing, stepped edge",planner_round2_category_review
+train_2198044,fire hydrant,dev,bg,green grass patches along both sides,planner_round2_category_review
+train_416079,fire hydrant,dev,bg,green and white patches at sides,planner_round2_category_review
+train_416160,fire hydrant,dev,bg,brown patches beside white cap,planner_round2_category_review
+train_417162,fire hydrant,dev,bg,grass block at base and right,planner_round2_category_review
+train_416072,fire hydrant,test,bg,dark green strip along right side,planner_round2_category_review
+val_2197929,fire hydrant,test,bg,large dark block below base,planner_round2_category_review
+train_70486,cow,dev,trunc,rear cut by straight vertical edge,planner_round2_category_review
