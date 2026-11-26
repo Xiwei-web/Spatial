@@ -1,0 +1,1077 @@
+{
+ "n": 96,
+ "rules": "src/data/spatialrgpt.py: rewrite_record(same_class='skip')；同名物体的配对（14 条）已在 depth_samples 里跳过",
+ "status": {
+  "ok": 96
+ },
+ "notes": {
+  "含复数类名（紧邻的 is/does/has 按规则改成复数）": 25,
+  "答案含代词（it/They），未改": 30
+ },
+ "n_box_metric_excluded_objects": 6,
+ "derived_file": "<data>/depth/spatialrgpt_derived/depth_rewritten_v1.jsonl（不进仓库）",
+ "derived_sha256": "0b2e0b8964943f099d264157a44bb66e0a1dd6592ed06437493851001532c23e",
+ "license_note": "SpatialRGPT-Bench 只允许评测、不得再分发；本清单不含题目原文",
+ "items": [
+  {
+   "id": "qualitative_owIPR7rMKZ",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_LprC6pv9aY",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_RHQiqvAcrb",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_Mbfutq82tX",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_ou5n5ZAZsq",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_J7vJdrurhh",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_lZ3RNBj15o",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_Q166R5L08v",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_pnrfaUk9lf",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_gue0wWjlXz",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_hyvV0qnSJ6",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_ZTbmIPmcJ6",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_12bRISq0qW",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_uF25qbA0vm",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_dgFVdRtXbs",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_OZcH0216f7",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_tGPxrsiA33",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_DN09HRBPHY",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_KaFBPC2T6E",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_5Z9yZICNWP",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_t8U7Ev4JCd",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_iwxK9EjtZu",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": "bowl：Xiwei 看低 IoU 联系表后决定从框指标排除（mask 外接框与自带框 IoU 0.59）"
+  },
+  {
+   "id": "qualitative_PiltzQIm7a",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_c3642YpOWJ",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_MkDVKzfFtM",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_IrjSU3PHaM",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_i9fimNNx2k",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_R0mFxu62wh",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_kEpqR5CAga",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_CdAUCg5Jjp",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_hlkyNstkY1",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_CrNXK9bj1d",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_I2MKgwts9m",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_8HixobvhMi",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_SxdF4Mdcen",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_QP84X9CdZW",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_t1jorbMZTM",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_0SUy6PrhBB",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_Yb5lPxHb6f",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_lcL10PCiKo",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_zvr1343S0D",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_iiq3VmsrRy",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_VMSEdoylVv",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_HjqmqxcrCk",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_3ujyyTh2EW",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_MX6dmwK4Zg",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_N9T5RgYWaK",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_n6ieLIWnsR",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_RD5LRta99C",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_sBfp6ADRId",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_4IAqvrkjIi",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_KRFYnVhZso",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_LZuOwBUhAZ",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_t0lzpdtMAq",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_OOrmssQECn",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_rpJNvQVul5",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_auABNiw9iM",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_YTpj3e60Mi",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_aHaj4T6mzl",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_5Hs3Py43ba",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_qIjl6Y4Zja",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_3asuP4XLLB",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_jY0Pnnti0W",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_TKUyLRwmtS",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_ky64a578Ov",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_hy3kyCRKze",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": "bicycle：mask 包含骑车人（同一骑车人，nuScenes 同一序列 2 帧 × 2 题）",
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_Pd1DYbNNcV",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_VeI9YjLe6d",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": "bicycle：mask 包含骑车人（同一骑车人，nuScenes 同一序列 2 帧 × 2 题）",
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_VNvvHUU0iT",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_PpcxD27m3i",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": "bicycle：mask 包含骑车人（同一骑车人，nuScenes 同一序列 2 帧 × 2 题）",
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_quSYsapnHe",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_1Qfxu8OnAP",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_z88YOZpvgD",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_b8hZFil44E",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_nznNRM0o1z",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_7m7C2elAGK",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_yXIU6Mpphu",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_UbZvu8MoCt",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_YgvyUrs5co",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_gTR3O1nDxz",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": "desk：Xiwei 看低 IoU 联系表后决定从框指标排除（mask 外接框与自带框 IoU 0.33）"
+  },
+  {
+   "id": "qualitative_BQPbMmXDCV",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_RNuy7Qxczs",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_nVTmvCxgYs",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_Rnb9RvcujT",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_Dpv5s8ioRF",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": "bicycle：mask 包含骑车人（同一骑车人，nuScenes 同一序列 2 帧 × 2 题）",
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_I1IiyR7ja5",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_JEMR9nx4cI",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_WsE659atq5",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_sYBxTzGhnX",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_QOYsoL680F",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_ZdCJXuA2wR",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_thUD5pm7Zs",
+   "category": "behind_predicate",
+   "relation": "behind",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_1VqgJ2oVfM",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_MuKRgMJlTV",
+   "category": "front_predicate",
+   "relation": "behind",
+   "relation_source": "answer_no_implied_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_7wBrKFyX8V",
+   "category": "front_predicate",
+   "relation": "front",
+   "relation_source": "answer_yes",
+   "rewrite_status": "ok",
+   "rewrite_notes": [],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  },
+  {
+   "id": "qualitative_VFZxBM0WJb",
+   "category": "behind_predicate",
+   "relation": "front",
+   "relation_source": "answer_no_explicit_opposite",
+   "rewrite_status": "ok",
+   "rewrite_notes": [
+    "含复数类名（紧邻的 is/does/has 按规则改成复数）",
+    "答案含代词（it/They），未改"
+   ],
+   "box_metric_exclude_target": null,
+   "box_metric_exclude_reference": null
+  }
+ ]
+}
