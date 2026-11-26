@@ -150,7 +150,8 @@ def test_calibrated_block_and_prompts():
     cal = yaml.safe_load(open(paths.REPO_ROOT / "configs" / "bbox_conventions.yaml"))["calibrated"]
     assert len(cal) == 16
     for m, c in cal.items():
-        if c["prompt_id"] != "pending":
+        assert c["prompt_id"] != "pending", m
+        if True:
             assert prompt_set(m)[c["prompt_id"]] == c["prompt_template"], m
     assert list(prompt_set("VST-7B-RL")) == ["P0", "P1", "P2"] and prompt_set("VST-7B-RL")["P2"].startswith(prompt_set("VST-7B-RL")["P0"] + " ")
     assert "P2" not in prompt_set("Qwen3-VL-8B-Instruct")

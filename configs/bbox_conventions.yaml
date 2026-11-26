@@ -457,7 +457,7 @@ calibrated:   # dev 框坐标约定标定（只用 dev；标定用，不是结�
     prompt_id: P0
     prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: {object}.'
     convention: abs_model_xyxy
-    basis: '规则判未定，planner 裁定（round_4）'
+    basis: '规则判未定，planner 裁定（round_4，round_5 维持）：What''s Up 上 orig − model = −0.427；COCO 上 +0.006 [+0.002, +0.009]，差值显著但幅度可忽略（COCO 图缩放比偏离 1 不超过 3.8%）'
   SenseNova-SI-1.1-InternVL3-2B:
     prompt_id: P1
     prompt_template: 'Please provide the bounding box coordinate of the region this sentence describes: <ref>{object}</ref>'
@@ -474,7 +474,7 @@ calibrated:   # dev 框坐标约定标定（只用 dev；标定用，不是结�
     convention: range_norm1_else_norm1000
     basis: '规则选出；同一框里混用两种尺度的输出照样按规则换算，算作模型错误（planner round_4）'
   VST-7B-RL:
-    prompt_id: pending
-    prompt_template: null
+    prompt_id: P2
+    prompt_template: 'Output the bounding box of the {object} in the image as [x1, y1, x2, y2]. Output only a 2D box with four numbers. Do not output 3D boxes.'
     convention: abs_model_xyxy
-    basis: '约定按第 3 轮规则选出；提示词等 P2 补测（round_4）后按原规则在 P0/P1/P2 里重选'
+    basis: '规则判未定，planner 裁定（round_5）：总平均 IoU 0.603（P0 0.480）；What''s Up 0.510 对 0.314；COCO 上 P0 高 0.025；约定两个子集一致。P2 是看到第 3 轮结果后才加的（论文里也要写）；剩余 73 条 3D 输出记解析失败'
