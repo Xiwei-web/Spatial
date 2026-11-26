@@ -78,7 +78,7 @@ def report(metas):
     rep["distractor_size_by_level"] = {lv: {str(k): v for k, v in sorted(c.items())} for lv, c in sorted(dz.items())}
     rep["distractor_le_pair_violations"] = sum(1 for m in base for x in m["distractors"] if x["sqrt_area_px"] > m["sqrt_area_px"])
     rep["n_extra_by_round"] = dict(Counter(m["design"].get("extra_round") for m in base if m["design"].get("extra_round")))
-        rep["meets_acceptance"] = ok and not failed
+    rep["meets_acceptance"] = ok and not failed
     rep["n_base_by_side"] = dict(Counter(m["side"] for m in base))
     rep["within_3000"] = len(base) + len(failed) <= acc["max_base_scenes_without_asking"]
     return rep
