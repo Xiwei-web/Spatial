@@ -521,3 +521,15 @@ A、B 差别很大，上表合在一起会掩盖它（冒烟设置下；“≥50
 - 下载：只下载候选所在的 3,006 张 train2017 图像（477 MB），标注包复用已有的。
 - 泄漏：train2017 里 image_id 等于 GQA-spatial（dev 与 test）VG coco_id 的 51 个实例已排除。下载的 3,006 张 train 图与 5,114 张评测图（What's Up A/B、COCO-spatial、COCO-Pairs、COCO 留出池、SpatialRGPT）做整图感知哈希比对，最小汉明距离 ≥ 8，阈值 ≤ 4 下没有近重复。COCO-spatial、COCO-Pairs、留出池都来自 val2017，与 train2017 的 image_id 天然不重叠；SpatialRGPT 的图像来自 SUNRGBD / hypersim / nuScenes / ARKitScenes / KITTI，不是 COCO。
 - 结果：2,976 个抠图，59 类两侧各 ≥ 3（门槛 30 类）；dev 1,486 / test 1,490；train 来源 2,706，val 来源 270；2,228 个通过 18 px 检查，56 类可进 36 px 档。逐类、逐规则的数量见 `manifests/synth_library_v2.json`。
+
+### 抠图库 v3（2026-11-26，planner 定的口径；草稿，定稿之前不得用于生成场景）
+
+- **来源写法：自动规则过滤，加模型辅助逐格预审排除（两轮，未经人工复核）；人工抽查结果另报。** 不得写成人工审核。
+- 组成：v3 = v2（2,976 个）− knife、potted plant 两类 − 逐格预审排除的（`annotations/synth/library_v2_full_prereview.csv`，exclude=1；两轮预审中任一轮判 BAD 或 UNSURE 即排除）− 规则 c、d、e 剔除的；两侧达不到各 ≥ 3 的类别整类排除。不提高候选上限，不新增下载。
+- 两轮预审在重叠的 1,374 格上，“排除与否”的一致率 0.842，kappa 0.65（planner 提供）。
+- 剔除数量：整类 30 个；预审排除 941 个（其中规则 c / d / e 也会剔除的分别有 33 / 26 / 24 个）；规则 c、d、e 在预审之外**额外**剔除 12 个（c 4、d 8、e 0）。规则 d 的凸度阈值按 dev 定阈值的结果不用（T_sol = 0），只看连通块数（面积 ≥ 1% 的块）与 CLIP pile 概率 > 0.5。
+- 结果：**1,980 个**抠图（dev 951 / test 1,029；train 来源 1,807，val 来源 173），**54 类**（门槛 30）；1,657 个通过 18 px 检查，52 类可进 36 px 档。
+- 与 v2 相比少了 5 类：knife、potted plant（整类剔除），backpack（dev 1 / test 3）、frisbee（dev 7 / test 2）、tennis racket（预审后两侧都是 0），后三类是两侧达不到各 ≥ 3。逐类数量与增减见 `manifests/synth_library_v3.json`。
+- **不用规则 a、b、f 的理由**（依据 dev 上的数字，见 `manifests/synth_library_v3_tune.json`）：a（遮挡接触）和 b（接触边长直边）在 v2 候选上不起作用，dev BAD 召回为 0，因为 v2 已要求外接框与同图其他实例不相交，切口来自未标注的遮挡物；f（SAM 2.1 重新分割的 IoU）在 T_sam = 0.85 时 dev 上召回 0.393、OK 损失 0.138，即每抓到 1 个 BAD 要误删约 1.6 个 OK，代价太高，由逐格预审替代。所有规则合起来在 OK 损失 ≤ 0.25 的约束下，dev BAD 召回最高只有 0.512（目标 0.80），没有放宽阈值。
+- 审阅材料：全量联系表 `outputs/synth_review/library_v3_full/`（54 页，附 index.csv）；人工抽查表 `outputs/synth_review/library_v3_spotcheck/`（固定种子从 v3 随机抽 150 个，不分类别；只显示编号和类别，不显示 CLIP 概率和预审结论），用来估计残余的坏格比例。
+
