@@ -1,0 +1,42 @@
+# 合成场景抠图库 v2（Xiwei 2026-11-26，planner 转达）。来源：COCO val2017（沿用原图像级划分）+ COCO train2017（按图像、固定种子分 dev/test）。
+# 规则先写进本文件、src/synth/library_v2.py 和测试并提交，然后才看任何图。v1 库保留不动，v2 另存为 <data>/synth/cutouts_v2。
+version: library_v2
+seed: 20261125
+sources: [coco_val2017, coco_train2017]
+background_gray: 128
+margin_frac: 0.10
+rules:
+  a_no_bbox_overlap: true          # 外接框与同图其他任何标注实例（含 iscrowd）的外接框交集面积为 0；候选本身不能是 iscrowd
+  b_min_border_px: 2               # 外接框距图像四边都 >= 2 px
+  c_fill_quantiles: [0.10, 0.90]   # mask 面积 / 外接框面积，落在该类别分布的 10%–90% 分位之间；分位数在 a、b 过滤后的 train 候选池上逐类计算，
+                                   # 由 scripts/build_synth_library_v2.py select 写入 configs/synth/library_v2_fill_quantiles.yaml（提交后才继续）
+  d_min_long_side_px: 128          # 沿用 v1：原始长边（最大连通块紧致框）>= 128
+  d_max_upscale: 1.5               # 沿用 v1：放大倍数 = max_sqrt_area_px / sqrt(mask 面积) <= 1.5
+  d_max_sqrt_area_px: 161
+  d_max_aspect: 3.0                # 沿用 v1：长边 / 短边 <= 3
+clip:                              # 不得使用被研究的 VLM（OpenAI CLIP 是 LLaVA-1.5 的视觉塔），沿用 v1 的 LAION CLIP
+  model: CLIP-ViT-L-14-laion2B
+  prompt: "a photo of {article} {name}."
+  min_prob: 0.5                    # 真类别在全部标签（80 个 COCO 类别 + 易混标签）上排第一，且概率 >= 0.5；易混标签排在真类别之前即剔除（排第一的要求已包含）
+  confusable_labels: [urinal, computer monitor, trailer, van, plate, wok, pitcher, ATV, wine glass]
+small_tier_check:                  # f：36 px 档的可识别性。分辨率最低的模型是 InternVL（448 输入），896 画布上的 36 px 约等于 18 px
+  canvas_px: 36
+  rendered_px: 18                  # 抠图缩到 sqrt(mask 面积) = 18 px 后贴灰底，再做与 e 相同的 CLIP 检查；不合格的抠图不进 36 px 档（仍可进正常档）
+exclude_categories:                # g：整类排除（天生镂空、成串，或 v1 预审中系统性出问题）
+  bicycle: 车轮镂空
+  motorcycle: 车轮镂空
+  donut: 中间有孔
+  dining table: 几乎没有完整的桌子，桌面上堆满物品
+  banana: 成串、成堆
+  carrot: 成串、成堆
+  broccoli: 成串、成堆
+leakage:
+  exclude_train_image_ids_in_gqa_spatial: true   # train2017 中 image_id 等于 GQA-spatial（dev 与 test）VG 图像 coco_id 的，一律不作来源
+  phash_max_hamming: 4                           # 下载后的候选图与 What's Up A/B、COCO-spatial / COCO-Pairs / 留出池（val2017）、SpatialRGPT 图像做整图感知哈希比对，<= 4 视为重复并剔除
+train_cap_per_category: 60         # 下载前每类最多保留的 train 候选数（固定种子随机抽），用来控制下载量；不是 planner 给的参数，由 runner 设定并在报告里说明
+val_holdout_excluded: true         # COCO 留出池（splits/coco_holdout_v2.json）的图像不作来源
+min_per_side: 3
+min_categories: 30                 # 过滤后两侧各 >= 3 个抠图的类别 >= 30 个即可（Xiwei 2026-11-26 放宽）
+review:
+  per_category_per_side: 12        # 联系表每类每侧随机抽最多 12 个（固定种子）
+  lowest_clip_per_category: 3      # 各类 CLIP 概率最低的 3 个单独列一页
