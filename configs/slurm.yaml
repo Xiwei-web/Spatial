@@ -1,0 +1,3 @@
+# Slurm 提交设置（scripts/submit.sh 读取；所有作业都经 submit.sh 提交）。
+# 已知坏节点：一律排除（Xiwei 2026-11-26：永久不用）。发现新的坏节点就加进来，并在汇报里告诉 planner 和 Xiwei。
+exclude_nodes: [gpu-05, gpu-07, gpu-49]
