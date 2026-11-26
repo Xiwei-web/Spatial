@@ -20,6 +20,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("name"); ap.add_argument("stage", choices=["parse_check", "screen", "test"]); ap.add_argument("--impl", default="eager", choices=["eager", "sdpa"])
 ap.add_argument("--datasets", default=None, help="test 阶段只跑这些数据集（逗号分隔），用于切块；默认全部 6 个")
 ap.add_argument("--dry-run", action="store_true", help="只列任务清单（CPU），不加载模型")
+ap.add_argument("--dump-keys", default=None, help="与 --dry-run 一起用：把任务清单的唯一键写成 JSON（用于校验输出是否一键一条）")
 A = ap.parse_args()
 frozen = e0.check_frozen() if not A.dry_run else {"dry_run": True}
 if not A.dry_run and not torch.cuda.is_available():
@@ -104,6 +105,8 @@ else:
 key = lambda j: (stage, j["s"].dataset, j["s"].sample_id, j["task"], j["role"], j["rotation"], j["asked_relation"])      # noqa: E731
 todo = [j for j in jobs if key(j) not in done]
 print(name, stage, A.impl, "jobs", len(jobs), "todo", len(todo), "frozen", frozen, flush=True)
+if A.dry_run and A.dump_keys:
+    json.dump([list(key(j)) for j in jobs], open(A.dump_keys, "w"))
 if A.dry_run:
     from collections import Counter
     print(Counter((j["s"].dataset, j["task"]) for j in jobs))
