@@ -11,9 +11,10 @@ CFG = yaml.safe_load(open("configs/e1.yaml"))
 
 def test_rcs_linear_tail():
     x = np.linspace(0, 10, 200)
-    B = X.rcs_basis(x, X.rcs_knots(x, 4))
+    k = X.rcs_knots(x, 4)
+    B = X.rcs_basis(x, k)
     assert B.shape == (200, 4)
-    d2 = np.diff(B[-30:, 2:], n=2, axis=0)          # 最后一个结之外是线性的
+    d2 = np.diff(B[x > k[-1], 2:], n=2, axis=0)          # 最后一个结之外是线性的
     assert np.abs(d2).max() < 1e-8
 
 
