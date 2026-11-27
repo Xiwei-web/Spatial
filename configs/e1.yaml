@@ -27,3 +27,8 @@ thresholds:                        # 占位（预注册草稿值）
   ratio_equivalence: [0.8, 1.25]   # θ_dir/θ_IO 的 95% CI 完全落在区间内 → “与理想观察者等价”
   ratio_h2_upper: 0.8              # CI 上界 < 0.8 → 直接回答比“比较两个框中心”更好（H2 型）
   or_dependent_min: 2.0            # OR 的 95% CI 下界 > 2 → 框推关系与直接回答的对错相关
+alternatives:                      # 备选判定方案（planner 第 10 轮补充，供 Xiwei 选；不替代上面的草稿阈值）。src/e1_alt.py
+  A_coupling: {spline_knots: 4, equivalence_std_effect: 0.1}      # L ~ 自然样条(log2 距离, 4 结) + β·(Δ̂ − Δ)；H3 的等价判定：标准化效应的 CI ⊂ (−0.1, 0.1)
+  B_or_restricted: {box_acc_max: 0.9, min_expected: 5}            # 只用 dev 上框推正确率 <= 0.9 的档；任一格期望 < 5 的档不用；一档不剩 → 不可估
+  C_ratio_restricted: {}                                           # θ_IO 的 bootstrap CI 完全落在采样距离范围内才判定，否则不适用 → 每档 McNemar
+

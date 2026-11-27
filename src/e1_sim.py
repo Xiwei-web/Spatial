@@ -65,3 +65,56 @@ def design_x(rng, per_bin=160, lo_bin=1, edges=None):
     """各档 per_bin 个条目，档内 log 均匀（默认 0.71–11.3 token 的 8 档，模拟 28 px 模型的覆盖）。"""
     e = edges or edges9()
     return np.concatenate([np.exp(rng.uniform(np.log(e[k]), np.log(e[k + 1]), per_bin)) for k in range(lo_bin, len(e) - 1)])
+
+
+def simulate_L(agent, x, rng, pool=None, sigma=0.5, k_h2=0.5, quant=0.5, kappa=3.0, nu_sd=0.5, n_orders=2, axis=None, size=None):
+    """带 logit 差 L 和预测框有向差 Δ̂ 的智能体（planner 第 10 轮补充第 4 条）。每个条目一个内部决策量 S（两个选项顺序共用），
+    每个顺序的 L = kappa·S / sd(e_t − e_r) + ν，ν ~ N(0, nu_sd)；二选一的回答 = L 的符号（正 = 选对）。
+      H1：S = Δ̂ = d + e_t − e_r（框推的有向距离本身）
+      H2：S = 量化到 quant token 的 (d + k_h2·(e_t − e_r))：读一个更粗但噪声更小、与框误差方向部分相关的位置
+      H3：S = d + (e_t' − e_r')，(e_t', e_r') 从同一误差池另抽，与框误差独立、方差相同
+    pool：数组；或 {"x": 数组, "y": 数组}（配合 axis）；或 {(轴, 尺寸): 数组}（配合 axis、size，按尺寸档分池，两个物体同尺寸）；None 时 N(0, sigma)。"""
+    n = len(x)
+    if isinstance(pool, dict):
+        axis = np.asarray(axis)
+        size = np.asarray(size) if size is not None else None
+        keyf = (lambda i: (axis[i], size[i])) if size is not None else (lambda i: axis[i])
+        groups = {}
+        for i in range(n):
+            groups.setdefault(keyf(i), []).append(i)
+        groups = {k: np.array(v) for k, v in groups.items()}
+
+        def draw():
+            out = np.empty(n)
+            for k, idx in groups.items():
+                out[idx] = rng.choice(np.asarray(pool[k], float), len(idx))
+            return out
+        sdD = np.empty(n)
+        for k, idx in groups.items():
+            sdD[idx] = np.std(np.asarray(pool[k], float)) * np.sqrt(2)
+    elif pool is not None:
+        draw = lambda: rng.choice(pool, n)      # noqa: E731
+        sdD = np.full(n, float(np.std(np.asarray(pool)) * np.sqrt(2)))
+    else:
+        draw = lambda: rng.normal(0, sigma, n)      # noqa: E731
+        sdD = np.full(n, sigma * np.sqrt(2))
+    sdD = np.maximum(sdD, 1e-6)
+    d = np.asarray(x, float)
+    e_t, e_r = draw(), draw()
+    dhat = d + e_t - e_r
+    box_ok = dhat > 0
+    if agent == "H1":
+        S = dhat
+    elif agent == "H2":
+        S = quant * np.round((d + k_h2 * (e_t - e_r)) / quant)
+    elif agent == "H3":
+        S = d + draw() - draw()
+    else:
+        raise ValueError(agent)
+    L = kappa * (S / sdD)[:, None] + rng.normal(0, nu_sd, (n, n_orders))
+    mcq = (L > 0).astype(float)
+    agree = (mcq == box_ok[:, None]).astype(float)
+    it = {"key": np.arange(n), "x": d, "bin": token_bins(d, edges9()), "d_box": d, "e_t": e_t, "e_r": e_r, "box_ok": box_ok, "box_parsed": np.ones(n, bool),
+          "mcq_ok": mcq, "mcq_agree": agree, "pair_ok": mcq[:, 0].copy(), "pair_agree": agree[:, 0].copy(), "dhat": dhat, "L": L, "n_keys": n}
+    return it
+
