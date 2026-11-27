@@ -123,7 +123,13 @@ if todo:
     ad = load_adapter(name)
     sw = AttnSwitch(ad)
     sw.use(A.impl)
-    fp32 = FP32Head(ad, [x for L in ("A", "B") for x in letter_variants(L)] + list(YES_VARIANTS) + list(NO_VARIANTS))
+    try:
+        fp32 = FP32Head(ad, [x for L in ("A", "B") for x in letter_variants(L)] + list(YES_VARIANTS) + list(NO_VARIANTS))
+    except RuntimeError as ex:
+        if A.stage != "single_object":          # 单物体检查只问框，用不到选项打分；E1 必须有
+            raise
+        print("WARN fp32 head hook unavailable:", ex, flush=True)
+        fp32 = type("NoHook", (), {"reset": lambda self: None, "res": None})()
     meta = {"model": name, "revision": model_facts(name).get("revision"), "config_hash": config_hash(name), **frozen, "git_commit_dirty_check": git_commit(),
             "env": adapter_spec(name).get("env"), "torch": torch.__version__, "transformers": transformers.__version__, "dtype": str(ad.dtype), "impl": A.impl,
             "eager_fp32_patch": ad.eager_fp32, "decoding": "greedy", "slurm_job": os.environ.get("SLURM_JOB_ID"), "gpu": torch.cuda.get_device_name(0),
