@@ -124,7 +124,11 @@ def or_restricted(items, dev_items, n_boot, rng, cfg_alt, th):
         bs.append(mh_or(sub["box_ok"], sub["mcq_ok"], cnt[inv], sub["bin"]))
     ci = [float(np.percentile(bs, 2.5)), float(np.percentile(bs, 97.5))]
     tabs = [table_2x2(sub["box_ok"][sub["bin"] == b], sub["mcq_ok"][sub["bin"] == b][:, :1], np.ones(int((sub["bin"] == b).sum()))) for b in kept]
-    out.update(or_mh=est, or_mh_ci=ci, cond_mle_order0=cond_mle_or(tabs),
+    try:
+        cm = cond_mle_or(tabs)
+    except Exception as e:
+        cm = {"error": f"{type(e).__name__}: {e}"}
+    out.update(or_mh=est, or_mh_ci=ci, cond_mle_order0=cm,
                verdict="dependent" if ci[0] > th["or_dependent_min"] else ("independent_compatible" if ci[0] <= 1 <= ci[1] else "inconclusive"))
     return out
 
@@ -172,7 +176,8 @@ def logistic_box_effect(items, knots=None):
     H = X.T @ (X * (p * (1 - p))[:, None]) + 1e-8 * np.eye(X.shape[1])
     se = math.sqrt(max(np.linalg.inv(H)[-1, -1], 0))
     g = float(r.x[-1])
-    return {"or": math.exp(g), "ci": [math.exp(g - 1.96 * se), math.exp(g + 1.96 * se)], "coef": g, "se": se}
+    ex = lambda v: float(np.exp(np.clip(v, -700, 700)))      # noqa: E731   完全分离时系数发散（例如 H1：直接回答 = 框推），照实标出
+    return {"or": ex(g), "ci": [ex(g - 1.96 * se), ex(g + 1.96 * se)], "coef": g, "se": se, "separation_suspected": bool(abs(g) > 15 or se > 50)}
 
 
 def analyze_all(items, dev_items, cfg, n_boot, seed):
@@ -182,11 +187,15 @@ def analyze_all(items, dev_items, cfg, n_boot, seed):
     al = cfg["alternatives"]
     main = analyze(items, cfg, n_boot=n_boot, seed=seed)
     out = {"main": {k: main[k] for k in ("ratio", "or", "or_pooled", "theta_dir", "theta_io", "direct_acc", "box_acc", "decision") if k in main}, "main_ci": main["ci"]}
-    out["A"] = coupling(items, n_boot, rng, al["A_coupling"])
-    out["B"] = or_restricted(items, dev_items, n_boot, rng, al["B_or_restricted"], cfg["thresholds"])
-    out["C"] = ratio_restricted(main, items, cfg["thresholds"])
-    out["C"].pop("per_bin", None) if out["C"]["verdict"] != "not_applicable" else None
-    out["logistic"] = logistic_box_effect(items)
+    def safe(fn, fallback):
+        try:
+            return fn()
+        except Exception as e:      # 某个方法数值上失败时照实记录，不拖垮其它方法
+            return {**fallback, "error": f"{type(e).__name__}: {e}"}
+    out["A"] = safe(lambda: coupling(items, n_boot, rng, al["A_coupling"]), {"verdict": "error", "equivalence_null": False, "beta": float("nan"), "std_effect": float("nan")})
+    out["B"] = safe(lambda: or_restricted(items, dev_items, n_boot, rng, al["B_or_restricted"], cfg["thresholds"]), {"verdict": "error", "bins_used": []})
+    out["C"] = safe(lambda: ratio_restricted(main, items, cfg["thresholds"]), {"verdict": "error", "applicable": False})
+    out["logistic"] = safe(lambda: logistic_box_effect(items), {"or": float("nan"), "ci": [float("nan"), float("nan")]})
     return out
 
 
@@ -218,6 +227,7 @@ def summarize_alt(rows):
         d["median_A_std_effect"] = float(np.median([r["A"]["std_effect"] for r in R]))
         d["median_logistic_or"] = float(np.median([r["logistic"]["or"] for r in R]))
         d["p_logistic_or_ci_contains_1"] = float(np.mean([r["logistic"]["ci"][0] <= 1 <= r["logistic"]["ci"][1] for r in R]))
+        d["n_method_errors"] = {m: int(sum("error" in r[m] for r in R)) for m in ("A", "B", "C", "logistic")}
         d["median_main_or"] = float(np.median([r["main"]["or"] for r in R]))
         out[ag] = d
     return out
