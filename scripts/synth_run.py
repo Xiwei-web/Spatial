@@ -16,7 +16,7 @@ from scripts.smoke_test import git_commit
 from src import e0, e1, paths
 from src.models.adapter import adapter_spec, config_hash, load_adapter, model_facts
 from src.models.attn_switch import AttnSwitch
-from src.prompts import OPPOSITE, parse_four_numbers
+from src.prompts import OPPOSITE, parse_four_numbers, to_original_xyxy
 
 ap = argparse.ArgumentParser()
 ap.add_argument("name"); ap.add_argument("stage", choices=["single_object", "e1"]); ap.add_argument("--smoke", type=int, default=None)
@@ -75,11 +75,55 @@ if A.dry_run:
     for j in jobs[:6]:
         print(repr(j["prompt"]), j["options"], j["asked_relation"], j["max_new"], j["extra"])
     raise SystemExit(0)
+class FP32Head:
+    """输出层（lm_head）的前向钩子：取首步最后一个位置的输入（最终归一化后的隐状态），分块按 fp32 重算 logit 与全词表 logsumexp。
+    模型本身照常用 bf16 生成；这里只为直接回答的选项打分（planner 第 10 轮补充第 3 条：每个选项的 logprob 用 fp32）。"""
+
+    def __init__(self, ad, variants):
+        head = None
+        for obj in (ad.model, getattr(ad.model, "language_model", None), getattr(ad.model, "llm", None)):
+            if obj is not None and hasattr(obj, "get_output_embeddings") and obj.get_output_embeddings() is not None:
+                head = obj.get_output_embeddings()
+                break
+        if head is None:
+            raise RuntimeError("找不到输出层")
+        self.ids = {}
+        for v in variants:
+            t = ad.tokenizer.encode(v, add_special_tokens=False)
+            if len(t) == 1:
+                self.ids[v] = t[0]
+        self.res = None
+        head.register_forward_hook(self.hook)
+
+    def reset(self):
+        self.res = None
+
+    @torch.no_grad()
+    def hook(self, m, inp, out):
+        if self.res is not None:
+            return
+        x = inp[0][0, -1].float()
+        W, b = m.weight, getattr(m, "bias", None)
+        lse_parts, sel = [], {}
+        for i in range(0, W.shape[0], 16384):
+            z = W[i:i + 16384].float() @ x
+            if b is not None:
+                z = z + b[i:i + 16384].float()
+            lse_parts.append(torch.logsumexp(z, 0))
+            for v, t in self.ids.items():
+                if i <= t < i + 16384:
+                    sel[v] = float(z[t - i])
+        lse = float(torch.logsumexp(torch.stack(lse_parts), 0))
+        self.res = {"fp32_lse": lse, "fp32_logprob": {v: z - lse for v, z in sel.items()}, "fp32_argmax_logit_check": float(out[0, -1].float().max())}
+
+
 if todo:
     import transformers
+    from src.prompts import NO_VARIANTS, YES_VARIANTS, letter_variants
     ad = load_adapter(name)
     sw = AttnSwitch(ad)
     sw.use(A.impl)
+    fp32 = FP32Head(ad, [x for L in ("A", "B") for x in letter_variants(L)] + list(YES_VARIANTS) + list(NO_VARIANTS))
     meta = {"model": name, "revision": model_facts(name).get("revision"), "config_hash": config_hash(name), **frozen, "git_commit_dirty_check": git_commit(),
             "env": adapter_spec(name).get("env"), "torch": torch.__version__, "transformers": transformers.__version__, "dtype": str(ad.dtype), "impl": A.impl,
             "eager_fp32_patch": ad.eager_fp32, "decoding": "greedy", "slurm_job": os.environ.get("SLURM_JOB_ID"), "gpu": torch.cuda.get_device_name(0),
@@ -94,6 +138,7 @@ if todo:
                 if j["image"] != cur:
                     img, cur = Image.open(j["image"]).convert("RGB"), j["image"]
                 prep = ad.prepare(img, j["prompt"])
+                fp32.reset()
                 g = ad.generate(prep, j["max_new"])
                 ids = g["token_ids"]
                 vb = prep.extra.get("view_box")
@@ -103,6 +148,13 @@ if todo:
                            seconds=round(time.time() - t, 3))
                 if j["task"] == "box":
                     rec["parsed_numbers"] = parse_four_numbers(g["text"]) or parse_four_numbers(g["text_raw"])
+                    if rec["parsed_numbers"]:
+                        rec["pred_xyxy_orig"] = [round(float(v), 3) for v in to_original_xyxy(rec["parsed_numbers"], cal["convention"], tuple(prep.orig_wh),
+                                                                                            tuple(prep.model_wh) if prep.model_wh else None, tuple(vb) if vb else None)]
+                else:
+                    if fp32.res is None:
+                        raise RuntimeError("fp32 打分钩子没有被调用")
+                    rec.update(fp32.res)
             except Exception as ex:
                 rec["error"] = f"{type(ex).__name__}: {str(ex)[:300]}"
             fout.write(json.dumps(rec, ensure_ascii=False) + "\n"); fout.flush()

@@ -36,7 +36,7 @@ for model in so["models"]:
     per = {}
     for s in cfg["sizes_px"]:
         rs = [r for r in R if r["sqrt_area_px"] == s]
-        hit, ious, cerr, nf = [], [], [], 0
+        hit, ious, cerr, nf, signed = [], [], [], 0, []
         for r in rs:
             m = meta[r["sample_id"]]
             c = pred_center(r)
@@ -52,10 +52,12 @@ for model in so["models"]:
             t = r["truth_xyxy"]
             sx, sy = token_scale(r)
             cerr.append(math.hypot((c[0] - (t[0] + t[2]) / 2) / sx, (c[1] - (t[1] + t[3]) / 2) / sy))
+            signed.append({"scene_id": r["sample_id"], "ex_tok": round((c[0] - (t[0] + t[2]) / 2) / sx, 5), "ey_tok": round((c[1] - (t[1] + t[3]) / 2) / sy, 5)})
         k, n = int(sum(hit)), len(hit)
         p = k / n if n else None
         per[str(s)] = {"n": n, "center_in_mask": p, "wilson95": wilson(k, n), "pass": (p is not None and p >= so["center_in_mask_min"]), "parse_fail": nf,
-                       "iou_median": float(np.median(ious)) if ious else None, "center_err_tok_median": float(np.median(cerr)) if cerr else None}
+                       "iou_median": float(np.median(ious)) if ious else None, "center_err_tok_median": float(np.median(cerr)) if cerr else None,
+                       "signed_center_err_tok": signed}      # 有向中心误差（预测框中心 − 真值框中心），x、y 分开，单位为该模型的 token；用作功效模拟的按尺寸噪声池
         rows.append(f"| {model} | {s} | {n} | {p:.3f} | [{per[str(s)]['wilson95'][0]:.3f}, {per[str(s)]['wilson95'][1]:.3f}] | {'通过' if per[str(s)]['pass'] else '**不通过**'} | {nf} | "
                     f"{per[str(s)]['iou_median'] if per[str(s)]['iou_median'] is None else round(per[str(s)]['iou_median'], 3)} | "
                     f"{per[str(s)]['center_err_tok_median'] if per[str(s)]['center_err_tok_median'] is None else round(per[str(s)]['center_err_tok_median'], 3)} |")
