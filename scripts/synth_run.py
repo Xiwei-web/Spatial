@@ -2,7 +2,10 @@
 用法：
   python scripts/synth_run.py <模型> single_object               单物体定位检查：<data>/synth/single_object_v2 的全部图（dev 抠图），每张问一次框
   python scripts/synth_run.py <模型> e1 --smoke 5                E1 解析冒烟：合成 v2 的前 5 个 dev 主集基础场景（含两张孪生图），问框（两个物体）、同轴二选一 × 2 顺序、成对二元
+  python scripts/synth_run.py <模型> e1 --pilot 200              E1 dev 试跑（planner 第 11 轮第 5 条）：dev 主集基础场景按设计距离层（10 层）等量分层抽样，不含孪生图，题型同冒烟；
+                                                                  只用来估“讨厌参数”（L 的尺度与噪声、框误差分布、边际正确率），不在上面算判定量
   E1 正式运行尚未开放：要等 docs/PREREGISTRATION.md 提交、Xiwei 批 GPU 预算之后再加。
+直接回答的每一步都按 fp32 打分（src/e1_fp32.py），记录首步（fp32_logprob）和“最终答案 token 所在的那一步”（fp32_final_answer）。
 输出 <outputs>/synth/<模型>/<stage>.jsonl；断点续跑；出错即停。"""
 import argparse
 import json
@@ -14,19 +17,21 @@ from PIL import Image
 
 from scripts.smoke_test import git_commit
 from src import e0, e1, paths
+from src.e1_fp32 import FP32Head, final_letter_step
 from src.models.adapter import adapter_spec, config_hash, load_adapter, model_facts
 from src.models.attn_switch import AttnSwitch
 from src.prompts import OPPOSITE, parse_four_numbers, to_original_xyxy
 
 ap = argparse.ArgumentParser()
 ap.add_argument("name"); ap.add_argument("stage", choices=["single_object", "e1"]); ap.add_argument("--smoke", type=int, default=None)
+ap.add_argument("--pilot", type=int, default=None)
 ap.add_argument("--impl", default="eager", choices=["eager", "sdpa"]); ap.add_argument("--dry-run", action="store_true")
 A = ap.parse_args()
 cfg = e1.synth_cfg()
 name = A.name
 tk, tpx = e1.token_key(name, cfg)
-if A.stage == "e1" and not (A.smoke and 1 <= A.smoke <= 5):
-    raise SystemExit("E1 正式运行尚未开放（需预注册提交 + Xiwei 批 GPU 预算）；现在只允许 --smoke N（N <= 5，只用 dev）")
+if A.stage == "e1" and not ((A.smoke and 1 <= A.smoke <= 5 and not A.pilot) or (A.pilot and 10 <= A.pilot <= 200 and A.pilot % 10 == 0 and not A.smoke)):
+    raise SystemExit("E1 正式运行尚未开放（需预注册提交 + Xiwei 批 GPU 预算）；现在只允许 --smoke N（N <= 5）或 --pilot N（N <= 200，10 的倍数），都只用 dev")
 frozen = e0.check_frozen() if not A.dry_run else {"dry_run": True}
 cal, modes = e0.calibrated(name), e0.answer_modes(name)
 if not modes and not A.dry_run:
@@ -43,8 +48,21 @@ if A.stage == "single_object":
                          extra={"sqrt_area_px": m["sqrt_area_px"], "truth_centroid_xy": o["centroid_xy"]}))
 else:
     metas = [json.loads(l) for l in open(root / "synth_v2" / "metadata.jsonl")]
-    bases = [m["base_id"] for m in metas if m.get("variant") == "base" and m["side"] == "dev" and m["subset"] == "main"][:A.smoke]
-    for m in [m for m in metas if m.get("base_id") in set(bases)]:
+    dev_base = [m for m in metas if m.get("variant") == "base" and m["side"] == "dev" and m["subset"] == "main"]
+    if A.smoke:
+        bases = [m["base_id"] for m in dev_base][:A.smoke]
+        sel = [m for m in metas if m.get("base_id") in set(bases)]
+    else:
+        import random
+        strata = sorted({tuple(m["design"]["stratum_px"]) for m in dev_base})
+        bases = []
+        for st in strata:
+            ids = sorted(m["base_id"] for m in dev_base if tuple(m["design"]["stratum_px"]) == st)
+            bases += random.Random(f"20261128:e1_pilot:{st}").sample(ids, A.pilot // len(strata))
+        bases = set(bases)
+        sel = [m for m in dev_base if m["base_id"] in bases]          # 只有基础场景，不含孪生图
+        assert all(m["side"] == "dev" for m in sel) and len(sel) == A.pilot
+    for m in sel:
         T, R = m["objects"]["target"], m["objects"]["reference"]
         g = m["geometry"]
         ex = {"variant": m["variant"], "base_id": m["base_id"], "level": m["level"], "subset": m["subset"], "axis": m["axis"], "token_key": tk, "token_px": tpx,
@@ -63,7 +81,7 @@ else:
         for rel in (m["relation"], OPPOSITE[m["relation"]]):
             jobs.append(dict(common, task="binary", role=None, rotation=None, asked_relation=rel, options=None, prompt=e1.synth_binary(T["category"], R["category"], rel),
                              max_new=e0.MAX_NEW[(modes or {}).get("binary", "text16")], truth_xyxy=None, box_object=None))
-stage = A.stage + (f"_smoke{A.smoke}" if A.smoke else "")
+stage = A.stage + (f"_smoke{A.smoke}" if A.smoke else "") + (f"_pilot{A.pilot}" if A.pilot else "")
 out_dir = paths.get("outputs") / "synth" / name
 out_dir.mkdir(parents=True, exist_ok=True)
 f = out_dir / (stage + ("" if A.impl == "eager" else "_" + A.impl) + ".jsonl")
@@ -75,61 +93,21 @@ if A.dry_run:
     for j in jobs[:6]:
         print(repr(j["prompt"]), j["options"], j["asked_relation"], j["max_new"], j["extra"])
     raise SystemExit(0)
-class FP32Head:
-    """输出层（lm_head）的前向钩子：取首步最后一个位置的输入（最终归一化后的隐状态），分块按 fp32 重算 logit 与全词表 logsumexp。
-    模型本身照常用 bf16 生成；这里只为直接回答的选项打分（planner 第 10 轮补充第 3 条：每个选项的 logprob 用 fp32）。"""
-
-    def __init__(self, ad, variants):
-        head = None
-        for obj in (ad.model, getattr(ad.model, "language_model", None), getattr(ad.model, "llm", None)):
-            if obj is not None and hasattr(obj, "get_output_embeddings") and obj.get_output_embeddings() is not None:
-                head = obj.get_output_embeddings()
-                break
-        if head is None:
-            raise RuntimeError("找不到输出层")
-        self.ids = {}
-        for v in variants:
-            t = ad.tokenizer.encode(v, add_special_tokens=False)
-            if len(t) == 1:
-                self.ids[v] = t[0]
-        self.res = None
-        head.register_forward_hook(self.hook)
-
-    def reset(self):
-        self.res = None
-
-    @torch.no_grad()
-    def hook(self, m, inp, out):
-        if self.res is not None:
-            return
-        x = inp[0][0, -1].float()
-        W, b = m.weight, getattr(m, "bias", None)
-        lse_parts, sel = [], {}
-        for i in range(0, W.shape[0], 16384):
-            z = W[i:i + 16384].float() @ x
-            if b is not None:
-                z = z + b[i:i + 16384].float()
-            lse_parts.append(torch.logsumexp(z, 0))
-            for v, t in self.ids.items():
-                if i <= t < i + 16384:
-                    sel[v] = float(z[t - i])
-        lse = float(torch.logsumexp(torch.stack(lse_parts), 0))
-        self.res = {"fp32_lse": lse, "fp32_logprob": {v: z - lse for v, z in sel.items()}, "fp32_argmax_logit_check": float(out[0, -1].float().max())}
-
-
 if todo:
     import transformers
     from src.prompts import NO_VARIANTS, YES_VARIANTS, letter_variants
     ad = load_adapter(name)
     sw = AttnSwitch(ad)
     sw.use(A.impl)
+    LETTER_V = [x for L in ("A", "B") for x in letter_variants(L)]
     try:
-        fp32 = FP32Head(ad, [x for L in ("A", "B") for x in letter_variants(L)] + list(YES_VARIANTS) + list(NO_VARIANTS))
+        fp32 = FP32Head(ad, LETTER_V + list(YES_VARIANTS) + list(NO_VARIANTS), all_steps=True)
+        ans_ids = {"mcq": {v: fp32.ids[v] for v in LETTER_V if v in fp32.ids}, "binary": {v: fp32.ids[v] for v in YES_VARIANTS + NO_VARIANTS if v in fp32.ids}}
     except RuntimeError as ex:
         if A.stage != "single_object":          # 单物体检查只问框，用不到选项打分；E1 必须有
             raise
         print("WARN fp32 head hook unavailable:", ex, flush=True)
-        fp32 = type("NoHook", (), {"reset": lambda self: None, "res": None})()
+        fp32 = type("NoHook", (), {"reset": lambda self: None, "res": None, "all_steps": False})()
     meta = {"model": name, "revision": model_facts(name).get("revision"), "config_hash": config_hash(name), **frozen, "git_commit_dirty_check": git_commit(),
             "env": adapter_spec(name).get("env"), "torch": torch.__version__, "transformers": transformers.__version__, "dtype": str(ad.dtype), "impl": A.impl,
             "eager_fp32_patch": ad.eager_fp32, "decoding": "greedy", "slurm_job": os.environ.get("SLURM_JOB_ID"), "gpu": torch.cuda.get_device_name(0),
@@ -145,6 +123,7 @@ if todo:
                     img, cur = Image.open(j["image"]).convert("RGB"), j["image"]
                 prep = ad.prepare(img, j["prompt"])
                 fp32.reset()
+                fp32.all_steps = j["task"] != "box"          # 框题只要首步（其实也用不到）；直接回答每一步都打分
                 g = ad.generate(prep, j["max_new"])
                 ids = g["token_ids"]
                 vb = prep.extra.get("view_box")
@@ -161,6 +140,8 @@ if todo:
                     if fp32.res is None:
                         raise RuntimeError("fp32 打分钩子没有被调用")
                     rec.update(fp32.res)
+                    rec["fp32_final_answer"] = final_letter_step(ids, fp32.steps, ans_ids[j["task"]])
+                    rec["fp32_n_steps_hooked"] = len(fp32.steps)
             except Exception as ex:
                 rec["error"] = f"{type(ex).__name__}: {str(ex)[:300]}"
             fout.write(json.dumps(rec, ensure_ascii=False) + "\n"); fout.flush()
