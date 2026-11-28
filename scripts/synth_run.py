@@ -17,7 +17,7 @@ from PIL import Image
 
 from scripts.smoke_test import git_commit
 from src import e0, e1, paths
-from src.e1_fp32 import FP32Head, final_letter_step
+from src.e1_fp32 import FP32Head, answer_step_flexible, final_letter_step
 from src.models.adapter import adapter_spec, config_hash, load_adapter, model_facts
 from src.models.attn_switch import AttnSwitch
 from src.prompts import OPPOSITE, parse_four_numbers, to_original_xyxy
@@ -25,6 +25,7 @@ from src.prompts import OPPOSITE, parse_four_numbers, to_original_xyxy
 ap = argparse.ArgumentParser()
 ap.add_argument("name"); ap.add_argument("stage", choices=["single_object", "e1"]); ap.add_argument("--smoke", type=int, default=None)
 ap.add_argument("--pilot", type=int, default=None)
+ap.add_argument("--direct-only-tag", default=None, help="只重跑直接回答（mcq、binary），输出 <stage>_<tag>.jsonl（第 11 轮：RoboBrain 的答案步定位补跑）")
 ap.add_argument("--impl", default="eager", choices=["eager", "sdpa"]); ap.add_argument("--dry-run", action="store_true")
 A = ap.parse_args()
 cfg = e1.synth_cfg()
@@ -82,6 +83,9 @@ else:
             jobs.append(dict(common, task="binary", role=None, rotation=None, asked_relation=rel, options=None, prompt=e1.synth_binary(T["category"], R["category"], rel),
                              max_new=e0.MAX_NEW[(modes or {}).get("binary", "text16")], truth_xyxy=None, box_object=None))
 stage = A.stage + (f"_smoke{A.smoke}" if A.smoke else "") + (f"_pilot{A.pilot}" if A.pilot else "")
+if A.direct_only_tag:
+    jobs = [j for j in jobs if j["task"] in ("mcq", "binary")]
+    stage += "_" + A.direct_only_tag
 out_dir = paths.get("outputs") / "synth" / name
 out_dir.mkdir(parents=True, exist_ok=True)
 f = out_dir / (stage + ("" if A.impl == "eager" else "_" + A.impl) + ".jsonl")
@@ -102,6 +106,7 @@ if todo:
     LETTER_V = [x for L in ("A", "B") for x in letter_variants(L)]
     try:
         fp32 = FP32Head(ad, LETTER_V + list(YES_VARIANTS) + list(NO_VARIANTS), all_steps=True)
+        fp32.keep_hidden = True
         ans_ids = {"mcq": {v: fp32.ids[v] for v in LETTER_V if v in fp32.ids}, "binary": {v: fp32.ids[v] for v in YES_VARIANTS + NO_VARIANTS if v in fp32.ids}}
     except RuntimeError as ex:
         if A.stage != "single_object":          # 单物体检查只问框，用不到选项打分；E1 必须有
@@ -142,6 +147,7 @@ if todo:
                     rec.update(fp32.res)
                     rec["fp32_final_answer"] = final_letter_step(ids, fp32.steps, ans_ids[j["task"]])
                     rec["fp32_n_steps_hooked"] = len(fp32.steps)
+                    rec["fp32_answer_step_flexible"] = answer_step_flexible(ad.tokenizer, ids, fp32, {"A": ["A"], "B": ["B"]} if j["task"] == "mcq" else {"yes": ["Yes", "yes"], "no": ["No", "no"]})
             except Exception as ex:
                 rec["error"] = f"{type(ex).__name__}: {str(ex)[:300]}"
             fout.write(json.dumps(rec, ensure_ascii=False) + "\n"); fout.flush()

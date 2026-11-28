@@ -46,16 +46,19 @@ class FP32Head:
             if len(t) == 1:
                 self.ids[v] = t[0]
         self.all_steps = all_steps
-        self.res, self.steps = None, []
+        self.keep_hidden = False
+        self.res, self.steps, self.hid = None, [], []
         self.handle = self.head.register_forward_hook(self.hook)
 
     def reset(self):
-        self.res, self.steps = None, []
+        self.res, self.steps, self.hid = None, [], []
 
     @torch.no_grad()
     def hook(self, m, inp, out):
         if self.res is not None and not self.all_steps:
             return
+        if self.keep_hidden:
+            self.hid.append(inp[0][0, -1].detach().clone())
         lse, lp, am = fp32_scores(inp[0][0, -1], m.weight, getattr(m, "bias", None), self.ids)
         if self.res is None:
             self.res = {"fp32_lse": lse, "fp32_logprob": lp, "fp32_argmax_logit_check": float(out[0, -1].float().max())}
@@ -75,4 +78,40 @@ def final_letter_step(token_ids, steps, letter_ids: dict):
             s = steps[k]
             return {"step": k, "token": inv[token_ids[k]], "fp32_lse": s["lse"], "fp32_logprob": s["logprob"], "fp32_argmax_is_generated": s["argmax_id"] == token_ids[k],
                     "n_steps_hooked": len(steps)}
+    return None
+
+
+def _core(text):
+    return "".join(ch for ch in text if ch.isalnum())
+
+
+@torch.no_grad()
+def answer_step_flexible(tokenizer, token_ids, head, options):
+    """通用的答案步定位（第 11 轮补：RoboBrain 输出 <answer>B</answer>，字母与 ">" 合成一个 token，固定变体找不到）。
+    options：{选项名: [核心文字…]}，例如 {"A": ["A"], "B": ["B"]} 或 {"yes": ["Yes", "yes"], "no": ["No", "no"]}。
+    从后往前找第一个“去掉非字母数字后等于某个核心文字”的生成 token；在该步的隐状态（head.hid，需 keep_hidden）上，
+    对每个选项取候选 token（把该 token 文字里的核心换成该选项的各个核心文字，能编码成单个 token 的；再加上 "X"、" X" 两种变体），
+    按 fp32 算 logprob，每个选项取候选里的最大值。返回 {step, token_text, option, fp32_logprob_by_option, candidates}；找不到返回 None。"""
+    texts = [tokenizer.decode([t]) for t in token_ids]
+    core2opt = {c: o for o, cs in options.items() for c in cs}
+    for k in range(len(token_ids) - 1, -1, -1):
+        c = _core(texts[k])
+        if c not in core2opt:
+            continue
+        if k >= len(head.hid):
+            return {"step": k, "token_text": texts[k], "error": f"只存了 {len(head.hid)} 步隐状态"}
+        cand = {}
+        for o, cs in options.items():
+            ids = set()
+            for c2 in cs:
+                for s in (texts[k].replace(c, c2, 1), c2, " " + c2):
+                    e = tokenizer.encode(s, add_special_tokens=False)
+                    if len(e) == 1:
+                        ids.add(e[0])
+            cand[o] = sorted(ids)
+        W, b = head.head.weight, getattr(head.head, "bias", None)
+        lse, lp, am = fp32_scores(head.hid[k], W, b, {f"{o}:{i}": i for o, ids in cand.items() for i in ids})
+        by = {o: max(lp[f"{o}:{i}"] for i in ids) if ids else None for o, ids in cand.items()}
+        return {"step": k, "token_text": texts[k], "option": core2opt[c], "fp32_logprob_by_option": by, "fp32_lse": lse,
+                "candidates": {o: [[i, tokenizer.decode([i])] for i in ids] for o, ids in cand.items()}, "fp32_argmax_is_generated": am == token_ids[k]}
     return None
