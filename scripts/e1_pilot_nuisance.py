@@ -32,6 +32,13 @@ def best(lp, vs):
 
 
 def L_record(r, mode):
+    fx = r.get("fp32_answer_step_flexible")
+    if mode != "letter_logit" and fx and fx.get("fp32_logprob_by_option") and None not in fx["fp32_logprob_by_option"].values():
+        lp = fx["fp32_logprob_by_option"]          # 通用定位（第 11 轮补跑的 RoboBrain）：每个选项已取候选 token 的最大值
+        if r["task"] == "mcq":
+            k = r["options"].index(r["relation"])
+            return lp[LETTERS[k]] - lp[LETTERS[1 - k]]
+        return (lp["yes"] - lp["no"]) if r["asked_relation"] == r["relation"] else (lp["no"] - lp["yes"])
     src = r.get("fp32_logprob") if mode == "letter_logit" else (r.get("fp32_final_answer") or {}).get("fp32_logprob")
     if not src:
         return np.nan
@@ -47,6 +54,12 @@ def model_stats(name):
     recs = list(e0.load_records(f).values())
     if len(recs) < 1200:
         return None
+    f2 = f.with_name("e1_pilot200_ans2.jsonl")          # 直接回答的补跑（只有 RoboBrain）：用补跑的 mcq / binary 记录替换原记录
+    if f2.is_file():
+        r2 = [r for r in e0.load_records(f2).values()]
+        if len(r2) < 800:
+            return None
+        recs = [r for r in recs if r["task"] == "box"] + r2
     assert all(r["split"] == "dev" for r in recs) and not any(r.get("error") for r in recs)
     modes = recs[0]["answer_modes"]
     cfg = {"variants": ["base"], "subset": "main", "truncate_to_model_bins": False}
@@ -114,6 +127,9 @@ def model_stats(name):
     for nm, LL in (("mcq", Lm), ("binary", Lb)):
         Lbar = np.nanmean(LL, 1)
         ok = np.isfinite(Lbar) & (d > 0)
+        if ok.sum() < 20:
+            local[nm] = {"error": f"只有 {int(ok.sum())} 个条目有 L"}
+            continue
         lx = np.log2(d[ok])
         kn = rcs_knots(lx, 4)
         coef, *_ = np.linalg.lstsq(rcs_basis(lx, kn), Lbar[ok], rcond=None)
@@ -159,4 +175,8 @@ if __name__ == "__main__":
         res["models"][m] = st
         print(m, json.dumps({"local_mcq": {k: st["L_local"]["mcq"][k] for k in ("nu", "m_quantiles", "kappa_loc_per_token_quantiles")}, "nu_order": st["nu_from_order_difference"], "L_mcq_q": [round(v, 2) for v in st["L_mcq_quantiles"]],
                              "box_parse_fail": st["box_parse_fail"]}, ensure_ascii=False), flush=True)
-    json.dump(res, open(paths.REPO_ROOT / "manifests" / "e1_pilot_nuisance.json", "w"), indent=1, ensure_ascii=False)
+    import os
+    out = paths.REPO_ROOT / "manifests" / "e1_pilot_nuisance.json"
+    tmp = out.with_name(f".e1_pilot_nuisance.{os.getpid()}.tmp")
+    json.dump(res, open(tmp, "w"), indent=1, ensure_ascii=False)
+    os.replace(tmp, out)                    # 原子替换：几个功效模拟作业可能同时读这个文件
