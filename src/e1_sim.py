@@ -72,7 +72,30 @@ def robust_sd(v):
     return float(1.4826 * np.median(np.abs(v - np.median(v))))
 
 
-def simulate_L(agent, x, rng, pool=None, sigma=0.5, k_h2=0.5, quant=0.5, kappa=3.0, nu_sd=0.5, n_orders=2, axis=None, size=None, scale="sd"):
+def local_L(S, d, Lm, rng, n_orders):
+    """饱和的局部线性 L（第 11 轮试跑估计，scripts/e1_pilot_nuisance.py 的 L_local）：
+    L = sign(S)·m(|Δ|) + κ_loc(|Δ|)·(S − Δ) + ν，m 为 log2 距离上的限制性样条（超出试跑范围时截到边界），κ_loc = dm/dΔ，ν ~ N(0, Lm["nu"]) 每个顺序独立。
+    回答 = sign(L)：S 与 Δ 同号时 L ≈ m（饱和的置信度），S 翻号（框推错，H1）时 L ≈ −m。"""
+    from src.e1_alt import rcs_basis
+    kn, coef = np.asarray(Lm["knots"]), np.asarray(Lm["coef"])
+    lo, hi = Lm["log2_range"]
+    ad = np.maximum(np.abs(d), 1e-3)
+    lx = np.clip(np.log2(ad), lo, hi)
+    m = rcs_basis(lx, kn) @ coef
+    h = 1e-3
+    k = (rcs_basis(lx + h, kn) @ coef - rcs_basis(lx - h, kn) @ coef) / (2 * h) / (2 ** lx * np.log(2))
+    base = np.where(S >= 0, 1.0, -1.0) * m + k * (S - d)
+    return base[:, None] + rng.normal(0, Lm["nu"], (len(d), n_orders))
+
+
+def winsorize_pool(v, c=3.0):
+    """把误差池截到 中位数 ± c·稳健 sd（1.4826·MAD），看离群值的影响（planner 第 11 轮第 5 条的稳健尺度版本）。"""
+    v = np.asarray(v, float)
+    med, rs = np.median(v), robust_sd(v)
+    return np.clip(v, med - c * rs, med + c * rs) if rs > 0 else v
+
+
+def simulate_L(agent, x, rng, pool=None, sigma=0.5, k_h2=0.5, quant=0.5, kappa=3.0, nu_sd=0.5, n_orders=2, axis=None, size=None, scale="sd", Lmodel=None):
     """带 logit 差 L 和预测框有向差 Δ̂ 的智能体（planner 第 10 轮补充第 4 条）。每个条目一个内部决策量 S（两个选项顺序共用），
     每个顺序的 L = kappa·S / sd(e_t − e_r) + ν，ν ~ N(0, nu_sd)；二选一的回答 = L 的符号（正 = 选对）。
       H1：S = Δ̂ = d + e_t − e_r（框推的有向距离本身）
@@ -118,7 +141,7 @@ def simulate_L(agent, x, rng, pool=None, sigma=0.5, k_h2=0.5, quant=0.5, kappa=3
         S = d + draw() - draw()
     else:
         raise ValueError(agent)
-    L = kappa * (S / sdD)[:, None] + rng.normal(0, nu_sd, (n, n_orders))
+    L = kappa * (S / sdD)[:, None] + rng.normal(0, nu_sd, (n, n_orders)) if Lmodel is None else local_L(S, d, Lmodel, rng, n_orders)
     mcq = (L > 0).astype(float)
     agree = (mcq == box_ok[:, None]).astype(float)
     it = {"key": np.arange(n), "x": d, "bin": token_bins(d, edges9()), "d_box": d, "e_t": e_t, "e_r": e_r, "box_ok": box_ok, "box_parsed": np.ones(n, bool),
@@ -127,11 +150,11 @@ def simulate_L(agent, x, rng, pool=None, sigma=0.5, k_h2=0.5, quant=0.5, kappa=3
 
 
 
-def simulate_real(agent, delta, axis, rng, pools, kappa, nu_sd, tau, bin_edges, scale="sd", n_orders=2):
+def simulate_real(agent, delta, axis, rng, pools, kappa, nu_sd, tau, bin_edges, scale="sd", n_orders=2, Lmodel=None):
     """真实数据集的智能体（planner 第 11 轮第 6 条）。delta：每个条目的真框中心有向差（token，标注关系方向为正，可 <= 0）；axis："x"/"y"；
     pools：{"x": 数组, "y": 数组}（dev 实测的框中心有向误差）。Δ̂ = Δ + e_t − e_r，框推正确 = Δ̂ > 0。
       H1：S = Δ̂ + tau·sdD·z（直接回答读两个框的比较，外加与框无关的噪声 tau；tau 用来对上 dev 的直接回答正确率，>= 0）
-      H3：S = Δ + tau·(e_t' − e_r')（与框误差独立；tau 缩放噪声以对上 dev 的直接回答正确率，可 < 1）
+      H3：S = Δ + tau·sdD·z（与框误差独立的高斯噪声；tau 用来对上 dev 的直接回答正确率）
     L = kappa·S/sdD + ν（每个顺序独立），回答 = sign(L)。距离档：|Δ| 按 dev 的三分位数 bin_edges 分 3 档（MH OR 的分层）。"""
     n = len(delta)
     d = np.asarray(delta, float)
@@ -155,10 +178,10 @@ def simulate_real(agent, delta, axis, rng, pools, kappa, nu_sd, tau, bin_edges, 
     if agent == "H1":
         S = dhat + tau * sdD * rng.normal(0, 1, n)
     elif agent == "H3":
-        S = d + tau * (draw() - draw())
+        S = d + tau * sdD * rng.normal(0, 1, n)
     else:
         raise ValueError(agent)
-    L = kappa * (S / sdD)[:, None] + rng.normal(0, nu_sd, (n, n_orders))
+    L = kappa * (S / sdD)[:, None] + rng.normal(0, nu_sd, (n, n_orders)) if Lmodel is None else local_L(S, d, Lmodel, rng, n_orders)
     mcq = (L > 0).astype(float)
     ax_ = np.abs(d)
     b = np.searchsorted(np.asarray(bin_edges), ax_, side="right")

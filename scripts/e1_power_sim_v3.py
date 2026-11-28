@@ -1,8 +1,10 @@
 """E1 功效模拟第三版（planner 第 11 轮第 4–7 条）。以后所有功效模拟都按“排除单物体检查不通过的尺寸档”之后的条目算。
 情景（--scenario）：
   synth_main_so     合成 v2 主集 test 设计；噪声 = 单物体检查的有向框中心误差（按 轴 × 尺寸档 分池）；L：κ = 3、ν = 0.5（同第二版），只是排除了不通过的尺寸档
-  synth_main_pilot  同上设计；噪声 = dev 试跑两物体场景的框误差（轴 × 尺寸档；某池 < 30 个就并为该轴全部尺寸）；κ、ν = 试跑估计（manifests/e1_pilot_nuisance.json，sd 版）
-  synth_main_pilot_mad  同上，但 L 的标准化尺度用 1.4826·MAD（κ、ν 用 MAD 版估计）；只算方案 A（只有 A 用到 L）
+  synth_main_pilot  同上设计；噪声 = dev 试跑两物体场景的框误差（轴 × 尺寸档；某池 < 30 个就并为该轴全部尺寸）；
+                    L = 试跑估计的饱和局部线性模型（manifests/e1_pilot_nuisance.json 的 L_local.mcq；src/e1_sim.local_L）
+  synth_main_pilot_wins 同上，但误差池截到 中位数 ± 3·稳健 sd（1.4826·MAD），看离群值的影响；只算方案 A
+                    （局部线性模型里 L 不再除以 sd(e_t − e_r)，“改用稳健尺度”落在误差池上；见 round_11.md）
   synth_overlap_pilot   合成 v2 重叠子集 test 设计（三档遮挡合并 + 每档单独），噪声与 κ、ν 同 synth_main_pilot
   real_<数据集>_pair 同下，但直接回答换成成对二元（一次观测；对上 dev 的成对二元正确率）。test 上两物体的成对二元明显低于 1（Table 1），选择题不低
   real_<数据集>      What's Up A / B、COCO-two、GQA-two：dev 边际量（scripts/e1_real_inputs.py），test 样本量；真值 H1 / H3；
@@ -34,7 +36,7 @@ MODELS = SCFG["single_object_check"]["models"]
 SO = json.load(open(paths.REPO_ROOT / "manifests" / "single_object_check.json"))
 NUIS_F = paths.REPO_ROOT / "manifests" / "e1_pilot_nuisance.json"
 REAL = ["whatsup_a", "whatsup_b", "coco_spatial_two", "gqa_spatial_two"]
-SCEN = ["synth_main_so", "synth_main_pilot", "synth_main_pilot_mad", "synth_overlap_pilot"] + [f"real_{d}" for d in REAL] + [f"real_{d}_pair" for d in REAL]
+SCEN = ["synth_main_so", "synth_main_pilot", "synth_main_pilot_wins", "synth_overlap_pilot"] + [f"real_{d}" for d in REAL] + [f"real_{d}_pair" for d in REAL]
 MIN_POOL = 30
 
 
@@ -54,9 +56,11 @@ def nuis(model):
     return json.load(open(NUIS_F))["models"][model]
 
 
-def pilot_pools(model):
-    """{(轴, 尺寸): 误差}；某池 < MIN_POOL 个时用该轴全部尺寸合并的池。"""
+def pilot_pools(model, wins=False):
+    """{(轴, 尺寸): 误差}；某池 < MIN_POOL 个时用该轴全部尺寸合并的池。wins：截尾到 中位数 ± 3·稳健 sd。"""
     raw = nuis(model)["box_error_pools"]
+    if wins:
+        raw = {k: list(S.winsorize_pool(v)) if len(v) else v for k, v in raw.items()}
     by_axis = {a: np.concatenate([np.array(v) for k, v in raw.items() if k.startswith(a + "|")]) for a in ("x", "y")}
     P, merged = {}, []
     for a in ("x", "y"):
@@ -82,9 +86,9 @@ def synth_design(model, side, subset):
 
 def Lparams(model, scen):
     if scen == "synth_main_so":
-        return {"kappa": 3.0, "nu_sd": 0.5, "scale": "sd"}
-    q = nuis(model)["L_params"]["mad" if scen.endswith("_mad") else "sd"]
-    return {"kappa": q["kappa"], "nu_sd": q["nu"], "scale": "mad" if scen.endswith("_mad") else "sd"}
+        return {"kappa": 3.0, "nu_sd": 0.5, "scale": "sd", "Lmodel": None}
+    which = "binary" if scen.endswith("_pair") else "mcq"
+    return {"kappa": None, "nu_sd": None, "scale": "sd", "Lmodel": nuis(model)["L_local"][which], "L_source": f"L_local.{which}"}
 
 
 def sub_items(it, m):
@@ -103,22 +107,22 @@ def or_verdict(items, n_boot, rng, th):
             "box_acc": float(items["box_ok"].mean()), "direct_acc": float(np.nanmean(items["mcq_ok"]))}
 
 
-def calibrate_tau(agent, R, kappa, nu_sd, scale, target, seed=7, n_orders=2):
+def calibrate_tau(agent, R, Lp, target, seed=7, n_orders=2):
     """二分找 tau，使模拟的直接回答正确率（dev 几何，2 万个条目）对上 dev 的边际正确率。返回 (tau, 达到的正确率, 是否能对上)。"""
     rng0 = np.random.default_rng(seed)
     idx = rng0.integers(0, len(R["delta"]), 20000)
     d, a = np.array(R["delta"])[idx], np.array(R["axis"])[idx]
 
     def acc(t):
-        it = S.simulate_real(agent, d, a, np.random.default_rng(seed + 1), R["pools"], kappa, nu_sd, t, R["bin_edges_abs_delta"], scale, n_orders)
+        it = S.simulate_real(agent, d, a, np.random.default_rng(seed + 1), R["pools"], Lp["kappa"], Lp["nu_sd"], t, R["bin_edges_abs_delta"], Lp["scale"], n_orders, Lp["Lmodel"])
         return float(it["mcq_ok"].mean())
-    lo, hi = 0.0, 64.0
+    lo, hi = 0.0, 4096.0
     a_lo, a_hi = acc(lo), acc(hi)
     if a_lo < target:
         return lo, a_lo, False
     if a_hi > target:
         return hi, a_hi, False
-    for _ in range(30):
+    for _ in range(40):
         mid = (lo + hi) / 2
         if acc(mid) > target:
             lo = mid
@@ -135,7 +139,7 @@ def one(a):
         R = ctx["real"]
         idx = rng.integers(0, len(R["delta"]), R["n_test"])
         it = S.simulate_real(agent, np.array(R["delta"])[idx], np.array(R["axis"])[idx], rng, R["pools"], ctx["L"]["kappa"], ctx["L"]["nu_sd"], ctx["tau"][agent],
-                             R["bin_edges_abs_delta"], ctx["L"]["scale"], ctx["n_orders"])
+                             R["bin_edges_abs_delta"], ctx["L"]["scale"], ctx["n_orders"], ctx["L"]["Lmodel"])
         res = {"main_or": or_verdict(it, boot, rng, CFG["thresholds"])}
         try:
             res["A"] = X.coupling(it, boot, rng, CFG["alternatives"]["A_coupling"])
@@ -143,11 +147,11 @@ def one(a):
             res["A"] = {"verdict": "error", "equivalence_null": False, "error": f"{type(e).__name__}: {e}"}
         return {"model": model, "scenario": scen, "agent": agent, "rep": rep, "boot": boot, "result": jsonable(res)}
     T, D, P, Lp = ctx["T"], ctx["D"], ctx["P"], ctx["L"]
-    kw = dict(pool=P, kappa=Lp["kappa"], nu_sd=Lp["nu_sd"], scale=Lp["scale"])
+    kw = dict(pool=P, kappa=Lp["kappa"] if Lp["kappa"] is not None else 3.0, nu_sd=Lp["nu_sd"] if Lp["nu_sd"] is not None else 0.5, scale=Lp["scale"], Lmodel=Lp["Lmodel"])
     it = S.simulate_L(agent, T[0], rng, axis=T[1], size=T[2], **kw)
     dv = S.simulate_L(agent, D[0], rng, axis=D[1], size=D[2], **kw)
     seed = int(rng.integers(2**31))
-    if scen == "synth_main_pilot_mad":
+    if scen == "synth_main_pilot_wins":
         res = {"A": X.coupling(it, boot, np.random.default_rng(seed), CFG["alternatives"]["A_coupling"])}
     else:
         res = X.analyze_all(it, dv, CFG, boot, seed)
@@ -183,7 +187,7 @@ def summarize(rows, scen):
             d["n_A_errors"] = int(sum("error" in r["A"] for r in R))
             out[ag] = d
         return out
-    if scen == "synth_main_pilot_mad":
+    if scen == "synth_main_pilot_wins":
         out = {}
         for ag in ("H1", "H2", "H3"):
             R = [r["result"] for r in rows if r["agent"] == ag]
@@ -207,24 +211,24 @@ def context(model, scen):
         pair = scen.endswith("_pair")
         ds = scen[5:-5] if pair else scen[5:]
         R = json.load(open(OUT / "real_inputs.json"))[model][ds]
-        Lp = Lparams(model, "synth_main_pilot")
+        Lp = Lparams(model, scen)
         no = 1 if pair else 2
         target = R["p_pair_dev"] if pair else R["p_dir_dev"]
         tau = {}
         for ag in ("H1", "H3"):
-            t, acc, ok = calibrate_tau(ag, R, Lp["kappa"], Lp["nu_sd"], Lp["scale"], target, n_orders=no)
+            t, acc, ok = calibrate_tau(ag, R, Lp, target, n_orders=no)
             tau[ag] = t
             info[f"tau_{ag}"] = {"tau": t, "sim_direct_acc_dev_geometry": acc, "target_dev": target, "matched": ok}
-        info.update(n_test=R["n_test"], p_box_dev=R["p_box_dev"], bin_edges=R["bin_edges_abs_delta"], L=Lp, direct="pair" if pair else "mcq")
+        info.update(n_test=R["n_test"], p_box_dev=R["p_box_dev"], bin_edges=R["bin_edges_abs_delta"], L={k: v for k, v in Lp.items() if k != "Lmodel"}, direct="pair" if pair else "mcq")
         return {"real": R, "L": Lp, "tau": tau, "n_orders": no}, info
     subset = "overlap" if "overlap" in scen else "main"
     T, D = synth_design(model, "test", subset), synth_design(model, "dev", subset)
     if scen == "synth_main_so":
         P, merged = so_pools(model), []
     else:
-        P, merged = pilot_pools(model)
+        P, merged = pilot_pools(model, wins=scen.endswith("_wins"))
     Lp = Lparams(model, scen)
-    info.update(n_test_items=int(len(T[0])), n_dev_items=int(len(D[0])), pools_merged_over_sizes=merged, L=Lp,
+    info.update(n_test_items=int(len(T[0])), n_dev_items=int(len(D[0])), pools_merged_over_sizes=merged, L={k: v for k, v in Lp.items() if k != "Lmodel"},
                 test_items_by_size={str(s): int((T[2] == s).sum()) for s in sorted(set(T[2].tolist()))})
     return {"T": T, "D": D, "P": P, "L": Lp}, info
 
