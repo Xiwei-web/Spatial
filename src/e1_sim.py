@@ -67,13 +67,20 @@ def design_x(rng, per_bin=160, lo_bin=1, edges=None):
     return np.concatenate([np.exp(rng.uniform(np.log(e[k]), np.log(e[k + 1]), per_bin)) for k in range(lo_bin, len(e) - 1)])
 
 
-def simulate_L(agent, x, rng, pool=None, sigma=0.5, k_h2=0.5, quant=0.5, kappa=3.0, nu_sd=0.5, n_orders=2, axis=None, size=None):
+def robust_sd(v):
+    v = np.asarray(v, float)
+    return float(1.4826 * np.median(np.abs(v - np.median(v))))
+
+
+def simulate_L(agent, x, rng, pool=None, sigma=0.5, k_h2=0.5, quant=0.5, kappa=3.0, nu_sd=0.5, n_orders=2, axis=None, size=None, scale="sd"):
     """带 logit 差 L 和预测框有向差 Δ̂ 的智能体（planner 第 10 轮补充第 4 条）。每个条目一个内部决策量 S（两个选项顺序共用），
     每个顺序的 L = kappa·S / sd(e_t − e_r) + ν，ν ~ N(0, nu_sd)；二选一的回答 = L 的符号（正 = 选对）。
       H1：S = Δ̂ = d + e_t − e_r（框推的有向距离本身）
       H2：S = 量化到 quant token 的 (d + k_h2·(e_t − e_r))：读一个更粗但噪声更小、与框误差方向部分相关的位置
       H3：S = d + (e_t' − e_r')，(e_t', e_r') 从同一误差池另抽，与框误差独立、方差相同
-    pool：数组；或 {"x": 数组, "y": 数组}（配合 axis）；或 {(轴, 尺寸): 数组}（配合 axis、size，按尺寸档分池，两个物体同尺寸）；None 时 N(0, sigma)。"""
+    pool：数组；或 {"x": 数组, "y": 数组}（配合 axis）；或 {(轴, 尺寸): 数组}（配合 axis、size，按尺寸档分池，两个物体同尺寸）；None 时 N(0, sigma)。
+    scale："sd"（默认）：标准化尺度 sd(e_t − e_r) = 池的标准差 × √2；"mad"：改用稳健尺度 1.4826·MAD(池) × √2（planner 第 11 轮第 5 条，看离群值的影响）。"""
+    sdf = (lambda v: float(np.std(np.asarray(v, float)))) if scale == "sd" else robust_sd
     n = len(x)
     if isinstance(pool, dict):
         axis = np.asarray(axis)
@@ -91,10 +98,10 @@ def simulate_L(agent, x, rng, pool=None, sigma=0.5, k_h2=0.5, quant=0.5, kappa=3
             return out
         sdD = np.empty(n)
         for k, idx in groups.items():
-            sdD[idx] = np.std(np.asarray(pool[k], float)) * np.sqrt(2)
+            sdD[idx] = sdf(pool[k]) * np.sqrt(2)
     elif pool is not None:
         draw = lambda: rng.choice(pool, n)      # noqa: E731
-        sdD = np.full(n, float(np.std(np.asarray(pool)) * np.sqrt(2)))
+        sdD = np.full(n, sdf(pool) * np.sqrt(2))
     else:
         draw = lambda: rng.normal(0, sigma, n)      # noqa: E731
         sdD = np.full(n, sigma * np.sqrt(2))
@@ -118,3 +125,42 @@ def simulate_L(agent, x, rng, pool=None, sigma=0.5, k_h2=0.5, quant=0.5, kappa=3
           "mcq_ok": mcq, "mcq_agree": agree, "pair_ok": mcq[:, 0].copy(), "pair_agree": agree[:, 0].copy(), "dhat": dhat, "L": L, "n_keys": n}
     return it
 
+
+
+def simulate_real(agent, delta, axis, rng, pools, kappa, nu_sd, tau, bin_edges, scale="sd", n_orders=2):
+    """真实数据集的智能体（planner 第 11 轮第 6 条）。delta：每个条目的真框中心有向差（token，标注关系方向为正，可 <= 0）；axis："x"/"y"；
+    pools：{"x": 数组, "y": 数组}（dev 实测的框中心有向误差）。Δ̂ = Δ + e_t − e_r，框推正确 = Δ̂ > 0。
+      H1：S = Δ̂ + tau·sdD·z（直接回答读两个框的比较，外加与框无关的噪声 tau；tau 用来对上 dev 的直接回答正确率，>= 0）
+      H3：S = Δ + tau·(e_t' − e_r')（与框误差独立；tau 缩放噪声以对上 dev 的直接回答正确率，可 < 1）
+    L = kappa·S/sdD + ν（每个顺序独立），回答 = sign(L)。距离档：|Δ| 按 dev 的三分位数 bin_edges 分 3 档（MH OR 的分层）。"""
+    n = len(delta)
+    d = np.asarray(delta, float)
+    axis = np.asarray(axis)
+    sdf = (lambda v: float(np.std(v))) if scale == "sd" else robust_sd
+    P = {a: np.asarray(pools[a], float) for a in ("x", "y") if len(pools.get(a, []))}
+    if len(P) == 1:                                   # 某个轴没有误差样本时借用另一个轴
+        a0 = next(iter(P)); P = {"x": P[a0], "y": P[a0]}
+    sdD = np.where(axis == "x", sdf(P["x"]), sdf(P["y"])) * np.sqrt(2)
+    sdD = np.maximum(sdD, 1e-6)
+
+    def draw():
+        out = np.empty(n)
+        for a in ("x", "y"):
+            m = axis == a
+            out[m] = rng.choice(P[a], int(m.sum()))
+        return out
+    e_t, e_r = draw(), draw()
+    dhat = d + e_t - e_r
+    box_ok = dhat > 0
+    if agent == "H1":
+        S = dhat + tau * sdD * rng.normal(0, 1, n)
+    elif agent == "H3":
+        S = d + tau * (draw() - draw())
+    else:
+        raise ValueError(agent)
+    L = kappa * (S / sdD)[:, None] + rng.normal(0, nu_sd, (n, n_orders))
+    mcq = (L > 0).astype(float)
+    ax_ = np.abs(d)
+    b = np.searchsorted(np.asarray(bin_edges), ax_, side="right")
+    return {"key": np.arange(n), "x": np.maximum(ax_, 1e-3), "bin": b, "d_box": d, "e_t": e_t, "e_r": e_r, "box_ok": box_ok, "box_parsed": np.ones(n, bool),
+            "mcq_ok": mcq, "dhat": dhat, "L": L, "n_keys": n}      # n_orders = 1 时 mcq_ok 那一列代表成对二元的一次观测

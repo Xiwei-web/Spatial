@@ -1,0 +1,94 @@
+{
+ "reference_model_for_item_list": "Qwen3-VL-8B-Instruct",
+ "rule": "真值框中心 ((x0+x1)/2, (y0+y1)/2) 取整后落在 mask 内；mask 与模型的 center-in-mask 相同",
+ "datasets": {
+  "whatsup_a": {
+   "n_boxes": 412,
+   "ceiling": [
+    0.779126213592233,
+    [
+     0.7427184466019418,
+     0.8155339805825242
+    ]
+   ],
+   "by_role": {
+    "target": [
+     0.9514563106796117,
+     206
+    ],
+    "reference": [
+     0.6067961165048543,
+     206
+    ]
+   },
+   "reference_mask_source": {
+    "n_with_mask_reference_raw": 104,
+    "n": 412,
+    "note": "mask_reference_raw 只在 reference 与 target 的 mask 有交集、做过“减去 target”时才非空，存的是减之前的原 mask；masks_for 优先用它，所以 center-in-mask 用的是未减的原 mask"
+   }
+  },
+  "whatsup_b": {
+   "n_boxes": 408,
+   "ceiling": [
+    0.9411764705882353,
+    [
+     0.9191176470588235,
+     0.9632352941176471
+    ]
+   ],
+   "by_role": {
+    "target": [
+     1.0,
+     204
+    ],
+    "reference": [
+     0.8823529411764706,
+     204
+    ]
+   },
+   "reference_mask_source": {
+    "n_with_mask_reference_raw": 0,
+    "n": 408,
+    "note": "mask_reference_raw 只在 reference 与 target 的 mask 有交集、做过“减去 target”时才非空，存的是减之前的原 mask；masks_for 优先用它，所以 center-in-mask 用的是未减的原 mask"
+   }
+  },
+  "coco_spatial_one": {
+   "n_boxes": 896,
+   "ceiling": [
+    0.8805803571428571,
+    [
+     0.8597076931152655,
+     0.9010989010989011
+    ]
+   ],
+   "by_role": {
+    "target": [
+     0.8805803571428571,
+     896
+    ]
+   }
+  },
+  "coco_spatial_two": {
+   "n_boxes": 346,
+   "ceiling": [
+    0.8901734104046243,
+    [
+     0.857566765578635,
+     0.9211267605633803
+    ]
+   ],
+   "by_role": {
+    "target": [
+     0.8789808917197452,
+     157
+    ],
+    "reference": [
+     0.8994708994708994,
+     189
+    ]
+   }
+  },
+  "gqa_spatial_one": null,
+  "gqa_spatial_two": null
+ }
+}
