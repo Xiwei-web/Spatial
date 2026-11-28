@@ -931,5 +931,67 @@
    ],
    "ok": true
   }
+ },
+ "LLaVA-1.5-13B": {
+  "A": {
+   "file": "test_whatsup_a+whatsup_b+coco_spatial_two+gqa_spatial_two.jsonl",
+   "expected": 5440,
+   "unique_keys": 5440,
+   "duplicates": 0,
+   "missing": 0,
+   "unexpected": 0,
+   "unparsable_lines": 0,
+   "error_records": 0,
+   "impl": [
+    "eager"
+   ],
+   "gpus": [
+    "NVIDIA A100-SXM4-40GB"
+   ],
+   "jobs": [
+    "441365"
+   ],
+   "ok": true
+  },
+  "B": {
+   "file": "test_coco_spatial_one+gqa_spatial_one.jsonl",
+   "expected": 8264,
+   "unique_keys": 8264,
+   "duplicates": 0,
+   "missing": 0,
+   "unexpected": 0,
+   "unparsable_lines": 0,
+   "error_records": 0,
+   "impl": [
+    "eager"
+   ],
+   "gpus": [
+    "NVIDIA A100-SXM4-40GB"
+   ],
+   "jobs": [
+    "441365"
+   ],
+   "ok": true
+  },
+  "C": {
+   "file": "test_whatsup_a+whatsup_b_sdpa.jsonl",
+   "expected": 3280,
+   "unique_keys": 3280,
+   "duplicates": 0,
+   "missing": 0,
+   "unexpected": 0,
+   "unparsable_lines": 0,
+   "error_records": 0,
+   "impl": [
+    "sdpa"
+   ],
+   "gpus": [
+    "NVIDIA A100-SXM4-40GB"
+   ],
+   "jobs": [
+    "441365"
+   ],
+   "ok": true
+  }
  }
 }
