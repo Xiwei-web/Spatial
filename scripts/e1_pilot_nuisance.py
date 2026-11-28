@@ -173,7 +173,7 @@ if __name__ == "__main__":
         if st is None:
             print(m, "试跑还没跑完"); continue
         res["models"][m] = st
-        print(m, json.dumps({"local_mcq": {k: st["L_local"]["mcq"][k] for k in ("nu", "m_quantiles", "kappa_loc_per_token_quantiles")}, "nu_order": st["nu_from_order_difference"], "L_mcq_q": [round(v, 2) for v in st["L_mcq_quantiles"]],
+        print(m, json.dumps({"local_mcq": {k: st["L_local"]["mcq"].get(k) for k in ("nu", "m_quantiles", "kappa_loc_per_token_quantiles", "error")}, "nu_order": st["nu_from_order_difference"], "L_mcq_q": [round(v, 2) for v in st["L_mcq_quantiles"]],
                              "box_parse_fail": st["box_parse_fail"]}, ensure_ascii=False), flush=True)
     import os
     out = paths.REPO_ROOT / "manifests" / "e1_pilot_nuisance.json"
